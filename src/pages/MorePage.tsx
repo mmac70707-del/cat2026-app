@@ -1,12 +1,15 @@
 import { useQuickStats } from '@/hooks/index'
 
-export type SubPage = 'catmock' | 'dailycapsule' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+export type SubPage = 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
   { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator', featured: true },
-  { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints', featured: true },
+  { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap', featured: true },
+  { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints' },
+  { id: 'flashcards',   icon: '🎴', label: 'Spaced Repetition Formula Deck' },
+  { id: 'achievements', icon: '🎖️', label: 'Streak Counter & Execution Badges' },
   { id: 'research',     icon: '🔬', label: 'Deep Research Protocol' },
   { id: 'livesessions', icon: '📺', label: 'Expert Masterclasses & Video Seminars' },
   { id: 'qbank',        icon: '📚', label: 'Adaptive Question Vault' },

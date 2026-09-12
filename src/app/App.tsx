@@ -4,32 +4,35 @@ import { BottomNav }    from '@/components/BottomNav'
 import { StudyTimer }   from '@/components/StudyTimer'
 import { useToast }     from '@/components/Toast'
 
-import { TodayPage }        from '@/features/today/TodayPage'
-import { WeekPage }         from '@/features/week/WeekPage'
-import { MasteryPage }      from '@/features/mastery/MasteryPage'
-import { PhasesPage }       from '@/features/phases/PhasesPage'
-import { MorePage }         from '@/pages/MorePage'
-import { CatMockExamPage }  from '@/features/mockengine/CatMockExamPage'
-import { DailyCapsulePage } from '@/features/dailycapsule/DailyCapsulePage'
-import { QuestionBankPage } from '@/features/qbank/QuestionBankPage'
-import { LiveSessionsPage } from '@/features/livesessions/LiveSessionsPage'
-import { SpeedDrillsPage }  from '@/features/drills/SpeedDrillsPage'
-import { DeepResearchPage } from '@/features/research/DeepResearchPage'
-import { ErrorsPage }       from '@/features/errors/ErrorsPage'
-import { RepairPage }       from '@/features/repair/RepairPage'
-import { RetestPage }       from '@/features/retest/RetestPage'
-import { MocksPage }        from '@/features/mocks/MocksPage'
-import { SchedulePage }     from '@/features/schedule/SchedulePage'
-import { VisionPage }       from '@/features/vision/VisionPage'
-import { SyllabusPage }     from '@/features/syllabus/SyllabusPage'
-import { SettingsPage }     from '@/features/settings/SettingsPage'
+import { TodayPage }            from '@/features/today/TodayPage'
+import { WeekPage }             from '@/features/week/WeekPage'
+import { MasteryPage }          from '@/features/mastery/MasteryPage'
+import { PhasesPage }           from '@/features/phases/PhasesPage'
+import { MorePage }             from '@/pages/MorePage'
+import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
+import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
+import { FormulaDeckPage }      from '@/features/flashcards/FormulaDeckPage'
+import { AchievementsPage }     from '@/features/achievements/AchievementsPage'
+import { DailyCapsulePage }     from '@/features/dailycapsule/DailyCapsulePage'
+import { QuestionBankPage }     from '@/features/qbank/QuestionBankPage'
+import { LiveSessionsPage }     from '@/features/livesessions/LiveSessionsPage'
+import { SpeedDrillsPage }      from '@/features/drills/SpeedDrillsPage'
+import { DeepResearchPage }     from '@/features/research/DeepResearchPage'
+import { ErrorsPage }           from '@/features/errors/ErrorsPage'
+import { RepairPage }           from '@/features/repair/RepairPage'
+import { RetestPage }           from '@/features/retest/RetestPage'
+import { MocksPage }            from '@/features/mocks/MocksPage'
+import { SchedulePage }         from '@/features/schedule/SchedulePage'
+import { VisionPage }           from '@/features/vision/VisionPage'
+import { SyllabusPage }         from '@/features/syllabus/SyllabusPage'
+import { SettingsPage }         from '@/features/settings/SettingsPage'
 
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-type SubPage    = 'catmock' | 'dailycapsule' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+type SubPage    = 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -138,7 +141,7 @@ export function App() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 12 }}>
         <div style={{ fontSize: 28, fontWeight: 900, background: 'linear-gradient(90deg,#F5A623,#FBBF24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          MAT-Q • CAT 2026
+          CAT 2026
         </div>
         <div style={{ fontSize: 12, color: '#94A3B8' }}>Loading execution system…</div>
       </div>
@@ -162,20 +165,23 @@ export function App() {
         {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p)} />}
 
         {/* SUB PAGES */}
-        {activePage === 'catmock'     && <CatMockExamPage  onBack={() => setActivePage('more')} />}
-        {activePage === 'dailycapsule'&& <DailyCapsulePage onBack={() => setActivePage('more')} />}
-        {activePage === 'qbank'       && <QuestionBankPage onBack={() => setActivePage('more')} />}
-        {activePage === 'livesessions'&& <LiveSessionsPage onBack={() => setActivePage('more')} />}
-        {activePage === 'drills'      && <SpeedDrillsPage  onBack={() => setActivePage('more')} />}
-        {activePage === 'research'    && <DeepResearchPage onBack={() => setActivePage('more')} />}
-        {activePage === 'errors'      && <ErrorsPage       onBack={() => setActivePage('more')} />}
-        {activePage === 'repair'      && <RepairPage       onBack={() => setActivePage('more')} />}
-        {activePage === 'retest'      && <RetestPage       onBack={() => setActivePage('more')} />}
-        {activePage === 'mockana'     && <MocksPage        onBack={() => setActivePage('more')} />}
-        {activePage === 'schedule'    && <SchedulePage     onBack={() => setActivePage('more')} />}
-        {activePage === 'vision'      && <VisionPage       onBack={() => setActivePage('more')} />}
-        {activePage === 'syllabus'    && <SyllabusPage     onBack={() => setActivePage('more')} />}
-        {activePage === 'settings'    && <SettingsPage     onBack={() => setActivePage('more')} />}
+        {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
+        {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
+        {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
+        {activePage === 'achievements'  && <AchievementsPage     onBack={() => setActivePage('more')} />}
+        {activePage === 'dailycapsule' && <DailyCapsulePage     onBack={() => setActivePage('more')} />}
+        {activePage === 'qbank'        && <QuestionBankPage     onBack={() => setActivePage('more')} />}
+        {activePage === 'livesessions' && <LiveSessionsPage     onBack={() => setActivePage('more')} />}
+        {activePage === 'drills'       && <SpeedDrillsPage      onBack={() => setActivePage('more')} />}
+        {activePage === 'research'     && <DeepResearchPage     onBack={() => setActivePage('more')} />}
+        {activePage === 'errors'       && <ErrorsPage           onBack={() => setActivePage('more')} />}
+        {activePage === 'repair'       && <RepairPage           onBack={() => setActivePage('more')} />}
+        {activePage === 'retest'       && <RetestPage           onBack={() => setActivePage('more')} />}
+        {activePage === 'mockana'      && <MocksPage            onBack={() => setActivePage('more')} />}
+        {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
+        {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
+        {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
+        {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
       </div>
 
       {isMain && (
