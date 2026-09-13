@@ -6,9 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.ConsoleMessage
-import android.webkit.JsPromptResult
-import android.webkit.JsResult
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -29,11 +27,17 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
 
+    class AndroidBridge(private val activity: ComponentActivity) {
+        @JavascriptInterface
+        fun exitApp() {
+            activity.finish()
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Dark theme window colors matching CAT 2026 theme (#0A0F1E)
         window.statusBarColor = Color.parseColor("#0A0F1E")
         window.navigationBarColor = Color.parseColor("#0A0F1E")
         @Suppress("DEPRECATION")
@@ -67,6 +71,8 @@ class MainActivity : ComponentActivity() {
                 cacheMode = WebSettings.LOAD_DEFAULT
             }
 
+            addJavascriptInterface(AndroidBridge(this@MainActivity), "AndroidNativeHost")
+
             webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(
                     view: WebView,
@@ -91,47 +97,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            webChromeClient = object : WebChromeClient() {
-                override fun onJsAlert(
-                    view: WebView?,
-                    url: String?,
-                    message: String?,
-                    result: JsResult?
-                ): Boolean {
-                    return super.onJsAlert(view, url, message, result)
-                }
-
-                override fun onJsConfirm(
-                    view: WebView?,
-                    url: String?,
-                    message: String?,
-                    result: JsResult?
-                ): Boolean {
-                    return super.onJsConfirm(view, url, message, result)
-                }
-
-                override fun onJsPrompt(
-                    view: WebView?,
-                    url: String?,
-                    message: String?,
-                    defaultValue: String?,
-                    result: JsPromptResult?
-                ): Boolean {
-                    return super.onJsPrompt(view, url, message, defaultValue, result)
-                }
-
-                override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-                    return super.onConsoleMessage(consoleMessage)
-                }
-            }
+            webChromeClient = WebChromeClient()
 
             loadUrl("https://appassets.androidplatform.net/assets/public/index.html")
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (::webView.isInitialized && webView.canGoBack()) {
-                    webView.goBack()
+                if (::webView.isInitialized) {
+                    webView.evaluateJavascript("window.dispatchEvent(new Event('android:backbutton'))", null)
                 } else {
                     finish()
                 }

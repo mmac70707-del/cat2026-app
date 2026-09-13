@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MockRepository } from '@/repositories/index'
-import { analyseMock } from '@/services/domain'
+import { analyseMock, localDateKey } from '@/services/domain'
 import { EmptyState } from '@/components/EmptyState'
 import { useToast } from '@/components/Toast'
 import type { MockRecord } from '@/types'
@@ -25,7 +25,7 @@ export function MocksPage({ onBack }: Props) {
   async function handleLog() {
     const analysis = analyseMock({ qa, dilr, varc, qaat, dlat, vcat })
     const mockName = name.trim() || `Mock ${mocks.length + 1}`
-    await MockRepository.log({ name: mockName, date: new Date().toISOString().slice(0, 10), ...analysis })
+    await MockRepository.log({ name: mockName, date: localDateKey(), ...analysis })
 
     const lines = [
       `Total: ${analysis.total} | Attempts: ${analysis.att} | Accuracy: ${analysis.overall}%`,

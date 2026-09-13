@@ -1,14 +1,5 @@
 // ═══════════════════════════════════════════════════
 //  CAT 2026 — Native Bridge Service
-//
-//  Wraps Capacitor plugin calls so the SAME React code
-//  works identically in:
-//    - the browser (Stage 4 web app — plugins no-op)
-//    - the Android app (Stage 5 — plugins call real native APIs)
-//
-//  Every function checks Capacitor.isNativePlatform() before
-//  touching a native API, so this file is safe to import from
-//  anywhere without breaking the existing web build.
 // ═══════════════════════════════════════════════════
 
 import { Capacitor } from '@capacitor/core'
@@ -28,7 +19,7 @@ export async function setupStatusBar(): Promise<void> {
   }
 }
 
-// ── Splash screen (hide once React has mounted + first paint done) ──
+// ── Splash screen ────────────────────────────────────
 export async function hideSplashScreen(): Promise<void> {
   if (!isNative()) return
   try {
@@ -40,39 +31,47 @@ export async function hideSplashScreen(): Promise<void> {
 }
 
 // ── Android hardware back button ─────────────────────
-// Behaviour required by Stage 5:
-//   - on a sub-page (Errors/Repair/Retest/Mocks/Schedule/Vision/
-//     Syllabus/Settings) → back button returns to "More", same as
-//     the on-screen Back button.
-//   - on a main tab (Today/Week/Mastery/Phases/More) → back button
-//     exits the app (default Android behaviour), matching user
-//     expectation instead of a dead end with no exit.
 export async function registerBackButtonHandler(
-  onSubPageBack: () => boolean // return true if a subpage was open and handled
+  onSubPageBack: () => boolean
 ): Promise<() => void> {
-  if (!isNative()) return () => {}
+  const handleAndroidBack = () => {
+    const handled = onSubPageBack()
+    if (!handled) {
+      if ((window as any).AndroidNativeHost?.exitApp) {
+        (window as any).AndroidNativeHost.exitApp()
+      }
+    }
+  }
+
+  window.addEventListener('android:backbutton', handleAndroidBack)
+
+  if (!isNative()) {
+    return () => window.removeEventListener('android:backbutton', handleAndroidBack)
+  }
+
   try {
     const { App } = await import('@capacitor/app')
     const handle = App.addListener('backButton', () => {
       const handled = onSubPageBack()
       if (!handled) {
-        App.exitApp()
+        if ((window as any).AndroidNativeHost?.exitApp) {
+          (window as any).AndroidNativeHost.exitApp()
+        } else {
+          App.exitApp()
+        }
       }
     })
-    return () => { handle.then(h => h.remove()) }
+    return () => {
+      window.removeEventListener('android:backbutton', handleAndroidBack)
+      handle.then(h => h.remove())
+    }
   } catch (e) {
     console.warn('[native] Back button handler skipped:', e)
-    return () => {}
+    return () => window.removeEventListener('android:backbutton', handleAndroidBack)
   }
 }
 
 // ── App state (background/foreground) ────────────────
-// Dispatches a `cat2026:resume` window event on native foreground,
-// mirroring the DOM `visibilitychange` event the web build already
-// relies on (see useTodayTasks, useCountdown, usePhase). Any hook
-// that listens for one now also listens for the other, so resume
-// behaviour is identical on web and native without special-casing
-// call sites.
 export async function registerAppStateHandler(): Promise<() => void> {
   if (!isNative()) return () => {}
   try {

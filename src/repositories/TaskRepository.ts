@@ -1,10 +1,11 @@
 import { dbGet, dbGetAll, dbPut, dbGetByIndex } from '@/db'
 import { BLOCKS } from '@/data/config'
+import { todayKey, localDateKey } from '@/services/domain'
 import type { Task, TaskStatus, BlockId } from '@/types'
 
 export const TaskRepository = {
   todayKey(): string {
-    return new Date().toISOString().slice(0, 10)
+    return todayKey()
   },
 
   async getTodayTasks(): Promise<Task[]> {
@@ -47,7 +48,7 @@ export const TaskRepository = {
     const dates = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(mon)
       d.setDate(mon.getDate() + i)
-      return d.toISOString().slice(0, 10)
+      return localDateKey(d)
     })
 
     const all = await dbGetAll<Task>('tasks')

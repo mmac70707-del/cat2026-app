@@ -1,0 +1,2 @@
+import{r as o}from"./index-B5qv30Iz.js";import"./vendor-cxkclgJA.js";var a;(function(t){t.Dark="DARK",t.Light="LIGHT",t.Default="DEFAULT"})(a||(a={}));var r;(function(t){t.None="NONE",t.Slide="SLIDE",t.Fade="FADE"})(r||(r={}));const i=r,u=a,e=o("StatusBar");export{r as Animation,e as StatusBar,i as StatusBarAnimation,u as StatusBarStyle,a as Style};
+//# sourceMappingURL=index-_5hnP9H8.js.map
