@@ -33,8 +33,8 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-type SubPage    = 'dashboard' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
-type ActivePage = MainPage | SubPage
+export type SubPage    = 'dashboard' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
 
@@ -145,6 +145,19 @@ export function App() {
     )
   }
 
+  if (activePage === 'dashboard') {
+    return (
+      <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+        <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
+          <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+            ← Exit 1:1 Dashboard
+          </button>
+        </div>
+        <DashboardPage />
+      </div>
+    )
+  }
+
   return (
     <div
       className="app-shell"
@@ -159,10 +172,9 @@ export function App() {
         {activePage === 'week'    && <WeekPage />}
         {activePage === 'mastery' && <MasteryPage />}
         {activePage === 'phases'  && <PhasesPage />}
-        {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p)} />}
+        {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
 
         {/* SUB PAGES */}
-        {activePage === 'dashboard'    && <DashboardPage        onBack={() => setActivePage('more')} />}
         {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
         {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
         {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
@@ -189,7 +201,7 @@ export function App() {
         />
       )}
 
-      {!isMain && (
+      {!isMain && activePage !== 'dashboard' && (
         <div style={{ height: 'calc(var(--tab-h) + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)', background: '#0D1B2A', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <button onClick={() => setActivePage('more')} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--muted)', borderRadius: 20, padding: '8px 24px', fontSize: 13, cursor: 'pointer' }}>
             ← Back to More Hub

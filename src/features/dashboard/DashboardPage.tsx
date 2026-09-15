@@ -1,13 +1,533 @@
-import rawHtml from './dashboard.html?raw'
+import { useState, useEffect } from 'react'
+import { useTodayTasks } from '@/hooks/useTasks'
+import { DailyScoreRepository } from '@/repositories/index'
+import { ErrorRepository } from '@/repositories/ErrorRepository'
+import { usePhase } from '@/hooks/usePhase'
+import { formatDate, todayKey, getWeekNumber, getDaysLeft } from '@/services/domain'
+import { useToast } from '@/components/Toast'
+import './Dashboard.css'
 
-export function DashboardPage({ onBack }: { onBack?: () => void }) {
+const SEQUENCE_STRIP = [
+  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative' },
+  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic' },
+  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC' },
+  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional' },
+  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log' },
+  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Formula + RC' },
+  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Wrong Qs' },
+  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm' },
+]
+
+export function DashboardPage() {
+  const phase = usePhase()
+  const daysLeft = getDaysLeft()
+  const { tasks, loading, done, pct, updateStatus } = useTodayTasks()
+  const { show: toast } = useToast()
+
+  const [study, setStudy]   = useState('')
+  const [screen, setScreen] = useState('')
+  const [acc, setAcc]       = useState('')
+  const [feedback, setFeedback] = useState('')
+  const [errorCounts, setErrorCounts] = useState<{ [key: string]: number }>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
+
+  const now = new Date()
+
+  useEffect(() => {
+    ErrorRepository.getTypeCounts().then(counts => {
+      setErrorCounts(counts)
+    })
+  }, [])
+
+  const handleLogErrorCard = async (code: 'C1' | 'C2' | 'C3' | 'C4' | 'C5') => {
+    setErrorCounts(prev => ({ ...prev, [code]: prev[code] + 1 }))
+    try {
+      await ErrorRepository.log({
+        errorType: code,
+        subject: 'QA',
+        topic: 'Master Execution Dashboard',
+        wrongReason: `Logged ${code} error from Dashboard.`,
+        correctMethod: 'Review concept and fix in Repair Queue.',
+        preventionRule: 'Apply prevention rule.',
+      })
+      toast(`Logged ${code} error!`, '#EF4444')
+    } catch {
+      toast(`Logged ${code} count +1`, '#F5A623')
+    }
+  }
+
+  async function submitDone() {
+    const s  = parseFloat(study)  || 0
+    const sc = parseFloat(screen) || 0
+    const a  = parseInt(acc)      || 0
+    await DailyScoreRepository.log(todayKey(), s, sc, a)
+
+    const lines: string[] = [`✓ LOGGED: DONE ${s}h study · ${sc}h screen · ${a}% accuracy`]
+    if (a >= 75)      lines.push('🟢 Accuracy ' + a + '%+ — Excellent! Maintain this. Difficulty can increase slightly tomorrow.')
+    else if (a >= 60) lines.push('🟡 Accuracy ' + a + '% — Good foundation. Continue same difficulty. Focus on error log tonight.')
+    else              lines.push('🔴 Accuracy ' + a + '% — Below 60%. Do NOT increase difficulty. Fix concept gaps first (C1 errors).')
+    if (s >= 5)  lines.push('✓ Study hours on target.')
+    else         lines.push('⚠️ Study hours low. Tomorrow: protect the 09:00 QA block first.')
+    if (sc > 3)  lines.push('⚠️ Screen time ' + sc + 'h > 3h limit. Protect sleep and focus.')
+
+    setFeedback(lines.join('\n'))
+    toast('Day logged ✓')
+  }
+
+  if (loading) {
+    return <div style={{ padding: 24, textAlign: 'center', color: '#94A3B8' }}>Loading Master Dashboard…</div>
+  }
+
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <iframe
-        srcDoc={rawHtml}
-        style={{ flex: 1, width: '100%', border: 'none', display: 'block', background: '#0A0F1E' }}
-        title="Master Execution Dashboard"
-      />
+    <div className="dash-root">
+      {/* ── HEADER ── */}
+      <div className="header">
+        <div className="header-inner">
+          <div className="header-left">
+            <div className="header-brand">CAT 2026</div>
+            <div className="header-sub">Master Execution Dashboard</div>
+          </div>
+          <div className="header-center">
+            <div className="phase-badge">
+              <div className="phase-dot"></div>
+              {phase.id} — {phase.name} — LOCKED
+            </div>
+            <div style={{ marginTop: 6, fontSize: 12, color: 'var(--muted)' }}>
+              Week {getWeekNumber()} &nbsp;|&nbsp; 7–13 September 2026
+            </div>
+          </div>
+          <div className="header-right">
+            <div className="countdown-big" id="countdown">{daysLeft}</div>
+            <div className="countdown-label">days to CAT 2026</div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── MISSION BAR ── */}
+      <div className="mission-bar">
+        <div className="mission-text">🎯 MISSION: {phase.mission}</div>
+        <div className="date-display">{formatDate(now)}</div>
+        <div className="mission-quote">"Discipline Today Builds the Freedom Tomorrow"</div>
+      </div>
+
+      {/* ── MAIN ── */}
+      <div className="main">
+
+        {/* DAILY SEQUENCE STRIP */}
+        <div className="stats-row">
+          {SEQUENCE_STRIP.map(s => {
+            const cssClass = s.id === 'QA' ? 'qa' : s.id === 'DILR' ? 'dilr' : s.id === 'VARC' ? 'varc' : s.id === 'TEST' ? 'test' : s.id === 'ANALYSIS' ? 'ana' : s.id === 'REVISION' ? 'rev' : s.id === 'REPAIR' ? 'rep' : 'rts'
+            return (
+              <div
+                key={s.id}
+                className={`stat-card ${cssClass}`}
+                onClick={() => {
+                  const el = document.getElementById(`dash_block_${s.id}`)
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                }}
+              >
+                <div className="stat-num">{s.seq}</div>
+                <div className="stat-seq">{s.label}</div>
+                <div className="stat-label">{s.sub}</div>
+              </div>
+            )
+          })
+        }
+        </div>
+
+        {/* TODAY PLAN + WEEK CALENDAR */}
+        <div className="two-col">
+
+          {/* TODAY'S EXACT PLAN */}
+          <div>
+            <div className="today-header">
+              <div className="today-title">📅 TODAY'S PLAN ({done}/8 Blocks Done)</div>
+              <div className="today-sub">Focus: Ratio &amp; Proportion + Main Idea + Bar Graph &nbsp;|&nbsp; Phase 1 Week {getWeekNumber()}</div>
+            </div>
+
+            <div className="block-list">
+              {tasks.map(task => {
+                const sId = task.blockId
+                const isDone = task.status === 'DONE'
+                const bClass = sId === 'QA' ? 'qa-block' : sId === 'DILR' ? 'dilr-block' : sId === 'VARC' ? 'varc-block' : sId === 'TEST' ? 'test-block' : sId === 'ANALYSIS' ? 'ana-block' : sId === 'REVISION' ? 'rev-block' : sId === 'REPAIR' ? 'rep-block' : 'rts-block'
+                const nClass = sId === 'QA' ? 'qa-num' : sId === 'DILR' ? 'dilr-num' : sId === 'VARC' ? 'varc-num' : sId === 'TEST' ? 'test-num' : sId === 'ANALYSIS' ? 'ana-num' : sId === 'REVISION' ? 'rev-num' : sId === 'REPAIR' ? 'rep-num' : 'rts-num'
+                const tClass = sId === 'QA' ? 'qa-text' : sId === 'DILR' ? 'dilr-text' : sId === 'VARC' ? 'varc-text' : sId === 'TEST' ? 'test-text' : sId === 'ANALYSIS' ? 'ana-text' : sId === 'REVISION' ? 'rev-text' : sId === 'REPAIR' ? 'rep-text' : 'rts-text'
+                const seqObj = SEQUENCE_STRIP.find(x => x.id === sId) || SEQUENCE_STRIP[0]
+
+                return (
+                  <div key={task.id} id={`dash_block_${sId}`} className={`block-item ${bClass} ${isDone ? 'completed' : ''}`}>
+                    <div className={`block-check ${isDone ? 'done' : ''}`} onClick={() => updateStatus(task.id, task.blockId, isDone ? 'TODO' : 'DONE')}></div>
+                    <div className={`block-num ${nClass}`}>{seqObj.seq.replace('0','')}</div>
+                    <div className="block-content">
+                      <div className={`block-section ${tClass}`}>{sId} — {task.subject}</div>
+                      <div className="block-title">{task.title}</div>
+                      <div className="block-details">
+                        Target: 70%+ accuracy • Focus on core method.
+                      </div>
+                    </div>
+                    <div className="block-meta">
+                      <div className="meta-time">Scheduled</div>
+                      <div className="meta-target">{task.status}</div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Progress */}
+            <div style={{ marginTop: 14, background: 'var(--bg3)', borderRadius: 10, padding: '12px 14px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>Today's Progress</span>
+                <span style={{ fontSize: 12, fontFamily: 'var(--mono)', color: 'var(--gold)' }}>{done} / 8 blocks done</span>
+              </div>
+              <div style={{ background: 'var(--bg2)', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: 'linear-gradient(90deg,var(--green),var(--green2))', width: `${pct}%`, transition: 'width .5s ease', borderRadius: 4 }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: WEEK + PRIORITIES + SCORECARD */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* WEEK CALENDAR */}
+            <div className="card">
+              <div className="card-title">📅 Week {getWeekNumber()} — 7 to 13 September</div>
+              <div className="week-grid">
+                <div className="day-card past">
+                  <div className="day-name">MON</div>
+                  <div className="day-date">7</div>
+                  <div className="day-focus" style={{ color: 'var(--green2)' }}>BASICS</div>
+                  <div className="day-topics">
+                    <div className="day-topic">Percentage</div>
+                    <div className="day-topic">Tables set</div>
+                  </div>
+                </div>
+                <div className="day-card today">
+                  <div className="day-name">TUE</div>
+                  <div className="day-date">8</div>
+                  <div className="day-focus" style={{ color: 'var(--gold)' }}>TODAY</div>
+                  <div className="day-topics">
+                    <div className="day-topic">Ratio &amp; Prop</div>
+                    <div className="day-topic">Bar/Line</div>
+                  </div>
+                </div>
+                <div className="day-card">
+                  <div className="day-name">WED</div>
+                  <div className="day-date">9</div>
+                  <div className="day-focus" style={{ color: 'var(--blue2)' }}>ACCURACY</div>
+                  <div className="day-topics">
+                    <div className="day-topic">Averages</div>
+                    <div className="day-topic">Arrangement</div>
+                  </div>
+                </div>
+                <div className="day-card">
+                  <div className="day-name">THU</div>
+                  <div className="day-date">10</div>
+                  <div className="day-focus" style={{ color: 'var(--red)' }}>ANALYSIS</div>
+                  <div className="day-topics">
+                    <div className="day-topic">P&amp;L</div>
+                    <div className="day-topic">Distribution</div>
+                  </div>
+                </div>
+                <div className="day-card">
+                  <div className="day-name">FRI</div>
+                  <div className="day-date">11</div>
+                  <div className="day-focus" style={{ color: 'var(--orange)' }}>TIMING</div>
+                  <div className="day-topics">
+                    <div className="day-topic">Mixed Arith</div>
+                    <div className="day-topic">Mixed Set</div>
+                  </div>
+                </div>
+                <div className="day-card">
+                  <div className="day-name">SAT</div>
+                  <div className="day-date">12</div>
+                  <div className="day-focus" style={{ color: 'var(--purple)' }}>IMPROVE</div>
+                  <div className="day-topics">
+                    <div className="day-topic">Weak repair</div>
+                    <div className="day-topic">Best 2 sets</div>
+                  </div>
+                </div>
+                <div className="day-card" style={{ background: 'rgba(124,58,237,.08)', borderColor: 'rgba(124,58,237,.4)' }}>
+                  <div className="day-name">SUN</div>
+                  <div className="day-date">13</div>
+                  <div className="day-focus" style={{ color: 'var(--purple)' }}>TEST DAY</div>
+                  <div className="day-topics">
+                    <div className="day-topic">Weekly Mock</div>
+                    <div className="day-topic">C1–C5 Log</div>
+                  </div>
+                </div>
+              </div>
+              <div style={{ marginTop: 12, padding: '10px 12px', background: 'rgba(245,166,35,.06)', border: '1px solid rgba(245,166,35,.2)', borderRadius: 8 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gold)', marginBottom: 6 }}>WEEKLY EXIT GATE</div>
+                <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.7 }}>
+                  ✓ Percentage + Ratio + Average + P&L concepts clear<br/>
+                  ✓ 2 DILR sets per day attempted + analysed<br/>
+                  ✓ Main Idea + Inference + Tone — 70%+ accuracy<br/>
+                  ✓ Error log complete for every day
+                </div>
+              </div>
+            </div>
+
+            {/* SUBJECT PRIORITIES THIS WEEK */}
+            <div className="three-col">
+              <div className="card">
+                <div className="card-title" style={{ fontSize: 12 }}>
+                  <span style={{ color: 'var(--green2)' }}>QA</span>
+                  <span className="pill pill-green">Week 2</span>
+                </div>
+                <div className="priority-list">
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: 'var(--green2)' }}>1</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Ratio &amp; Proportion</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
+                  </div>
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: 'var(--green2)' }}>2</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Averages</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
+                  </div>
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: 'var(--green2)' }}>3</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Profit &amp; Loss</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star empty">★</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="card-title" style={{ fontSize: 12 }}>
+                  <span style={{ color: '#60A5FA' }}>DILR</span>
+                  <span className="pill pill-blue">Week 2</span>
+                </div>
+                <div className="priority-list">
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: '#60A5FA' }}>1</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Tables / Charts</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
+                  </div>
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: '#60A5FA' }}>2</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Arrangements</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
+                  </div>
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: '#60A5FA' }}>3</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Distrib/Selection</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star empty">★</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card">
+                <div className="card-title" style={{ fontSize: 12 }}>
+                  <span style={{ color: '#A78BFA' }}>VARC</span>
+                  <span className="pill pill-purple">Week 2</span>
+                </div>
+                <div className="priority-list">
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: '#A78BFA' }}>1</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Main Idea</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
+                  </div>
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: '#A78BFA' }}>2</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Inference</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
+                  </div>
+                  <div className="priority-item">
+                    <div className="priority-rank" style={{ color: '#A78BFA' }}>3</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Tone / Purpose</div>
+                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star empty">★</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* DAILY SCORECARD INPUT */}
+            <div className="card">
+              <div className="card-title">📊 Daily Update — DONE format</div>
+              <div className="instruction" style={{ marginBottom: 12 }}>
+                <p>Type your day's data: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong></p>
+              </div>
+              <div className="scorecard">
+                <div className="score-input-wrap">
+                  <div className="score-label">Study Hrs</div>
+                  <input className="score-input" type="number" placeholder="5" value={study} onChange={e => setStudy(e.target.value)} />
+                </div>
+                <div className="score-input-wrap">
+                  <div className="score-label">Screen Hrs</div>
+                  <input className="score-input" type="number" placeholder="3" value={screen} onChange={e => setScreen(e.target.value)} />
+                </div>
+                <div className="score-input-wrap">
+                  <div className="score-label">Accuracy %</div>
+                  <input className="score-input" type="number" placeholder="62" value={acc} onChange={e => setAcc(e.target.value)} />
+                </div>
+                <button className="score-btn" onClick={submitDone}>✓ LOG TODAY — DONE</button>
+              </div>
+              {feedback && (
+                <div className="done-feedback" style={{ display: 'block', whiteSpace: 'pre-line' }}>{feedback}</div>
+              )}
+            </div>
+
+          </div>
+        </div>
+
+        {/* MASTERY + PHASE + ERRORS ROW */}
+        <div className="two-col">
+
+          {/* MASTERY TRACKER */}
+          <div className="card">
+            <div className="card-title">📈 Mastery Tracker — Current Level</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green2)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: .5 }}>QA Progress</div>
+                <div className="mastery-track">
+                  <div className="mastery-row">
+                    <div className="mastery-name">Percentages</div>
+                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '60%', background: 'var(--green)' }}></div></div>
+                    <div className="mastery-level l3" style={{ color: '#6EE7B7' }}>L3</div>
+                  </div>
+                  <div className="mastery-row">
+                    <div className="mastery-name">Ratio &amp; Prop</div>
+                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '20%', background: 'var(--orange)' }}></div></div>
+                    <div className="mastery-level" style={{ color: '#FCD34D' }}>L1→</div>
+                  </div>
+                  <div className="mastery-row">
+                    <div className="mastery-name">Averages</div>
+                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '5%', background: 'var(--red)' }}></div></div>
+                    <div className="mastery-level" style={{ color: '#F87171' }}>L0</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#60A5FA', marginBottom: 10, textTransform: 'uppercase', letterSpacing: .5 }}>DILR + VARC</div>
+                <div className="mastery-track">
+                  <div className="mastery-row">
+                    <div className="mastery-name">Tables</div>
+                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '40%', background: 'var(--blue2)' }}></div></div>
+                    <div className="mastery-level" style={{ color: '#93C5FD' }}>L2</div>
+                  </div>
+                  <div className="mastery-row">
+                    <div className="mastery-name">Bar/Line Graph</div>
+                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '20%', background: 'var(--orange)' }}></div></div>
+                    <div className="mastery-level" style={{ color: '#FCD34D' }}>L1→</div>
+                  </div>
+                  <div className="mastery-row">
+                    <div className="mastery-name">RC Main Idea</div>
+                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '40%', background: 'var(--purple)' }}></div></div>
+                    <div className="mastery-level" style={{ color: '#A78BFA' }}>L2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style={{ marginTop: 14, padding: '10px 12px', background: 'var(--bg3)', borderRadius: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>MASTERY SCALE</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <span className="mastery-badge l0">L0 Don't Know</span>
+                <span className="mastery-badge l1">L1 Understand</span>
+                <span className="mastery-badge l2">L2 Guided</span>
+                <span className="mastery-badge l3">L3 Independent</span>
+                <span className="mastery-badge l4">L4 Under Time</span>
+                <span className="mastery-badge l5">L5 CAT Level</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ERROR LOG + PHASE TIMELINE */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* ERROR LOG */}
+            <div className="card">
+              <div className="card-title">🔴 Error Log System — C1 to C5</div>
+              <div className="error-types">
+                <div className="error-card c1" onClick={() => handleLogErrorCard('C1')}>
+                  <div className="error-code">C1</div>
+                  <div className="error-name">Concept Gap</div>
+                  <div className="error-count">{errorCounts['C1']}</div>
+                </div>
+                <div className="error-card c2" onClick={() => handleLogErrorCard('C2')}>
+                  <div className="error-code">C2</div>
+                  <div className="error-name">Calculation</div>
+                  <div className="error-count">{errorCounts['C2']}</div>
+                </div>
+                <div className="error-card c3" onClick={() => handleLogErrorCard('C3')}>
+                  <div className="error-code">C3</div>
+                  <div className="error-name">Misread Data</div>
+                  <div className="error-count">{errorCounts['C3']}</div>
+                </div>
+                <div className="error-card c4" onClick={() => handleLogErrorCard('C4')}>
+                  <div className="error-code">C4</div>
+                  <div className="error-name">Wrong Approach</div>
+                  <div className="error-count">{errorCounts['C4']}</div>
+                </div>
+                <div className="error-card c5" onClick={() => handleLogErrorCard('C5')}>
+                  <div className="error-code">C5</div>
+                  <div className="error-name">Time Mgmt</div>
+                  <div className="error-count">{errorCounts['C5']}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 10, color: 'var(--muted)', textAlign: 'center', marginBottom: 10 }}>Click to log errors directly</div>
+              <div style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Analysis Flow</div>
+                <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.8 }}>
+                  WHY it happened → FIX (notes) → REPAIR (practice) → RETEST (confirm)
+                </div>
+              </div>
+            </div>
+
+            {/* PHASE TIMELINE */}
+            <div className="card">
+              <div className="card-title">🗺️ Phase Timeline — 86 Days</div>
+              <div className="phase-timeline">
+                <div className="phase-item active">
+                  <div className="phase-name" style={{ color: 'var(--green2)' }}>REBUILD</div>
+                  <div className="phase-dates">1–15 Sep</div>
+                </div>
+                <div className="phase-item future">
+                  <div className="phase-name" style={{ color: '#60A5FA' }}>APPLICATION</div>
+                  <div className="phase-dates">16 Sep–4 Oct</div>
+                </div>
+                <div className="phase-item future">
+                  <div className="phase-name" style={{ color: '#F87171' }}>MOCKS</div>
+                  <div className="phase-dates">5 Oct–8 Nov</div>
+                </div>
+                <div className="phase-item future">
+                  <div className="phase-name" style={{ color: '#A78BFA' }}>CONSOL.</div>
+                  <div className="phase-dates">9–20 Nov</div>
+                </div>
+                <div className="phase-item future">
+                  <div className="phase-name" style={{ color: 'var(--gold)' }}>TAPER</div>
+                  <div className="phase-dates">21–28 Nov</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MASTER LOOP */}
+        <div className="card">
+          <div className="card-title">♾️ Master Learning Loop</div>
+          <div className="flow-wrap">
+            <span className="flow-step flow-done">CONCEPT</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-done">BASIC</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-active">INTERMEDIATE</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">CAT / PYQ</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">TIMED</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">MIXED</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">TEST</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">ANALYSIS</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">REPAIR</span><span className="flow-arrow">→</span>
+            <span className="flow-step flow-next">RETEST</span><span className="flow-arrow">→</span>
+            <span className="flow-step" style={{ background: 'linear-gradient(135deg,var(--gold),#FBBF24)', color: 'var(--navy)', fontWeight: 900 }}>MASTERY 🏆</span>
+          </div>
+        </div>
+
+        {/* MANTRA */}
+        <div className="mantra-bar">
+          <div className="mantra-text">"Discipline Today → Dream College Tomorrow → Bigger Impact in Future"</div>
+          <div className="mantra-sub">BECOME THE MAN YOU PROMISE YOURSELF &nbsp;|&nbsp; CAT 2026 &nbsp;|&nbsp; 29 November 2026</div>
+        </div>
+
+      </div>
     </div>
   )
 }
