@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAT 2026 — Master Execution Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy:   #0D1B2A;
+    --navy2:  #1A2E45;
+    --blue:   #1A56DB;
+    --blue2:  #2563EB;
+    --teal:   #0E9F9F;
+    --gold:   #F5A623;
+    --green:  #16A34A;
+    --green2: #22C55E;
+    --red:    #DC2626;
+    --purple: #7C3AED;
+    --orange: #D97706;
+    --pink:   #DB2777;
+    --qa:     #16A34A;
+    --dilr:   #2563EB;
+    --varc:   #7C3AED;
+    --bg:     #0A0F1E;
+    --bg2:    #111827;
+    --bg3:    #1F2937;
+    --card:   #161D2E;
+    --border: #2D3748;
+    --text:   #F1F5F9;
+    --muted:  #94A3B8;
+    --mono:   'JetBrains Mono', monospace;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── TOP HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0D1B2A 0%, #1A2E45 50%, #0D1B2A 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 16px;
+  }
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+  .header-brand {
+    font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #F5A623, #FBBF24, #F5A623);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header-sub { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+  .header-center { text-align: center; }
+  .phase-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #16A34A, #22C55E);
+    color: white; padding: 6px 16px; border-radius: 20px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .phase-dot { width: 8px; height: 8px; background: white; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+  .header-right { text-align: right; }
+  .countdown-big { font-size: 28px; font-weight: 900; color: var(--gold); font-family: var(--mono); }
+  .countdown-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ── MISSION BAR ── */
+  .mission-bar {
+    background: linear-gradient(90deg, var(--navy), #1e3a5f, var(--navy));
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .mission-text { font-size: 13px; color: var(--gold); font-weight: 700; }
+  .mission-quote { font-size: 11px; color: var(--muted); font-style: italic; }
+  .date-display { font-size: 12px; color: var(--text); font-family: var(--mono); background: var(--bg3); padding: 4px 12px; border-radius: 6px; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── STATS ROW ── */
+  .stats-row { display: grid; grid-template-columns: repeat(8,1fr); gap: 10px; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 10px; text-align: center;
+    transition: transform .2s, border-color .2s; cursor: pointer; position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .stat-card.qa::before   { background: var(--qa); }
+  .stat-card.dilr::before { background: var(--dilr); }
+  .stat-card.varc::before { background: var(--varc); }
+  .stat-card.test::before { background: var(--orange); }
+  .stat-card.ana::before  { background: var(--red); }
+  .stat-card.rev::before  { background: var(--purple); }
+  .stat-card.rep::before  { background: var(--pink); }
+  .stat-card.rts::before  { background: var(--teal); }
+  .stat-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+  .stat-num { font-size: 11px; font-weight: 800; font-family: var(--mono); }
+  .stat-card.qa   .stat-num { color: var(--qa); }
+  .stat-card.dilr .stat-num { color: var(--dilr); }
+  .stat-card.varc .stat-num { color: var(--varc); }
+  .stat-card.test .stat-num { color: var(--orange); }
+  .stat-card.ana  .stat-num { color: var(--red); }
+  .stat-card.rev  .stat-num { color: var(--purple); }
+  .stat-card.rep  .stat-num { color: var(--pink); }
+  .stat-card.rts  .stat-num { color: var(--teal); }
+  .stat-seq { font-size: 18px; font-weight: 900; color: white; margin: 4px 0; }
+  .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+  /* ── TWO COLUMN ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── SECTION TITLE ── */
+  .sec-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .sec-title::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 700; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pill {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .pill-green  { background: rgba(22,163,74,.2);  color: var(--green2); }
+  .pill-blue   { background: rgba(37,99,235,.2);  color: #60A5FA; }
+  .pill-purple { background: rgba(124,58,237,.2); color: #A78BFA; }
+  .pill-gold   { background: rgba(245,166,35,.2); color: var(--gold); }
+  .pill-red    { background: rgba(220,38,38,.2);  color: #F87171; }
+  .pill-orange { background: rgba(217,119,6,.2);  color: #FCD34D; }
+
+  /* ── TODAY PLAN ── */
+  .today-header {
+    background: linear-gradient(135deg, #1A2E45, #0D1B2A);
+    border: 1px solid var(--gold); border-radius: 12px; padding: 16px 20px;
+    margin-bottom: 4px;
+  }
+  .today-title { font-size: 20px; font-weight: 900; color: var(--gold); }
+  .today-sub   { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* ── BLOCK ITEM ── */
+  .block-list { display: flex; flex-direction: column; gap: 10px; }
+  .block-item {
+    background: var(--bg3); border-radius: 10px; padding: 14px 16px;
+    border-left: 4px solid transparent; position: relative;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start;
+    cursor: pointer; transition: background .2s;
+  }
+  .block-item:hover { background: #2D3748; }
+  .block-item.qa-block   { border-left-color: var(--qa); }
+  .block-item.dilr-block { border-left-color: var(--dilr); }
+  .block-item.varc-block { border-left-color: var(--varc); }
+  .block-item.test-block { border-left-color: var(--orange); }
+  .block-item.ana-block  { border-left-color: var(--red); }
+  .block-item.rev-block  { border-left-color: var(--purple); }
+  .block-item.rep-block  { border-left-color: var(--pink); }
+  .block-item.rts-block  { border-left-color: var(--teal); }
+  .block-num {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+  }
+  .qa-num   { background: rgba(22,163,74,.25);  color: var(--green2); }
+  .dilr-num { background: rgba(37,99,235,.25);  color: #60A5FA; }
+  .varc-num { background: rgba(124,58,237,.25); color: #A78BFA; }
+  .test-num { background: rgba(217,119,6,.25);  color: #FCD34D; }
+  .ana-num  { background: rgba(220,38,38,.25);  color: #F87171; }
+  .rev-num  { background: rgba(124,58,237,.25); color: #C4B5FD; }
+  .rep-num  { background: rgba(219,39,119,.25); color: #F9A8D4; }
+  .rts-num  { background: rgba(14,159,159,.25); color: #5EEAD4; }
+  .block-content { flex: 1; }
+  .block-section { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .qa-text   { color: var(--green2); }
+  .dilr-text { color: #60A5FA; }
+  .varc-text { color: #A78BFA; }
+  .test-text { color: #FCD34D; }
+  .ana-text  { color: #F87171; }
+  .rev-text  { color: #C4B5FD; }
+  .rep-text  { color: #F9A8D4; }
+  .rts-text  { color: #5EEAD4; }
+  .block-title { font-size: 14px; font-weight: 700; color: white; margin-bottom: 6px; }
+  .block-details { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .block-details strong { color: var(--text); }
+  .block-meta { text-align: right; flex-shrink: 0; }
+  .meta-time { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .meta-target { font-size: 11px; font-weight: 600; color: var(--gold); margin-top: 4px; }
+  .block-check {
+    width: 24px; height: 24px; border: 2px solid var(--border); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: all .2s; flex-shrink: 0; margin-top: 4px;
+  }
+  .block-check:hover { border-color: var(--green2); }
+  .block-check.done { background: var(--green); border-color: var(--green); }
+  .block-check.done::after { content: '✓'; color: white; font-size: 13px; font-weight: 700; }
+  .block-item.completed { opacity: .6; }
+  .block-item.completed .block-title { text-decoration: line-through; }
+
+  /* ── SUBJECT PRIORITIES ── */
+  .priority-list { display: flex; flex-direction: column; gap: 8px; }
+  .priority-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    background: var(--bg3); border-radius: 8px;
+  }
+  .priority-rank {
+    font-size: 12px; font-weight: 800; font-family: var(--mono);
+    width: 24px; text-align: center;
+  }
+  .priority-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .stars { display: flex; gap: 2px; }
+  .star { font-size: 12px; }
+  .star.filled { color: var(--gold); }
+  .star.empty  { color: var(--border); }
+  .mastery-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px;
+    font-family: var(--mono);
+  }
+  .l0 { background: rgba(75,85,99,.3);  color: #9CA3AF; }
+  .l1 { background: rgba(220,38,38,.2); color: #F87171; }
+  .l2 { background: rgba(217,119,6,.2); color: #FCD34D; }
+  .l3 { background: rgba(59,130,246,.2);color: #93C5FD; }
+  .l4 { background: rgba(16,185,129,.2);color: #6EE7B7; }
+  .l5 { background: rgba(245,166,35,.3);color: var(--gold); }
+
+  /* ── WEEK CALENDAR ── */
+  .week-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; }
+  .day-card {
+    background: var(--bg3); border-radius: 10px; padding: 10px 8px;
+    border: 1px solid var(--border); text-align: center;
+    transition: all .2s; cursor: pointer;
+  }
+  .day-card.today { border-color: var(--gold); background: rgba(245,166,35,.08); }
+  .day-card.past  { opacity: .5; }
+  .day-card:hover { border-color: var(--blue2); }
+  .day-name   { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600; }
+  .day-date   { font-size: 18px; font-weight: 800; color: white; margin: 4px 0; }
+  .day-card.today .day-date { color: var(--gold); }
+  .day-focus  { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 2px 0; }
+  .day-topics { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
+  .day-topic  { font-size: 8.5px; color: var(--muted); background: var(--bg2); border-radius: 4px; padding: 2px 4px; }
+
+  /* ── MASTERY TRACKER ── */
+  .mastery-track { display: flex; flex-direction: column; gap: 8px; }
+  .mastery-row { display: grid; grid-template-columns: 120px 1fr 50px; gap: 10px; align-items: center; }
+  .mastery-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .mastery-bar-wrap { background: var(--bg3); border-radius: 4px; height: 8px; overflow: hidden; }
+  .mastery-bar { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .mastery-level { font-size: 10px; font-weight: 700; font-family: var(--mono); text-align: right; }
+
+  /* ── ERROR LOG ── */
+  .error-types { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 14px; }
+  .error-card {
+    border-radius: 8px; padding: 10px 8px; text-align: center;
+    border: 1px solid var(--border); cursor: pointer; transition: all .2s;
+  }
+  .error-card:hover { transform: scale(1.05); }
+  .c1 { background: rgba(220,38,38,.1);   border-color: rgba(220,38,38,.3); }
+  .c2 { background: rgba(217,119,6,.1);   border-color: rgba(217,119,6,.3); }
+  .c3 { background: rgba(37,99,235,.1);   border-color: rgba(37,99,235,.3); }
+  .c4 { background: rgba(124,58,237,.1);  border-color: rgba(124,58,237,.3); }
+  .c5 { background: rgba(219,39,119,.1);  border-color: rgba(219,39,119,.3); }
+  .error-code  { font-size: 16px; font-weight: 900; font-family: var(--mono); }
+  .c1 .error-code { color: #F87171; }
+  .c2 .error-code { color: #FCD34D; }
+  .c3 .error-code { color: #93C5FD; }
+  .c4 .error-code { color: #A78BFA; }
+  .c5 .error-code { color: #F9A8D4; }
+  .error-name  { font-size: 8px; color: var(--muted); margin-top: 2px; }
+  .error-count { font-size: 13px; font-weight: 800; color: white; margin-top: 4px; }
+
+  /* ── DAILY SCORECARD INPUT ── */
+  .scorecard { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .score-input-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .score-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+  .score-input {
+    background: var(--bg3); border: 1px solid var(--border); color: white;
+    border-radius: 8px; padding: 10px 12px; font-size: 16px; font-weight: 700;
+    font-family: var(--mono); width: 100%; text-align: center;
+    transition: border-color .2s;
+  }
+  .score-input:focus { outline: none; border-color: var(--gold); }
+  .score-btn {
+    grid-column: 1/-1; background: linear-gradient(135deg, var(--blue), var(--blue2));
+    border: none; color: white; padding: 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: .5px;
+    text-transform: uppercase; transition: opacity .2s;
+  }
+  .score-btn:hover { opacity: .85; }
+  .done-feedback {
+    display: none; background: rgba(22,163,74,.1); border: 1px solid var(--green);
+    border-radius: 8px; padding: 12px; text-align: center;
+    font-size: 13px; font-weight: 600; color: var(--green2); margin-top: 10px;
+  }
+
+  /* ── MASTRY LOOP FLOW ── */
+  .flow-wrap { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .flow-step {
+    padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .flow-arrow { color: var(--muted); font-size: 12px; }
+  .flow-active { background: var(--gold); color: var(--navy); }
+  .flow-done   { background: rgba(22,163,74,.2); color: var(--green2); border: 1px solid rgba(22,163,74,.3); }
+  .flow-next   { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ── PHASE TIMELINE ── */
+  .phase-timeline { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; }
+  .phase-item { border-radius: 8px; padding: 10px 8px; text-align: center; border: 1px solid var(--border); }
+  .phase-item.active { border-color: var(--green2); background: rgba(34,197,94,.08); }
+  .phase-item.future { opacity: .5; }
+  .phase-name  { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .phase-dates { font-size: 8px; color: var(--muted); }
+  .phase-goal  { font-size: 8px; color: var(--muted); margin-top: 4px; }
+
+  /* ── MANTRA ── */
+  .mantra-bar {
+    background: linear-gradient(135deg, var(--navy2), #1A2E45);
+    border: 1px solid rgba(245,166,35,.3); border-radius: 12px;
+    padding: 16px 24px; text-align: center;
+  }
+  .mantra-text { font-size: 16px; font-weight: 800; color: var(--gold); letter-spacing: .5px; }
+  .mantra-sub  { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  /* ── DONTS ── */
+  .dont-list { display: flex; flex-direction: column; gap: 6px; }
+  .dont-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .dont-item .x { color: var(--red); font-weight: 700; font-size: 14px; }
+
+  /* ── PROGRESS RING ── */
+  .ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .ring-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .rings-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+
+  /* ── INSTRUCTION CARD ── */
+  .instruction {
+    background: rgba(245,166,35,.06); border: 1px solid rgba(245,166,35,.2);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .instruction p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .instruction strong { color: var(--gold); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .w100 { width: 100%; }
+  .mt8  { margin-top: 8px; }
+  .mt16 { margin-top: 16px; }
+  .gap-4 { display: flex; flex-direction: column; gap: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-brand">CAT 2026</div>
+      <div class="header-sub">Master Execution Dashboard</div>
+    </div>
+    <div class="header-center">
+      <div class="phase-badge">
+        <div class="phase-dot"></div>
+        PHASE 1 — REBUILD — LOCKED
+      </div>
+      <div style="margin-top:6px; font-size:12px; color:var(--muted);">Week 2 &nbsp;|&nbsp; 7–13 September 2026</div>
+    </div>
+    <div class="header-right">
+      <div class="countdown-big" id="countdown">--</div>
+      <div class="countdown-label">days to CAT 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MISSION BAR ── -->
+<div class="mission-bar">
+  <div class="mission-text">🎯 MISSION: Build Accuracy Before Speed &nbsp;|&nbsp; 99+ Percentile — No Ceiling</div>
+  <div class="date-display" id="live-date">Tuesday, 8 September 2026</div>
+  <div class="mission-quote">"Discipline Today Builds the Freedom Tomorrow"</div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- DAILY SEQUENCE STRIP -->
+  <div class="stats-row">
+    <div class="stat-card qa"   onclick="toggleBlock(0)">
+      <div class="stat-num">01</div>
+      <div class="stat-seq">QA</div>
+      <div class="stat-label">Quantitative</div>
+    </div>
+    <div class="stat-card dilr" onclick="toggleBlock(1)">
+      <div class="stat-num">02</div>
+      <div class="stat-seq">DILR</div>
+      <div class="stat-label">Data + Logic</div>
+    </div>
+    <div class="stat-card varc" onclick="toggleBlock(2)">
+      <div class="stat-num">03</div>
+      <div class="stat-seq">VARC</div>
+      <div class="stat-label">Verbal + RC</div>
+    </div>
+    <div class="stat-card test" onclick="toggleBlock(3)">
+      <div class="stat-num">04</div>
+      <div class="stat-seq">TEST</div>
+      <div class="stat-label">Sectional</div>
+    </div>
+    <div class="stat-card ana"  onclick="toggleBlock(4)">
+      <div class="stat-num">05</div>
+      <div class="stat-seq">ANALYSIS</div>
+      <div class="stat-label">Error Log</div>
+    </div>
+    <div class="stat-card rev"  onclick="toggleBlock(5)">
+      <div class="stat-num">06</div>
+      <div class="stat-seq">REVISION</div>
+      <div class="stat-label">Formula + RC</div>
+    </div>
+    <div class="stat-card rep"  onclick="toggleBlock(6)">
+      <div class="stat-num">07</div>
+      <div class="stat-seq">REPAIR</div>
+      <div class="stat-label">Wrong Qs</div>
+    </div>
+    <div class="stat-card rts"  onclick="toggleBlock(7)">
+      <div class="stat-num">08</div>
+      <div class="stat-seq">RETEST</div>
+      <div class="stat-label">Confirm</div>
+    </div>
+  </div>
+
+  <!-- TODAY PLAN + WEEK CALENDAR -->
+  <div class="two-col">
+
+    <!-- TODAY'S EXACT PLAN -->
+    <div>
+      <div class="today-header">
+        <div class="today-title">📅 TUESDAY — 8 SEPTEMBER 2026</div>
+        <div class="today-sub">Focus: SOLVING &nbsp;|&nbsp; Ratio &amp; Proportion + Main Idea + Bar Graph &nbsp;|&nbsp; Phase 1 Week 2</div>
+      </div>
+
+      <div class="block-list" id="block-list">
+
+        <div class="block-item qa-block" id="block-0">
+          <div class="block-check" id="check-0" onclick="markDone(0)"></div>
+          <div class="block-num qa-num">1</div>
+          <div class="block-content">
+            <div class="block-section qa-text">QA — Quantitative Aptitude</div>
+            <div class="block-title">Ratio &amp; Proportion — Foundation</div>
+            <div class="block-details">
+              <strong>Topic:</strong> Ratio basics → part-to-part, part-to-whole → proportional division<br>
+              <strong>Task:</strong> 15–20 questions, Easy → Moderate<br>
+              <strong>Method:</strong> Concept first (5 min) → 3 basic Qs → 10 moderate Qs → 2 CAT-style Qs<br>
+              <strong>Trap:</strong> Don't mix part:part with part:whole ratios<br>
+              <strong>Exit:</strong> 70%+ accuracy on 15 Qs
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">09:00–10:30</div>
+            <div class="meta-target">90 min</div>
+            <div class="meta-target">70%+ acc</div>
+          </div>
+        </div>
+
+        <div class="block-item dilr-block" id="block-1">
+          <div class="block-check" id="check-1" onclick="markDone(1)"></div>
+          <div class="block-num dilr-num">2</div>
+          <div class="block-content">
+            <div class="block-section dilr-text">DILR — Data Interpretation</div>
+            <div class="block-title">Bar Graph / Line Graph Set</div>
+            <div class="block-details">
+              <strong>Task:</strong> 1 quality Bar or Line Graph set (4–6 questions)<br>
+              <strong>Flow:</strong> Read → Identify variables → Extract data → Solve → Verify<br>
+              <strong>Focus:</strong> Accuracy first — skip if stuck beyond 8 min<br>
+              <strong>2nd set:</strong> ONLY if first set fully analysed<br>
+              <strong>Exit:</strong> 3+ correct answers with method explained
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">10:45–12:00</div>
+            <div class="meta-target">75 min</div>
+            <div class="meta-target">1–2 sets</div>
+          </div>
+        </div>
+
+        <div class="block-item varc-block" id="block-2">
+          <div class="block-check" id="check-2" onclick="markDone(2)"></div>
+          <div class="block-num varc-num">3</div>
+          <div class="block-content">
+            <div class="block-section varc-text">VARC — Reading Comprehension</div>
+            <div class="block-title">Main Idea + Inference — 2 RC Passages</div>
+            <div class="block-details">
+              <strong>Task:</strong> 2 RC passages, 3 questions each<br>
+              <strong>Flow:</strong> Read → Understand structure → Identify argument → Predict → Eliminate<br>
+              <strong>Focus:</strong> Main Idea Q first, then Inference — accuracy &gt; speed<br>
+              <strong>After each passage:</strong> Write 1-line summary of author's main point<br>
+              <strong>Exit:</strong> 4+ correct across 6 questions
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">12:15–13:15</div>
+            <div class="meta-target">60 min</div>
+            <div class="meta-target">4/6 correct</div>
+          </div>
+        </div>
+
+        <div class="block-item test-block" id="block-3">
+          <div class="block-check" id="check-3" onclick="markDone(3)"></div>
+          <div class="block-num test-num">4</div>
+          <div class="block-content">
+            <div class="block-section test-text">TEST — Library Deep Work Block</div>
+            <div class="block-title">Repair Monday's Errors + Pending Work</div>
+            <div class="block-details">
+              <strong>Task:</strong> Review Monday error log → fix every C1–C5 mistake<br>
+              <strong>QA pending:</strong> Any Percentage Qs still wrong from Day 1<br>
+              <strong>DILR pending:</strong> Any Tables questions not fully understood<br>
+              <strong>Rule:</strong> No random resources — only your error log material<br>
+              <strong>Exit:</strong> Every Monday error re-solved correctly
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">13:15–17:00</div>
+            <div class="meta-target">Deep Work</div>
+            <div class="meta-target">0 pending</div>
+          </div>
+        </div>
+
+        <div class="block-item ana-block" id="block-4">
+          <div class="block-check" id="check-4" onclick="markDone(4)"></div>
+          <div class="block-num ana-num">5</div>
+          <div class="block-content">
+            <div class="block-section ana-text">ANALYSIS — Error Log Update</div>
+            <div class="block-title">Classify Every Mistake Today: C1–C5</div>
+            <div class="block-details">
+              <strong>C1</strong> = Concept gap &nbsp;|&nbsp; <strong>C2</strong> = Calculation error &nbsp;|&nbsp; <strong>C3</strong> = Misread<br>
+              <strong>C4</strong> = Wrong approach &nbsp;|&nbsp; <strong>C5</strong> = Time management<br>
+              <strong>For each mistake:</strong> Why it happened → Correct method → Prevention rule<br>
+              <strong>Do NOT say "careless"</strong> — name the exact problem<br>
+              <strong>Exit:</strong> Every wrong Q classified + prevention rule written
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">21:00–21:45</div>
+            <div class="meta-target">45 min</div>
+            <div class="meta-target">100% logged</div>
+          </div>
+        </div>
+
+        <div class="block-item rev-block" id="block-5">
+          <div class="block-check" id="check-5" onclick="markDone(5)"></div>
+          <div class="block-num rev-num">6</div>
+          <div class="block-content">
+            <div class="block-section rev-text">REVISION — Formula + Concept Recap</div>
+            <div class="block-title">Ratio Rules + RC Main Idea Method</div>
+            <div class="block-details">
+              <strong>30-sec recap:</strong> What did I learn today?<br>
+              <strong>2-min revision:</strong> Ratio formula → trap → today's biggest mistake<br>
+              <strong>Connection:</strong> How Ratio links to Percentage (taught Monday)<br>
+              <strong>Preview:</strong> Tomorrow = Averages (connects to Ratio &amp; %) <br>
+              <strong>Exit:</strong> Can recite Ratio core method in 30 seconds
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">21:45–22:00</div>
+            <div class="meta-target">15 min</div>
+            <div class="meta-target">Fluent recall</div>
+          </div>
+        </div>
+
+        <div class="block-item rep-block" id="block-6">
+          <div class="block-check" id="check-6" onclick="markDone(6)"></div>
+          <div class="block-num rep-num">7</div>
+          <div class="block-content">
+            <div class="block-section rep-text">REPAIR — Fix Weak Points</div>
+            <div class="block-title">Re-solve Every Wrong Question</div>
+            <div class="block-details">
+              <strong>Source:</strong> Today's error log + Monday's unresolved errors<br>
+              <strong>Method:</strong> Close solution → think fresh → attempt alone → verify<br>
+              <strong>If still wrong:</strong> Mark as C1 → schedule concept review tomorrow<br>
+              <strong>Goal:</strong> Convert every mistake into a solved understanding<br>
+              <strong>Exit:</strong> Re-solved 100% of logged errors
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">Library block</div>
+            <div class="meta-target">Ongoing</div>
+            <div class="meta-target">0 unresolved</div>
+          </div>
+        </div>
+
+        <div class="block-item rts-block" id="block-7">
+          <div class="block-check" id="check-7" onclick="markDone(7)"></div>
+          <div class="block-num rts-num">8</div>
+          <div class="block-content">
+            <div class="block-section rts-text">RETEST — Confirm Mastery</div>
+            <div class="block-title">Take 3–5 Fresh Questions on Today's Topics</div>
+            <div class="block-details">
+              <strong>Ratio &amp; Proportion:</strong> 3 new questions (no looking at notes)<br>
+              <strong>RC Main Idea:</strong> 1 fresh passage question<br>
+              <strong>Verification:</strong> Got it right = progressing &nbsp;|&nbsp; Wrong again = C1, repair tomorrow<br>
+              <strong>Mastery check:</strong> Can I solve it, explain it, solve under time?<br>
+              <strong>Exit:</strong> 3+/5 correct = today's learning confirmed
+            </div>
+          </div>
+          <div class="block-meta">
+            <div class="meta-time">End of day</div>
+            <div class="meta-target">5 Qs</div>
+            <div class="meta-target">3/5 minimum</div>
+          </div>
+        </div>
+
+      </div><!-- end block-list -->
+
+      <!-- Progress -->
+      <div style="margin-top:14px; background:var(--bg3); border-radius:10px; padding:12px 14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:12px; font-weight:700; color:var(--text);">Today's Progress</span>
+          <span style="font-size:12px; font-family:var(--mono); color:var(--gold);" id="progress-text">0 / 8 blocks done</span>
+        </div>
+        <div style="background:var(--bg2); border-radius:4px; height:8px; overflow:hidden;">
+          <div id="progress-bar" style="height:100%; background:linear-gradient(90deg,var(--green),var(--green2)); width:0%; transition:width .5s ease; border-radius:4px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: WEEK + PRIORITIES + SCORECARD -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+      <!-- WEEK CALENDAR -->
+      <div class="card">
+        <div class="card-title">📅 Week 2 — 7 to 13 September</div>
+        <div class="week-grid">
+          <div class="day-card past">
+            <div class="day-name">MON</div>
+            <div class="day-date">7</div>
+            <div class="day-focus" style="color:var(--green2)">BASICS</div>
+            <div class="day-topics">
+              <div class="day-topic">Percentage</div>
+              <div class="day-topic">Tables set</div>
+              <div class="day-topic">2 RC</div>
+            </div>
+          </div>
+          <div class="day-card today">
+            <div class="day-name">TUE</div>
+            <div class="day-date">8</div>
+            <div class="day-focus" style="color:var(--gold)">TODAY</div>
+            <div class="day-topics">
+              <div class="day-topic">Ratio &amp; Prop</div>
+              <div class="day-topic">Bar/Line Graph</div>
+              <div class="day-topic">Main Idea</div>
+            </div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">WED</div>
+            <div class="day-date">9</div>
+            <div class="day-focus" style="color:var(--blue2)">ACCURACY</div>
+            <div class="day-topics">
+              <div class="day-topic">Averages</div>
+              <div class="day-topic">Arrangement</div>
+              <div class="day-topic">Tone/Purpose</div>
+            </div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">THU</div>
+            <div class="day-date">10</div>
+            <div class="day-focus" style="color:var(--red)">ANALYSIS</div>
+            <div class="day-topics">
+              <div class="day-topic">P&amp;L / Discount</div>
+              <div class="day-topic">Distribution</div>
+              <div class="day-topic">Elimination</div>
+            </div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">FRI</div>
+            <div class="day-date">11</div>
+            <div class="day-focus" style="color:var(--orange)">TIMING</div>
+            <div class="day-topics">
+              <div class="day-topic">Mixed Arith</div>
+              <div class="day-topic">Mixed Set</div>
+              <div class="day-topic">Difficult RC</div>
+            </div>
+          </div>
+          <div class="day-card">
+            <div class="day-name">SAT</div>
+            <div class="day-date">12</div>
+            <div class="day-focus" style="color:var(--purple)">IMPROVE</div>
+            <div class="day-topics">
+              <div class="day-topic">Weak repair</div>
+              <div class="day-topic">Best 2 sets</div>
+              <div class="day-topic">Mixed RC+VA</div>
+            </div>
+          </div>
+          <div class="day-card" style="background:rgba(124,58,237,.08); border-color:rgba(124,58,237,.4);">
+            <div class="day-name">SUN</div>
+            <div class="day-date">13</div>
+            <div class="day-focus" style="color:var(--purple)">TEST DAY</div>
+            <div class="day-topics">
+              <div class="day-topic">Weekly Mock</div>
+              <div class="day-topic">Full Analysis</div>
+              <div class="day-topic">C1–C5 Log</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px; padding:10px 12px; background:rgba(245,166,35,.06); border:1px solid rgba(245,166,35,.2); border-radius:8px;">
+          <div style="font-size:11px; font-weight:700; color:var(--gold); margin-bottom:6px;">WEEKLY EXIT GATE</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.7;">
+            ✓ Percentage + Ratio + Average + P&L concepts clear<br>
+            ✓ 2 DILR sets per day attempted + analysed<br>
+            ✓ Main Idea + Inference + Tone — 70%+ accuracy<br>
+            ✓ Error log complete for every day<br>
+            ✓ Sunday mock taken + fully analysed
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBJECT PRIORITIES THIS WEEK -->
+      <div class="three-col">
+        <div class="card">
+          <div class="card-title" style="font-size:12px;">
+            <span style="color:var(--green2)">QA</span>
+            <span class="pill pill-green">Week 2</span>
+          </div>
+          <div class="priority-list">
+            <div class="priority-item">
+              <div class="priority-rank" style="color:var(--green2)">1</div>
+              <div class="priority-name" style="font-size:11px;">Ratio &amp; Proportion</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:var(--green2)">2</div>
+              <div class="priority-name" style="font-size:11px;">Averages</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:var(--green2)">3</div>
+              <div class="priority-name" style="font-size:11px;">Profit &amp; Loss</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:var(--green2)">4</div>
+              <div class="priority-name" style="font-size:11px;">TSD / T&amp;W</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">★</span></div>
+            </div>
+          </div>
+          <div style="margin-top:10px; font-size:10px; color:var(--gold); font-weight:700; text-align:center; padding:6px; background:rgba(22,163,74,.1); border-radius:6px;">
+            Arithmetic + Algebra = 72% of QA
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="font-size:12px;">
+            <span style="color:#60A5FA">DILR</span>
+            <span class="pill pill-blue">Week 2</span>
+          </div>
+          <div class="priority-list">
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#60A5FA">1</div>
+              <div class="priority-name" style="font-size:11px;">Tables / Charts</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#60A5FA">2</div>
+              <div class="priority-name" style="font-size:11px;">Arrangements</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#60A5FA">3</div>
+              <div class="priority-name" style="font-size:11px;">Distrib/Selection</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#60A5FA">4</div>
+              <div class="priority-name" style="font-size:11px;">Bar / Line Graphs</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">★</span></div>
+            </div>
+          </div>
+          <div style="margin-top:10px; font-size:10px; color:var(--gold); font-weight:700; text-align:center; padding:6px; background:rgba(37,99,235,.1); border-radius:6px;">
+            Set Selection = Key to Score
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="font-size:12px;">
+            <span style="color:#A78BFA">VARC</span>
+            <span class="pill pill-purple">Week 2</span>
+          </div>
+          <div class="priority-list">
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#A78BFA">1</div>
+              <div class="priority-name" style="font-size:11px;">Main Idea</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#A78BFA">2</div>
+              <div class="priority-name" style="font-size:11px;">Inference</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#A78BFA">3</div>
+              <div class="priority-name" style="font-size:11px;">Tone / Purpose</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">★</span></div>
+            </div>
+            <div class="priority-item">
+              <div class="priority-rank" style="color:#A78BFA">4</div>
+              <div class="priority-name" style="font-size:11px;">Elimination</div>
+              <div class="stars"><span class="star filled">★</span><span class="star filled">★</span><span class="star empty">★</span></div>
+            </div>
+          </div>
+          <div style="margin-top:10px; font-size:10px; color:var(--gold); font-weight:700; text-align:center; padding:6px; background:rgba(124,58,237,.1); border-radius:6px;">
+            RC = 70%+ | VA = 30%
+          </div>
+        </div>
+      </div>
+
+      <!-- DAILY SCORECARD INPUT -->
+      <div class="card">
+        <div class="card-title">📊 Daily Update — DONE format</div>
+        <div class="instruction" style="margin-bottom:12px;">
+          <p>Type your day's data and I'll adapt tomorrow's plan. Format: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong><br>
+          Example: <strong>DONE 5 3 62</strong> = 5 study hours, 3 screen hours, 62% accuracy</p>
+        </div>
+        <div class="scorecard">
+          <div class="score-input-wrap">
+            <div class="score-label">Study Hours</div>
+            <input class="score-input" type="number" id="inp-study" placeholder="5" min="0" max="12">
+          </div>
+          <div class="score-input-wrap">
+            <div class="score-label">Screen Hours</div>
+            <input class="score-input" type="number" id="inp-screen" placeholder="3" min="0" max="12">
+          </div>
+          <div class="score-input-wrap">
+            <div class="score-label">Accuracy %</div>
+            <input class="score-input" type="number" id="inp-acc" placeholder="62" min="0" max="100">
+          </div>
+          <button class="score-btn" onclick="submitDone()">✓ LOG TODAY — DONE</button>
+        </div>
+        <div class="done-feedback" id="done-feedback"></div>
+      </div>
+
+    </div><!-- end right col -->
+  </div><!-- end two-col -->
+
+  <!-- MASTERY + PHASE + ERRORS ROW -->
+  <div class="two-col">
+
+    <!-- MASTERY TRACKER -->
+    <div class="card">
+      <div class="card-title">📈 Mastery Tracker — Current Level (Week 2)</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div>
+          <div style="font-size:11px; font-weight:700; color:var(--green2); margin-bottom:10px; text-transform:uppercase; letter-spacing:.5px;">QA Progress</div>
+          <div class="mastery-track">
+            <div class="mastery-row">
+              <div class="mastery-name">Percentages</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:60%; background:var(--green);"></div></div>
+              <div class="mastery-level l3" style="font-size:10px; font-weight:700; color:#6EE7B7; font-family:var(--mono);">L3</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">Ratio &amp; Prop</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:20%; background:var(--orange);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#FCD34D; font-family:var(--mono);">L1→</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">Averages</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:5%; background:var(--red);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#F87171; font-family:var(--mono);">L0</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">Profit &amp; Loss</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:5%; background:var(--red);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#F87171; font-family:var(--mono);">L0</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">TSD / T&amp;W</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:5%; background:var(--red);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#F87171; font-family:var(--mono);">L0</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">SI / CI</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:5%; background:var(--red);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#F87171; font-family:var(--mono);">L0</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px; font-weight:700; color:#60A5FA; margin-bottom:10px; text-transform:uppercase; letter-spacing:.5px;">DILR + VARC</div>
+          <div class="mastery-track">
+            <div class="mastery-row">
+              <div class="mastery-name">Tables</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:40%; background:var(--blue2);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#93C5FD; font-family:var(--mono);">L2</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">Bar/Line Graph</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:20%; background:var(--orange);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#FCD34D; font-family:var(--mono);">L1→</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">Arrangements</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:5%; background:var(--red);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#F87171; font-family:var(--mono);">L0</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">RC Main Idea</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:40%; background:var(--purple);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#A78BFA; font-family:var(--mono);">L2</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">RC Inference</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:20%; background:var(--orange);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#FCD34D; font-family:var(--mono);">L1→</div>
+            </div>
+            <div class="mastery-row">
+              <div class="mastery-name">RC Tone</div>
+              <div class="mastery-bar-wrap"><div class="mastery-bar" style="width:5%; background:var(--red);"></div></div>
+              <div class="mastery-level" style="font-size:10px; font-weight:700; color:#F87171; font-family:var(--mono);">L0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding:10px 12px; background:var(--bg3); border-radius:8px;">
+        <div style="font-size:11px; font-weight:700; color:var(--text); margin-bottom:6px;">MASTERY SCALE</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="mastery-badge l0">L0 Don't Know</span>
+          <span class="mastery-badge l1">L1 Understand</span>
+          <span class="mastery-badge l2">L2 Guided</span>
+          <span class="mastery-badge l3">L3 Independent</span>
+          <span class="mastery-badge l4">L4 Under Time</span>
+          <span class="mastery-badge l5">L5 CAT Level</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR LOG + PHASE TIMELINE -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+
+      <!-- ERROR LOG -->
+      <div class="card">
+        <div class="card-title">🔴 Error Log System — C1 to C5</div>
+        <div class="error-types">
+          <div class="error-card c1" onclick="logError('C1')">
+            <div class="error-code">C1</div>
+            <div class="error-name">Concept Gap</div>
+            <div class="error-count" id="c1-count">0</div>
+          </div>
+          <div class="error-card c2" onclick="logError('C2')">
+            <div class="error-code">C2</div>
+            <div class="error-name">Calculation</div>
+            <div class="error-count" id="c2-count">0</div>
+          </div>
+          <div class="error-card c3" onclick="logError('C3')">
+            <div class="error-code">C3</div>
+            <div class="error-name">Misread Data</div>
+            <div class="error-count" id="c3-count">0</div>
+          </div>
+          <div class="error-card c4" onclick="logError('C4')">
+            <div class="error-code">C4</div>
+            <div class="error-name">Wrong Approach</div>
+            <div class="error-count" id="c4-count">0</div>
+          </div>
+          <div class="error-card c5" onclick="logError('C5')">
+            <div class="error-code">C5</div>
+            <div class="error-name">Time Mgmt</div>
+            <div class="error-count" id="c5-count">0</div>
+          </div>
+        </div>
+        <div style="font-size:10px; color:var(--muted); text-align:center; margin-bottom:10px;">Click to count errors → C1 is most dangerous (concept gap)</div>
+        <div style="background:var(--bg3); border-radius:8px; padding:10px 12px;">
+          <div style="font-size:11px; font-weight:700; color:var(--text); margin-bottom:6px;">Analysis Flow</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.8;">
+            WHY it happened → FIX (strategy/notes) → REPAIR (practice) → RETEST (confirm)
+          </div>
+        </div>
+        <button onclick="resetErrors()" style="margin-top:10px; width:100%; background:transparent; border:1px solid var(--border); color:var(--muted); padding:8px; border-radius:6px; font-size:11px; cursor:pointer;">Reset Error Counts</button>
+      </div>
+
+      <!-- PHASE TIMELINE -->
+      <div class="card">
+        <div class="card-title">🗺️ Phase Timeline — 86 Days</div>
+        <div class="phase-timeline">
+          <div class="phase-item active">
+            <div class="phase-name" style="color:var(--green2)">REBUILD</div>
+            <div class="phase-dates">1–15 Sep</div>
+            <div class="phase-goal">Concept + Accuracy</div>
+          </div>
+          <div class="phase-item future">
+            <div class="phase-name" style="color:#60A5FA">APPLICATION</div>
+            <div class="phase-dates">16 Sep–4 Oct</div>
+            <div class="phase-goal">Timed + PYQs</div>
+          </div>
+          <div class="phase-item future">
+            <div class="phase-name" style="color:#F87171">MOCKS</div>
+            <div class="phase-dates">5 Oct–8 Nov</div>
+            <div class="phase-goal">Mocks + Repair</div>
+          </div>
+          <div class="phase-item future">
+            <div class="phase-name" style="color:#A78BFA">CONSOL.</div>
+            <div class="phase-dates">9–20 Nov</div>
+            <div class="phase-goal">Revision + PYQs</div>
+          </div>
+          <div class="phase-item future">
+            <div class="phase-name" style="color:var(--gold)">TAPER</div>
+            <div class="phase-dates">21–28 Nov</div>
+            <div class="phase-goal">Readiness</div>
+          </div>
+        </div>
+        <div style="margin-top:12px; background:rgba(34,197,94,.06); border:1px solid rgba(34,197,94,.2); border-radius:8px; padding:10px 12px;">
+          <div style="font-size:10px; font-weight:700; color:var(--green2); margin-bottom:4px;">🔒 PHASE ORDER IS LOCKED</div>
+          <div style="font-size:10px; color:var(--muted);">Only weak-area priority, practice volume, and time allocation may adapt. Never redesign because of one bad day.</div>
+        </div>
+      </div>
+
+      <!-- DON'TS -->
+      <div class="card" style="border-color:rgba(220,38,38,.3);">
+        <div class="card-title" style="color:var(--red)">🚫 NO RANDOM CHANGES</div>
+        <div class="dont-list">
+          <div class="dont-item"><span class="x">✗</span> No new books this week</div>
+          <div class="dont-item"><span class="x">✗</span> No new strategy every week</div>
+          <div class="dont-item"><span class="x">✗</span> No unnecessary resources</div>
+          <div class="dont-item"><span class="x">✗</span> No mock without analysis</div>
+          <div class="dont-item"><span class="x">✗</span> No comparison with others</div>
+          <div class="dont-item"><span class="x">✗</span> No "careless mistake" excuse</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTER LOOP -->
+  <div class="card">
+    <div class="card-title">♾️ Master Learning Loop — Every Topic Must Complete This</div>
+    <div class="flow-wrap">
+      <span class="flow-step flow-done">CONCEPT</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-done">BASIC</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-active">INTERMEDIATE</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">CAT / PYQ</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">TIMED</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">MIXED</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">TEST</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">ANALYSIS</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">REPAIR</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">RETEST</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step flow-next">RECALL</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step" style="background:linear-gradient(135deg,var(--gold),#FBBF24); color:var(--navy); font-weight:900;">MASTERY 🏆</span>
+    </div>
+    <div style="margin-top:10px; font-size:11px; color:var(--red); font-weight:700;">
+      A lecture watched ≠ Mastery &nbsp;|&nbsp; A chapter completed ≠ Mastery &nbsp;|&nbsp; A large question count ≠ Mastery
+    </div>
+  </div>
+
+  <!-- MANTRA -->
+  <div class="mantra-bar">
+    <div class="mantra-text">"Discipline Today → Dream College Tomorrow → Bigger Impact in Future"</div>
+    <div class="mantra-sub">BECOME THE MAN YOU PROMISE YOURSELF &nbsp;|&nbsp; CAT 2026 &nbsp;|&nbsp; 29 November 2026 &nbsp;|&nbsp; Radhe Radhe 🙏</div>
+  </div>
+
+</div><!-- end main -->
+
+<script>
+  // ── COUNTDOWN ──
+  function updateCountdown() {
+    const exam = new Date('2026-11-29T00:00:00');
+    const now  = new Date();
+    const diff = Math.ceil((exam - now) / (1000*60*60*24));
+    document.getElementById('countdown').textContent = diff;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  // ── DATE ──
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const now = new Date();
+  document.getElementById('live-date').textContent =
+    days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+
+  // ── BLOCK TOGGLE ──
+  let doneBlocks = new Set();
+  function markDone(idx) {
+    const check = document.getElementById('check-' + idx);
+    const block = document.getElementById('block-' + idx);
+    if (doneBlocks.has(idx)) {
+      doneBlocks.delete(idx);
+      check.classList.remove('done');
+      block.classList.remove('completed');
+    } else {
+      doneBlocks.add(idx);
+      check.classList.add('done');
+      block.classList.add('completed');
+    }
+    updateProgress();
+  }
+  function toggleBlock(idx) { markDone(idx); }
+  function updateProgress() {
+    const n = doneBlocks.size;
+    document.getElementById('progress-text').textContent = n + ' / 8 blocks done';
+    document.getElementById('progress-bar').style.width = (n/8*100) + '%';
+  }
+
+  // ── ERROR LOG ──
+  let errors = {C1:0, C2:0, C3:0, C4:0, C5:0};
+  function logError(type) {
+    errors[type]++;
+    document.getElementById(type.toLowerCase() + '-count').textContent = errors[type];
+  }
+  function resetErrors() {
+    for (let k in errors) { errors[k] = 0; document.getElementById(k.toLowerCase()+'-count').textContent = 0; }
+  }
+
+  // ── DONE SUBMIT ──
+  function submitDone() {
+    const study  = document.getElementById('inp-study').value  || '?';
+    const screen = document.getElementById('inp-screen').value || '?';
+    const acc    = document.getElementById('inp-acc').value    || '?';
+    const fb = document.getElementById('done-feedback');
+    fb.style.display = 'block';
+
+    let msg = `✓ LOGGED: DONE ${study} ${screen} ${acc}\n`;
+    const accNum = parseInt(acc);
+    if (accNum >= 75) {
+      msg += `🟢 Accuracy ${acc}% — Excellent! Maintain this. Difficulty can increase slightly tomorrow.`;
+    } else if (accNum >= 60) {
+      msg += `🟡 Accuracy ${acc}% — Good foundation. Continue same difficulty. Focus on error log tonight.`;
+    } else {
+      msg += `🔴 Accuracy ${acc}% — Below 60%. Do NOT increase difficulty. Fix concept gaps first (C1 errors).`;
+    }
+    const studyNum = parseFloat(study);
+    if (studyNum >= 5) msg += `\n✓ Study hours on target.`;
+    else msg += `\n⚠️ Study hours low. Tomorrow: protect the 09:00 QA block first.`;
+    const screenNum = parseFloat(screen);
+    if (screenNum > 3) msg += `\n⚠️ Screen time ${screen} hrs > 3 hrs limit. Protect sleep and focus.`;
+
+    fb.textContent = msg;
+    fb.style.whiteSpace = 'pre-line';
+  }
+</script>
+</body>
+</html>
