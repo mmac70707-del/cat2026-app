@@ -1,12 +1,13 @@
 import { useQuickStats } from '@/hooks/index'
 
-export type SubPage = 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
+  { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
   { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator', featured: true },
-  { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap', featured: true },
+  { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap' },
   { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints' },
   { id: 'flashcards',   icon: '🎴', label: 'Spaced Repetition Formula Deck' },
   { id: 'achievements', icon: '🎖️', label: 'Streak Counter & Execution Badges' },

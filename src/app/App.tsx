@@ -9,6 +9,7 @@ import { WeekPage }             from '@/features/week/WeekPage'
 import { MasteryPage }          from '@/features/mastery/MasteryPage'
 import { PhasesPage }           from '@/features/phases/PhasesPage'
 import { MorePage }             from '@/pages/MorePage'
+import { DashboardPage }        from '@/features/dashboard/DashboardPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
 import { FormulaDeckPage }      from '@/features/flashcards/FormulaDeckPage'
@@ -32,7 +33,7 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-type SubPage    = 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+type SubPage    = 'dashboard' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -161,6 +162,7 @@ export function App() {
         {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p)} />}
 
         {/* SUB PAGES */}
+        {activePage === 'dashboard'    && <DashboardPage        onBack={() => setActivePage('more')} />}
         {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
         {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
         {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
