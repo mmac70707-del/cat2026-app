@@ -5,7 +5,11 @@
 // ═══════════════════════════════════════════════════
 
 const DB_NAME = 'cat2026_db'
-const DB_VERSION = 1
+// Bumped 1 → 2 to add `formulaReviews` (real spaced-repetition state
+// for the revision deck). onupgradeneeded only ADDS the new store —
+// every existing store and its data is left untouched, so this never
+// resets tasks/errors/mastery/mocks/scores/settings on upgrade.
+const DB_VERSION = 2
 
 let _db: IDBDatabase | null = null
 
@@ -24,6 +28,7 @@ export function openDB(): Promise<IDBDatabase> {
         { name: 'mocks',         key: 'id',   indexes: [['byDate','date']] },
         { name: 'dailyScores',   key: 'date', indexes: [] },
         { name: 'settings',      key: 'key',  indexes: [] },
+        { name: 'formulaReviews',key: 'cardId', indexes: [] },
       ]
 
       stores.forEach(({ name, key, indexes }) => {

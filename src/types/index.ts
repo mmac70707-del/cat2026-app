@@ -58,7 +58,8 @@ export interface ErrorRecord {
   id: string;
   errorType: ErrorType;
   subject: string;
-  topic: string;
+  topicId: string | null;   // links to MasteryTopic.id — lets Retest actually update mastery evidence
+  topic: string;            // display name
   wrongReason: string;
   correctMethod: string;
   preventionRule: string;
@@ -143,6 +144,15 @@ export interface WeekDay {
   isToday: boolean;
   isPast: boolean;
   isTest?: boolean;
+}
+
+// ── Formula/revision card spaced-repetition state ─────
+export interface FormulaReview {
+  cardId: string;          // matches FormulaCard.id
+  boxLevel: number;        // 1 = review soon, higher = longer interval
+  nextReviewDate: string;  // YYYY-MM-DD, local date
+  lastRating: 'Hard' | 'Medium' | 'Easy' | null;
+  reviewCount: number;
 }
 
 // ── Quick stats aggregate ─────────────────────────────

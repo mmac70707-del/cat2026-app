@@ -20,6 +20,7 @@ export function useErrors() {
   const logError = useCallback(async (obj: {
     errorType: ErrorType
     subject: string
+    topicId: string | null
     topic: string
     wrongReason: string
     correctMethod: string
@@ -34,13 +35,13 @@ export function useErrors() {
     await load()
   }, [load])
 
-  const retestPass = useCallback(async (id: string) => {
-    await ErrorRepository.markRetestPassed(id)
+  const retestPass = useCallback(async (id: string, correct: number, total: number) => {
+    await ErrorRepository.markRetestPassed(id, correct, total)
     await load()
   }, [load])
 
-  const retestFail = useCallback(async (id: string) => {
-    await ErrorRepository.markRetestFailed(id)
+  const retestFail = useCallback(async (id: string, correct: number, total: number) => {
+    await ErrorRepository.markRetestFailed(id, correct, total)
     await load()
   }, [load])
 

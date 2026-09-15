@@ -1,8 +1,11 @@
 package com.cat2026.app
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -16,27 +19,98 @@ import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.cat2026.app.notifications.EveningErrorLogWorker
+import com.cat2026.app.notifications.MorningMissionWorker
+import com.cat2026.app.notifications.ReminderSchedule
+import com.cat2026.app.notifications.initialDelayMillisFor
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
 
-    class AndroidBridge(private val activity: ComponentActivity) {
+    // Must be registered unconditionally before the Activity reaches
+    // STARTED — a class-property initializer runs during construction,
+    // which satisfies that requirement correctly.
+    private val notificationPermissionLauncher: ActivityResultLauncher<String> =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) scheduleReminders() else cancelReminders()
+        }
+
+    inner class AndroidBridge {
         @JavascriptInterface
         fun exitApp() {
-            activity.finish()
+            finish()
         }
+
+        // JS bridge calls arrive on a background thread — permission
+        // requests and WorkManager scheduling both need to happen
+        // safely regardless of thread, so this hops to the UI thread.
+        @JavascriptInterface
+        fun requestNotificationPermission() {
+            runOnUiThread {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val already = ContextCompat.checkSelfPermission(
+                        this@MainActivity, Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (already) scheduleReminders()
+                    else notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    // Pre-Android 13 never required a runtime prompt for notifications.
+                    scheduleReminders()
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun setNotificationsEnabled(enabled: Boolean) {
+            runOnUiThread {
+                if (enabled) requestNotificationPermission() else cancelReminders()
+            }
+        }
+    }
+
+    private fun scheduleReminders() {
+        val wm = WorkManager.getInstance(applicationContext)
+
+        val morning = PeriodicWorkRequestBuilder<MorningMissionWorker>(24, TimeUnit.HOURS)
+            .setInitialDelay(initialDelayMillisFor(9, 0), TimeUnit.MILLISECONDS)
+            .build()
+        wm.enqueueUniquePeriodicWork(
+            ReminderSchedule.MORNING_WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, morning
+        )
+
+        val evening = PeriodicWorkRequestBuilder<EveningErrorLogWorker>(24, TimeUnit.HOURS)
+            .setInitialDelay(initialDelayMillisFor(21, 0), TimeUnit.MILLISECONDS)
+            .build()
+        wm.enqueueUniquePeriodicWork(
+            ReminderSchedule.EVENING_WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, evening
+        )
+    }
+
+    private fun cancelReminders() {
+        val wm = WorkManager.getInstance(applicationContext)
+        wm.cancelUniqueWork(ReminderSchedule.MORNING_WORK_NAME)
+        wm.cancelUniqueWork(ReminderSchedule.EVENING_WORK_NAME)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ReminderSchedule.createChannel(applicationContext)
 
         window.statusBarColor = Color.parseColor("#0A0F1E")
         window.navigationBarColor = Color.parseColor("#0A0F1E")
@@ -71,7 +145,7 @@ class MainActivity : ComponentActivity() {
                 cacheMode = WebSettings.LOAD_DEFAULT
             }
 
-            addJavascriptInterface(AndroidBridge(this@MainActivity), "AndroidNativeHost")
+            addJavascriptInterface(AndroidBridge(), "AndroidNativeHost")
 
             webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(
@@ -123,6 +197,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 )
             }
+        }
+    }
+
+    // Mirrors the back-button bridge pattern: dispatch a real DOM
+    // event the web app already listens for (useCountdown / usePhase
+    // / useTodayTasks all handle `cat2026:resume`), so state is fresh
+    // the instant the app comes back to the foreground rather than
+    // stale until the next timer tick.
+    override fun onResume() {
+        super.onResume()
+        if (::webView.isInitialized) {
+            webView.evaluateJavascript("window.dispatchEvent(new Event('cat2026:resume'))", null)
         }
     }
 

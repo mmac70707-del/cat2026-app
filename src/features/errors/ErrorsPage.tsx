@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useErrors } from '@/hooks/index'
 import { EmptyState } from '@/components/EmptyState'
 import { useToast } from '@/components/Toast'
+import { MASTER_TOPICS } from '@/data/config'
 import type { ErrorType } from '@/types'
 
 const ERROR_DEFS = [
@@ -19,18 +20,21 @@ export function ErrorsPage({ onBack }: Props) {
   const { show: toast } = useToast()
 
   const [type,    setType]    = useState<ErrorType>('C1')
-  const [subject, setSubject] = useState('QA')
-  const [topic,   setTopic]   = useState('')
+  const [subject, setSubject] = useState<'QA' | 'DILR' | 'VARC'>('QA')
+  const [topicId, setTopicId] = useState('')
   const [wrong,   setWrong]   = useState('')
   const [correct, setCorrect] = useState('')
   const [prev,    setPrev]    = useState('')
 
+  const topicList = MASTER_TOPICS[subject] || []
+
   async function handleLog() {
-    if (!topic.trim())   { toast('Enter topic name', '#D97706');          return }
-    if (!wrong.trim())   { toast('Describe what went wrong', '#D97706'); return }
-    if (!correct.trim()) { toast('Write the correct method', '#D97706'); return }
-    await logError({ errorType: type, subject, topic: topic.trim(), wrongReason: wrong.trim(), correctMethod: correct.trim(), preventionRule: prev.trim() })
-    setTopic(''); setWrong(''); setCorrect(''); setPrev('')
+    if (!topicId)         { toast('Select a topic', '#D97706');          return }
+    if (!wrong.trim())    { toast('Describe what went wrong', '#D97706'); return }
+    if (!correct.trim())  { toast('Write the correct method', '#D97706'); return }
+    const topicName = topicList.find(t => t.id === topicId)?.name ?? topicId
+    await logError({ errorType: type, subject, topicId, topic: topicName, wrongReason: wrong.trim(), correctMethod: correct.trim(), preventionRule: prev.trim() })
+    setTopicId(''); setWrong(''); setCorrect(''); setPrev('')
     toast('Error logged + Repair task created ✓')
   }
 
@@ -61,10 +65,17 @@ export function ErrorsPage({ onBack }: Props) {
           {ERROR_DEFS.map(e => <option key={e.code} value={e.code}>{e.code} — {e.name}</option>)}
         </select>
         <div className="grid2" style={{ gap: 8, marginBottom: 8 }}>
-          <select className="form-select" value={subject} onChange={e => setSubject(e.target.value)}>
+          <select
+            className="form-select"
+            value={subject}
+            onChange={e => { setSubject(e.target.value as 'QA' | 'DILR' | 'VARC'); setTopicId('') }}
+          >
             <option value="QA">QA</option><option value="DILR">DILR</option><option value="VARC">VARC</option>
           </select>
-          <input type="text" className="form-input" placeholder="Topic name" value={topic} onChange={e => setTopic(e.target.value)} />
+          <select className="form-select" value={topicId} onChange={e => setTopicId(e.target.value)}>
+            <option value="">Select topic…</option>
+            {topicList.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
         </div>
         <textarea className="textarea-input" placeholder="What went wrong?" value={wrong} onChange={e => setWrong(e.target.value)} style={{ marginBottom: 6 }} />
         <textarea className="textarea-input" placeholder="Correct method is…" value={correct} onChange={e => setCorrect(e.target.value)} style={{ marginBottom: 6 }} />

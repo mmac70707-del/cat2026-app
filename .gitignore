@@ -13,3 +13,5 @@ dist/
 *.keystore
 *.jks
 key.properties
+
+.vercel

@@ -73,23 +73,19 @@ export function App() {
   useEffect(() => { activePageRef.current = activePage }, [activePage])
 
   useEffect(() => {
-    let cleanup = () => {}
-    registerBackButtonHandler(() => {
+    return registerBackButtonHandler(() => {
       const isMainNow = MAIN_PAGES.includes(activePageRef.current as MainPage)
       if (!isMainNow) {
         setActivePage('more')
         return true
       }
       return false
-    }).then(fn => { cleanup = fn })
-    return () => cleanup()
+    })
   }, [])
 
   // ── Android app resume (foreground) ─────────────
   useEffect(() => {
-    let cleanup = () => {}
-    registerAppStateHandler().then(fn => { cleanup = fn })
-    return () => cleanup()
+    return registerAppStateHandler()
   }, [])
 
   // ── Focus reminder every 45 min ─────────────────

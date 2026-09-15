@@ -1,101 +1,34 @@
-import { useState, useEffect } from 'react'
 import { useCountdown } from '@/hooks/useCountdown'
 import { usePhase } from '@/hooks/usePhase'
-import { useAuth } from '@/hooks/useAuth'
-import { AuthModal } from '@/components/AuthModal'
 
-const EXAMS = [
-  { id: 'cat2026', name: 'CAT 2026', badge: 'Primary', col: '#F5A623' },
-  { id: 'nmat',    name: 'NMAT',     badge: 'Speed',   col: '#38BDF8' },
-  { id: 'snap',    name: 'SNAP',     badge: 'Speed',   col: '#22C55E' },
-  { id: 'xat',     name: 'XAT',      badge: 'Decision',col: '#A78BFA' },
-  { id: 'mat',     name: 'MAT',      badge: 'Aptitude',col: '#EC4899' },
-  { id: 'cmat',    name: 'CMAT',     badge: 'General', col: '#10B981' },
-]
+// Auth and the multi-exam switcher were removed: the sign-in was
+// simulated (hardcoded a fake identity, called no real API), and
+// switching exams only changed this header's colour — nothing else
+// in the app read that state. Both were decorative, not functional.
+// This app has one user and one mission: CAT 2026. Every element
+// below does something real.
 
 export function Header() {
   const phase = usePhase()
   const { days, hms } = useCountdown()
-  const { user } = useAuth()
-  const [isAuthOpen, setIsAuthOpen] = useState(false)
-  const [targetExam, setTargetExam] = useState<string>(() => {
-    return localStorage.getItem('cat2026_target_exam') || 'cat2026'
-  })
-
-  useEffect(() => {
-    localStorage.setItem('cat2026_target_exam', targetExam)
-  }, [targetExam])
-
-  const activeExamObj = EXAMS.find(e => e.id === targetExam) || EXAMS[0]
 
   return (
-    <>
-      <div className="app-header" style={{ flexDirection: 'column', gap: 8, padding: '12px 16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div className="app-title" style={{ fontSize: 18, color: activeExamObj.col }}>
-                {activeExamObj.name}
-              </div>
-              <span style={{ fontSize: 9, fontWeight: 800, padding: '2px 6px', borderRadius: 4, background: activeExamObj.col, color: '#000' }}>
-                {activeExamObj.badge}
-              </span>
-            </div>
-            <div className="app-subtitle" style={{ fontSize: 11 }}>
-              Master Execution Platform
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {/* Account / Sign In Button */}
-            <button
-              onClick={() => setIsAuthOpen(true)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px',
-                borderRadius: 16, background: user.isLoggedIn ? 'rgba(34,197,94,0.15)' : '#1E293B',
-                border: user.isLoggedIn ? '1px solid #22C55E' : '1px solid #334155',
-                color: user.isLoggedIn ? '#4ADE80' : '#F5A623', fontSize: 11, fontWeight: 700, cursor: 'pointer'
-              }}
-            >
-              <span>{user.isLoggedIn ? '👤' : '🔐'}</span>
-              <span>{user.isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
-            </button>
-
-            <div className="phase-badge" style={{ background: phase.color, fontSize: 11, padding: '4px 10px' }}>
-              {phase.id}
-            </div>
-
-            <div className="countdown-wrap" style={{ textAlign: 'right' }}>
-              <div className="countdown-days" style={{ fontSize: 15 }}>{days}d</div>
-              <div className="countdown-hms" style={{ fontSize: 10 }}>{hms}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Target Exam Selector Bar */}
-        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', width: '100%', paddingBottom: 2 }}>
-          <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--muted)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
-            TARGET EXAM:
-          </span>
-          {EXAMS.map(e => (
-            <button
-              key={e.id}
-              onClick={() => setTargetExam(e.id)}
-              style={{
-                padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 700,
-                border: targetExam === e.id ? `1px solid ${e.col}` : '1px solid #334155',
-                background: targetExam === e.id ? 'rgba(245,166,35,0.15)' : '#1E293B',
-                color: targetExam === e.id ? e.col : '#94A3B8',
-                cursor: 'pointer', whiteSpace: 'nowrap'
-              }}
-            >
-              {e.name}
-            </button>
-          ))}
-        </div>
+    <div className="app-header">
+      <div>
+        <div className="app-title">CAT 2026</div>
+        <div className="app-subtitle">75-Day Execution System</div>
       </div>
-
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-    </>
+      <div
+        className="phase-badge"
+        style={{ background: phase.color }}
+      >
+        {phase.id} — {phase.name}
+      </div>
+      <div className="countdown-wrap">
+        <div className="countdown-days">{days}</div>
+        <div className="countdown-label">days left</div>
+        <div className="countdown-hms">{hms}</div>
+      </div>
+    </div>
   )
 }

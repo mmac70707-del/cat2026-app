@@ -22,8 +22,12 @@ android {
     buildTypes {
         release {
             optimization {
-                enable = false
+                enable = true
             }
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -46,6 +50,11 @@ dependencies {
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // Direct version string, not the libs.* catalog — gradle/libs.versions.toml
+    // isn't part of this archive (only the app/ module was exported), so this
+    // avoids depending on a file that couldn't be inspected or edited here.
+    // Safe to migrate into the catalog later for consistency if you prefer.
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
