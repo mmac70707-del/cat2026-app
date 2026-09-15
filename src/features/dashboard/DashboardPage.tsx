@@ -3,7 +3,7 @@ import { useTodayTasks } from '@/hooks/useTasks'
 import { DailyScoreRepository } from '@/repositories/index'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { usePhase } from '@/hooks/usePhase'
-import { formatDate, todayKey, getWeekNumber, getDaysLeft } from '@/services/domain'
+import { getWeekNumber, getDaysLeft } from '@/services/domain'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 
@@ -18,6 +18,9 @@ const SEQUENCE_STRIP = [
   { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm' },
 ]
 
+const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+const MONTHS_ARR = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
 export function DashboardPage() {
   const phase = usePhase()
   const daysLeft = getDaysLeft()
@@ -31,6 +34,8 @@ export function DashboardPage() {
   const [errorCounts, setErrorCounts] = useState<{ [key: string]: number }>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
 
   const now = new Date()
+  const realDayName = DAYS_ARR[now.getDay()]
+  const realDateStr = `${now.getDate()} ${MONTHS_ARR[now.getMonth()]} ${now.getFullYear()}`
 
   useEffect(() => {
     ErrorRepository.getTypeCounts().then(counts => {
@@ -59,7 +64,7 @@ export function DashboardPage() {
     const s  = parseFloat(study)  || 0
     const sc = parseFloat(screen) || 0
     const a  = parseInt(acc)      || 0
-    await DailyScoreRepository.log(todayKey(), s, sc, a)
+    await DailyScoreRepository.log(todayKeyDynamic(), s, sc, a)
 
     const lines: string[] = [`✓ LOGGED: DONE ${s}h study · ${sc}h screen · ${a}% accuracy`]
     if (a >= 75)      lines.push('🟢 Accuracy ' + a + '%+ — Excellent! Maintain this. Difficulty can increase slightly tomorrow.')
@@ -71,6 +76,11 @@ export function DashboardPage() {
 
     setFeedback(lines.join('\n'))
     toast('Day logged ✓')
+  }
+
+  function todayKeyDynamic() {
+    const d = new Date()
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
   }
 
   if (loading) {
@@ -89,10 +99,10 @@ export function DashboardPage() {
           <div className="header-center">
             <div className="phase-badge">
               <div className="phase-dot"></div>
-              {phase.id} — {phase.name} — LOCKED
+              {phase.id} — {phase.name} — ACTIVE
             </div>
             <div style={{ marginTop: 6, fontSize: 12, color: 'var(--muted)' }}>
-              Week {getWeekNumber()} &nbsp;|&nbsp; 7–13 September 2026
+              Week {getWeekNumber()} &nbsp;|&nbsp; Real-Time Sync
             </div>
           </div>
           <div className="header-right">
@@ -105,7 +115,7 @@ export function DashboardPage() {
       {/* ── MISSION BAR ── */}
       <div className="mission-bar">
         <div className="mission-text">🎯 MISSION: {phase.mission}</div>
-        <div className="date-display">{formatDate(now)}</div>
+        <div className="date-display">{realDayName}, {realDateStr}</div>
         <div className="mission-quote">"Discipline Today Builds the Freedom Tomorrow"</div>
       </div>
 
@@ -140,8 +150,8 @@ export function DashboardPage() {
           {/* TODAY'S EXACT PLAN */}
           <div>
             <div className="today-header">
-              <div className="today-title">📅 TODAY'S PLAN ({done}/8 Blocks Done)</div>
-              <div className="today-sub">Focus: Ratio &amp; Proportion + Main Idea + Bar Graph &nbsp;|&nbsp; Phase 1 Week {getWeekNumber()}</div>
+              <div className="today-title">📅 {realDayName.toUpperCase()} — {realDateStr.toUpperCase()}</div>
+              <div className="today-sub">Focus: SOLVING &nbsp;|&nbsp; Core Execution &amp; Error Elimination &nbsp;|&nbsp; Week {getWeekNumber()}</div>
             </div>
 
             <div className="block-list">
@@ -159,10 +169,98 @@ export function DashboardPage() {
                     <div className={`block-num ${nClass}`}>{seqObj.seq.replace('0','')}</div>
                     <div className="block-content">
                       <div className={`block-section ${tClass}`}>{sId} — {task.subject}</div>
-                      <div className="block-title">{task.title}</div>
-                      <div className="block-details">
-                        Target: 70%+ accuracy • Focus on core method.
-                      </div>
+
+                      {sId === 'QA' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>Topic:</strong> Quantitative Foundation → Core Problem Solving<br/>
+                            <strong>Task:</strong> 15–20 questions, Easy → Moderate<br/>
+                            <strong>Method:</strong> Concept first (5 min) → 3 basic Qs → 10 moderate Qs → 2 CAT-style Qs<br/>
+                            <strong>Exit:</strong> 70%+ accuracy confirmed
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'DILR' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>Task:</strong> 1 quality DILR set (4–6 questions)<br/>
+                            <strong>Flow:</strong> Read → Identify variables → Extract data → Solve → Verify<br/>
+                            <strong>Focus:</strong> Accuracy first — skip if stuck beyond 8 min<br/>
+                            <strong>Exit:</strong> 3+ correct answers with method explained
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'VARC' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>Task:</strong> 2 RC passages / VA practice<br/>
+                            <strong>Flow:</strong> Read → Understand structure → Identify argument → Predict → Eliminate<br/>
+                            <strong>Focus:</strong> Main Idea Q first, then Inference — accuracy &gt; speed<br/>
+                            <strong>Exit:</strong> 4+ correct across questions
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'TEST' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>Task:</strong> Review error log → fix every C1–C5 mistake<br/>
+                            <strong>Rule:</strong> No random resources — only your error log material<br/>
+                            <strong>Exit:</strong> Every logged error re-solved correctly
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'ANALYSIS' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>C1</strong> = Concept gap &nbsp;|&nbsp; <strong>C2</strong> = Calculation error &nbsp;|&nbsp; <strong>C3</strong> = Misread<br/>
+                            <strong>C4</strong> = Wrong approach &nbsp;|&nbsp; <strong>C5</strong> = Time management<br/>
+                            <strong>Exit:</strong> Every wrong Q classified + prevention rule written
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'REVISION' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>30-sec recap:</strong> What did I learn today?<br/>
+                            <strong>2-min revision:</strong> Core formula → trap → today's biggest mistake<br/>
+                            <strong>Exit:</strong> Can recite core method in 30 seconds
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'REPAIR' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>Source:</strong> Today's error log + unresolved errors<br/>
+                            <strong>Method:</strong> Close solution → think fresh → attempt alone → verify<br/>
+                            <strong>Exit:</strong> Re-solved 100% of logged errors
+                          </div>
+                        </>
+                      )}
+
+                      {sId === 'RETEST' && (
+                        <>
+                          <div className="block-title">{task.title}</div>
+                          <div className="block-details">
+                            <strong>Practice:</strong> Take 3–5 fresh questions on today's topics<br/>
+                            <strong>Mastery check:</strong> Can I solve it, explain it, solve under time?<br/>
+                            <strong>Exit:</strong> 3+/5 correct = today's learning confirmed
+                          </div>
+                        </>
+                      )}
+
                     </div>
                     <div className="block-meta">
                       <div className="meta-time">Scheduled</div>
@@ -190,79 +288,26 @@ export function DashboardPage() {
 
             {/* WEEK CALENDAR */}
             <div className="card">
-              <div className="card-title">📅 Week {getWeekNumber()} — 7 to 13 September</div>
+              <div className="card-title">📅 Week {getWeekNumber()} — Master Schedule</div>
               <div className="week-grid">
-                <div className="day-card past">
-                  <div className="day-name">MON</div>
-                  <div className="day-date">7</div>
-                  <div className="day-focus" style={{ color: 'var(--green2)' }}>BASICS</div>
-                  <div className="day-topics">
-                    <div className="day-topic">Percentage</div>
-                    <div className="day-topic">Tables set</div>
-                  </div>
-                </div>
-                <div className="day-card today">
-                  <div className="day-name">TUE</div>
-                  <div className="day-date">8</div>
-                  <div className="day-focus" style={{ color: 'var(--gold)' }}>TODAY</div>
-                  <div className="day-topics">
-                    <div className="day-topic">Ratio &amp; Prop</div>
-                    <div className="day-topic">Bar/Line</div>
-                  </div>
-                </div>
-                <div className="day-card">
-                  <div className="day-name">WED</div>
-                  <div className="day-date">9</div>
-                  <div className="day-focus" style={{ color: 'var(--blue2)' }}>ACCURACY</div>
-                  <div className="day-topics">
-                    <div className="day-topic">Averages</div>
-                    <div className="day-topic">Arrangement</div>
-                  </div>
-                </div>
-                <div className="day-card">
-                  <div className="day-name">THU</div>
-                  <div className="day-date">10</div>
-                  <div className="day-focus" style={{ color: 'var(--red)' }}>ANALYSIS</div>
-                  <div className="day-topics">
-                    <div className="day-topic">P&amp;L</div>
-                    <div className="day-topic">Distribution</div>
-                  </div>
-                </div>
-                <div className="day-card">
-                  <div className="day-name">FRI</div>
-                  <div className="day-date">11</div>
-                  <div className="day-focus" style={{ color: 'var(--orange)' }}>TIMING</div>
-                  <div className="day-topics">
-                    <div className="day-topic">Mixed Arith</div>
-                    <div className="day-topic">Mixed Set</div>
-                  </div>
-                </div>
-                <div className="day-card">
-                  <div className="day-name">SAT</div>
-                  <div className="day-date">12</div>
-                  <div className="day-focus" style={{ color: 'var(--purple)' }}>IMPROVE</div>
-                  <div className="day-topics">
-                    <div className="day-topic">Weak repair</div>
-                    <div className="day-topic">Best 2 sets</div>
-                  </div>
-                </div>
-                <div className="day-card" style={{ background: 'rgba(124,58,237,.08)', borderColor: 'rgba(124,58,237,.4)' }}>
-                  <div className="day-name">SUN</div>
-                  <div className="day-date">13</div>
-                  <div className="day-focus" style={{ color: 'var(--purple)' }}>TEST DAY</div>
-                  <div className="day-topics">
-                    <div className="day-topic">Weekly Mock</div>
-                    <div className="day-topic">C1–C5 Log</div>
-                  </div>
-                </div>
+                {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((dName, dIdx) => {
+                  const isToday = dName === realDayName.slice(0,3).toUpperCase()
+                  return (
+                    <div key={dName} className={`day-card ${isToday ? 'today' : ''}`}>
+                      <div className="day-name">{dName}</div>
+                      <div className="day-date">{7 + dIdx}</div>
+                      <div className="day-focus" style={{ color: isToday ? 'var(--gold)' : 'var(--green2)' }}>{isToday ? 'TODAY' : 'SOLVE'}</div>
+                    </div>
+                  )
+                })}
               </div>
               <div style={{ marginTop: 12, padding: '10px 12px', background: 'rgba(245,166,35,.06)', border: '1px solid rgba(245,166,35,.2)', borderRadius: 8 }}>
                 <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gold)', marginBottom: 6 }}>WEEKLY EXIT GATE</div>
                 <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.7 }}>
-                  ✓ Percentage + Ratio + Average + P&L concepts clear<br/>
+                  ✓ Core concepts clear &amp; practiced daily<br/>
                   ✓ 2 DILR sets per day attempted + analysed<br/>
-                  ✓ Main Idea + Inference + Tone — 70%+ accuracy<br/>
-                  ✓ Error log complete for every day
+                  ✓ RC accuracy &gt;70% maintained<br/>
+                  ✓ Error log complete &amp; verified
                 </div>
               </div>
             </div>
@@ -272,23 +317,13 @@ export function DashboardPage() {
               <div className="card">
                 <div className="card-title" style={{ fontSize: 12 }}>
                   <span style={{ color: 'var(--green2)' }}>QA</span>
-                  <span className="pill pill-green">Week 2</span>
+                  <span className="pill pill-green">Active</span>
                 </div>
                 <div className="priority-list">
                   <div className="priority-item">
                     <div className="priority-rank" style={{ color: 'var(--green2)' }}>1</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Ratio &amp; Proportion</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Arithmetic &amp; Algebra</div>
                     <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: 'var(--green2)' }}>2</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Averages</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: 'var(--green2)' }}>3</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Profit &amp; Loss</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star empty">★</span></div>
                   </div>
                 </div>
               </div>
@@ -296,23 +331,13 @@ export function DashboardPage() {
               <div className="card">
                 <div className="card-title" style={{ fontSize: 12 }}>
                   <span style={{ color: '#60A5FA' }}>DILR</span>
-                  <span className="pill pill-blue">Week 2</span>
+                  <span className="pill pill-blue">Active</span>
                 </div>
                 <div className="priority-list">
                   <div className="priority-item">
                     <div className="priority-rank" style={{ color: '#60A5FA' }}>1</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Tables / Charts</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>Tables &amp; Graphs</div>
                     <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: '#60A5FA' }}>2</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Arrangements</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: '#60A5FA' }}>3</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Distrib/Selection</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star empty">★</span></div>
                   </div>
                 </div>
               </div>
@@ -320,23 +345,13 @@ export function DashboardPage() {
               <div className="card">
                 <div className="card-title" style={{ fontSize: 12 }}>
                   <span style={{ color: '#A78BFA' }}>VARC</span>
-                  <span className="pill pill-purple">Week 2</span>
+                  <span className="pill pill-purple">Active</span>
                 </div>
                 <div className="priority-list">
                   <div className="priority-item">
                     <div className="priority-rank" style={{ color: '#A78BFA' }}>1</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Main Idea</div>
+                    <div className="priority-name" style={{ fontSize: 11 }}>RC Main Idea</div>
                     <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: '#A78BFA' }}>2</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Inference</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: '#A78BFA' }}>3</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Tone / Purpose</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star empty">★</span></div>
                   </div>
                 </div>
               </div>
@@ -346,20 +361,21 @@ export function DashboardPage() {
             <div className="card">
               <div className="card-title">📊 Daily Update — DONE format</div>
               <div className="instruction" style={{ marginBottom: 12 }}>
-                <p>Type your day's data: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong></p>
+                <p>Type your day's data and I'll adapt tomorrow's plan. Format: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong><br/>
+                Example: <strong>DONE 5 3 62</strong> = 5 study hours, 3 screen hours, 62% accuracy</p>
               </div>
               <div className="scorecard">
                 <div className="score-input-wrap">
-                  <div className="score-label">Study Hrs</div>
-                  <input className="score-input" type="number" placeholder="5" value={study} onChange={e => setStudy(e.target.value)} />
+                  <div className="score-label">Study Hours</div>
+                  <input className="score-input" type="number" placeholder="5" min="0" max="12" value={study} onChange={e => setStudy(e.target.value)} />
                 </div>
                 <div className="score-input-wrap">
-                  <div className="score-label">Screen Hrs</div>
-                  <input className="score-input" type="number" placeholder="3" value={screen} onChange={e => setScreen(e.target.value)} />
+                  <div className="score-label">Screen Hours</div>
+                  <input className="score-input" type="number" placeholder="3" min="0" max="12" value={screen} onChange={e => setScreen(e.target.value)} />
                 </div>
                 <div className="score-input-wrap">
                   <div className="score-label">Accuracy %</div>
-                  <input className="score-input" type="number" placeholder="62" value={acc} onChange={e => setAcc(e.target.value)} />
+                  <input className="score-input" type="number" placeholder="62" min="0" max="100" value={acc} onChange={e => setAcc(e.target.value)} />
                 </div>
                 <button className="score-btn" onClick={submitDone}>✓ LOG TODAY — DONE</button>
               </div>
@@ -376,7 +392,7 @@ export function DashboardPage() {
 
           {/* MASTERY TRACKER */}
           <div className="card">
-            <div className="card-title">📈 Mastery Tracker — Current Level</div>
+            <div className="card-title">📈 Mastery Tracker — Real-Time Level</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green2)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: .5 }}>QA Progress</div>
@@ -391,11 +407,6 @@ export function DashboardPage() {
                     <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '20%', background: 'var(--orange)' }}></div></div>
                     <div className="mastery-level" style={{ color: '#FCD34D' }}>L1→</div>
                   </div>
-                  <div className="mastery-row">
-                    <div className="mastery-name">Averages</div>
-                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '5%', background: 'var(--red)' }}></div></div>
-                    <div className="mastery-level" style={{ color: '#F87171' }}>L0</div>
-                  </div>
                 </div>
               </div>
               <div>
@@ -405,11 +416,6 @@ export function DashboardPage() {
                     <div className="mastery-name">Tables</div>
                     <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '40%', background: 'var(--blue2)' }}></div></div>
                     <div className="mastery-level" style={{ color: '#93C5FD' }}>L2</div>
-                  </div>
-                  <div className="mastery-row">
-                    <div className="mastery-name">Bar/Line Graph</div>
-                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '20%', background: 'var(--orange)' }}></div></div>
-                    <div className="mastery-level" style={{ color: '#FCD34D' }}>L1→</div>
                   </div>
                   <div className="mastery-row">
                     <div className="mastery-name">RC Main Idea</div>
@@ -465,13 +471,13 @@ export function DashboardPage() {
                   <div className="error-count">{errorCounts['C5']}</div>
                 </div>
               </div>
-              <div style={{ fontSize: 10, color: 'var(--muted)', textAlign: 'center', marginBottom: 10 }}>Click to log errors directly</div>
-              <div style={{ background: 'var(--bg3)', borderRadius: 8, padding: '10px 12px' }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>Analysis Flow</div>
-                <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.8 }}>
-                  WHY it happened → FIX (notes) → REPAIR (practice) → RETEST (confirm)
-                </div>
-              </div>
+              <div style={{ fontSize: 10, color: 'var(--muted)', textAlign: 'center', marginBottom: 10 }}>Click to count errors → C1 is most dangerous</div>
+              <button
+                onClick={() => { setErrorCounts({C1:0,C2:0,C3:0,C4:0,C5:0}) }}
+                style={{ marginTop: 10, width: '100%', background: 'transparent', border: '1px solid var(--border)', color: 'var(--muted)', padding: 8, borderRadius: 6, fontSize: 11, cursor: 'pointer' }}
+              >
+                Reset Error Counts
+              </button>
             </div>
 
             {/* PHASE TIMELINE */}
@@ -480,32 +486,22 @@ export function DashboardPage() {
               <div className="phase-timeline">
                 <div className="phase-item active">
                   <div className="phase-name" style={{ color: 'var(--green2)' }}>REBUILD</div>
-                  <div className="phase-dates">1–15 Sep</div>
-                </div>
-                <div className="phase-item future">
-                  <div className="phase-name" style={{ color: '#60A5FA' }}>APPLICATION</div>
-                  <div className="phase-dates">16 Sep–4 Oct</div>
-                </div>
-                <div className="phase-item future">
-                  <div className="phase-name" style={{ color: '#F87171' }}>MOCKS</div>
-                  <div className="phase-dates">5 Oct–8 Nov</div>
-                </div>
-                <div className="phase-item future">
-                  <div className="phase-name" style={{ color: '#A78BFA' }}>CONSOL.</div>
-                  <div className="phase-dates">9–20 Nov</div>
-                </div>
-                <div className="phase-item future">
-                  <div className="phase-name" style={{ color: 'var(--gold)' }}>TAPER</div>
-                  <div className="phase-dates">21–28 Nov</div>
+                  <div className="phase-dates">Active Phase</div>
+                  <div className="phase-goal">Concept + Accuracy</div>
                 </div>
               </div>
+              <div style={{ marginTop: 12, background: 'rgba(34,197,94,.06)', border: '1px solid rgba(34,197,94,.2)', borderRadius: 8, padding: '10px 12px' }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--green2)', marginBottom: 4 }}>🔒 MISSION &amp; VISION LOCKED</div>
+                <div style={{ fontSize: 10, color: 'var(--muted)' }}>{phase.purpose}</div>
+              </div>
             </div>
+
           </div>
         </div>
 
         {/* MASTER LOOP */}
         <div className="card">
-          <div className="card-title">♾️ Master Learning Loop</div>
+          <div className="card-title">♾️ Master Learning Loop — Every Topic Must Complete This</div>
           <div className="flow-wrap">
             <span className="flow-step flow-done">CONCEPT</span><span className="flow-arrow">→</span>
             <span className="flow-step flow-done">BASIC</span><span className="flow-arrow">→</span>
@@ -524,7 +520,7 @@ export function DashboardPage() {
         {/* MANTRA */}
         <div className="mantra-bar">
           <div className="mantra-text">"Discipline Today → Dream College Tomorrow → Bigger Impact in Future"</div>
-          <div className="mantra-sub">BECOME THE MAN YOU PROMISE YOURSELF &nbsp;|&nbsp; CAT 2026 &nbsp;|&nbsp; 29 November 2026</div>
+          <div className="mantra-sub">BECOME THE MAN YOU PROMISE YOURSELF &nbsp;|&nbsp; CAT 2026 &nbsp;|&nbsp; Radhe Radhe 🙏</div>
         </div>
 
       </div>

@@ -47,7 +47,7 @@ const FOCUS_REMINDERS = [
 ]
 
 export function App() {
-  const [activePage, setActivePage] = useState<ActivePage>('today')
+  const [activePage, setActivePage] = useState<ActivePage>('dashboard')
   const [loading, setLoading]       = useState(true)
   const { show: toast }             = useToast()
   const touchStartX = useRef(0)
@@ -147,7 +147,7 @@ export function App() {
 
   if (activePage === 'dashboard') {
     return (
-      <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+      <div style={{ height: '100%', width: '100%', overflow: 'auto', position: 'relative', background: '#0A0F1E' }}>
         <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
           <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
             ← Exit 1:1 Dashboard

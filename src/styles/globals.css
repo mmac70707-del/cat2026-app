@@ -355,7 +355,11 @@ html, body, #root {
 
 /* ── Desktop centering ── */
 @media (min-width: 600px) {
-  body { display: flex; justify-content: center; background: #050A14; }
-  #root { max-width: 430px; box-shadow: 0 0 60px rgba(0,0,0,.8); }
+  body { background: #050A14; }
+  .app-shell {
+    max-width: 430px;
+    margin: 0 auto;
+    box-shadow: 0 0 60px rgba(0,0,0,.8);
+  }
   html, body, #root { height: 100%; }
 }
