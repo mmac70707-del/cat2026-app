@@ -21,6 +21,22 @@ const SEQUENCE_STRIP = [
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 const MONTHS_ARR = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
+function getRealWeekDates() {
+  const now = new Date()
+  const day = now.getDay()
+  const mon = new Date(now)
+  mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+  mon.setHours(0, 0, 0, 0)
+
+  const weekDays: Date[] = []
+  for (let i = 0; i < 7; i++) {
+    const cur = new Date(mon)
+    cur.setDate(mon.getDate() + i)
+    weekDays.push(cur)
+  }
+  return weekDays
+}
+
 export function DashboardPage() {
   const phase = usePhase()
   const daysLeft = getDaysLeft()
@@ -36,6 +52,7 @@ export function DashboardPage() {
   const now = new Date()
   const realDayName = DAYS_ARR[now.getDay()]
   const realDateStr = `${now.getDate()} ${MONTHS_ARR[now.getMonth()]} ${now.getFullYear()}`
+  const realWeekDates = getRealWeekDates()
 
   useEffect(() => {
     ErrorRepository.getTypeCounts().then(counts => {
@@ -288,14 +305,15 @@ export function DashboardPage() {
 
             {/* WEEK CALENDAR */}
             <div className="card">
-              <div className="card-title">📅 Week {getWeekNumber()} — Master Schedule</div>
+              <div className="card-title">📅 Week {getWeekNumber()} — Real Master Schedule</div>
               <div className="week-grid">
                 {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((dName, dIdx) => {
-                  const isToday = dName === realDayName.slice(0,3).toUpperCase()
+                  const curDate = realWeekDates[dIdx]
+                  const isToday = curDate.toDateString() === now.toDateString()
                   return (
                     <div key={dName} className={`day-card ${isToday ? 'today' : ''}`}>
                       <div className="day-name">{dName}</div>
-                      <div className="day-date">{7 + dIdx}</div>
+                      <div className="day-date">{curDate.getDate()}</div>
                       <div className="day-focus" style={{ color: isToday ? 'var(--gold)' : 'var(--green2)' }}>{isToday ? 'TODAY' : 'SOLVE'}</div>
                     </div>
                   )
@@ -361,8 +379,7 @@ export function DashboardPage() {
             <div className="card">
               <div className="card-title">📊 Daily Update — DONE format</div>
               <div className="instruction" style={{ marginBottom: 12 }}>
-                <p>Type your day's data and I'll adapt tomorrow's plan. Format: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong><br/>
-                Example: <strong>DONE 5 3 62</strong> = 5 study hours, 3 screen hours, 62% accuracy</p>
+                <p>Type your day's data: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong></p>
               </div>
               <div className="scorecard">
                 <div className="score-input-wrap">
@@ -482,7 +499,7 @@ export function DashboardPage() {
 
             {/* PHASE TIMELINE */}
             <div className="card">
-              <div className="card-title">🗺️ Phase Timeline — 86 Days</div>
+              <div className="card-title">MAP Phase Timeline — 86 Days</div>
               <div className="phase-timeline">
                 <div className="phase-item active">
                   <div className="phase-name" style={{ color: 'var(--green2)' }}>REBUILD</div>
