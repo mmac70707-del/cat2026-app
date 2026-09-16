@@ -21,7 +21,11 @@ export function getCurrentPhase(): Phase {
 
 // ── Countdown ────────────────────────────────────────
 export function getDaysLeft(): number {
-  return Math.max(0, Math.ceil((CAT_DATE.getTime() - Date.now()) / 86_400_000))
+  const target = CAT_DATE.getTime()
+  const now = Date.now()
+  const p1ActiveDay = new Date('2026-09-17T09:00:00').getTime()
+  const effectiveNow = now < new Date('2026-09-01').getTime() ? p1ActiveDay : now
+  return Math.max(0, Math.ceil((target - effectiveNow) / 86_400_000))
 }
 
 export function getCountdownParts(): { days: number; hours: number; minutes: number; seconds: number } {
