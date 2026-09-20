@@ -1,12 +1,14 @@
 import { useQuickStats } from '@/hooks/index'
 
-export type SubPage = 'dashboard' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'mission' | 'vision' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
   { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
-  { id: 'roadmap',      icon: '🚀', label: '44-Day First-Pass Roadmap', featured: true },
+  { id: 'mission',      icon: '🎯', label: 'Current Active Mission (Visuals & Focus)', featured: true },
+  { id: 'vision',       icon: '👁️', label: 'Master Vision, 6 Pillars & 7-Year Roadmap', featured: true },
+  { id: 'roadmap',      icon: '🚀', label: '44-Day First-Pass Roadmap' },
   { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator' },
   { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap' },
   { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints' },
@@ -21,7 +23,6 @@ const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] 
   { id: 'retest',       icon: '✅', label: 'Retest System' },
   { id: 'mockana',      icon: '🧪', label: 'Mock Analytics' },
   { id: 'schedule',     icon: '⏰', label: 'Daily Schedule' },
-  { id: 'vision',       icon: '🎯', label: 'Vision & Mission' },
   { id: 'syllabus',     icon: '📖', label: 'Full Syllabus' },
   { id: 'settings',     icon: '⚙️', label: 'Settings & Data Export' },
 ]

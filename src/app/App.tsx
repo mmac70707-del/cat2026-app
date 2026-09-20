@@ -10,6 +10,8 @@ import { MasteryPage }          from '@/features/mastery/MasteryPage'
 import { PhasesPage }           from '@/features/phases/PhasesPage'
 import { MorePage }             from '@/pages/MorePage'
 import { DashboardPage }        from '@/features/dashboard/DashboardPage'
+import { MissionPage }          from '@/features/mission/MissionPage'
+import { VisionPage }           from '@/features/vision/VisionPage'
 import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
@@ -25,7 +27,6 @@ import { RepairPage }           from '@/features/repair/RepairPage'
 import { RetestPage }           from '@/features/retest/RetestPage'
 import { MocksPage }            from '@/features/mocks/MocksPage'
 import { SchedulePage }         from '@/features/schedule/SchedulePage'
-import { VisionPage }           from '@/features/vision/VisionPage'
 import { SyllabusPage }         from '@/features/syllabus/SyllabusPage'
 import { SettingsPage }         from '@/features/settings/SettingsPage'
 
@@ -34,7 +35,7 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -176,6 +177,8 @@ export function App() {
         {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
 
         {/* SUB PAGES */}
+        {activePage === 'mission'      && <MissionPage          onBack={() => setActivePage('more')} />}
+        {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
         {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
         {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
         {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
@@ -191,7 +194,6 @@ export function App() {
         {activePage === 'retest'       && <RetestPage           onBack={() => setActivePage('more')} />}
         {activePage === 'mockana'      && <MocksPage            onBack={() => setActivePage('more')} />}
         {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
-        {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
         {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
         {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
       </div>
