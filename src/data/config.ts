@@ -19,7 +19,10 @@ export const APP_UPDATE_INFO = {
   ]
 }
 
+export const CAT_EXAM_DATE_STR = '2026-11-29'
 export const CAT_DATE = new Date('2026-11-29T09:00:00')
+export const FIRST_PASS_START = '2026-09-18'
+export const FIRST_PASS_END = '2026-10-31'
 
 export const OFFICIAL_EXAM_INFO = {
   examDate: '29 November 2026',

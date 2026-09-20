@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
 import { MASTER_VISION, MASTER_LIFE_SEQUENCE, POST_CAT_ROADMAP, SEVEN_YEAR_ROADMAP } from '@/data/visionConfig'
 import { StateRepository, AppStateRecord } from '@/repositories/StateRepository'
+import { useCountdown } from '@/hooks/useCountdown'
+import { usePhase } from '@/hooks/usePhase'
 import { useToast } from '@/components/Toast'
 
 export function VisionPage({ onBack }: { onBack?: () => void }) {
+  const phase = usePhase()
+  const { days, hms } = useCountdown()
   const [appState, setAppState] = useState<AppStateRecord | null>(null)
   const { show: toast } = useToast()
 
@@ -29,15 +33,30 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, background: '#161D2E', border: '1px solid #2D3748', borderRadius: 12, padding: 16 }}>
         <div>
           <div style={{ fontSize: 20, fontWeight: 900, color: '#F5A623' }}>
-            👁️ VISION
+            👁️ VISION &amp; 7-YEAR ROADMAP
           </div>
           <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>
             Long-Term Execution Operating System (2026–2033)
           </div>
         </div>
 
+        <div style={{ textAlign: 'center' }}>
+          <span style={{ fontSize: 11, fontWeight: 800, padding: '4px 12px', borderRadius: 12, background: phase.color, color: '#FFFFFF' }}>
+            {phase.id} — {phase.name}
+          </span>
+        </div>
+
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#F5A623', fontFamily: 'monospace', lineHeight: 1 }}>
+            {days}
+          </div>
+          <div style={{ fontSize: 9, color: '#94A3B8', textTransform: 'uppercase', marginTop: 2 }}>
+            days left • {hms}
+          </div>
+        </div>
+
         {onBack && (
-          <button onClick={onBack} style={{ background: '#1F2937', border: '1px solid #374151', color: '#94A3B8', padding: '6px 14px', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>
+          <button onClick={onBack} style={{ background: '#1F2937', border: '1px solid #374151', color: '#94A3B8', padding: '6px 14px', borderRadius: 8, fontSize: 12, cursor: 'pointer', marginLeft: 10 }}>
             ← Back
           </button>
         )}
@@ -56,13 +75,13 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
         </div>
       </div>
 
-      {/* 5 PERMANENT PILLARS OF IDENTITY */}
+      {/* 6 PERMANENT PILLARS OF IDENTITY */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 13, fontWeight: 800, color: '#F5A623', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
-          🏛️ PERMANENT PILLARS
+          🏛️ 6 PERMANENT PILLARS OF IDENTITY
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 10 }}>
-          {MASTER_VISION.pillars.slice(0, 5).map(p => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
+          {MASTER_VISION.pillars.map(p => (
             <div key={p.num} style={{ background: '#161D2E', border: '1px solid #2D3748', borderRadius: 10, padding: 12 }}>
               <div style={{ fontSize: 10, fontWeight: 800, color: '#38BDF8', fontFamily: 'monospace' }}>
                 PILLAR 0{p.num}
