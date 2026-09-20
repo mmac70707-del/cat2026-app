@@ -1,6 +1,8 @@
 import { dbGet, dbGetAll, dbPut, dbGetByIndex } from '@/db'
 import { BLOCKS } from '@/data/config'
 import { todayKey, localDateKey } from '@/services/domain'
+import { generateDailyTargets } from '@/services/dailyTargetEngine'
+import { ErrorRepository } from '@/repositories/ErrorRepository'
 import type { Task, TaskStatus, BlockId } from '@/types'
 
 export const TaskRepository = {
@@ -13,18 +15,8 @@ export const TaskRepository = {
     let tasks = await dbGetByIndex<Task>('tasks', 'byDate', date)
 
     if (tasks.length === 0) {
-      const seeded: Task[] = BLOCKS.map(b => ({
-        id: `${date}_${b.id}`,
-        date,
-        blockId: b.id as BlockId,
-        subject: b.label,
-        title: b.name,
-        status: 'TODO' as TaskStatus,
-        startedAt: null,
-        completedAt: null,
-        timeSpentMin: null,
-        notes: '',
-      }))
+      const pendingErrors = await ErrorRepository.getPending()
+      const seeded = generateDailyTargets({ dateIso: date, pendingErrors })
       for (const t of seeded) await dbPut('tasks', t)
       return seeded
     }
