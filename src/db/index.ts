@@ -5,10 +5,9 @@
 // ═══════════════════════════════════════════════════
 
 const DB_NAME = 'cat2026_db'
-// Bumped 2 → 3 to add `roadmap44` (44-day first pass roadmap tracking)
-// and `dilrSets` / `varcLogs`. onupgradeneeded only ADDS new stores —
-// every existing store and data is preserved intact.
-const DB_VERSION = 3
+// Bumped 3 → 4 to add `artifacts` & `plans` (Visual Artifact & Master Planning System).
+// onupgradeneeded only ADDS new stores — every existing store and data is preserved intact.
+const DB_VERSION = 4
 
 let _db: IDBDatabase | null = null
 
@@ -31,6 +30,8 @@ export function openDB(): Promise<IDBDatabase> {
         { name: 'roadmap44',      key: 'dayNum', indexes: [] },
         { name: 'dilrSets',       key: 'id',     indexes: [['byDate','date']] },
         { name: 'varcLogs',       key: 'id',     indexes: [['byDate','date']] },
+        { name: 'artifacts',     key: 'id',     indexes: [['byType','type'],['byDateKey','dateKey'],['byWeekKey','weekKey'],['byMonthKey','monthKey'],['byYearKey','yearKey']] },
+        { name: 'plans',         key: 'id',     indexes: [['byType','type'],['byDateKey','dateKey']] },
       ]
 
       stores.forEach(({ name, key, indexes }) => {

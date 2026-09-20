@@ -1,79 +1,120 @@
-interface Props { onBack: () => void }
+import { MASTER_VISION, SEVEN_YEAR_ROADMAP } from '@/data/visionConfig'
 
-const LIFE_SEQ = [
-  { step: 'CAT 2026 ← ACTIVE', col: '#F5A623', desc: 'Current and ONLY mission. 29 November 2026.' },
-  { step: 'MBA / College',       col: '#3B82F6', desc: 'IIMs + Top B-Schools. Interviews, WAT, AWT.' },
-  { step: 'Business Capability', col: '#0E9F9F', desc: 'Learn strategy, marketing, finance, product.' },
-  { step: 'Build MVP / Product', col: '#D97706', desc: 'Customer problem → Product → Validation → Revenue.' },
-  { step: 'Grow Team + Revenue', col: '#DC2626', desc: 'Team → Scale → Market expansion.' },
-  { step: 'Scale + Expand',      col: '#7C3AED', desc: 'Systems, operations, leadership.' },
-  { step: 'Health, Wealth, Family + Impact', col: '#F5A623', desc: 'Long-term legacy.' },
-]
-
-const YEAR_VISION = [
-  ['2026–27', 'Crack CAT + Discipline',          '#2563EB'],
-  ['2027–28', 'MBA Entry + College',              '#16A34A'],
-  ['2028–29', 'Learn Business Deeply',            '#0E9F9F'],
-  ['2029–30', 'Build MVP / Product',              '#D97706'],
-  ['2030–31', 'Grow Team + Revenue',              '#DC2626'],
-  ['2031–32', 'Scale + Expand',                  '#7C3AED'],
-  ['2032–33', 'Health, Wealth, Family + Impact', '#F5A623'],
-] as const
-
-export function VisionPage({ onBack }: Props) {
+export function VisionPage({ onBack }: { onBack?: () => void }) {
   return (
-    <div className="section-pad">
-      <div className="page-header">
-        <button className="back-btn" onClick={onBack}>← Back</button>
-        <div className="page-header-title">Vision & Mission</div>
+    <div style={{ padding: '16px 20px', maxWidth: 1000, margin: '0 auto', color: '#F1F5F9' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>
+            🎯 Master Vision &amp; 7-Year Roadmap
+          </div>
+          <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>
+            Long-Term Execution Operating System (2026–2033)
+          </div>
+        </div>
+        {onBack && (
+          <button onClick={onBack} style={{ background: '#1F2937', border: '1px solid #374151', color: '#94A3B8', padding: '6px 14px', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>
+            ← Back
+          </button>
+        )}
       </div>
 
-      <div className="card" style={{ background: 'linear-gradient(135deg,rgba(26,86,219,.15),rgba(124,58,237,.15))', borderColor: 'rgba(26,86,219,.4)' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: 4 }}>Current Mission — ACTIVE</div>
-        <div style={{ fontSize: 20, fontWeight: 900, marginBottom: 4 }}>CAT 2026</div>
-        <div style={{ fontSize: 12, color: 'var(--muted)' }}>99+ Percentile · No Ceiling · 29 November 2026</div>
-        <div style={{ marginTop: 10, fontSize: 11, color: 'var(--gold)', fontWeight: 700 }}>
-          DO NOT ACTIVATE ANY OTHER PROJECT UNTIL CAT IS DONE.
+      {/* Main Quote Card */}
+      <div style={{ background: 'linear-gradient(135deg, #1A2E45, #0D1B2A)', border: '1px solid #F5A623', borderRadius: 12, padding: 20, marginBottom: 20, textAlign: 'center' }}>
+        <div style={{ fontSize: 20, fontWeight: 900, color: '#F5A623', letterSpacing: 0.5 }}>
+          "{MASTER_VISION.quote}"
+        </div>
+        <div style={{ fontSize: 12, color: '#CBD5E1', marginTop: 10, lineHeight: 1.6, maxWidth: 800, margin: '10px auto 0' }}>
+          {MASTER_VISION.identity}
+        </div>
+        <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 8, fontWeight: 700, fontStyle: 'italic' }}>
+          {MASTER_VISION.outcomeNote}
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-title">Master Life Sequence</div>
-        {LIFE_SEQ.map((s, i) => (
-          <div key={i}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: s.col, flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: s.col }}>{s.step}</div>
-                <div style={{ fontSize: 11, color: 'var(--muted2)' }}>{s.desc}</div>
+      {/* 5 Permanent Pillars */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 13, fontWeight: 800, color: '#F5A623', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 1 }}>
+          🏛️ 5 Permanent Pillars of Identity
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+          {MASTER_VISION.pillars.map(p => (
+            <div key={p.num} style={{ background: '#161D2E', border: '1px solid #2D3748', borderRadius: 10, padding: 14 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: '#38BDF8', fontFamily: 'monospace' }}>
+                PILLAR 0{p.num}
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#FFF', margin: '4px 0' }}>
+                {p.name}
+              </div>
+              <div style={{ fontSize: 11, color: '#94A3B8', lineHeight: 1.5 }}>
+                {p.desc}
               </div>
             </div>
-            {i < LIFE_SEQ.length - 1 && (
-              <div style={{ width: 1, height: 10, background: 'var(--border)', marginLeft: 3, marginBottom: 4 }} />
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      <div className="card">
-        <div className="card-title">7-Year Vision</div>
-        {YEAR_VISION.map(([year, goal, col]) => (
-          <div key={year} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: col, flexShrink: 0 }} />
-            <div style={{ fontSize: 11, fontWeight: 700, color: col, width: 68 }}>{year}</div>
-            <div style={{ fontSize: 11, color: 'var(--muted)' }}>{goal}</div>
-          </div>
-        ))}
+      {/* Master Review Loop */}
+      <div style={{ background: '#161D2E', border: '1px solid #2D3748', borderRadius: 12, padding: 16, marginBottom: 20 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: '#22C55E', marginBottom: 8 }}>
+          🔄 Master Review Loop (Universal Execution Flow)
+        </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', fontSize: 11, fontWeight: 700 }}>
+          {['GOAL', 'ACTION', 'RESULT', 'FEEDBACK', 'REFLECTION', 'REPAIR', 'NEW ACTION'].map((step, idx) => (
+            <span key={step} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ background: idx === 0 || idx === 6 ? '#F5A623' : '#1F2937', color: idx === 0 || idx === 6 ? '#0A0F1E' : '#FFF', padding: '4px 10px', borderRadius: 12, border: '1px solid #374151' }}>
+                {step}
+              </span>
+              {idx < 6 && <span style={{ color: '#94A3B8' }}>→</span>}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <div style={{ background: 'linear-gradient(135deg,#0D1B2A,#1A2E45)', border: '1px solid rgba(245,166,35,.3)', borderRadius: 14, padding: 16, textAlign: 'center' }}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--gold)' }}>
-          "Discipline Today → Dream College Tomorrow → Bigger Impact in Future"
+      {/* 7-Year Roadmap Cards */}
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 800, color: '#F5A623', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
+          🗺️ 7-Year Roadmap (Year 1 to Year 7)
         </div>
-        <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text)', marginTop: 8 }}>
-          BECOME THE MAN YOU PROMISE YOURSELF
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {SEVEN_YEAR_ROADMAP.map(y => (
+            <div key={y.yearNum} style={{ background: '#161D2E', border: y.yearNum === 1 ? '1px solid #F5A623' : '1px solid #2D3748', borderRadius: 12, padding: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 12, fontWeight: 900, fontFamily: 'monospace', color: '#F5A623', background: 'rgba(245,166,35,0.15)', padding: '2px 8px', borderRadius: 6 }}>
+                    YEAR {y.yearNum} • {y.yearRange}
+                  </span>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: '#FFF' }}>
+                    {y.theme}
+                  </span>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: y.layer === 'BUILD + EXPLORE' ? 'rgba(34,197,94,0.15)' : y.layer === 'CLUTCH + IMPACT' ? 'rgba(239,68,68,0.15)' : 'rgba(59,130,246,0.15)', color: y.layer === 'BUILD + EXPLORE' ? '#22C55E' : y.layer === 'CLUTCH + IMPACT' ? '#EF4444' : '#3B82F6' }}>
+                  {y.layer}
+                </span>
+              </div>
+
+              <div style={{ fontSize: 12, fontWeight: 700, color: '#38BDF8', marginBottom: 6 }}>
+                Identity: {y.identity}
+              </div>
+
+              <div style={{ fontSize: 11, color: '#CBD5E1', marginBottom: 8, lineHeight: 1.5 }}>
+                <strong>Key Focus Areas:</strong> {y.focus.join(' • ')}
+              </div>
+
+              <div style={{ fontSize: 11, color: '#22C55E', background: '#111827', padding: '8px 10px', borderRadius: 6, lineHeight: 1.5 }}>
+                🎯 {y.output}
+              </div>
+
+              {y.ruleOrLoop && (
+                <div style={{ fontSize: 10, color: '#F5A623', fontWeight: 700, marginTop: 6, fontStyle: 'italic' }}>
+                  ⚡ {y.ruleOrLoop}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-        <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--gold)', marginTop: 8 }}>Radhe Radhe 🙏</div>
       </div>
     </div>
   )
