@@ -1,12 +1,13 @@
 import { useQuickStats } from '@/hooks/index'
 
-export type SubPage = 'dashboard' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
   { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
-  { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator', featured: true },
+  { id: 'roadmap',      icon: '🚀', label: '44-Day First-Pass Roadmap', featured: true },
+  { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator' },
   { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap' },
   { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints' },
   { id: 'flashcards',   icon: '🎴', label: 'Spaced Repetition Formula Deck' },
@@ -20,7 +21,7 @@ const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] 
   { id: 'retest',       icon: '✅', label: 'Retest System' },
   { id: 'mockana',      icon: '🧪', label: 'Mock Analytics' },
   { id: 'schedule',     icon: '⏰', label: 'Daily Schedule' },
-  { id: 'vision',       icon: '🚀', label: 'Vision & Mission' },
+  { id: 'vision',       icon: '🎯', label: 'Vision & Mission' },
   { id: 'syllabus',     icon: '📖', label: 'Full Syllabus' },
   { id: 'settings',     icon: '⚙️', label: 'Settings & Data Export' },
 ]

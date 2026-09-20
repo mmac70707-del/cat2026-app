@@ -10,6 +10,7 @@ import { MasteryPage }          from '@/features/mastery/MasteryPage'
 import { PhasesPage }           from '@/features/phases/PhasesPage'
 import { MorePage }             from '@/pages/MorePage'
 import { DashboardPage }        from '@/features/dashboard/DashboardPage'
+import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
 import { FormulaDeckPage }      from '@/features/flashcards/FormulaDeckPage'
@@ -33,7 +34,7 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'vision' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -147,7 +148,7 @@ export function App() {
 
   if (activePage === 'dashboard') {
     return (
-      <div style={{ height: '100%', width: '100%', overflow: 'auto', position: 'relative', background: '#0A0F1E' }}>
+      <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
         <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
           <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
             ← Exit 1:1 Dashboard
@@ -175,6 +176,7 @@ export function App() {
         {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
 
         {/* SUB PAGES */}
+        {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
         {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
         {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
         {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
