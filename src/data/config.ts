@@ -3,10 +3,42 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 //  CAT 2026 — Static Configuration
 //  Single source of truth for all locked CAT data.
-//  Migrated 1:1 from Stage 1 Config object.
 // ═══════════════════════════════════════════════════
 
+export const APP_VERSION = '1.0.1'
+export const LAST_UPDATED = '17 SEP 2026 • 20:00 IST'
+
+export const APP_UPDATE_INFO = {
+  version: APP_VERSION,
+  lastUpdated: LAST_UPDATED,
+  changes: [
+    '44-Day First-Pass Roadmap System activated',
+    'Real-time date and weekday auto-syncing',
+    'CAT 2026 Official Exam Info & Config locked',
+    'Auto cache-busting service worker update prompt'
+  ]
+}
+
 export const CAT_DATE = new Date('2026-11-29T09:00:00')
+
+export const OFFICIAL_EXAM_INFO = {
+  examDate: '29 November 2026',
+  conductingIIM: 'IIM Indore',
+  totalQuestions: 68,
+  totalMinutes: 120,
+  minutesPerSection: 40,
+  sections: {
+    VARC: { questions: 24, minutes: 40 },
+    DILR: { questions: 22, minutes: 40 },
+    QA:   { questions: 22, minutes: 40 },
+  },
+  marking: {
+    mcqCorrect: 3,
+    mcqWrong: -1,
+    titaCorrect: 3,
+    titaWrong: 0,
+  }
+}
 
 export const PHASES: Phase[] = [
   {
