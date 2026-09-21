@@ -3,6 +3,8 @@ import { useTodayTasks } from '@/hooks/useTasks'
 import { DailyScoreRepository } from '@/repositories/index'
 import { usePhase } from '@/hooks/usePhase'
 import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
+import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
+import { ROADMAP_44 } from '@/data/roadmap44'
 import { BlockCard } from './BlockCard'
 import { useToast } from '@/components/Toast'
 
@@ -28,6 +30,9 @@ export function TodayPage() {
   const [feedback, setFeedback] = useState('')
 
   const now = new Date()
+  const dateKey = getKolkataDateKey(now)
+  const dayNum = getFirstPassDayNum(dateKey)
+  const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
 
   async function submitDone() {
     const s  = parseFloat(study)  || 0
@@ -93,17 +98,31 @@ export function TodayPage() {
         </div>
       </div>
 
-      {/* Today's Progress Bar */}
+      {/* 44-Day First-Pass Day & Progress Bar */}
       <div style={{ padding: '12px 16px 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontSize: 12, fontWeight: 700 }}>Today's Progress</span>
-          <span style={{ fontSize: 12, fontFamily: 'monospace', color: 'var(--gold)' }}>{done}/8 blocks done</span>
-        </div>
-        <div className="progress-wrap">
-          <div
-            className="progress-fill"
-            style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#16A34A,#22C55E)' }}
-          />
+        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
+                🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
+                Chapter: {roadmapItem.chapter} ({roadmapItem.category})
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 13, fontFamily: 'monospace', color: 'var(--gold)', fontWeight: 800 }}>
+                {done}/8 blocks done
+              </div>
+              <div style={{ fontSize: 10, color: 'var(--muted)' }}>{pct}% complete</div>
+            </div>
+          </div>
+          <div className="progress-wrap" style={{ marginTop: 8 }}>
+            <div
+              className="progress-fill"
+              style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#16A34A,#22C55E)' }}
+            />
+          </div>
         </div>
       </div>
 
