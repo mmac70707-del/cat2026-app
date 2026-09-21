@@ -1,6 +1,7 @@
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { BLOCKS } from '@/data/config'
 import { getCurrentPhase, localDateKey } from '@/services/domain'
+import { getFirstPassDayNum } from '@/services/calendarEngine'
 import type { Task, ErrorRecord, TaskStatus } from '@/types'
 
 export interface DailyTargetInput {
@@ -15,11 +16,9 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
   const dateKey = localDateKey(d)
   const phase = getCurrentPhase()
 
-  // Find 44-Day First-Pass day if applicable
-  const p1Start = new Date('2026-09-18T00:00:00')
-  const diffDays = Math.floor((d.getTime() - p1Start.getTime()) / 86_400_000) + 1
-  const dayNum = Math.max(1, Math.min(44, diffDays))
-  const roadmapItem = ROADMAP_44.find(r => r.dayNum === dayNum) || ROADMAP_44[0]
+  // Find exact 44-Day First-Pass day & roadmap item
+  const dayNum = getFirstPassDayNum(dateKey)
+  const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
 
   const pendingC1Errors = (input.pendingErrors || []).filter(e => e.errorType === 'C1').length
   const totalPendingErrors = (input.pendingErrors || []).length
@@ -30,13 +29,13 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
 
     if (b.id === 'QA') {
       title = `${roadmapItem.chapter} (Day ${dayNum < 10 ? '0' + dayNum : dayNum}/44)`
-      notes = `Phase: ${phase.name} • Target: 15–20 questions Easy → Moderate.`
+      notes = `Topic: ${roadmapItem.chapter} • Task: 15–20 questions Easy → Moderate • Exit: 70%+ accuracy`
     } else if (b.id === 'DILR') {
-      title = `DILR Set-Solving — ${dayNum % 2 === 1 ? 'Tables & Bar Graphs' : 'Arrangements & Selection'}`
-      notes = '1 quality set attempt • 2nd set ONLY if 1st fully analysed.'
+      title = `${roadmapItem.dilrFamily} Set-Solving`
+      notes = `Set Family: ${roadmapItem.dilrFamily} • Task: 1–2 quality sets • Exit: 3+ correct with method`
     } else if (b.id === 'VARC') {
-      title = `VARC RC Sprint — ${dayNum % 2 === 1 ? 'Main Idea & Argument' : 'Inference & Elimination'}`
-      notes = '2 RC passages + 3 VA questions • 15–20 min reading target.'
+      title = `${roadmapItem.varcSkill} & RC Practice`
+      notes = `Skill: ${roadmapItem.varcSkill} • Task: 2 RC passages + VA questions • Exit: 4+ correct`
     } else if (b.id === 'TEST') {
       const dayOfWeek = d.getDay()
       if (dayOfWeek === 0) title = 'SUNDAY FULL MOCK EXAM'

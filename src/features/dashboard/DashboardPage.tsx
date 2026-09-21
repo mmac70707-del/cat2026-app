@@ -4,6 +4,8 @@ import { DailyScoreRepository } from '@/repositories/index'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { usePhase } from '@/hooks/usePhase'
 import { getWeekNumber, getDaysLeft } from '@/services/domain'
+import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
+import { ROADMAP_44 } from '@/data/roadmap44'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 
@@ -50,6 +52,10 @@ export function DashboardPage() {
   const [errorCounts, setErrorCounts] = useState<{ [key: string]: number }>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
 
   const now = new Date()
+  const dateKey = getKolkataDateKey(now)
+  const dayNum = getFirstPassDayNum(dateKey)
+  const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
+
   const realDayName = DAYS_ARR[now.getDay()]
   const realDateStr = `${now.getDate()} ${MONTHS_ARR[now.getMonth()]} ${now.getFullYear()}`
   const realWeekDates = getRealWeekDates()
@@ -167,8 +173,8 @@ export function DashboardPage() {
           {/* TODAY'S EXACT PLAN */}
           <div>
             <div className="today-header">
-              <div className="today-title">📅 {realDayName.toUpperCase()} — {realDateStr.toUpperCase()}</div>
-              <div className="today-sub">Focus: SOLVING &nbsp;|&nbsp; Core Execution &amp; Error Elimination &nbsp;|&nbsp; Week {getWeekNumber()}</div>
+              <div className="today-title">📅 {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44</div>
+              <div className="today-sub">Today's Topic: <strong style={{ color: 'var(--gold)' }}>{roadmapItem.chapter}</strong> &nbsp;|&nbsp; Week {getWeekNumber()}</div>
             </div>
 
             <div className="block-list">
@@ -186,98 +192,8 @@ export function DashboardPage() {
                     <div className={`block-num ${nClass}`}>{seqObj.seq.replace('0','')}</div>
                     <div className="block-content">
                       <div className={`block-section ${tClass}`}>{sId} — {task.subject}</div>
-
-                      {sId === 'QA' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>Topic:</strong> Quantitative Foundation → Core Problem Solving<br/>
-                            <strong>Task:</strong> 15–20 questions, Easy → Moderate<br/>
-                            <strong>Method:</strong> Concept first (5 min) → 3 basic Qs → 10 moderate Qs → 2 CAT-style Qs<br/>
-                            <strong>Exit:</strong> 70%+ accuracy confirmed
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'DILR' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>Task:</strong> 1 quality DILR set (4–6 questions)<br/>
-                            <strong>Flow:</strong> Read → Identify variables → Extract data → Solve → Verify<br/>
-                            <strong>Focus:</strong> Accuracy first — skip if stuck beyond 8 min<br/>
-                            <strong>Exit:</strong> 3+ correct answers with method explained
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'VARC' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>Task:</strong> 2 RC passages / VA practice<br/>
-                            <strong>Flow:</strong> Read → Understand structure → Identify argument → Predict → Eliminate<br/>
-                            <strong>Focus:</strong> Main Idea Q first, then Inference — accuracy &gt; speed<br/>
-                            <strong>Exit:</strong> 4+ correct across questions
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'TEST' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>Task:</strong> Review error log → fix every C1–C5 mistake<br/>
-                            <strong>Rule:</strong> No random resources — only your error log material<br/>
-                            <strong>Exit:</strong> Every logged error re-solved correctly
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'ANALYSIS' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>C1</strong> = Concept gap &nbsp;|&nbsp; <strong>C2</strong> = Calculation error &nbsp;|&nbsp; <strong>C3</strong> = Misread<br/>
-                            <strong>C4</strong> = Wrong approach &nbsp;|&nbsp; <strong>C5</strong> = Time management<br/>
-                            <strong>Exit:</strong> Every wrong Q classified + prevention rule written
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'REVISION' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>30-sec recap:</strong> What did I learn today?<br/>
-                            <strong>2-min revision:</strong> Core formula → trap → today's biggest mistake<br/>
-                            <strong>Exit:</strong> Can recite core method in 30 seconds
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'REPAIR' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>Source:</strong> Today's error log + unresolved errors<br/>
-                            <strong>Method:</strong> Close solution → think fresh → attempt alone → verify<br/>
-                            <strong>Exit:</strong> Re-solved 100% of logged errors
-                          </div>
-                        </>
-                      )}
-
-                      {sId === 'RETEST' && (
-                        <>
-                          <div className="block-title">{task.title}</div>
-                          <div className="block-details">
-                            <strong>Practice:</strong> Take 3–5 fresh questions on today's topics<br/>
-                            <strong>Mastery check:</strong> Can I solve it, explain it, solve under time?<br/>
-                            <strong>Exit:</strong> 3+/5 correct = today's learning confirmed
-                          </div>
-                        </>
-                      )}
-
+                      <div className="block-title">{task.title}</div>
+                      <div className="block-details">{task.notes || 'Target: 70%+ accuracy • Focus on core method.'}</div>
                     </div>
                     <div className="block-meta">
                       <div className="meta-time">Scheduled</div>
@@ -291,8 +207,20 @@ export function DashboardPage() {
             {/* Progress */}
             <div style={{ marginTop: 14, background: 'var(--bg3)', borderRadius: 10, padding: '12px 14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)' }}>Today's Progress</span>
-                <span style={{ fontSize: 12, fontFamily: 'var(--mono)', color: 'var(--gold)' }}>{done} / 8 blocks done</span>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
+                    🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
+                    Chapter: {roadmapItem.chapter} ({roadmapItem.category})
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 13, fontFamily: 'monospace', color: 'var(--gold)', fontWeight: 800 }}>
+                    {done} / 8 blocks done
+                  </div>
+                  <div style={{ fontSize: 10, color: 'var(--muted)' }}>{pct}% complete</div>
+                </div>
               </div>
               <div style={{ background: 'var(--bg2)', borderRadius: 4, height: 8, overflow: 'hidden' }}>
                 <div style={{ height: '100%', background: 'linear-gradient(90deg,var(--green),var(--green2))', width: `${pct}%`, transition: 'width .5s ease', borderRadius: 4 }}></div>
@@ -536,7 +464,7 @@ export function DashboardPage() {
 
         {/* MANTRA */}
         <div className="mantra-bar">
-          <div className="mantra-text">"Discipline Today → Dream College Tomorrow → Bigger Impact in Future"</div>
+          <div className="mantra-text">"Discipline Today Builds the Freedom Tomorrow"</div>
           <div className="mantra-sub">BECOME THE MAN YOU PROMISE YOURSELF &nbsp;|&nbsp; CAT 2026 &nbsp;|&nbsp; Radhe Radhe 🙏</div>
         </div>
 
