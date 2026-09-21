@@ -164,3 +164,38 @@ export interface QuickStats {
   repairPending: number;
   retestPending: number;
 }
+
+// ── Calendar Hierarchy Types (Stage 1) ────────────────
+export interface CalendarDay {
+  dateKey: string;           // YYYY-MM-DD in Asia/Kolkata
+  dayNum: number;            // 1..44 in 18 Sep-31 Oct First Pass or 0
+  dayName: string;           // MON, TUE, WED...
+  dateFormatted: string;     // e.g. "18 SEP 2026"
+  isPast: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+  phaseId: string;
+}
+
+export interface CalendarWeek {
+  weekKey: string;           // YYYY-Www in Asia/Kolkata
+  year: number;
+  weekNum: number;
+  startDateKey: string;      // Monday YYYY-MM-DD
+  endDateKey: string;        // Sunday YYYY-MM-DD
+  days: CalendarDay[];
+}
+
+export interface CalendarMonth {
+  monthKey: string;          // YYYY-MM in Asia/Kolkata
+  year: number;
+  monthNum: number;          // 1..12
+  monthName: string;         // September, October...
+  weeks: CalendarWeek[];
+}
+
+export interface CalendarYear {
+  yearKey: string;           // YYYY in Asia/Kolkata
+  yearNum: number;
+  months: CalendarMonth[];
+}

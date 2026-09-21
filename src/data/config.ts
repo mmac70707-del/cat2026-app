@@ -5,6 +5,7 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 //  Single source of truth for all locked CAT data.
 // ═══════════════════════════════════════════════════
 
+export const APP_TIMEZONE = 'Asia/Kolkata'
 export const APP_VERSION = '1.0.1'
 export const LAST_UPDATED = '17 SEP 2026 • 20:00 IST'
 
