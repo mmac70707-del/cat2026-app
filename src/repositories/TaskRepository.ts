@@ -11,17 +11,39 @@ export const TaskRepository = {
   },
 
   async getTodayTasks(): Promise<Task[]> {
-    const date = this.todayKey()
-    let tasks = await dbGetByIndex<Task>('tasks', 'byDate', date)
+    return this.getTasksForDate(this.todayKey())
+  },
 
-    if (tasks.length === 0) {
-      const pendingErrors = await ErrorRepository.getPending()
-      const seeded = generateDailyTargets({ dateIso: date, pendingErrors })
-      for (const t of seeded) await dbPut('tasks', t)
-      return seeded
+  async getTasksForDate(date: string): Promise<Task[]> {
+    let existingTasks = await dbGetByIndex<Task>('tasks', 'byDate', date)
+    const pendingErrors = await ErrorRepository.getPending()
+    const freshTargets = generateDailyTargets({ dateIso: date, pendingErrors })
+
+    if (existingTasks.length === 0) {
+      for (const t of freshTargets) await dbPut('tasks', t)
+      return freshTargets
     }
 
-    return BLOCKS.map(b => tasks.find(t => t.blockId === b.id)).filter(Boolean) as Task[]
+    // Merge fresh titles & notes with user's existing status & notes
+    const merged: Task[] = []
+    for (const fresh of freshTargets) {
+      const existing = existingTasks.find(t => t.blockId === fresh.blockId)
+      if (existing) {
+        // Update title and notes to match the date's exact 44-day syllabus topic if title changed
+        const updated: Task = {
+          ...existing,
+          title: fresh.title,
+          notes: existing.notes || fresh.notes,
+        }
+        await dbPut('tasks', updated)
+        merged.push(updated)
+      } else {
+        await dbPut('tasks', fresh)
+        merged.push(fresh)
+      }
+    }
+
+    return BLOCKS.map(b => merged.find(t => t.blockId === b.id)).filter(Boolean) as Task[]
   },
 
   async updateTask(id: string, patch: Partial<Task>): Promise<void> {
@@ -43,8 +65,13 @@ export const TaskRepository = {
       return localDateKey(d)
     })
 
-    const all = await dbGetAll<Task>('tasks')
-    return all.filter(t => dates.includes(t.date))
+    const result: Task[] = []
+    for (const dKey of dates) {
+      const dayTasks = await this.getTasksForDate(dKey)
+      result.push(...dayTasks)
+    }
+
+    return result
   },
 
   async getAllHistorical(): Promise<Task[]> {

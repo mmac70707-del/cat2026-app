@@ -1,4 +1,6 @@
 import { CAT_DATE, PHASES, WEEK_PLAN_TEMPLATE } from '@/data/config'
+import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
+import { MASTER_SPINE_44 } from '@/data/roadmap44'
 import type { Phase, WeekDay, MockAnalysis, MasteryLevel, Task } from '@/types'
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -45,7 +47,7 @@ export function getWeekNumber(): number {
   return Math.floor(diff / (7 * 86_400_000)) + 1
 }
 
-// ── Dynamic week plan (real dates) ───────────────────
+// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
 export function buildWeekPlan(): WeekDay[] {
   const now = new Date()
   const day = now.getDay()
@@ -56,12 +58,19 @@ export function buildWeekPlan(): WeekDay[] {
   return WEEK_PLAN_TEMPLATE.map((t, i) => {
     const d = new Date(mon)
     d.setDate(mon.getDate() + i)
+    const dKey = getKolkataDateKey(d)
+    const dNum = getFirstPassDayNum(dKey)
+    const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === dNum)
+
     const isToday = d.toDateString() === now.toDateString()
     const isPast  = d < now && !isToday
 
     return {
       ...t,
       date:    `${d.getDate()} ${MONTHS[d.getMonth()]}`,
+      qa:      roadmapItem ? roadmapItem.chapter : t.qa,
+      dilr:    roadmapItem ? roadmapItem.dilrFamily : t.dilr,
+      varc:    roadmapItem ? roadmapItem.varcSkill : t.varc,
       focus:   isToday ? 'TODAY' : t.focus,
       fCol:    isToday ? '#F5A623' : t.fCol,
       isToday,
