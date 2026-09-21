@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react'
-import { ROADMAP_44, RoadmapDayItem } from '@/data/roadmap44'
+import {
+  MASTER_SPINE_44,
+  RoadmapDayItem,
+  QA_BLOCK_MAPS,
+  DILR_SET_FAMILIES,
+  VARC_SKILL_SEQUENCE,
+  QUESTION_LADDER_STAGES,
+  FINAL_MENTOR_RULES,
+  COVERAGE_DEADLINES
+} from '@/data/roadmap44'
 import { RoadmapRepository, ChapterProgress } from '@/repositories/RoadmapRepository'
 import { useToast } from '@/components/Toast'
 
@@ -14,6 +23,7 @@ const STATUS_CONFIG = {
 export function RoadmapPage({ onBack }: { onBack?: () => void }) {
   const [progressList, setProgressList] = useState<ChapterProgress[]>([])
   const [selectedDay, setSelectedDay]   = useState<number | null>(null)
+  const [activeTab, setActiveTab]       = useState<'spine' | 'blocks' | 'milestones' | 'rules'>('spine')
   const [loading, setLoading]           = useState(true)
   const { show: toast }                 = useToast()
 
@@ -61,10 +71,10 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>
-            🚀 44-Day First-Pass Roadmap
+            🔥 YOUR 44-DAY SYLLABUS ATTACK
           </div>
           <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>
-            18 SEP 2026 → 31 OCT 2026 • 1 Major QA Unit Per Day
+            18 SEP 2026 → 31 OCT 2026 • QA + DILR + VARC 6-Week Master Spine
           </div>
         </div>
         {onBack && (
@@ -74,127 +84,234 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
         )}
       </div>
 
-      {/* Progress Card */}
-      <div style={{ background: '#161D2E', border: '1px solid #2D3748', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 700 }}>Overall First-Pass Progress</span>
-          <span style={{ fontSize: 13, fontFamily: 'monospace', color: '#F5A623', fontWeight: 800 }}>{completedCount} / 44 Days ({pct}%)</span>
+      {/* 44-DAY SYLLABUS BOARD BOX */}
+      <div style={{ background: '#161D2E', border: '1px solid #F5A623', borderRadius: 12, padding: 16, marginBottom: 16 }}>
+        <div style={{ fontSize: 13, fontWeight: 900, color: '#F5A623', marginBottom: 8, letterSpacing: 1 }}>
+          📒 DIARY FIRST PAGE — 44-DAY SYLLABUS BOARD
         </div>
-        <div style={{ background: '#1F2937', height: 10, borderRadius: 5, overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10, fontSize: 11, color: '#CBD5E1', fontFamily: 'monospace' }}>
+          <div>START: <strong>18 SEP 2026</strong></div>
+          <div>DEADLINE: <strong>31 OCT 2026</strong></div>
+          <div>EXAM: <strong>29 NOV 2026</strong></div>
+          <div>QA: <strong>{completedCount}/44</strong></div>
+          <div>DILR: <strong>{completedCount}/44</strong></div>
+          <div>VARC: <strong>{completedCount}/44</strong></div>
+        </div>
+        <div style={{ background: '#1F2937', height: 8, borderRadius: 4, overflow: 'hidden', marginTop: 12 }}>
           <div style={{ width: `${pct}%`, height: '100%', background: 'linear-gradient(90deg, #16A34A, #22C55E)', transition: 'width 0.5s' }}></div>
         </div>
       </div>
 
-      {/* 44-Day Scrollable Grid / List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {ROADMAP_44.map((item: RoadmapDayItem) => {
-          const prog = progressList.find(p => p.dayNum === item.dayNum) || {
-            dayNum: item.dayNum, concept: false, basic: false, medium: false, pyq: false, timed: false, errorAnalysis: false, retest: false, status: 'NOT_STARTED' as const
-          }
-          const st = STATUS_CONFIG[prog.status]
-          const isExpanded = selectedDay === item.dayNum
-
-          return (
-            <div
-              key={item.dayNum}
-              style={{
-                background: '#161D2E', border: `1px solid ${st.color}`,
-                borderRadius: 12, padding: 14, cursor: 'pointer', transition: 'all 0.2s'
-              }}
-            >
-              <div
-                onClick={() => setSelectedDay(isExpanded ? null : item.dayNum)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: st.bg, color: st.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13 }}>
-                    {item.dayNum < 10 ? `0${item.dayNum}` : item.dayNum}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: '#94A3B8', letterSpacing: 0.5 }}>
-                      DAY {item.dayNum < 10 ? `0${item.dayNum}` : item.dayNum} • {item.dateStr} • {item.category}
-                    </div>
-                    <div style={{ fontSize: 15, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
-                      {item.chapter}
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 8, background: st.bg, color: st.color }}>
-                    {st.icon} {st.label}
-                  </span>
-                  <span style={{ color: '#94A3B8', fontSize: 12 }}>{isExpanded ? '▲' : '▼'}</span>
-                </div>
-              </div>
-
-              {/* Expanded Checklist details */}
-              {isExpanded && (
-                <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid #2D3748' }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#F5A623', marginBottom: 10 }}>
-                    CHECKLIST (7 STEPS TO FIRST PASS COMPLETION):
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginBottom: 14 }}>
-                    {[
-                      { key: 'concept', label: 'Concept' },
-                      { key: 'basic', label: 'Basic Practice' },
-                      { key: 'medium', label: 'Medium Practice' },
-                      { key: 'pyq', label: 'CAT / PYQ' },
-                      { key: 'timed', label: 'Timed Solving' },
-                      { key: 'errorAnalysis', label: 'Error Analysis' },
-                      { key: 'retest', label: 'Retest' },
-                    ].map(chk => {
-                      const fieldKey = chk.key as keyof Omit<ChapterProgress, 'dayNum' | 'status'>
-                      const isChecked = Boolean(prog[fieldKey])
-                      return (
-                        <div
-                          key={chk.key}
-                          onClick={(e) => { e.stopPropagation(); handleToggleCheck(item.dayNum, fieldKey) }}
-                          style={{
-                            background: isChecked ? 'rgba(34,197,94,0.15)' : '#1F2937',
-                            border: `1px solid ${isChecked ? '#22C55E' : '#374151'}`,
-                            borderRadius: 8, padding: '8px 10px', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 600
-                          }}
-                        >
-                          <span style={{ fontSize: 14, color: isChecked ? '#22C55E' : '#94A3B8' }}>
-                            {isChecked ? '✅' : '☐'}
-                          </span>
-                          <span>{chk.label}</span>
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#94A3B8', marginBottom: 8 }}>
-                    MANUAL STATUS OVERRIDE:
-                  </div>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {(['NOT_STARTED', 'CURRENT', 'FIRST_PASS_COMPLETE', 'MASTERED', 'EXAM_READY'] as const).map(s => {
-                      const cfg = STATUS_CONFIG[s]
-                      return (
-                        <button
-                          key={s}
-                          onClick={(e) => { e.stopPropagation(); handleSetStatus(item.dayNum, s) }}
-                          style={{
-                            background: prog.status === s ? cfg.color : '#1F2937',
-                            color: prog.status === s ? '#0A0F1E' : cfg.color,
-                            border: `1px solid ${cfg.color}`,
-                            padding: '4px 10px', borderRadius: 6, fontSize: 10, fontWeight: 800, cursor: 'pointer'
-                          }}
-                        >
-                          {cfg.icon} {cfg.label}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )
-        })}
+      {/* TABS */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
+        {[
+          { id: 'spine', label: '🧭 44-Day Master Spine' },
+          { id: 'blocks', label: '📦 Blocks A–F (QA/DILR/VARC)' },
+          { id: 'milestones', label: '⛳ Coverage Deadlines' },
+          { id: 'rules', label: '🧠 Question Ladder & Rules' },
+        ].map(t => (
+          <button
+            key={t.id}
+            onClick={() => setActiveTab(t.id as unknown as 'spine')}
+            style={{
+              background: activeTab === t.id ? '#F5A623' : '#161D2E',
+              color: activeTab === t.id ? '#0A0F1E' : '#FFF',
+              border: `1px solid ${activeTab === t.id ? '#F5A623' : '#2D3748'}`,
+              padding: '8px 14px', borderRadius: 8, fontSize: 11, fontWeight: 800, cursor: 'pointer', flexShrink: 0
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
+
+      {/* TAB 1: MASTER SPINE TABLE */}
+      {activeTab === 'spine' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {MASTER_SPINE_44.map((item: RoadmapDayItem) => {
+            const prog = progressList.find(p => p.dayNum === item.dayNum) || {
+              dayNum: item.dayNum, concept: false, basic: false, medium: false, pyq: false, timed: false, errorAnalysis: false, retest: false, status: 'NOT_STARTED' as const
+            }
+            const st = STATUS_CONFIG[prog.status]
+            const isExpanded = selectedDay === item.dayNum
+
+            return (
+              <div
+                key={item.dayNum}
+                style={{
+                  background: '#161D2E', border: `1px solid ${st.color}`,
+                  borderRadius: 12, padding: 14, cursor: 'pointer', transition: 'all 0.2s'
+                }}
+              >
+                <div
+                  onClick={() => setSelectedDay(isExpanded ? null : item.dayNum)}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: st.bg, color: st.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13 }}>
+                      {item.dayNum < 10 ? `0${item.dayNum}` : item.dayNum}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: '#94A3B8', letterSpacing: 0.5 }}>
+                        DAY {item.dayNum < 10 ? `0${item.dayNum}` : item.dayNum} • {item.dateStr} • {item.blockName}
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: '#FFF', marginTop: 2, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                        <span>📐 QA: <strong style={{ color: '#F5A623' }}>{item.chapter}</strong></span>
+                        <span>🧩 DILR: <strong style={{ color: '#60A5FA' }}>{item.dilrFamily}</strong></span>
+                        <span>📖 VARC: <strong style={{ color: '#A78BFA' }}>{item.varcSkill}</strong></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 8, background: st.bg, color: st.color }}>
+                      {st.icon} {st.label}
+                    </span>
+                    <span style={{ color: '#94A3B8', fontSize: 12 }}>{isExpanded ? '▲' : '▼'}</span>
+                  </div>
+                </div>
+
+                {/* Expanded Checklist details */}
+                {isExpanded && (
+                  <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid #2D3748' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#F5A623', marginBottom: 10 }}>
+                      CHECKLIST (7 STEPS TO FIRST PASS COMPLETION):
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, marginBottom: 14 }}>
+                      {[
+                        { key: 'concept', label: 'Concept' },
+                        { key: 'basic', label: 'Basic Practice' },
+                        { key: 'medium', label: 'Medium Practice' },
+                        { key: 'pyq', label: 'CAT / PYQ' },
+                        { key: 'timed', label: 'Timed Solving' },
+                        { key: 'errorAnalysis', label: 'Error Analysis' },
+                        { key: 'retest', label: 'Retest' },
+                      ].map(chk => {
+                        const fieldKey = chk.key as keyof Omit<ChapterProgress, 'dayNum' | 'status'>
+                        const isChecked = Boolean(prog[fieldKey])
+                        return (
+                          <div
+                            key={chk.key}
+                            onClick={(e) => { e.stopPropagation(); handleToggleCheck(item.dayNum, fieldKey) }}
+                            style={{
+                              background: isChecked ? 'rgba(34,197,94,0.15)' : '#1F2937',
+                              border: `1px solid ${isChecked ? '#22C55E' : '#374151'}`,
+                              borderRadius: 8, padding: '8px 10px', cursor: 'pointer',
+                              display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 600
+                            }}
+                          >
+                            <span style={{ fontSize: 14, color: isChecked ? '#22C55E' : '#94A3B8' }}>
+                              {isChecked ? '✅' : '☐'}
+                            </span>
+                            <span>{chk.label}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#94A3B8', marginBottom: 8 }}>
+                      MANUAL STATUS OVERRIDE:
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {(['NOT_STARTED', 'CURRENT', 'FIRST_PASS_COMPLETE', 'MASTERED', 'EXAM_READY'] as const).map(s => {
+                        const cfg = STATUS_CONFIG[s]
+                        return (
+                          <button
+                            key={s}
+                            onClick={(e) => { e.stopPropagation(); handleSetStatus(item.dayNum, s) }}
+                            style={{
+                              background: prog.status === s ? cfg.color : '#1F2937',
+                              color: prog.status === s ? '#0A0F1E' : cfg.color,
+                              border: `1px solid ${cfg.color}`,
+                              padding: '4px 10px', borderRadius: 6, fontSize: 10, fontWeight: 800, cursor: 'pointer'
+                            }}
+                          >
+                            {cfg.icon} {cfg.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* TAB 2: BLOCKS A-F */}
+      {activeTab === 'blocks' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {QA_BLOCK_MAPS.map((b, idx) => (
+            <div key={idx} style={{ background: '#161D2E', border: '1px solid #2D3748', borderRadius: 12, padding: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 800, color: '#F5A623' }}>{b.block} — {b.name}</span>
+                <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#60A5FA' }}>{b.dates}</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 6, marginTop: 8 }}>
+                {b.topics.map((top, tIdx) => (
+                  <div key={tIdx} style={{ background: '#1F2937', padding: '6px 10px', borderRadius: 6, fontSize: 11, color: '#CBD5E1' }}>
+                    {top}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* TAB 3: COVERAGE DEADLINES */}
+      {activeTab === 'milestones' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {COVERAGE_DEADLINES.map((cd, idx) => (
+            <div key={idx} style={{ background: '#161D2E', border: '1px solid #38BDF8', borderRadius: 12, padding: 16 }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: '#38BDF8', marginBottom: 10 }}>⛳ {cd.date}</div>
+              <ul style={{ paddingLeft: 20, margin: 0, fontSize: 12, color: '#E2E8F0', lineHeight: 1.7 }}>
+                {cd.items.map((it, iIdx) => (
+                  <li key={iIdx}>{it}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* TAB 4: RULES & QUESTION LADDER */}
+      {activeTab === 'rules' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Mentor Rules */}
+          <div style={{ background: 'linear-gradient(135deg, #1A2E45, #0D1B2A)', border: '1px solid #F5A623', borderRadius: 12, padding: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 900, color: '#F5A623', marginBottom: 8 }}>🤝 MENTOR RULES</div>
+            {FINAL_MENTOR_RULES.map((r, rIdx) => (
+              <div key={rIdx} style={{ fontSize: 12, fontWeight: 700, color: '#FFF', marginBottom: 6 }}>
+                ⚡ {r}
+              </div>
+            ))}
+          </div>
+
+          {/* Question Ladder */}
+          <div style={{ background: '#161D2E', border: '1px solid #2D3748', borderRadius: 12, padding: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#22C55E', marginBottom: 10 }}>🧱 YOUR DAILY QA QUESTION LADDER</div>
+            {QUESTION_LADDER_STAGES.map((ql, qIdx) => (
+              <div key={qIdx} style={{ background: '#1F2937', padding: 10, borderRadius: 8, marginBottom: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: '#F5A623' }}>{ql.stage} ({ql.total})</div>
+                <div style={{ fontSize: 11, color: '#CBD5E1', marginTop: 4 }}>{ql.breakdown}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Video Gate */}
+          <div style={{ background: '#161D2E', border: '1px solid #EF4444', borderRadius: 12, padding: 16 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#EF4444', marginBottom: 8 }}>🔥 THE "VIDEO GATE" RULE</div>
+            <div style={{ fontSize: 11, color: '#CBD5E1', lineHeight: 1.6 }}>
+              Before opening a lecture ask: <strong>"CAN I SOLVE A BASIC QUESTION?"</strong><br/>
+              • <strong>YES</strong> → SKIP VIDEO immediately &amp; solve Qs.<br/>
+              • <strong>NO</strong> → WATCH TARGETED CONCEPT → CLOSE VIDEO → SOLVE.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
