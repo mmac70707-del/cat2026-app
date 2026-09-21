@@ -5,6 +5,7 @@ import { usePhase } from '@/hooks/usePhase'
 import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
 import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
+import { playSuccessSound } from '@/services/audioService'
 import { BlockCard } from './BlockCard'
 import { useToast } from '@/components/Toast'
 
@@ -39,6 +40,8 @@ export function TodayPage() {
     const sc = parseFloat(screen) || 0
     const a  = parseInt(acc)      || 0
     await DailyScoreRepository.log(todayKey(), s, sc, a)
+
+    playSuccessSound()
 
     const lines: string[] = [`✓ LOGGED: DONE ${s}h study · ${sc}h screen · ${a}% accuracy`]
     if (a >= 75)      lines.push('🟢 Accuracy ' + a + '%+ — Excellent! Maintain this. Difficulty can increase slightly tomorrow.')
@@ -133,7 +136,7 @@ export function TodayPage() {
             <BlockCard
               task={task}
               onStart={(tid, bid)        => { updateStatus(tid, bid, 'IN_PROGRESS'); toast(`▶ ${bid} started`, '#D97706') }}
-              onDone={(tid, bid)         => { updateStatus(tid, bid, 'DONE');        toast(`✓ ${bid} complete!`) }}
+              onDone={(tid, bid)         => { updateStatus(tid, bid, 'DONE');        playSuccessSound(); toast(`✓ ${bid} complete!`) }}
               onUndo={(tid, bid)         => { updateStatus(tid, bid, 'TODO');        toast(`↩ ${bid} reset`, '#D97706') }}
               onSkip={(tid, bid)         => { updateStatus(tid, bid, 'SKIPPED');     toast(`↷ ${bid} skipped`, '#64748B') }}
               onNotes={(tid, notes)      => { saveNotes(tid, notes);                 toast('Notes saved ✓') }}
