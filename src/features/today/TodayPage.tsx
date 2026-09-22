@@ -101,6 +101,26 @@ export function TodayPage() {
         </div>
       </div>
 
+      {/* Today's 3 Core Targets Card */}
+      <div style={{ padding: '12px 16px 0' }}>
+        <div style={{ background: '#161D2E', border: '1px solid #F5A623', borderRadius: 10, padding: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: '#F5A623', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' }}>
+            🎯 TODAY'S 3 CORE TARGETS (DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44)
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 12, fontWeight: 700 }}>
+            <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: '#4ADE80' }}>
+              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{roadmapItem.chapter.toUpperCase()}</span>
+            </div>
+            <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: '#60A5FA' }}>
+              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{roadmapItem.dilrFamily.toUpperCase()}</span>
+            </div>
+            <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: '#C084FC' }}>
+              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{roadmapItem.varcSkill.toUpperCase()}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 44-Day First-Pass Day & Progress Bar */}
       <div style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
