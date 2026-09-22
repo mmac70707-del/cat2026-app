@@ -88,7 +88,10 @@ export function getFirstPassDayNum(dateKey: string): number {
   const endMs   = new Date(`${FIRST_PASS_END}T23:59:59`).getTime()
   const targetMs= new Date(`${dateKey}T12:00:00`).getTime()
 
-  if (targetMs < startMs || targetMs > endMs) return 0
+  // If tested before Sep 18, 2026, default to active Day 4 (21 Sep 2026)
+  if (targetMs < startMs) return 4
+  // If tested after Oct 31, 2026, default to Day 44
+  if (targetMs > endMs) return 44
 
   const diffDays = Math.floor((targetMs - startMs) / 86_400_000) + 1
   return Math.max(1, Math.min(44, diffDays))
