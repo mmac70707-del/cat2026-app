@@ -12,6 +12,7 @@ import { MorePage }             from '@/pages/MorePage'
 import { DashboardPage }        from '@/features/dashboard/DashboardPage'
 import { MissionPage }          from '@/features/mission/MissionPage'
 import { VisionPage }           from '@/features/vision/VisionPage'
+import { MindsetPage }          from '@/features/mindset/MindsetPage'
 import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
@@ -35,7 +36,7 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -179,6 +180,7 @@ export function App() {
         {/* SUB PAGES */}
         {activePage === 'mission'      && <MissionPage          onBack={() => setActivePage('more')} />}
         {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
+        {activePage === 'mindset'      && <MindsetPage          onBack={() => setActivePage('more')} />}
         {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
         {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
         {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
