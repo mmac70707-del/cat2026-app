@@ -1,3 +1,5 @@
+import { getFirstPassDayNum } from '@/services/calendarEngine'
+
 export interface PercentylWeek {
   weekNum: number;
   dates: string;
@@ -244,20 +246,10 @@ export const PERCENTYL_DAILY_MAP_MAP: Record<string, PercentylDailyTarget> = Obj
 export function getPercentylDailyTarget(dateIso: string): PercentylDailyTarget {
   if (PERCENTYL_DAILY_MAP_MAP[dateIso]) return PERCENTYL_DAILY_MAP_MAP[dateIso]
 
-  // Default fallback if date is outside range
-  return {
-    dayNum: 1,
-    dateIso,
-    dateStr: '21 Sep',
-    weekNum: 1,
-    quantTopic: 'Averages & Percentages',
-    quantTargetQs: 30,
-    quantDetail: 'Arithmetic Core • Averages & Percentages (30 Qs)',
-    dilrTopic: 'Seating Arrangements & Bar Graphs',
-    dilrTargetSets: 8,
-    dilrDetail: 'Seating Arrangements (4 sets) + Bar Graphs (4 sets)',
-    varcTopic: 'Reading Comprehension',
-    varcTargetPsg: 9,
-    varcDetail: 'RC (9 Passages) • Main Idea & Inference'
-  }
+  // Find dayNum based on getFirstPassDayNum or default to Day 1 / Day 4
+  const dayNum = getFirstPassDayNum(dateIso) || 1
+  const foundByDay = PERCENTYL_DAILY_MAP.find(p => p.dayNum === dayNum)
+  if (foundByDay) return foundByDay
+
+  return PERCENTYL_DAILY_MAP[0]
 }
