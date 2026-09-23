@@ -7,7 +7,7 @@
   --navy:    #0A0F1E;
   --navy2:   #111827;
   --navy3:   #1F2937;
-  --card:    #161D2E;
+  --card:    rgba(22, 29, 46, 0.85);
   --border:  #2D3748;
   --border2: #374151;
   --blue:    #1A56DB;
@@ -80,15 +80,15 @@ html, body, #root {
 
 .app-shell::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(rgba(10, 15, 30, 0.62), rgba(10, 15, 30, 0.78)), url('/images/app_background_billboard.png');
+  background-image: linear-gradient(rgba(10, 15, 30, 0.55), rgba(10, 15, 30, 0.72)), url('/images/app_background_billboard.png');
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.38;
+  opacity: 0.45;
 }
 
 /* ── Header ── */
