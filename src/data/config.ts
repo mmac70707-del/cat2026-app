@@ -6,17 +6,18 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.0.1'
-export const LAST_UPDATED = '17 SEP 2026 • 20:00 IST'
+export const APP_VERSION = '1.0.2'
+export const LAST_UPDATED = '21 SEP 2026 • 21:00 IST'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
   lastUpdated: LAST_UPDATED,
   changes: [
-    '44-Day First-Pass Roadmap System activated',
-    'Real-time date and weekday auto-syncing',
-    'CAT 2026 Official Exam Info & Config locked',
-    'Auto cache-busting service worker update prompt'
+    'Percentyl 2.0 Full 44-Day Syllabus Breakdown & Targets',
+    '3 Core Targets Card (QA, DILR, VARC) on Today & 1:1 Dashboard',
+    'Stitch H612 Apex Protocol Design System & Glow Effects',
+    'Mindset & Anti-Laziness Protocol Module',
+    'Web Audio API Success Chime & Haptic Feedback'
   ]
 }
 
