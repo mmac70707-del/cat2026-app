@@ -10,14 +10,14 @@ import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 
 const SEQUENCE_STRIP = [
-  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative' },
-  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic' },
-  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC' },
-  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional' },
-  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log' },
-  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Formula + RC' },
-  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Wrong Qs' },
-  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm' },
+  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: '3/5 Sets', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
+  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic', tag: '2 Puzzles', col: '#2563EB', bg: 'rgba(37,99,235,0.15)' },
+  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC', tag: '4 RCs Done', col: '#7C3AED', bg: 'rgba(124,58,237,0.15)' },
+  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional', tag: 'Timed 40m', col: '#D97706', bg: 'rgba(217,119,6,0.15)' },
+  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log', tag: '12 Logged', col: '#DC2626', bg: 'rgba(220,38,38,0.15)' },
+  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Formula + RC', tag: 'Formula Book', col: '#8B5CF6', bg: 'rgba(139,92,246,0.15)' },
+  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Wrong Qs', tag: '8 Pending', col: '#DB2777', bg: 'rgba(219,39,119,0.15)' },
+  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm', tag: 'Ready', col: '#0E9F9F', bg: 'rgba(14,159,159,0.15)' },
 ]
 
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
@@ -112,6 +112,15 @@ export function DashboardPage() {
 
   return (
     <div className="dash-root">
+      {/* ── ANDROID 14 SYSTEM STATUS BAR ── */}
+      <div style={{ background: '#0B1325', padding: '6px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, fontFamily: 'JetBrains Mono', color: '#94A3B8', borderBottom: '1px solid #1E293B' }}>
+        <span style={{ fontWeight: 700, color: '#FFF' }}>09:41</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ background: 'rgba(245,166,35,0.2)', color: '#F5A623', padding: '1px 6px', borderRadius: 4, fontWeight: 800, fontSize: 10 }}>5G</span>
+          <span>📶 92% 🔋</span>
+        </div>
+      </div>
+
       {/* ── HEADER ── */}
       <div className="header">
         <div className="header-inner">
@@ -135,6 +144,28 @@ export function DashboardPage() {
         </div>
       </div>
 
+      {/* ── MENTOR DIRECTIVE & FLIGHT PATH GAUGE BANNER ── */}
+      <div style={{ background: '#161D2E', border: '1px solid #F5A623', padding: '14px 24px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12 }} className="glow-border-amber">
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 800, color: '#F5A623', letterSpacing: 1, textTransform: 'uppercase' }}>
+            🎯 MENTOR DIRECTIVE • IIM-A GOLD MEDALIST
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#FFF', marginTop: 4, fontStyle: 'italic' }}>
+            "Stop doing random questions. Today we plug your <strong style={{ color: '#F5A623' }}>Pacing Leakage</strong> in DILR Matrix sets and <strong style={{ color: '#4ADE80' }}>Arithmetic profit-loss trap options</strong>."
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#1F2937', padding: '8px 16px', borderRadius: 10, border: '1px solid #374151' }}>
+          <div>
+            <div style={{ fontSize: 9, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5 }}>TARGET FLIGHT PATH</div>
+            <div style={{ fontSize: 16, fontWeight: 900, color: '#22C55E', fontFamily: 'monospace' }}>97.4%ile → 99.8%ile</div>
+          </div>
+          <div style={{ fontSize: 10, color: '#F5A623', fontWeight: 800 }}>
+            IIM-A/B/C Calls Confirmed 🏆
+          </div>
+        </div>
+      </div>
+
       {/* ── MISSION BAR ── */}
       <div className="mission-bar">
         <div className="mission-text">🎯 MISSION: {phase.mission}</div>
@@ -145,7 +176,7 @@ export function DashboardPage() {
       {/* ── MAIN ── */}
       <div className="main">
 
-        {/* DAILY SEQUENCE STRIP */}
+        {/* DAILY 8-BLOCK SEQUENCE JETPACK GRID */}
         <div className="stats-row">
           {SEQUENCE_STRIP.map(s => {
             const cssClass = s.id === 'QA' ? 'qa' : s.id === 'DILR' ? 'dilr' : s.id === 'VARC' ? 'varc' : s.id === 'TEST' ? 'test' : s.id === 'ANALYSIS' ? 'ana' : s.id === 'REVISION' ? 'rev' : s.id === 'REPAIR' ? 'rep' : 'rts'
@@ -158,13 +189,15 @@ export function DashboardPage() {
                   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
                 }}
               >
-                <div className="stat-num">{s.seq}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                  <span className="stat-num">{s.seq}</span>
+                  <span style={{ fontSize: 8, fontWeight: 800, padding: '1px 5px', borderRadius: 4, background: s.bg, color: s.col }}>{s.tag}</span>
+                </div>
                 <div className="stat-seq">{s.label}</div>
                 <div className="stat-label">{s.sub}</div>
               </div>
             )
-          })
-        }
+          })}
         </div>
 
         {/* TODAY PLAN + WEEK CALENDAR */}
@@ -228,8 +261,30 @@ export function DashboardPage() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: WEEK + PRIORITIES + SCORECARD */}
+          {/* RIGHT COLUMN: SECTIONAL PRECISION MATRIX + WEEK CALENDAR + SCORECARD */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* SECTIONAL PRECISION MATRIX (QA 98.2%ile, DILR 94.6%ile, VARC 96.1%ile) */}
+            <div className="card glow-border-cobalt" style={{ border: '1px solid #3B82F6' }}>
+              <div className="card-title" style={{ color: '#60A5FA' }}>📈 Sectional Precision Matrix</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, textAlign: 'center' }}>
+                <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: '#4ADE80' }}>01 QA</div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: '#FFF', fontFamily: 'monospace', marginTop: 2 }}>98.2%ile</div>
+                  <div style={{ fontSize: 9, color: '#94A3B8' }}>44/66 • 84% Acc</div>
+                </div>
+                <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: '#60A5FA' }}>02 DILR</div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: '#FFF', fontFamily: 'monospace', marginTop: 2 }}>94.6%ile</div>
+                  <div style={{ fontSize: 9, color: '#94A3B8' }}>32/60 • 72% Acc</div>
+                </div>
+                <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: '#A78BFA' }}>03 VARC</div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: '#FFF', fontFamily: 'monospace', marginTop: 2 }}>96.1%ile</div>
+                  <div style={{ fontSize: 9, color: '#94A3B8' }}>38/66 • 78% Acc</div>
+                </div>
+              </div>
+            </div>
 
             {/* WEEK CALENDAR */}
             <div className="card">
@@ -254,51 +309,6 @@ export function DashboardPage() {
                   ✓ 2 DILR sets per day attempted + analysed<br/>
                   ✓ RC accuracy &gt;70% maintained<br/>
                   ✓ Error log complete &amp; verified
-                </div>
-              </div>
-            </div>
-
-            {/* SUBJECT PRIORITIES THIS WEEK */}
-            <div className="three-col">
-              <div className="card">
-                <div className="card-title" style={{ fontSize: 12 }}>
-                  <span style={{ color: 'var(--green2)' }}>QA</span>
-                  <span className="pill pill-green">Active</span>
-                </div>
-                <div className="priority-list">
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: 'var(--green2)' }}>1</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Arithmetic &amp; Algebra</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card">
-                <div className="card-title" style={{ fontSize: 12 }}>
-                  <span style={{ color: '#60A5FA' }}>DILR</span>
-                  <span className="pill pill-blue">Active</span>
-                </div>
-                <div className="priority-list">
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: '#60A5FA' }}>1</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>Tables &amp; Graphs</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card">
-                <div className="card-title" style={{ fontSize: 12 }}>
-                  <span style={{ color: '#A78BFA' }}>VARC</span>
-                  <span className="pill pill-purple">Active</span>
-                </div>
-                <div className="priority-list">
-                  <div className="priority-item">
-                    <div className="priority-rank" style={{ color: '#A78BFA' }}>1</div>
-                    <div className="priority-name" style={{ fontSize: 11 }}>RC Main Idea</div>
-                    <div className="stars"><span className="star filled">★</span><span className="star filled">★</span><span className="star filled">★</span></div>
-                  </div>
                 </div>
               </div>
             </div>
