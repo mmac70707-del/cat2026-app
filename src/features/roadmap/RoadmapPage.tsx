@@ -3,12 +3,11 @@ import {
   MASTER_SPINE_44,
   RoadmapDayItem,
   QA_BLOCK_MAPS,
-  DILR_SET_FAMILIES,
-  VARC_SKILL_SEQUENCE,
   QUESTION_LADDER_STAGES,
   FINAL_MENTOR_RULES,
   COVERAGE_DEADLINES
 } from '@/data/roadmap44'
+import { PERCENTYL_WEEKS } from '@/data/percentylPlan2'
 import { RoadmapRepository, ChapterProgress } from '@/repositories/RoadmapRepository'
 import { useToast } from '@/components/Toast'
 
@@ -23,7 +22,7 @@ const STATUS_CONFIG = {
 export function RoadmapPage({ onBack }: { onBack?: () => void }) {
   const [progressList, setProgressList] = useState<ChapterProgress[]>([])
   const [selectedDay, setSelectedDay]   = useState<number | null>(null)
-  const [activeTab, setActiveTab]       = useState<'spine' | 'blocks' | 'milestones' | 'rules'>('spine')
+  const [activeTab, setActiveTab]       = useState<'percentyl' | 'spine' | 'blocks' | 'milestones' | 'rules'>('percentyl')
   const [loading, setLoading]           = useState(true)
   const { show: toast }                 = useToast()
 
@@ -71,10 +70,10 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>
-            🔥 YOUR 44-DAY SYLLABUS ATTACK
+            🔥 PERCENTYL 2.0 — WEEK-BY-WEEK STUDY ROADMAP
           </div>
           <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>
-            18 SEP 2026 → 31 OCT 2026 • QA + DILR + VARC 6-Week Master Spine
+            21 SEP 2026 → 07 NOV 2026 • 7-Week Full Syllabus Target Map
           </div>
         </div>
         {onBack && (
@@ -87,11 +86,11 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
       {/* 44-DAY SYLLABUS BOARD BOX */}
       <div style={{ background: '#161D2E', border: '1px solid #F5A623', borderRadius: 12, padding: 16, marginBottom: 16 }}>
         <div style={{ fontSize: 13, fontWeight: 900, color: '#F5A623', marginBottom: 8, letterSpacing: 1 }}>
-          📒 DIARY FIRST PAGE — 44-DAY SYLLABUS BOARD
+          📒 PERCENTYL 2.0 MASTER SYLLABUS BOARD
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10, fontSize: 11, color: '#CBD5E1', fontFamily: 'monospace' }}>
-          <div>START: <strong>18 SEP 2026</strong></div>
-          <div>DEADLINE: <strong>31 OCT 2026</strong></div>
+          <div>START: <strong>21 SEP 2026</strong></div>
+          <div>DEADLINE: <strong>07 NOV 2026</strong></div>
           <div>EXAM: <strong>29 NOV 2026</strong></div>
           <div>QA: <strong>{completedCount}/44</strong></div>
           <div>DILR: <strong>{completedCount}/44</strong></div>
@@ -105,6 +104,7 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
       {/* TABS */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
         {[
+          { id: 'percentyl', label: '📅 7-Week Percentyl 2.0 Plan' },
           { id: 'spine', label: '🧭 44-Day Master Spine' },
           { id: 'blocks', label: '📦 Blocks A–F (QA/DILR/VARC)' },
           { id: 'milestones', label: '⛳ Coverage Deadlines' },
@@ -112,7 +112,7 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
         ].map(t => (
           <button
             key={t.id}
-            onClick={() => setActiveTab(t.id as unknown as 'spine')}
+            onClick={() => setActiveTab(t.id as unknown as 'percentyl')}
             style={{
               background: activeTab === t.id ? '#F5A623' : '#161D2E',
               color: activeTab === t.id ? '#0A0F1E' : '#FFF',
@@ -124,6 +124,66 @@ export function RoadmapPage({ onBack }: { onBack?: () => void }) {
           </button>
         ))}
       </div>
+
+      {/* TAB 0: PERCENTYL 2.0 7-WEEK PLAN */}
+      {activeTab === 'percentyl' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {PERCENTYL_WEEKS.map(w => (
+            <div key={w.weekNum} style={{ background: '#161D2E', border: w.weekNum === 1 ? '1px solid #F5A623' : '1px solid #2D3748', borderRadius: 12, padding: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <div>
+                  <span style={{ fontSize: 14, fontWeight: 900, color: '#F5A623' }}>Week {w.weekNum}</span>
+                  <span style={{ fontSize: 12, color: '#94A3B8', marginLeft: 8 }}>({w.dates})</span>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 800, padding: '3px 10px', borderRadius: 10, background: w.weekNum === 1 ? 'rgba(245,166,35,0.2)' : 'rgba(59,130,246,0.15)', color: w.weekNum === 1 ? '#F5A623' : '#3B82F6' }}>
+                  {w.weekNum === 1 ? 'THIS WEEK' : 'UPCOMING'}
+                </span>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
+                {/* QUANT */}
+                <div style={{ background: 'rgba(22,163,74,0.1)', border: '1px solid #16A34A', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#4ADE80', marginBottom: 6 }}>
+                    📐 QUANT ({w.quantTarget})
+                  </div>
+                  {w.quantBreakdown.map((q, idx) => (
+                    <div key={idx} style={{ fontSize: 11, color: '#CBD5E1', display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <span>• {q.topic}</span>
+                      <strong style={{ color: '#F5A623' }}>{q.questions}q</strong>
+                    </div>
+                  ))}
+                </div>
+
+                {/* DILR */}
+                <div style={{ background: 'rgba(37,99,235,0.1)', border: '1px solid #2563EB', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#60A5FA', marginBottom: 6 }}>
+                    🧩 DILR ({w.dilrTarget})
+                  </div>
+                  {w.dilrBreakdown.map((d, idx) => (
+                    <div key={idx} style={{ fontSize: 11, color: '#CBD5E1', display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <span>• {d.family}</span>
+                      <strong style={{ color: '#60A5FA' }}>{d.count} {d.unit}</strong>
+                    </div>
+                  ))}
+                </div>
+
+                {/* VARC */}
+                <div style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid #7C3AED', borderRadius: 8, padding: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#C084FC', marginBottom: 6 }}>
+                    📖 VARC ({w.varcTarget})
+                  </div>
+                  {w.varcBreakdown.map((v, idx) => (
+                    <div key={idx} style={{ fontSize: 11, color: '#CBD5E1', display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <span>• {v.skill}</span>
+                      <strong style={{ color: '#C084FC' }}>{v.count} {v.unit}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* TAB 1: MASTER SPINE TABLE */}
       {activeTab === 'spine' && (
