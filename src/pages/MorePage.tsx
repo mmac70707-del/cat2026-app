@@ -1,11 +1,12 @@
 import { useQuickStats } from '@/hooks/index'
 
-export type SubPage = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
   { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
+  { id: 'apexpro',      icon: '⚡', label: 'Apex Pro Executive Command Deck & Triage Engine', featured: true },
   { id: 'mission',      icon: '🎯', label: 'Current Active Mission (Visuals & Focus)', featured: true },
   { id: 'vision',       icon: '👁️', label: 'Master Vision, 6 Pillars & 7-Year Roadmap', featured: true },
   { id: 'mindset',      icon: '🧠', label: 'Mindset, Anti-Laziness & Discipline Protocol', featured: true },
@@ -34,7 +35,7 @@ export function MorePage({ onNavigate }: Props) {
   return (
     <div className="section-pad">
       <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--gold)', marginBottom: 12 }}>
-        CAT 2026 Master Execution & Deep Research Suite
+        CAT 2026 Master Execution &amp; Deep Research Suite
       </div>
 
       <div className="grid2" style={{ gap: 10, marginBottom: 12 }}>
