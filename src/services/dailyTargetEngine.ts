@@ -1,4 +1,5 @@
 import { ROADMAP_44 } from '@/data/roadmap44'
+import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { BLOCKS } from '@/data/config'
 import { getCurrentPhase, localDateKey } from '@/services/domain'
 import { getFirstPassDayNum } from '@/services/calendarEngine'
@@ -19,6 +20,7 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
   // Find exact 44-Day First-Pass day & roadmap item
   const dayNum = getFirstPassDayNum(dateKey)
   const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
+  const pt = getPercentylDailyTarget(dateKey)
 
   const pendingC1Errors = (input.pendingErrors || []).filter(e => e.errorType === 'C1').length
   const totalPendingErrors = (input.pendingErrors || []).length
@@ -28,14 +30,14 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
     let notes = ''
 
     if (b.id === 'QA') {
-      title = `${roadmapItem.chapter} (Day ${dayNum < 10 ? '0' + dayNum : dayNum}/44)`
-      notes = `Topic: ${roadmapItem.chapter} • Task: 15–20 questions Easy → Moderate • Exit: 70%+ accuracy`
+      title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
+      notes = `${pt.quantDetail} • Phase: ${phase.name}`
     } else if (b.id === 'DILR') {
-      title = `${roadmapItem.dilrFamily} Set-Solving`
-      notes = `Set Family: ${roadmapItem.dilrFamily} • Task: 1–2 quality sets • Exit: 3+ correct with method`
+      title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
+      notes = `${pt.dilrDetail}`
     } else if (b.id === 'VARC') {
-      title = `${roadmapItem.varcSkill} & RC Practice`
-      notes = `Skill: ${roadmapItem.varcSkill} • Task: 2 RC passages + VA questions • Exit: 4+ correct`
+      title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
+      notes = `${pt.varcDetail}`
     } else if (b.id === 'TEST') {
       const dayOfWeek = d.getDay()
       if (dayOfWeek === 0) title = 'SUNDAY FULL MOCK EXAM'
