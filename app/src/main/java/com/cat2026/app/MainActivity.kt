@@ -4,11 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
@@ -20,6 +17,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
 import androidx.webkit.WebViewAssetLoader
 
 class MainActivity : ComponentActivity() {
@@ -35,12 +34,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.navigationBarColor = Color.parseColor("#0D1B2A")
-        window.statusBarColor = Color.parseColor("#0D1B2A")
+        window.navigationBarColor = "#0D1B2A".toColorInt()
+        window.statusBarColor = "#0D1B2A".toColorInt()
 
         val assetLoader = WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
@@ -78,8 +78,8 @@ class MainActivity : ComponentActivity() {
                         false
                     } else {
                         try {
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                        } catch (e: Exception) {
+                            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+                        } catch (_: Exception) {
                             // Silently ignore if no handler for URL scheme
                         }
                         true
@@ -132,6 +132,7 @@ class MainActivity : ComponentActivity() {
         // DailyReminderWorker.schedule(this)
     }
 
+    @Suppress("UNUSED")
     inner class NativeBridge {
         @JavascriptInterface
         fun registerBackButton() {
