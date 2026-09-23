@@ -11,24 +11,34 @@ import { isNative, requestNotificationPermission, setNotificationsEnabled } from
 
 interface Props { onBack: () => void }
 
+const STITCH_THEMES = [
+  { id: 'apex', name: 'Apex Protocol Obsidian', color: '#F5A623', border: '#16A34A' },
+  { id: 'glacier', name: 'Glacier Cyan Cybernetic', color: '#38BDF8', border: '#2563EB' },
+  { id: 'athenaeum', name: 'Athenaeum Editorial Gold', color: '#FBBF24', border: '#D97706' },
+  { id: 'crimson', name: 'Cybernetic Crimson Command', color: '#EF4444', border: '#7C3AED' }
+]
+
 export function SettingsPage({ onBack }: Props) {
   const [wake,          setWake]          = useState(false)
   const [quotes,        setQuotes]        = useState(true)
-  const [sound,         setSound]         = useState(false)
+  const [sound,         setSound]         = useState(true)
   const [notifications, setNotifications] = useState(false)
+  const [selectedTheme, setSelectedTheme] = useState('apex')
   const { show: toast } = useToast()
 
   useEffect(() => {
     Promise.all([
       SettingsRepository.get('wake',          false),
       SettingsRepository.get('quotes',        true),
-      SettingsRepository.get('sound',         false),
+      SettingsRepository.get('sound',         true),
       SettingsRepository.get('notifications', false),
-    ]).then(([w, q, s, n]) => {
+      SettingsRepository.get('stitchTheme',    'apex'),
+    ]).then(([w, q, s, n, th]) => {
       setWake(w as boolean)
       setQuotes(q as boolean)
       setSound(s as boolean)
       setNotifications(n as boolean)
+      setSelectedTheme(th as string || 'apex')
     })
   }, [])
 
@@ -42,16 +52,17 @@ export function SettingsPage({ onBack }: Props) {
     }
   }
 
+  async function handleSelectTheme(themeId: string) {
+    setSelectedTheme(themeId)
+    await SettingsRepository.set('stitchTheme', themeId)
+    toast(`Stitch Theme updated to ${themeId.toUpperCase()} ✓`)
+  }
+
   async function toggleNotifications() {
     const next = !notifications
     await SettingsRepository.set('notifications', next)
     setNotifications(next)
     if (isNative()) {
-      // Requests the real Android 13+ runtime permission the first
-      // time, and schedules/cancels the two daily WorkManager
-      // reminders (09:00 mission, 21:00 error log) via the native
-      // bridge — this toggle controls a real Android system, not a
-      // stored preference that does nothing.
       if (next) requestNotificationPermission()
       else setNotificationsEnabled(false)
       toast(next ? 'Notifications on — grant the Android permission if prompted' : 'Notifications off')
@@ -94,14 +105,40 @@ export function SettingsPage({ onBack }: Props) {
   const rows = [
     { key: 'wake',   label: 'Screen Awake',       sub: 'Keep screen on while studying', val: wake,   setter: setWake },
     { key: 'quotes', label: 'Motivational Quotes', sub: 'Show daily mantra',             val: quotes, setter: setQuotes },
-    { key: 'sound',  label: 'Sounds',              sub: 'Block completion sounds',       val: sound,  setter: setSound },
+    { key: 'sound',  label: 'Audio Feedback & Chimes', sub: 'Play chime tone on block completion', val: sound,  setter: setSound },
   ]
 
   return (
     <div className="section-pad">
       <div className="page-header">
         <button className="back-btn" onClick={onBack}>← Back</button>
-        <div className="page-header-title">Settings</div>
+        <div className="page-header-title">Settings &amp; Stitch Theme System</div>
+      </div>
+
+      {/* STITCH DESIGN SYSTEM THEME SELECTOR */}
+      <div className="card" style={{ border: '1px solid #F5A623' }}>
+        <div className="card-title" style={{ color: '#F5A623' }}>🎨 Stitch Design System Theme Accent</div>
+        <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 10 }}>
+          Select your tactical command theme from the Stitch Design System generator:
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 8 }}>
+          {STITCH_THEMES.map(th => (
+            <div
+              key={th.id}
+              onClick={() => handleSelectTheme(th.id)}
+              style={{
+                background: selectedTheme === th.id ? 'rgba(245,166,35,0.2)' : 'var(--navy3)',
+                border: `1px solid ${selectedTheme === th.id ? th.color : 'var(--border2)'}`,
+                borderRadius: 8, padding: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10
+              }}
+            >
+              <div style={{ width: 16, height: 16, borderRadius: '50%', background: th.color }}></div>
+              <div style={{ fontSize: 11, fontWeight: selectedTheme === th.id ? 800 : 600, color: selectedTheme === th.id ? '#FFF' : 'var(--muted)' }}>
+                {th.name}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="card">
@@ -158,14 +195,14 @@ export function SettingsPage({ onBack }: Props) {
       </div>
 
       <div className="card">
-        <div className="card-title">About</div>
+        <div className="card-title">About Stitch Design Engine</div>
         <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.8 }}>
-          Stack: React 18 + TypeScript + Vite<br />
+          Engine: Stitch H612 Apex Protocol Design System<br />
+          Stack: React 18 + TypeScript + Vite + Web Audio API<br />
           Native: Android WebView host (WebViewAssetLoader)<br />
           Storage: IndexedDB (real persistence)<br />
           Phase: Dynamic (calculated from date)<br />
-          Countdown: Live (seconds ticker)<br />
-          75 days to CAT 2026 — one mission.
+          Countdown: Live (seconds ticker)
         </div>
       </div>
     </div>
