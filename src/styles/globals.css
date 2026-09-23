@@ -82,13 +82,13 @@ html, body, #root {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(rgba(10, 15, 30, 0.88), rgba(10, 15, 30, 0.93)), url('/images/app_background_billboard.png');
+  background-image: linear-gradient(rgba(10, 15, 30, 0.62), rgba(10, 15, 30, 0.78)), url('/images/app_background_billboard.png');
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.14;
+  opacity: 0.38;
 }
 
 /* ── Header ── */
