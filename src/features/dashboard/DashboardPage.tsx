@@ -113,13 +113,10 @@ export function DashboardPage() {
 
   return (
     <div className="dash-root">
-      {/* ── ANDROID 14 SYSTEM STATUS BAR ── */}
+      {/* ── LIVE INDIA TIME BAR ── */}
       <div style={{ background: '#0B1325', padding: '6px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, fontFamily: 'JetBrains Mono', color: '#94A3B8', borderBottom: '1px solid #1E293B' }}>
         <span style={{ fontWeight: 700, color: '#FFF' }}>{String(kolkataParts.hours).padStart(2, '0')}:{String(kolkataParts.minutes).padStart(2, '0')}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ background: 'rgba(245,166,35,0.2)', color: '#F5A623', padding: '1px 6px', borderRadius: 4, fontWeight: 800, fontSize: 10 }}>5G</span>
-          <span>📶 92% 🔋</span>
-        </div>
+        <span style={{ color: '#86EFAC', fontWeight: 800, fontSize: 10 }}>INDIA TIME • LIVE SYNC</span>
       </div>
 
       {/* ── HEADER ── */}
