@@ -16,6 +16,7 @@ import { MindsetPage }          from '@/features/mindset/MindsetPage'
 import { ApexProSuite }         from '@/features/apexpro/ApexProSuite'
 import { OpenJarvisTerminal }   from '@/features/openjarvis/OpenJarvisTerminal'
 import { VoiceJarvisModal }     from '@/features/voice/VoiceJarvisModal'
+import { JarvisStartupHUD }     from '@/features/jarvis/JarvisStartupHUD'
 import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
@@ -56,6 +57,7 @@ export function App() {
   const [activePage, setActivePage]             = useState<ActivePage>('dashboard')
   const [loading, setLoading]                   = useState(true)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
+  const [showJarvisHud, setShowJarvisHud]       = useState(false)
   const { show: toast }                         = useToast()
   const touchStartX = useRef(0)
   const navIdxRef   = useRef(0)
@@ -171,7 +173,10 @@ export function App() {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <Header onOpenVoiceJarvis={() => setShowVoiceJarvis(true)} />
+      <Header
+        onOpenVoiceJarvis={() => setShowVoiceJarvis(true)}
+        onOpenJarvisHud={() => setShowJarvisHud(true)}
+      />
 
       <div className="content-area">
         {/* MAIN PAGES */}
@@ -210,6 +215,12 @@ export function App() {
         isOpen={showVoiceJarvis}
         onClose={() => setShowVoiceJarvis(false)}
         onNavigate={(p) => { setShowVoiceJarvis(false); setActivePage(p); }}
+      />
+
+      <JarvisStartupHUD
+        isOpen={showJarvisHud}
+        onClose={() => setShowJarvisHud(false)}
+        onLaunchJarvisVoice={() => { setShowJarvisHud(false); setShowVoiceJarvis(true); }}
       />
 
       {isMain && (

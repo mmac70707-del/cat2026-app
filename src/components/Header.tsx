@@ -4,7 +4,13 @@ import { UpdateNotifier } from '@/components/UpdateNotifier'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { PERCENTYL_WEEKS } from '@/data/percentylPlan2'
 
-export function Header({ onOpenVoiceJarvis }: { onOpenVoiceJarvis?: () => void }) {
+export function Header({
+  onOpenVoiceJarvis,
+  onOpenJarvisHud
+}: {
+  onOpenVoiceJarvis?: () => void
+  onOpenJarvisHud?: () => void
+}) {
   const phase = usePhase()
   const { days, hms } = useCountdown()
   const nowKey = getKolkataDateKey()
@@ -28,6 +34,19 @@ export function Header({ onOpenVoiceJarvis }: { onOpenVoiceJarvis?: () => void }
                 }}
               >
                 <span>🎙️</span> Jarvis
+              </button>
+            )}
+            {onOpenJarvisHud && (
+              <button
+                onClick={onOpenJarvisHud}
+                style={{
+                  background: 'rgba(0,240,255,0.15)', border: '1px solid #00F0FF',
+                  color: '#00F0FF', borderRadius: 12, padding: '2px 8px',
+                  fontSize: 10, fontWeight: 800, cursor: 'pointer', display: 'flex',
+                  alignItems: 'center', gap: 4
+                }}
+              >
+                <span>🚀</span> HUD
               </button>
             )}
           </div>
