@@ -32,8 +32,8 @@ export function TodayPage() {
 
   const now = new Date()
   const dateKey = getKolkataDateKey(now)
-  const dayNum = getFirstPassDayNum(dateKey)
   const pt = getPercentylDailyTarget(dateKey)
+  const dayNum = pt.dayNum || getFirstPassDayNum(dateKey)
 
   async function submitDone() {
     const s  = parseFloat(study)  || 0
