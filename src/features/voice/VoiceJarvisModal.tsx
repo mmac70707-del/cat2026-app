@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { speakJarvisResponse, createSpeechRecognizer } from '@/services/voiceJarvisService'
+import { speakJarvisResponse, createSpeechRecognizer, getCurrentActiveScheduleSlot } from '@/services/voiceJarvisService'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { useToast } from '@/components/Toast'
@@ -70,11 +70,16 @@ export function VoiceJarvisModal({ isOpen, onClose, onNavigate }: Props) {
     const lower = command.toLowerCase()
     let reply = ''
 
-    if (lower.includes('today') || lower.includes('target') || lower.includes('focus')) {
-      reply = `🎯 TODAY'S CORE TARGETS:
-📐 QA: ${pt.quantTopic} (${pt.quantTargetQs} Qs)
-🧩 DILR: ${pt.dilrTopic} (${pt.dilrTargetSets} Sets)
-📖 VARC: ${pt.varcTopic} (${pt.varcTargetPsg} Passages)`
+    if (lower.includes('schedule right now') || lower.includes('what should i do') || lower.includes('current slot') || lower.includes('active slot')) {
+      const activeSlot = getCurrentActiveScheduleSlot()
+      reply = `⏰ REAL-TIME SCHEDULE SLOT (${activeSlot.timeStr} IST):\n\n• Active Block: ${activeSlot.block}\n• Details: ${activeSlot.detail}\n\nToday's 3 Core Targets: QA ${pt.quantTopic}, DILR ${pt.dilrTopic}, VARC ${pt.varcTopic}.`
+
+    } else if (lower.includes('phone') || lower.includes('open my phone') || lower.includes('open cat')) {
+      reply = `📱 Phone Link Active! CAT 2026 Master Execution System opened. Showing 1:1 Executive Dashboard.`
+      if (onNavigate) onNavigate('dashboard')
+
+    } else if (lower.includes('today') || lower.includes('target') || lower.includes('focus')) {
+      reply = `🎯 TODAY'S CORE TARGETS:\n📐 QA: ${pt.quantTopic} (${pt.quantTargetQs} Qs)\n🧩 DILR: ${pt.dilrTopic} (${pt.dilrTargetSets} Sets)\n📖 VARC: ${pt.varcTopic} (${pt.varcTargetPsg} Passages)`
       if (onNavigate && lower.includes('open')) onNavigate('today')
 
     } else if (lower.includes('dashboard') || lower.includes('command')) {
@@ -89,14 +94,23 @@ export function VoiceJarvisModal({ isOpen, onClose, onNavigate }: Props) {
       reply = `🧠 Opening Mindset & Anti-Laziness Protocol. Become the man you promise yourself!`
       if (onNavigate) onNavigate('mindset')
 
+    } else if (lower.includes('error log') || lower.includes('error') || lower.includes('triage')) {
+      reply = `🔴 Opening Diagnostic Error Log (C1–C5 Triage Engine).`
+      if (onNavigate) onNavigate('errors')
+
+    } else if (lower.includes('mock') || lower.includes('analytics')) {
+      reply = `📈 Opening Mock Trajectory & Sectional Analytics.`
+      if (onNavigate) onNavigate('mockana')
+
     } else if (lower.includes('percentage') || lower.includes('profit') || lower.includes('ratio')) {
       reply = `🤖 [STANFORD JARVIS REASONING]: For Profit/Loss/Discount, set Cost Price = 100x. SP = 100x + Profit%. Discount = MP * (1 - d%). Ratio MP:CP = 8:5.`
 
     } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('jarvis')) {
-      reply = `🤖 Hello! I am Jarvis, your CAT 2026 Voice Assistant. Tell me what you want to practice or navigate to!`
+      const activeSlot = getCurrentActiveScheduleSlot()
+      reply = `🤖 Hello! I am Jarvis, your CAT 2026 Voice Assistant. Right now at ${activeSlot.timeStr} IST, your active slot is ${activeSlot.block}. Tell me what you want to open or practice!`
 
     } else {
-      reply = `🤖 [JARVIS VOICE AGENT]: Processing "${command}". Today's scheduled focus is ${pt.quantTopic} (${pt.quantTargetQs} Qs). Keep executing!`
+      reply = `🤖 [JARVIS VOICE AGENT]: Processing "${command}". Scheduled focus: ${pt.quantTopic} (${pt.quantTargetQs} Qs). Keep executing!`
     }
 
     setResponse(reply)
@@ -148,7 +162,7 @@ export function VoiceJarvisModal({ isOpen, onClose, onNavigate }: Props) {
         <input
           id="etInput"
           type="text"
-          placeholder="Type or speak a command"
+          placeholder="Type or speak a command (e.g. 'what is my schedule right now')"
           value={inputText}
           onChange={e => setInputText(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSendCommand()}
