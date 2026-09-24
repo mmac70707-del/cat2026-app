@@ -127,8 +127,8 @@ export function DailyControlCard() {
             <div style={{fontSize:10,color:'#DDD6FE'}}><strong style={{color:'#C4B5FD'}}>VARC:</strong> {dailyTarget.varcDetail} ({dailyTarget.varcTargetPsg} passages)</div>
           </div>
           <div style={{ display:'flex', flexWrap:'wrap', gap:7, marginTop:8 }}>
-            {['QA','DILR','VARC','TEST','ANALYSIS','REVISION','REPAIR','RETEST'].map((x,i) => {
-              const isDone = tasks[i]?.status === 'DONE'
+            {['QA','DILR','VARC','TEST','ANALYSIS','REVISION','REPAIR','RETEST'].map(x => {
+              const isDone = tasks.find(t => t.blockId === x)?.status === 'DONE'
               return <span key={x} style={{ padding:'6px 9px', borderRadius:8, fontSize:10, fontWeight:900, background:isDone?'rgba(34,197,94,.14)':'rgba(148,163,184,.08)', border:isDone?'1px solid rgba(34,197,94,.35)':'1px solid rgba(148,163,184,.15)', color:isDone?'#86EFAC':'#CBD5E1' }}>{isDone?'✓ ':''}{x}</span>
             })}
           </div>
