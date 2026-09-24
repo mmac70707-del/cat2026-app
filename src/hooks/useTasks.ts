@@ -35,12 +35,13 @@ export function useTodayTasks() {
   // Refresh when tab regains focus (web) or app resumes (native)
   useEffect(() => {
     const handler = () => load()
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) handler() })
+    const visibilityHandler = () => { if (!document.hidden) handler() }
+    document.addEventListener('visibilitychange', visibilityHandler)
     window.addEventListener('focus', handler)
     window.addEventListener('pageshow', handler)
     window.addEventListener('cat2026:resume', handler)
     return () => {
-      document.removeEventListener('visibilitychange', handler)
+      document.removeEventListener('visibilitychange', visibilityHandler)
       window.removeEventListener('focus', handler)
       window.removeEventListener('pageshow', handler)
       window.removeEventListener('cat2026:resume', handler)
