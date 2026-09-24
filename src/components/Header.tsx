@@ -4,7 +4,7 @@ import { UpdateNotifier } from '@/components/UpdateNotifier'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { PERCENTYL_WEEKS } from '@/data/percentylPlan2'
 
-export function Header() {
+export function Header({ onOpenVoiceJarvis }: { onOpenVoiceJarvis?: () => void }) {
   const phase = usePhase()
   const { days, hms } = useCountdown()
   const nowKey = getKolkataDateKey()
@@ -15,7 +15,22 @@ export function Header() {
       <UpdateNotifier />
       <div className="app-header">
         <div>
-          <div className="app-title">CAT 2026</div>
+          <div className="app-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span>CAT 2026</span>
+            {onOpenVoiceJarvis && (
+              <button
+                onClick={onOpenVoiceJarvis}
+                style={{
+                  background: 'rgba(245,166,35,0.2)', border: '1px solid #F5A623',
+                  color: '#F5A623', borderRadius: 12, padding: '2px 8px',
+                  fontSize: 10, fontWeight: 800, cursor: 'pointer', display: 'flex',
+                  alignItems: 'center', gap: 4
+                }}
+              >
+                <span>🎙️</span> Jarvis
+              </button>
+            )}
+          </div>
           <div className="app-subtitle">
             <span style={{ color: '#F5A623', fontWeight: 800 }}>🔥 Week {curWeek.weekNum}/7</span> • {curWeek.dates}
           </div>

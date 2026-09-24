@@ -15,6 +15,7 @@ import { VisionPage }           from '@/features/vision/VisionPage'
 import { MindsetPage }          from '@/features/mindset/MindsetPage'
 import { ApexProSuite }         from '@/features/apexpro/ApexProSuite'
 import { OpenJarvisTerminal }   from '@/features/openjarvis/OpenJarvisTerminal'
+import { VoiceJarvisModal }     from '@/features/voice/VoiceJarvisModal'
 import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
@@ -52,9 +53,10 @@ const FOCUS_REMINDERS = [
 ]
 
 export function App() {
-  const [activePage, setActivePage] = useState<ActivePage>('dashboard')
-  const [loading, setLoading]       = useState(true)
-  const { show: toast }             = useToast()
+  const [activePage, setActivePage]             = useState<ActivePage>('dashboard')
+  const [loading, setLoading]                   = useState(true)
+  const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
+  const { show: toast }                         = useToast()
   const touchStartX = useRef(0)
   const navIdxRef   = useRef(0)
   const reminderIdx = useRef(0)
@@ -169,7 +171,7 @@ export function App() {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <Header />
+      <Header onOpenVoiceJarvis={() => setShowVoiceJarvis(true)} />
 
       <div className="content-area">
         {/* MAIN PAGES */}
@@ -203,6 +205,12 @@ export function App() {
         {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
         {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
       </div>
+
+      <VoiceJarvisModal
+        isOpen={showVoiceJarvis}
+        onClose={() => setShowVoiceJarvis(false)}
+        onNavigate={(p) => { setShowVoiceJarvis(false); setActivePage(p); }}
+      />
 
       {isMain && (
         <BottomNav
