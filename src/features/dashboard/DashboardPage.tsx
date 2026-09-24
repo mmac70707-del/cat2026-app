@@ -8,6 +8,7 @@ import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/se
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
+import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 
 const SEQUENCE_STRIP = [
   { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: '3/5 Sets', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
@@ -175,6 +176,8 @@ export function DashboardPage() {
 
       {/* ── MAIN ── */}
       <div className="main">
+
+        <DailyControlCard />
 
         {/* DAILY 8-BLOCK SEQUENCE JETPACK GRID */}
         <div className="stats-row">
