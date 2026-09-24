@@ -44,7 +44,9 @@ export function getWeekNumber(): number {
   const p1Start = new Date(Date.UTC(2026, 8, 1))
   const diff = Math.max(0, todayKolkata.getTime() - p1Start.getTime())
   return Math.floor(diff / (7 * 86_400_000)) + 1
-}\n\n// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
+}
+
+// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
 export function buildWeekPlan(): WeekDay[] {
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
@@ -75,7 +77,9 @@ export function buildWeekPlan(): WeekDay[] {
       isPast,
     }
   })
-}\n\n// ── Week label (Mon X – Sun Y) ───────────────────────
+}
+
+// ── Week label (Mon X – Sun Y) ───────────────────────
 export function getWeekLabel(): string {
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
@@ -86,7 +90,9 @@ export function getWeekLabel(): string {
   sun.setUTCDate(mon.getUTCDate() + 6)
   return mon.getUTCDate() + ' ' + MONTHS[mon.getUTCMonth()] + ' – ' +
     sun.getUTCDate() + ' ' + MONTHS[sun.getUTCMonth()] + ' ' + sun.getUTCFullYear()
-}\n\n// ── Task progress ─────────────────────────────────────
+}
+
+// ── Task progress ─────────────────────────────────────
 export function calcTaskProgress(tasks: Task[]): { total: number; done: number; pct: number } {
   const total = tasks.length
   const done  = tasks.filter(t => t.status === 'DONE').length
