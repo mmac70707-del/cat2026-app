@@ -142,3 +142,6 @@ npx cap open android
 # then Run ▶ in Android Studio on a device/emulator
 ```
 
+## Daily Control System
+
+The dashboard now derives the daily CAT control card from the Asia/Kolkata calendar and the app's date-specific adaptive task engine.
