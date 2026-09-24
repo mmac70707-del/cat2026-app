@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { TaskRepository } from '@/repositories/TaskRepository'
 import type { Task, TaskStatus } from '@/types'
+import { getKolkataDateKey } from '@/services/calendarEngine'
 
 export function useTodayTasks() {
   const [tasks, setTasks]     = useState<Task[]>([])
@@ -21,9 +22,9 @@ export function useTodayTasks() {
 
   // Daily reset — check every 30s for new calendar day
   useEffect(() => {
-    let lastDate = new Date().toDateString()
+    let lastDate = getKolkataDateKey()
     const id = setInterval(async () => {
-      const today = new Date().toDateString()
+      const today = getKolkataDateKey()
       if (today !== lastDate) {
         lastDate = today
         await load()
