@@ -1,6 +1,7 @@
 name: CAT 2026 Vercel Auto-Deploy CI/CD
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
