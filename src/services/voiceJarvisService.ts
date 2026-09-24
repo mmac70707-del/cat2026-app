@@ -1,5 +1,6 @@
-// Stanford Jarvis Voice Assistant Engine (Speech-to-Text & Text-to-Speech)
+// Stanford Jarvis 3.0 Voice Engine (Wake-Word, Memory, STT & TTS)
 import { getKolkataDateParts } from '@/services/calendarEngine'
+import { JarvisMemoryStore } from '@/services/jarvisMemoryService'
 
 export function getCurrentActiveScheduleSlot(): { block: string; detail: string; timeStr: string } {
   const now = new Date()
@@ -37,7 +38,7 @@ export function speakJarvisResponse(text: string): void {
 }
 
 export function createSpeechRecognizer(
-  onResult: (transcript: string) => void,
+  onResult: (transcript: string, isWakeWordDetected: boolean) => void,
   onError: (error: string) => void,
   onEnd: () => void
 ): { start: () => void; stop: () => void } | null {
@@ -55,7 +56,9 @@ export function createSpeechRecognizer(
       for (let i = e.resultIndex; i < e.results.length; ++i) {
         transcript += e.results[i][0].transcript
       }
-      onResult(transcript)
+      const lower = transcript.toLowerCase()
+      const isWakeWord = lower.includes('hey jarvis') || lower.includes('jarvis')
+      onResult(transcript, isWakeWord)
     }
 
     recognition.onerror = (e: any) => {
@@ -74,3 +77,5 @@ export function createSpeechRecognizer(
     return null
   }
 }
+
+export { JarvisMemoryStore }
