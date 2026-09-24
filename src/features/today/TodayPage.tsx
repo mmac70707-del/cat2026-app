@@ -4,7 +4,7 @@ import { DailyScoreRepository } from '@/repositories/index'
 import { usePhase } from '@/hooks/usePhase'
 import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
 import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
-import { ROADMAP_44 } from '@/data/roadmap44'
+import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { playSuccessSound } from '@/services/audioService'
 import { BlockCard } from './BlockCard'
 import { useToast } from '@/components/Toast'
@@ -33,7 +33,7 @@ export function TodayPage() {
   const now = new Date()
   const dateKey = getKolkataDateKey(now)
   const dayNum = getFirstPassDayNum(dateKey)
-  const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
+  const pt = getPercentylDailyTarget(dateKey)
 
   async function submitDone() {
     const s  = parseFloat(study)  || 0
@@ -109,13 +109,13 @@ export function TodayPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 12, fontWeight: 700 }}>
             <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: '#4ADE80' }}>
-              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{roadmapItem.chapter.toUpperCase()}</span>
+              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.quantTopic.toUpperCase()} ({pt.quantTargetQs} Qs)</span>
             </div>
             <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: '#60A5FA' }}>
-              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{roadmapItem.dilrFamily.toUpperCase()}</span>
+              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.dilrTopic.toUpperCase()} ({pt.dilrTargetSets} Sets)</span>
             </div>
             <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: '#C084FC' }}>
-              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{roadmapItem.varcSkill.toUpperCase()}</span>
+              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.varcTopic.toUpperCase()} ({pt.varcTargetPsg} Psg)</span>
             </div>
           </div>
         </div>
@@ -130,7 +130,7 @@ export function TodayPage() {
                 🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
               </div>
               <div style={{ fontSize: 13, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
-                Chapter: {roadmapItem.chapter} ({roadmapItem.category})
+                Target Topic: {pt.quantTopic} ({pt.quantTargetQs} Qs)
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>

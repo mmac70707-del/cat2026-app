@@ -3,6 +3,7 @@ import { BLOCKS } from '@/data/config'
 import { todayKey, localDateKey } from '@/services/domain'
 import { generateDailyTargets } from '@/services/dailyTargetEngine'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
+import { DailyScoreRepository } from '@/repositories/index'
 import type { Task, TaskStatus, BlockId } from '@/types'
 
 export const TaskRepository = {
@@ -16,20 +17,30 @@ export const TaskRepository = {
 
   async getTasksForDate(date: string): Promise<Task[]> {
     let existingTasks = await dbGetByIndex<Task>('tasks', 'byDate', date)
-    const pendingErrors = await ErrorRepository.getPending()
-    const freshTargets = generateDailyTargets({ dateIso: date, pendingErrors })
+    const [pendingErrors, allErrors, dailyScores] = await Promise.all([
+      ErrorRepository.getPending(),
+      ErrorRepository.getAll(),
+      DailyScoreRepository.getAll(),
+    ])
+
+    const freshTargets = generateDailyTargets({
+      dateIso: date,
+      pendingErrors,
+      allErrors,
+      dailyScores,
+    })
 
     if (existingTasks.length === 0) {
       for (const t of freshTargets) await dbPut('tasks', t)
       return freshTargets
     }
 
-    // Merge fresh titles & notes with user's existing status & notes
+    // Merge fresh adaptive titles & notes with user's existing status & notes
     const merged: Task[] = []
     for (const fresh of freshTargets) {
       const existing = existingTasks.find(t => t.blockId === fresh.blockId)
       if (existing) {
-        // Update title and notes to match the date's exact 44-day syllabus topic if title changed
+        // Update title and notes to match adaptive engine while preserving status and user notes
         const updated: Task = {
           ...existing,
           title: fresh.title,
