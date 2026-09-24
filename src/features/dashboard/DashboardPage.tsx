@@ -11,14 +11,14 @@ import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 
 const SEQUENCE_STRIP = [
-  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: '3/5 Sets', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
-  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic', tag: '2 Puzzles', col: '#2563EB', bg: 'rgba(37,99,235,0.15)' },
-  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC', tag: '4 RCs Done', col: '#7C3AED', bg: 'rgba(124,58,237,0.15)' },
-  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional', tag: 'Timed 40m', col: '#D97706', bg: 'rgba(217,119,6,0.15)' },
-  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log', tag: '12 Logged', col: '#DC2626', bg: 'rgba(220,38,38,0.15)' },
-  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Formula + RC', tag: 'Formula Book', col: '#8B5CF6', bg: 'rgba(139,92,246,0.15)' },
-  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Wrong Qs', tag: '8 Pending', col: '#DB2777', bg: 'rgba(219,39,119,0.15)' },
-  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm', tag: 'Ready', col: '#0E9F9F', bg: 'rgba(14,159,159,0.15)' },
+  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: 'LIVE', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
+  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic', tag: 'LIVE', col: '#2563EB', bg: 'rgba(37,99,235,0.15)' },
+  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC', tag: 'LIVE', col: '#7C3AED', bg: 'rgba(124,58,237,0.15)' },
+  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional / Mock', tag: 'LIVE', col: '#D97706', bg: 'rgba(217,119,6,0.15)' },
+  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log', tag: 'LIVE', col: '#DC2626', bg: 'rgba(220,38,38,0.15)' },
+  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Recall + Connect', tag: 'LIVE', col: '#8B5CF6', bg: 'rgba(139,92,246,0.15)' },
+  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Weakness Fix', tag: 'LIVE', col: '#DB2777', bg: 'rgba(219,39,119,0.15)' },
+  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm Mastery', tag: 'LIVE', col: '#0E9F9F', bg: 'rgba(14,159,159,0.15)' },
 ]
 
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
