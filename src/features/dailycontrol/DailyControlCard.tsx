@@ -83,10 +83,9 @@ export function DailyControlCard() {
   const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum)
   const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
   const dailyTarget = getPercentylDailyTarget(today.key)
-  const currentTaskLine = current ? `${current.blockId} — ${current.title}` : 'All 8 CAT blocks complete'
-
   const completed = tasks.filter(t => t.status === 'DONE').length
   const current = tasks.find(t => t.status !== 'DONE')
+  const currentTaskLine = current ? `${current.blockId} — ${current.title}` : 'All 8 CAT blocks complete'
   const remaining = Math.max(0, tasks.length - completed - (current ? 1 : 0))
 
   if (loading) return null
