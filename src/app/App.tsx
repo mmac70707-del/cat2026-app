@@ -14,6 +14,7 @@ import { MissionPage }          from '@/features/mission/MissionPage'
 import { VisionPage }           from '@/features/vision/VisionPage'
 import { MindsetPage }          from '@/features/mindset/MindsetPage'
 import { ApexProSuite }         from '@/features/apexpro/ApexProSuite'
+import { OpenJarvisTerminal }   from '@/features/openjarvis/OpenJarvisTerminal'
 import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
@@ -37,7 +38,7 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -183,6 +184,7 @@ export function App() {
         {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
         {activePage === 'mindset'      && <MindsetPage          onBack={() => setActivePage('more')} />}
         {activePage === 'apexpro'      && <ApexProSuite         onBack={() => setActivePage('more')} />}
+        {activePage === 'openjarvis'   && <OpenJarvisTerminal   onBack={() => setActivePage('more')} />}
         {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
         {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
         {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
