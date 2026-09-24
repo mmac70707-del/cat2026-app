@@ -1,20 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTodayTasks } from '@/hooks/useTasks'
 import { usePhase } from '@/hooks/usePhase'
-import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
+import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum, getPhaseForDateKey } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
+import { PHASES as CONFIG_PHASES } from '@/data/config'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 
 const DAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
-
-const PHASES = [
-  ['REBUILD','2026-09-01','2026-09-15'],
-  ['APPLICATION','2026-09-16','2026-10-04'],
-  ['MOCK-DOMINATED','2026-10-05','2026-11-08'],
-  ['CONSOLIDATION','2026-11-09','2026-11-20'],
-  ['TAPER','2026-11-21','2026-11-28'],
-] as const
 
 const OMIA: Record<string,string> = {
   MONDAY:'Mock analysis + Error Log + Repair',
@@ -54,11 +47,6 @@ function todayIndia() {
   }
 }
 
-function currentPhase(key: string) {
-  const found = PHASES.find(([,start,end]) => key >= start && key <= end)
-  return found?.[0] ?? (key < PHASES[0][1] ? 'PRE-CAT' : 'POST-CAT')
-}
-
 export function DailyControlCard() {
   // Live daily engine: date/weekday is derived from Asia/Kolkata and refreshed while the app is open.
   const phase = usePhase()
@@ -78,7 +66,8 @@ export function DailyControlCard() {
   }, [])
 
   const today = useMemo(() => todayIndia(), [tick])
-  const phaseName = currentPhase(today.key)
+  const phaseId = getPhaseForDateKey(today.key)
+  const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase
   const dayNum = getFirstPassDayNum(today.key)
   const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum)
   const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
@@ -102,8 +91,8 @@ export function DailyControlCard() {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))', gap:10 }}>
           <div style={{ padding:12, borderRadius:10, background:'rgba(34,197,94,.08)', border:'1px solid rgba(34,197,94,.2)' }}>
             <div style={{ fontSize:10, color:'#86EFAC', fontWeight:900 }}>PRIMARY</div>
-            <div style={{ marginTop:4, color:'#FFF', fontWeight:800 }}>CAT 2026 • {phaseName}</div>
-            <div style={{ marginTop:3, color:'#94A3B8', fontSize:11 }}>{phase.purpose || phase.name}</div>
+            <div style={{ marginTop:4, color:'#FFF', fontWeight:800 }}>CAT 2026 • {phaseId}</div>
+            <div style={{ marginTop:3, color:'#94A3B8', fontSize:11 }}>{phaseInfo.purpose || phaseInfo.name}</div>
           </div>
           <div style={{ padding:12, borderRadius:10, background:'rgba(59,130,246,.08)', border:'1px solid rgba(59,130,246,.2)' }}>
             <div style={{ fontSize:10, color:'#93C5FD', fontWeight:900 }}>TODAY'S O.M.I.A.</div>
