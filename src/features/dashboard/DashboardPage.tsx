@@ -24,17 +24,17 @@ const SEQUENCE_STRIP = [
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 const MONTHS_ARR = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
-function getRealWeekDates() {
-  const now = new Date()
-  const day = now.getDay()
-  const mon = new Date(now)
-  mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
-  mon.setHours(0, 0, 0, 0)
+function getRealWeekDates(now: Date = new Date()) {
+  const p = getKolkataDateParts(now)
+  const kolkataDate = new Date(Date.UTC(p.year, p.month - 1, p.date))
+  const day = kolkataDate.getUTCDay()
+  const monday = new Date(kolkataDate)
+  monday.setUTCDate(kolkataDate.getUTCDate() - (day === 0 ? 6 : day - 1))
 
   const weekDays: Date[] = []
   for (let i = 0; i < 7; i++) {
-    const cur = new Date(mon)
-    cur.setDate(mon.getDate() + i)
+    const cur = new Date(monday)
+    cur.setUTCDate(monday.getUTCDate() + i)
     weekDays.push(cur)
   }
   return weekDays
@@ -145,24 +145,21 @@ export function DashboardPage() {
         </div>
       </div>
 
-      {/* ── MENTOR DIRECTIVE & FLIGHT PATH GAUGE BANNER ── */}
+      {/* ── VERIFIED EXECUTION DIRECTIVE ── */}
       <div style={{ background: '#161D2E', border: '1px solid #F5A623', padding: '14px 24px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12 }} className="glow-border-amber">
         <div>
           <div style={{ fontSize: 11, fontWeight: 800, color: '#F5A623', letterSpacing: 1, textTransform: 'uppercase' }}>
-            🎯 MENTOR DIRECTIVE • IIM-A GOLD MEDALIST
+            🎯 TODAY'S EXECUTION DIRECTIVE
           </div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#FFF', marginTop: 4, fontStyle: 'italic' }}>
-            "Stop doing random questions. Today we plug your <strong style={{ color: '#F5A623' }}>Pacing Leakage</strong> in DILR Matrix sets and <strong style={{ color: '#4ADE80' }}>Arithmetic profit-loss trap options</strong>."
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#FFF', marginTop: 4 }}>
+            Follow today's generated QA → DILR → VARC → TEST → ANALYSIS → REVISION → REPAIR → RETEST sequence.
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#1F2937', padding: '8px 16px', borderRadius: 10, border: '1px solid #374151' }}>
-          <div>
-            <div style={{ fontSize: 9, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5 }}>TARGET FLIGHT PATH</div>
-            <div style={{ fontSize: 16, fontWeight: 900, color: '#22C55E', fontFamily: 'monospace' }}>97.4%ile → 99.8%ile</div>
-          </div>
-          <div style={{ fontSize: 10, color: '#F5A623', fontWeight: 800 }}>
-            IIM-A/B/C Calls Confirmed 🏆
+        <div style={{ background: '#1F2937', padding: '8px 16px', borderRadius: 10, border: '1px solid #374151' }}>
+          <div style={{ fontSize: 9, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5 }}>DATA POLICY</div>
+          <div style={{ fontSize: 11, fontWeight: 800, color: '#22C55E', marginTop: 2 }}>
+            LIVE LOGGED DATA ONLY • NO INVENTED SCORES
           </div>
         </div>
       </div>
@@ -267,25 +264,13 @@ export function DashboardPage() {
           {/* RIGHT COLUMN: SECTIONAL PRECISION MATRIX + WEEK CALENDAR + SCORECARD */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-            {/* SECTIONAL PRECISION MATRIX (QA 98.2%ile, DILR 94.6%ile, VARC 96.1%ile) */}
+            {/* SECTIONAL PRECISION MATRIX — VERIFIED DATA ONLY */}
             <div className="card glow-border-cobalt" style={{ border: '1px solid #3B82F6' }}>
               <div className="card-title" style={{ color: '#60A5FA' }}>📈 Sectional Precision Matrix</div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, textAlign: 'center' }}>
-                <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', borderRadius: 8, padding: 10 }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: '#4ADE80' }}>01 QA</div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#FFF', fontFamily: 'monospace', marginTop: 2 }}>98.2%ile</div>
-                  <div style={{ fontSize: 9, color: '#94A3B8' }}>44/66 • 84% Acc</div>
-                </div>
-                <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', borderRadius: 8, padding: 10 }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: '#60A5FA' }}>02 DILR</div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#FFF', fontFamily: 'monospace', marginTop: 2 }}>94.6%ile</div>
-                  <div style={{ fontSize: 9, color: '#94A3B8' }}>32/60 • 72% Acc</div>
-                </div>
-                <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', borderRadius: 8, padding: 10 }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: '#A78BFA' }}>03 VARC</div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#FFF', fontFamily: 'monospace', marginTop: 2 }}>96.1%ile</div>
-                  <div style={{ fontSize: 9, color: '#94A3B8' }}>38/66 • 78% Acc</div>
-                </div>
+              <div style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid #334155', borderRadius: 8, padding: 12, fontSize: 11, color: '#CBD5E1', lineHeight: 1.6 }}>
+                <strong style={{ color: '#60A5FA' }}>LIVE / VERIFIED ONLY:</strong> sectional percentile, score and accuracy values appear here only after they are actually logged from a sectional/mock result.
+                <br />
+                No score is assumed, predicted, or pre-filled.
               </div>
             </div>
 
@@ -295,7 +280,7 @@ export function DashboardPage() {
               <div className="week-grid">
                 {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((dName, dIdx) => {
                   const curDate = realWeekDates[dIdx]
-                  const isToday = curDate.toDateString() === now.toDateString()
+                  const isToday = getKolkataDateKey(curDate) === dateKey
                   return (
                     <div key={dName} className={`day-card ${isToday ? 'today' : ''}`}>
                       <div className="day-name">{dName}</div>
