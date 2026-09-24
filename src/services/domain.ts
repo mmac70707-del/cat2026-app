@@ -1,5 +1,5 @@
 import { CAT_DATE, PHASES, WEEK_PLAN_TEMPLATE } from '@/data/config'
-import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
+import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { MASTER_SPINE_44 } from '@/data/roadmap44'
 import type { Phase, WeekDay, MockAnalysis, MasteryLevel, Task } from '@/types'
 
@@ -39,55 +39,54 @@ export function getCountdownParts(): { days: number; hours: number; minutes: num
 
 // ── Week number (from Phase 1 start) ─────────────────
 export function getWeekNumber(): number {
-  const p1Start = new Date(PHASES[0].start)
-  const diff    = Math.max(0, Date.now() - p1Start.getTime())
+  const parts = getKolkataDateParts()
+  const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
+  const p1Start = new Date(Date.UTC(2026, 8, 1))
+  const diff = Math.max(0, todayKolkata.getTime() - p1Start.getTime())
   return Math.floor(diff / (7 * 86_400_000)) + 1
-}
-
-// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
+}\n\n// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
 export function buildWeekPlan(): WeekDay[] {
-  const now = new Date()
-  const day = now.getDay()
-  const mon = new Date(now)
-  mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
-  mon.setHours(0, 0, 0, 0)
+  const parts = getKolkataDateParts()
+  const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
+  const todayKey = getKolkataDateKey()
+  const day = parts.dayOfWeek
+  const mon = new Date(todayKolkata)
+  mon.setUTCDate(todayKolkata.getUTCDate() - (day === 0 ? 6 : day - 1))
 
   return WEEK_PLAN_TEMPLATE.map((t, i) => {
     const d = new Date(mon)
-    d.setDate(mon.getDate() + i)
-    const dKey = getKolkataDateKey(d)
+    d.setUTCDate(mon.getUTCDate() + i)
+    const dKey = d.toISOString().slice(0, 10)
     const dNum = getFirstPassDayNum(dKey)
     const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === dNum)
 
-    const isToday = d.toDateString() === now.toDateString()
-    const isPast  = d < now && !isToday
+    const isToday = dKey === todayKey
+    const isPast = dKey < todayKey
 
     return {
       ...t,
-      date:    `${d.getDate()} ${MONTHS[d.getMonth()]}`,
-      qa:      roadmapItem ? roadmapItem.chapter : t.qa,
-      dilr:    roadmapItem ? roadmapItem.dilrFamily : t.dilr,
-      varc:    roadmapItem ? roadmapItem.varcSkill : t.varc,
-      focus:   isToday ? 'TODAY' : t.focus,
-      fCol:    isToday ? '#F5A623' : t.fCol,
+      date: d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()],
+      qa: roadmapItem ? roadmapItem.chapter : t.qa,
+      dilr: roadmapItem ? roadmapItem.dilrFamily : t.dilr,
+      varc: roadmapItem ? roadmapItem.varcSkill : t.varc,
+      focus: isToday ? 'TODAY' : t.focus,
+      fCol: isToday ? '#F5A623' : t.fCol,
       isToday,
       isPast,
     }
   })
-}
-
-// ── Week label (Mon X – Sun Y) ───────────────────────
+}\n\n// ── Week label (Mon X – Sun Y) ───────────────────────
 export function getWeekLabel(): string {
-  const now = new Date()
-  const day = now.getDay()
-  const mon = new Date(now)
-  mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1))
+  const parts = getKolkataDateParts()
+  const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
+  const day = parts.dayOfWeek
+  const mon = new Date(todayKolkata)
+  mon.setUTCDate(todayKolkata.getUTCDate() - (day === 0 ? 6 : day - 1))
   const sun = new Date(mon)
-  sun.setDate(mon.getDate() + 6)
-  return `${mon.getDate()} ${MONTHS[mon.getMonth()]} – ${sun.getDate()} ${MONTHS[sun.getMonth()]} ${sun.getFullYear()}`
-}
-
-// ── Task progress ─────────────────────────────────────
+  sun.setUTCDate(mon.getUTCDate() + 6)
+  return mon.getUTCDate() + ' ' + MONTHS[mon.getUTCMonth()] + ' – ' +
+    sun.getUTCDate() + ' ' + MONTHS[sun.getUTCMonth()] + ' ' + sun.getUTCFullYear()
+}\n\n// ── Task progress ─────────────────────────────────────
 export function calcTaskProgress(tasks: Task[]): { total: number; done: number; pct: number } {
   const total = tasks.length
   const done  = tasks.filter(t => t.status === 'DONE').length
