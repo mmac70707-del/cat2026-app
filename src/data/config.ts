@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.0.3'
-export const LAST_UPDATED = '21 SEP 2026 • 21:30 IST'
+export const APP_VERSION = '1.0.4'
+export const LAST_UPDATED = '24 SEP 2026 • DATE-HANDOFF + IST FIX'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -22,7 +22,8 @@ export const APP_UPDATE_INFO = {
 }
 
 export const CAT_EXAM_DATE_STR = '2026-11-29'
-export const CAT_DATE = new Date('2026-11-29T09:00:00')
+// Always anchor the exam to India Standard Time, independent of the device/browser timezone.
+export const CAT_DATE = new Date('2026-11-29T09:00:00+05:30')
 export const FIRST_PASS_START = '2026-09-18'
 export const FIRST_PASS_END = '2026-10-31'
 

@@ -4,7 +4,7 @@ import { DailyScoreRepository } from '@/repositories/index'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { usePhase } from '@/hooks/usePhase'
 import { getWeekNumber, getDaysLeft } from '@/services/domain'
-import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
+import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
@@ -56,8 +56,9 @@ export function DashboardPage() {
   const dayNum = getFirstPassDayNum(dateKey)
   const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
 
-  const realDayName = DAYS_ARR[now.getDay()]
-  const realDateStr = `${now.getDate()} ${MONTHS_ARR[now.getMonth()]} ${now.getFullYear()}`
+  const kolkataParts = getKolkataDateParts(now)
+  const realDayName = DAYS_ARR[kolkataParts.dayOfWeek]
+  const realDateStr = `${kolkataParts.date} ${MONTHS_ARR[kolkataParts.month - 1]} ${kolkataParts.year}`
   const realWeekDates = getRealWeekDates()
 
   useEffect(() => {
@@ -102,8 +103,7 @@ export function DashboardPage() {
   }
 
   function todayKeyDynamic() {
-    const d = new Date()
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    return getKolkataDateKey()
   }
 
   if (loading) {
@@ -114,7 +114,7 @@ export function DashboardPage() {
     <div className="dash-root">
       {/* ── ANDROID 14 SYSTEM STATUS BAR ── */}
       <div style={{ background: '#0B1325', padding: '6px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, fontFamily: 'JetBrains Mono', color: '#94A3B8', borderBottom: '1px solid #1E293B' }}>
-        <span style={{ fontWeight: 700, color: '#FFF' }}>09:41</span>
+        <span style={{ fontWeight: 700, color: '#FFF' }}>{String(kolkataParts.hours).padStart(2, '0')}:{String(kolkataParts.minutes).padStart(2, '0')}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ background: 'rgba(245,166,35,0.2)', color: '#F5A623', padding: '1px 6px', borderRadius: 4, fontWeight: 800, fontSize: 10 }}>5G</span>
           <span>📶 92% 🔋</span>

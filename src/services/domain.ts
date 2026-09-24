@@ -7,16 +7,13 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 
 // ── Phase ────────────────────────────────────────────
 export function getCurrentPhase(): Phase {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const todayKey = getKolkataDateKey()
 
   for (const p of PHASES) {
-    const s = new Date(p.start); s.setHours(0, 0, 0, 0)
-    const e = new Date(p.end);   e.setHours(23, 59, 59, 999)
-    if (today >= s && today <= e) return p
+    if (todayKey >= p.start && todayKey <= p.end) return p
   }
 
-  return today < new Date(PHASES[0].start)
+  return todayKey < PHASES[0].start
     ? PHASES[0]
     : PHASES[PHASES.length - 1]
 }
@@ -138,14 +135,11 @@ export function lvPct(lv: MasteryLevel):   number { return LV_PCT[lv]    ?? 0 }
 
 // ── Date helpers ──────────────────────────────────────
 export function localDateKey(d: Date = new Date()): string {
-  const y   = d.getFullYear()
-  const m   = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
+  return getKolkataDateKey(d)
 }
 
 export function todayKey(): string {
-  return localDateKey(new Date())
+  return getKolkataDateKey()
 }
 
 export function formatDate(date: Date): string {

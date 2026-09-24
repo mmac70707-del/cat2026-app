@@ -4,22 +4,27 @@ import { StateRepository, AppStateRecord } from '@/repositories/StateRepository'
 import { useCountdown } from '@/hooks/useCountdown'
 import { usePhase } from '@/hooks/usePhase'
 import { useToast } from '@/components/Toast'
+import { CAT_EXAM_DATE_STR } from '@/data/config'
+import { getKolkataDateKey } from '@/services/calendarEngine'
 
 export function VisionPage({ onBack }: { onBack?: () => void }) {
   const phase = usePhase()
   const { days, hms } = useCountdown()
   const [appState, setAppState] = useState<AppStateRecord | null>(null)
+  const [now, setNow] = useState(() => new Date())
   const { show: toast } = useToast()
 
   useEffect(() => {
     StateRepository.getState().then(st => setAppState(st))
   }, [])
 
-  const handleStartInterviewPhase = async () => {
-    const updated = await StateRepository.startInterviewPhase()
-    setAppState(updated)
-    toast('Interview / Application Phase Activated! 🔓')
-  }
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 30_000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  const todayKey = getKolkataDateKey(now)
+  const examBoundaryPassed = todayKey >= CAT_EXAM_DATE_STR
 
   const handleConfirmMbaJoining = async () => {
     const updated = await StateRepository.confirmMbaJoining()
@@ -42,7 +47,7 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
 
         <div style={{ textAlign: 'center' }}>
           <span style={{ fontSize: 11, fontWeight: 800, padding: '4px 12px', borderRadius: 12, background: phase.color, color: '#FFFFFF' }}>
-            {phase.id} — {phase.name}
+            {examBoundaryPassed ? 'POST-CAT MODE' : `${phase.id} — ${phase.name}`}
           </span>
         </div>
 
@@ -104,7 +109,11 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           {MASTER_LIFE_SEQUENCE.map((seq, sIdx) => {
-            const isActive = seq.id === 'cat2026' ? !appState?.catCompleted : false
+            const isActive = seq.id === 'cat2026'
+              ? !examBoundaryPassed
+              : seq.id === 'mba'
+                ? examBoundaryPassed
+                : false
             return (
               <span key={seq.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ background: isActive ? '#22C55E' : '#1F2937', color: isActive ? '#0A0F1E' : '#94A3B8', border: '1px solid #374151', padding: '6px 12px', borderRadius: 8, fontSize: 11, fontWeight: 800 }}>
@@ -116,7 +125,9 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
           })}
         </div>
         <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 12, lineHeight: 1.5, background: '#1F2937', padding: 10, borderRadius: 8 }}>
-          <strong>Current Priority:</strong> CAT 2026 is the ONLY active execution mission before 29 November 2026.
+          <strong>Current Priority:</strong> {examBoundaryPassed
+            ? 'CAT is complete by date boundary. Post-CAT execution is now active.'
+            : 'CAT 2026 is the ONLY active execution mission before 29 November 2026.'}
         </div>
       </div>
 
@@ -173,17 +184,21 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
       {/* POST-CAT ROADMAP (LOCKED BEFORE EXAM, AUTO-UNLOCKED AFTER EXAM) */}
       <div style={{ background: '#161D2E', border: '1px solid #374151', borderRadius: 12, padding: 18, marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: appState?.catCompleted ? '#22C55E' : '#94A3B8', textTransform: 'uppercase', letterSpacing: 1 }}>
-            {appState?.catCompleted ? '🔓 POST-CAT ROADMAP (UNLOCKED)' : '🔒 POST-CAT ROADMAP (LOCKED UNTIL EXAM)'}
+          <div style={{ fontSize: 13, fontWeight: 800, color: examBoundaryPassed ? '#22C55E' : '#94A3B8', textTransform: 'uppercase', letterSpacing: 1 }}>
+            {examBoundaryPassed ? '🔓 POST-CAT ROADMAP (UNLOCKED)' : '🔒 POST-CAT ROADMAP (LOCKED UNTIL EXAM)'}
           </div>
-          <span style={{ fontSize: 10, fontWeight: 800, background: appState?.catCompleted ? 'rgba(34,197,94,0.15)' : 'rgba(148,163,184,0.15)', color: appState?.catCompleted ? '#22C55E' : '#94A3B8', padding: '2px 8px', borderRadius: 6 }}>
-            {appState?.catCompleted ? 'POST-CAT MODE ACTIVE' : 'UNLOCKS AFTER 29 NOV 2026'}
+          <span style={{ fontSize: 10, fontWeight: 800, background: examBoundaryPassed ? 'rgba(34,197,94,0.15)' : 'rgba(148,163,184,0.15)', color: examBoundaryPassed ? '#22C55E' : '#94A3B8', padding: '2px 8px', borderRadius: 6 }}>
+            {examBoundaryPassed ? 'POST-CAT MODE ACTIVE' : 'UNLOCKS AFTER 29 NOV 2026'}
           </span>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
           {POST_CAT_ROADMAP.map((pc, idx) => {
-            const isUnlocked = idx === 0 ? Boolean(appState?.catCompleted) : idx === 1 ? Boolean(appState?.interviewPhaseStarted) : Boolean(appState?.mbaJoiningConfirmed)
+            // Cards 1–2 unlock automatically at the exam-date boundary.
+            // MBA joining remains a later explicit confirmation/state transition.
+            const isUnlocked = idx === 0 || idx === 1
+              ? examBoundaryPassed
+              : Boolean(appState?.mbaJoiningConfirmed)
 
             return (
               <div key={pc.id} style={{ background: '#1F2937', border: `1px solid ${isUnlocked ? '#22C55E' : '#374151'}`, borderRadius: 10, padding: 14, opacity: isUnlocked ? 1 : 0.65 }}>
@@ -201,12 +216,7 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
                 </ul>
 
                 {/* State Machine Manual Triggers */}
-                {idx === 1 && appState?.catCompleted && !appState.interviewPhaseStarted && (
-                  <button onClick={handleStartInterviewPhase} style={{ marginTop: 10, width: '100%', background: '#1A56DB', color: '#FFF', border: 'none', padding: '6px 10px', borderRadius: 6, fontSize: 10, fontWeight: 800, cursor: 'pointer' }}>
-                    Start Interview / Application Phase
-                  </button>
-                )}
-                {idx === 2 && appState?.interviewPhaseStarted && !appState.mbaJoiningConfirmed && (
+                {idx === 2 && examBoundaryPassed && !appState?.mbaJoiningConfirmed && (
                   <button onClick={handleConfirmMbaJoining} style={{ marginTop: 10, width: '100%', background: '#22C55E', color: '#0A0F1E', border: 'none', padding: '6px 10px', borderRadius: 6, fontSize: 10, fontWeight: 800, cursor: 'pointer' }}>
                     Confirm MBA Admission / Joining
                   </button>

@@ -16,7 +16,8 @@ export function getKolkataDateParts(d: Date = new Date()): { year: number; month
       weekday: 'narrow',
       hour: 'numeric',
       minute: 'numeric',
-      hour12: false
+      hour12: false,
+      hourCycle: 'h23'
     })
     const parts = formatter.formatToParts(d)
     let year = d.getFullYear(), month = d.getMonth() + 1, date = d.getDate(), hours = d.getHours(), minutes = d.getMinutes()
