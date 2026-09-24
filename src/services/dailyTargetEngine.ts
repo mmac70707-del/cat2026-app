@@ -21,7 +21,7 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
 
   // Find exact 44-Day First-Pass day & roadmap item
   const dayNum = getFirstPassDayNum(dateKey)
-  const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
+  const roadmapItem = ROADMAP_44.find(r => r.dateIso === dateKey) || ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
   const pt = getPercentylDailyTarget(dateKey)
 
   const pendingList = input.pendingErrors || []
