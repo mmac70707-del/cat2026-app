@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.0.4'
-export const LAST_UPDATED = '24 SEP 2026 • DATE-HANDOFF + IST FIX'
+export const APP_VERSION = '1.0.5'
+export const LAST_UPDATED = '24 SEP 2026 • IST DAILY ROLLOVER FIX'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -17,7 +17,8 @@ export const APP_UPDATE_INFO = {
     'Percentyl 2.0 Full 44-Day Syllabus Breakdown & Targets',
     '3 Core Targets Card (QA, DILR, VARC) on Today & 1:1 Dashboard',
     'Stitch H612 Apex Protocol Design System & Glow Effects',
-    'Mindset & Anti-Laziness Protocol Module'
+    'Mindset & Anti-Laziness Protocol Module',
+    'Asia/Kolkata-safe daily/week rollover and date display'
   ]
 }
 
