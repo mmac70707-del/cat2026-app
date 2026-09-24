@@ -59,6 +59,7 @@ function currentPhase(key: string) {
 }
 
 export function DailyControlCard() {
+  // Live daily engine: date/weekday is derived from Asia/Kolkata and refreshed while the app is open.
   const phase = usePhase()
   const { tasks, loading, done, pct } = useTodayTasks()
   const [tick, setTick] = useState(0)
