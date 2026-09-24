@@ -3,6 +3,7 @@ import { useTodayTasks } from '@/hooks/useTasks'
 import { usePhase } from '@/hooks/usePhase'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
+import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 
 const DAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
@@ -81,6 +82,8 @@ export function DailyControlCard() {
   const dayNum = getFirstPassDayNum(today.key)
   const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum)
   const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
+  const dailyTarget = getPercentylDailyTarget(today.key)
+  const currentTaskLine = current ? `${current.blockId} — ${current.title}` : 'All 8 CAT blocks complete'
 
   const completed = tasks.filter(t => t.status === 'DONE').length
   const current = tasks.find(t => t.status !== 'DONE')
@@ -107,6 +110,7 @@ export function DailyControlCard() {
             <div style={{ fontSize:10, color:'#93C5FD', fontWeight:900 }}>TODAY'S O.M.I.A.</div>
             <div style={{ marginTop:4, color:'#FFF', fontWeight:800 }}>{dayAction}</div>
             {roadmap && <div style={{ marginTop:3, color:'#94A3B8', fontSize:11 }}>Day {dayNum}/44 • {roadmap.chapter}</div>}
+            <div style={{ marginTop:7, color:'#CBD5E1', fontSize:10, lineHeight:1.5 }}>Today: {dailyTarget.quantTopic} • {dailyTarget.dilrTopic} • {dailyTarget.varcTopic}</div>
           </div>
         </div>
 
@@ -118,7 +122,12 @@ export function DailyControlCard() {
 
         <div>
           <div style={{ fontSize:10, color:'#F5A623', fontWeight:900, letterSpacing:.8, marginBottom:7 }}>CAT EXECUTION — QA → DILR → VARC → TEST → ANALYSIS → REVISION → REPAIR → RETEST</div>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:7 }}>
+          <div style={{ display:'grid', gap:7 }}>
+            <div style={{fontSize:10,color:'#CBD5E1'}}><strong style={{color:'#86EFAC'}}>QA:</strong> {dailyTarget.quantDetail} ({dailyTarget.quantTargetQs} Qs)</div>
+            <div style={{fontSize:10,color:'#CBD5E1'}}><strong style={{color:'#93C5FD'}}>DILR:</strong> {dailyTarget.dilrDetail} ({dailyTarget.dilrTargetSets} sets)</div>
+            <div style={{fontSize:10,color:'#DDD6FE'}}><strong style={{color:'#C4B5FD'}}>VARC:</strong> {dailyTarget.varcDetail} ({dailyTarget.varcTargetPsg} passages)</div>
+          </div>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:7, marginTop:8 }}>
             {['QA','DILR','VARC','TEST','ANALYSIS','REVISION','REPAIR','RETEST'].map((x,i) => {
               const isDone = tasks[i]?.status === 'DONE'
               return <span key={x} style={{ padding:'6px 9px', borderRadius:8, fontSize:10, fontWeight:900, background:isDone?'rgba(34,197,94,.14)':'rgba(148,163,184,.08)', border:isDone?'1px solid rgba(34,197,94,.35)':'1px solid rgba(148,163,184,.15)', color:isDone?'#86EFAC':'#CBD5E1' }}>{isDone?'✓ ':''}{x}</span>
@@ -137,6 +146,11 @@ export function DailyControlCard() {
           <div style={{ display:'grid', gap:5 }}>
             {schedule.map(([time,label]) => <div key={time} style={{ display:'grid', gridTemplateColumns:'90px 1fr', gap:8, fontSize:10 }}><span style={{color:'#F5A623',fontWeight:800}}>{time}</span><span style={{color:'#CBD5E1'}}>{label}</span></div>)}
           </div>
+        </div>
+
+        <div style={{ padding:12, borderRadius:10, border:'1px solid rgba(245,166,35,.2)', background:'rgba(245,166,35,.05)' }}>
+          <div style={{ fontSize:10, color:'#F5A623', fontWeight:900 }}>ACTUAL TODAY TASK</div>
+          <div style={{ marginTop:5, color:'#FFF', fontSize:11, fontWeight:800, lineHeight:1.5 }}>{currentTaskLine}</div>
         </div>
 
         <div style={{ padding:12, borderRadius:10, border:'1px solid rgba(168,85,247,.2)', background:'rgba(168,85,247,.06)' }}>
