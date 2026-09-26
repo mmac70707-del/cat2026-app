@@ -1,10 +1,11 @@
 import { useQuickStats } from '@/hooks/index'
 
-export type SubPage = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
+  { id: 'jarvis',       icon: '🧠', label: 'JARVIS Command Center • Live Core + Device + Memory', featured: true },
   { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
   { id: 'openjarvis',   icon: '🤖', label: 'Stanford OpenJarvis AI Research Agent (openjarvis.stanford.edu)', featured: true },
   { id: 'apexpro',      icon: '⚡', label: 'Apex Pro Executive Command Deck & Triage Engine', featured: true },
