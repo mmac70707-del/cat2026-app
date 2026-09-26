@@ -35,6 +35,7 @@ import { SchedulePage }         from '@/features/schedule/SchedulePage'
 import { SyllabusPage }         from '@/features/syllabus/SyllabusPage'
 import { SettingsPage }         from '@/features/settings/SettingsPage'
 import { SecuritySentinelPage }  from '@/features/security/SecuritySentinelPage'
+import { MissionOSPage }          from '@/features/missionos/MissionOSPage'
 
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
@@ -49,7 +50,7 @@ import { initPwaInstall } from '@/services/pwaInstall'
 import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'settings'
+export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -295,6 +296,7 @@ function AppUnlocked() {
         {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
         {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
         {activePage === 'security'    && <SecuritySentinelPage  onBack={() => setActivePage('more')} />}
+        {activePage === 'missionos'   && <MissionOSPage         onBack={() => setActivePage('more')} />}
         {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
       </div>
 
