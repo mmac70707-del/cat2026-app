@@ -5,23 +5,23 @@ export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' 
 interface Props { onNavigate: (page: SubPage) => void }
 
 const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
-  { id: 'jarvis',       icon: '🧠', label: 'JARVIS Command Center • Live Core + Device + Memory', featured: true },
-  { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
-  { id: 'openjarvis',   icon: '🤖', label: 'Stanford OpenJarvis AI Research Agent (openjarvis.stanford.edu)', featured: true },
-  { id: 'apexpro',      icon: '⚡', label: 'Apex Pro Executive Command Deck & Triage Engine', featured: true },
-  { id: 'mission',      icon: '🎯', label: 'Current Active Mission (Visuals & Focus)', featured: true },
-  { id: 'vision',       icon: '👁️', label: 'Master Vision, 6 Pillars & 7-Year Roadmap', featured: true },
-  { id: 'mindset',      icon: '🧠', label: 'Mindset, Anti-Laziness & Discipline Protocol', featured: true },
-  { id: 'roadmap',      icon: '🚀', label: '44-Day First-Pass Roadmap' },
-  { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator' },
-  { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap' },
-  { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints' },
-  { id: 'flashcards',   icon: '🎴', label: 'Spaced Repetition Formula Deck' },
-  { id: 'achievements', icon: '🎖️', label: 'Streak Counter & Execution Badges' },
-  { id: 'research',     icon: '🔬', label: 'Deep Research Protocol' },
-  { id: 'livesessions', icon: '📺', label: 'Expert Masterclasses & Video Seminars' },
-  { id: 'qbank',        icon: '📚', label: 'Adaptive Question Vault' },
-  { id: 'drills',       icon: '⚡', label: 'Quantum Calculation Drills' },
+  { id: 'jarvis',       icon: '🧠', label: 'JARVIS Command Center', featured: true },
+  { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard', featured: true },
+  { id: 'openjarvis',   icon: '🤖', label: 'OpenJarvis Research Agent', featured: true },
+  { id: 'apexpro',      icon: '⚡', label: 'Apex Pro Command Deck', featured: true },
+  { id: 'mission',      icon: '🎯', label: 'Current Active Mission', featured: true },
+  { id: 'vision',       icon: '👁️', label: 'Master Vision & 7-Year Roadmap', featured: true },
+  { id: 'mindset',      icon: '🧠', label: 'Mindset & Discipline Protocol', featured: true },
+  { id: 'roadmap',      icon: '🚀', label: '44-Day Roadmap' },
+  { id: 'catmock',      icon: '🏆', label: 'CAT Full Exam Simulator' },
+  { id: 'adaptive',     icon: '🧠', label: 'Adaptive Weakness Heatmap' },
+  { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs' },
+  { id: 'flashcards',   icon: '🎴', label: 'Formula Deck' },
+  { id: 'achievements', icon: '🎖️', label: 'Streak & Badges' },
+  { id: 'research',     icon: '🔬', label: 'Deep Research' },
+  { id: 'livesessions', icon: '📺', label: 'Masterclasses' },
+  { id: 'qbank',        icon: '📚', label: 'Question Vault' },
+  { id: 'drills',       icon: '⚡', label: 'Calculation Drills' },
   { id: 'errors',       icon: '🔴', label: 'Error Log (C1–C5)' },
   { id: 'repair',       icon: '🔧', label: 'Repair Queue' },
   { id: 'retest',       icon: '✅', label: 'Retest System' },
@@ -36,43 +36,43 @@ export function MorePage({ onNavigate }: Props) {
 
   return (
     <div className="section-pad">
-      <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--gold)', marginBottom: 12 }}>
-        CAT 2026 Master Execution &amp; Deep Research Suite
+      <div className="jarvis-more-title">
+        <div>
+          <div className="jarvis-more-title-main">Command Library</div>
+          <div className="jarvis-more-title-sub">CAT execution core • tools • research</div>
+        </div>
+        <span className="pill pill-green">ONLINE</span>
       </div>
 
-      <div className="grid2" style={{ gap: 10, marginBottom: 12 }}>
+      <div className="jarvis-hub-grid">
         {TILES.map(t => (
           <div
             key={t.id}
-            className="hub-tile"
+            className={`jarvis-hub-tile${t.featured ? ' featured' : ''}`}
+            role="button"
+            tabIndex={0}
             onClick={() => onNavigate(t.id)}
-            style={{
-              gridColumn: t.featured ? 'span 2' : 'span 1',
-              background: t.featured ? 'linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(26,86,219,0.2) 100%)' : undefined,
-              border: t.featured ? '1px solid var(--gold)' : undefined
-            }}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onNavigate(t.id) }}
           >
-            <div style={{ fontSize: 28 }}>{t.icon}</div>
-            <div className="hub-tile-label" style={{ fontWeight: t.featured ? 800 : 600, color: t.featured ? 'var(--gold)' : undefined }}>
-              {t.label}
-            </div>
+            <div className="jarvis-hub-icon" aria-hidden="true">{t.icon}</div>
+            <div className="jarvis-hub-tile-label">{t.label}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Quick Stats (live from IndexedDB)</div>
-      <div className="grid2">
+      <div className="jarvis-stat-heading">Live execution telemetry</div>
+      <div className="jarvis-stat-grid">
         {[
-          { label: "Today's blocks", val: stats ? `${stats.blocksDone}/8` : '--',   col: 'var(--gold)'   },
-          { label: 'Errors logged',   val: stats ? `${stats.totalErrors}` : '--',   col: 'var(--red2)'   },
-          { label: 'Mocks done',      val: stats ? `${stats.mocksLogged}` : '--',   col: 'var(--blue3)'  },
-          { label: 'Last accuracy',   val: stats?.lastAccuracy != null ? `${stats.lastAccuracy}%` : '--', col: 'var(--green2)' },
-          { label: 'Repair pending',  val: stats ? `${stats.repairPending}` : '--', col: 'var(--pink)'   },
-          { label: 'Retest pending',  val: stats ? `${stats.retestPending}` : '--', col: 'var(--teal)'   },
+          { label: "Today's blocks", val: stats ? `${stats.blocksDone}/8` : '--', col: 'var(--jarvis-cyan)' },
+          { label: 'Errors logged', val: stats ? `${stats.totalErrors}` : '--', col: 'var(--jarvis-red)' },
+          { label: 'Mocks done', val: stats ? `${stats.mocksLogged}` : '--', col: 'var(--jarvis-cyan)' },
+          { label: 'Last accuracy', val: stats?.lastAccuracy != null ? `${stats.lastAccuracy}%` : '--', col: 'var(--jarvis-green)' },
+          { label: 'Repair pending', val: stats ? `${stats.repairPending}` : '--', col: 'var(--jarvis-amber)' },
+          { label: 'Retest pending', val: stats ? `${stats.retestPending}` : '--', col: 'var(--jarvis-cyan)' },
         ].map(s => (
-          <div key={s.label} className="card-sm" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 10, color: 'var(--muted)' }}>{s.label}</div>
-            <div style={{ fontSize: 24, fontWeight: 800, color: s.col, fontFamily: 'monospace' }}>{s.val}</div>
+          <div key={s.label} className="card-sm jarvis-stat-card">
+            <div className="jarvis-stat-label">{s.label}</div>
+            <div className="jarvis-stat-value" style={{ color: s.col }}>{s.val}</div>
           </div>
         ))}
       </div>
