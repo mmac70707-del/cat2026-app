@@ -221,15 +221,15 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const lockedSeconds = Math.ceil(lockedMs / 1000)
 
   return (
-    <div style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'radial-gradient(circle at 50% 15%,rgba(0,245,255,.10),transparent 36%),#03070A',color:'#E7FDFB',fontFamily:'Inter,Arial,sans-serif',padding:20}}>
-      <div style={{width:'min(430px,94vw)',padding:'30px 22px',border:'1px solid rgba(0,245,255,.28)',borderRadius:24,background:'rgba(4,13,16,.96)',boxShadow:'0 0 50px rgba(0,245,255,.10)',textAlign:'center'}}>
-        <div style={{width:86,height:86,margin:'0 auto 16px',borderRadius:'50%',border:'2px solid #00F5FF',boxShadow:'0 0 30px rgba(0,245,255,.28)',display:'grid',placeItems:'center',fontSize:30,color:'#00F5FF'}}>◉</div>
+    <div style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'radial-gradient(circle at 50% 15%,rgba(0,245,255,.10),transparent 36%),#03070A',color:'#E7FDFB',fontFamily:'Inter[...]
+      <div style={{width:'min(430px,94vw)',padding:'30px 22px',border:'1px solid rgba(0,245,255,.28)',borderRadius:24,background:'rgba(4,13,16,.96)',boxShadow:'0 0 50px rgba(0,245,255,.10)',textA[...]
+        <div style={{width:86,height:86,margin:'0 auto 16px',borderRadius:'50%',border:'2px solid #00F5FF',boxShadow:'0 0 30px rgba(0,245,255,.28)',display:'grid',placeItems:'center',fontSize:30,[...]
         <div style={{fontSize:10,letterSpacing:1.6,color:'#39FF88',marginBottom:10}}>JARVIS // SECURITY CORE</div>
         <h1 style={{fontSize:23,color:'#00F5FF',margin:'8px 0'}}>{configured ? 'WELCOME BACK, ASHISH' : 'INITIAL JARVIS SETUP'}</h1>
-        <p style={{fontSize:12,color:'#7E9EA0',lineHeight:1.5}}>{configured ? 'Enter your private 6-digit PIN to unlock the execution system.' : 'Create a private 6-digit PIN. It is protected with a salted slow derivation on this browser.'}</p>
-        <input value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} autoFocus placeholder="••••••" disabled={lockedMs>0} style={{width:'100%',padding:15,borderRadius:12,border:'1px solid rgba(0,245,255,.20)',background:'#010608',color:'#E7FDFB',textAlign:'center',fontSize:23,letterSpacing:9,outline:'none'}} />
-        {!configured && <input value={confirm} onChange={e=>setConfirm(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} placeholder="CONFIRM PIN" disabled={lockedMs>0} style={{width:'100%',padding:15,marginTop:10,borderRadius:12,border:'1px solid rgba(0,245,255,.20)',background:'#010608',color:'#E7FDFB',textAlign:'center',fontSize:20,letterSpacing:7,outline:'none'}} />}
-        <button onClick={submit} disabled={lockedMs>0} style={{width:'100%',padding:14,marginTop:12,border:0,borderRadius:12,fontWeight:900,background:lockedMs>0?'#334155':'#00F5FF',color:'#001114',cursor:lockedMs>0?'not-allowed':'pointer'}}>{lockedMs>0?`LOCKED ${lockedSeconds}s`:configured?'UNLOCK JARVIS':'CREATE SECURE PIN'}</button>
+        <p style={{fontSize:12,color:'#7E9EA0',lineHeight:1.5}}>{configured ? 'Enter your private 6-digit PIN to unlock the execution system.' : 'Create a private 6-digit PIN. It is protected wit[...]
+        <input value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} autoFocus placeholder="•••…[...]
+        {!configured && <input value={confirm} onChange={e=>setConfirm(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} placehold[...]
+        <button onClick={submit} disabled={lockedMs>0} style={{width:'100%',padding:14,marginTop:12,border:0,borderRadius:12,fontWeight:900,background:lockedMs>0?'#334155':'#00F5FF',color:'#00111[...]
         <div style={{minHeight:40,marginTop:12,fontSize:12,color:'#CBD5E1'}}>{message}</div>
         <div style={{fontSize:10,color:'#4F6669'}}>Defense-in-depth • PBKDF2 • salted PIN • cooldown • auto-lock</div>
       </div>
