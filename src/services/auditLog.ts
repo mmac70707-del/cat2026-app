@@ -10,7 +10,7 @@ export type AuditEvent = {
 
 function makeId() {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID()
-  return \`audit-\1790411961462-\85n3o22fzpq\`
+  return 'audit-' + Date.now() + '-' + Math.random().toString(36).slice(2)
 }
 
 export async function recordAudit(type: string, detail?: string, source = 'web') {
