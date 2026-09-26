@@ -45,6 +45,7 @@ import { JarvisCommandCenter } from '@/features/jarvis/JarvisCommandCenter'
 import { JarvisCommandPalette } from '@/features/jarvis/JarvisCommandPalette'
 import { AppErrorBoundary } from '@/components/AppErrorBoundary'
 import { initPwaInstall } from '@/services/pwaInstall'
+import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
 export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
@@ -84,6 +85,8 @@ function AppUnlocked() {
   // ── Boot: open DB + seed mastery ────────────────
   useEffect(() => {
     initPwaInstall()
+    const removeErrorAudit = installGlobalErrorAudit()
+    void recordAudit('app_boot_started')
 
     async function boot() {
       try {
@@ -97,11 +100,13 @@ function AppUnlocked() {
         setBootStage(4)
       } catch (err) {
         console.error('[CAT2026] Boot error:', err)
+        void recordAudit('boot_error', err instanceof Error ? err.message : String(err))
       } finally {
         setLoading(false)
       }
     }
     boot()
+    return removeErrorAudit
   }, [])
 
   // ── Android hardware back button ────────────────

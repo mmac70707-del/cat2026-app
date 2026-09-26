@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -24,9 +23,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.webkit.WebViewAssetLoader
+import androidx.webkit.WebMessageCompat
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import java.util.concurrent.Executor
+import org.json.JSONObject
 import javax.crypto.KeyGenerator
 import javax.crypto.Mac
 import javax.crypto.SecretKey
@@ -37,7 +40,6 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
     private lateinit var biometricExecutor: Executor
-    private var backButtonHandler: (() -> Boolean)? = null
     private var nativeUnlocked = false
     private val prefs by lazy { getSharedPreferences("jarvis_security", MODE_PRIVATE) }
 
@@ -96,17 +98,29 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            addJavascriptInterface(NativeBridge(), "AndroidNativeHost")
+            if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+                throw IllegalStateException("Secure WebMessage bridge is unavailable on this WebView.")
+            }
+            WebViewCompat.addWebMessageListener(
+                this,
+                "AndroidNativeHost",
+                setOf("https://appassets.androidforward.site"),
+                WebViewCompat.WebMessageListener { _, message, sourceOrigin, isMainFrame, replyProxy ->
+                    if (!isMainFrame || sourceOrigin.toString() != "https://appassets.androidforward.site") return@WebMessageListener
+                    if (message.type != WebMessageCompat.TYPE_STRING) return@WebMessageListener
+                    handleBridgeMessage(message.data ?: return@WebMessageListener, replyProxy)
+                }
+            )
         }
 
         setContentView(webView)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val handled = backButtonHandler?.invoke() ?: false
-                if (!handled) {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
+                if (webView.url?.startsWith("https://appassets.androidforward.site/assets/public/") == true) {
+                    webView.evaluateJavascript("window.dispatchEvent(new Event('android:backbutton'))", null)
+                } else {
+                    finishAndRemoveTask()
                 }
             }
         })
@@ -226,9 +240,9 @@ class MainActivity : ComponentActivity() {
             ""
         }
         val submitLogic = if (!hasPin) {
-            """const saved=AndroidNativeHost.setJarvisPin(pin);if(saved){setMsg('PIN saved securely. Opening JARVIS...');setTimeout(()=>AndroidNativeHost.unlockApp(),300)}else{setMsg('PIN could not be saved. Try again.')}"""
+            """request("setPin",{pin}).then(r=>{if(r.ok){setMsg("PIN saved securely. Opening JARVIS...")}else{setMsg("PIN could not be saved. Try again.")}})"""
         } else {
-            """const ok=AndroidNativeHost.verifyJarvisPin(pin);if(ok){setMsg('Identity verified. Opening JARVIS...');setTimeout(()=>AndroidNativeHost.unlockApp(),250)}else{document.getElementById('pin').value='';setMsg('Incorrect PIN. Try again.')}"""
+            """request("verifyPin",{pin}).then(r=>{if(r.ok){setMsg("Identity verified. Opening JARVIS...")}else{document.getElementById("pin").value="";setMsg(r.locked?"Security cooldown active. Try again shortly.":"Incorrect PIN. Try again.")}})"""
         }
 
         val page = """
@@ -272,6 +286,10 @@ class MainActivity : ComponentActivity() {
           </main>
 
           <script>
+            const pending=new Map();
+            let seq=0;
+            function request(action,args={}){return new Promise(resolve=>{const id=String(++seq);pending.set(id,resolve);AndroidNativeHost.postMessage(JSON.stringify({id,action,args}))})}
+            AndroidNativeHost.onmessage=function(event){try{const r=JSON.parse(event.data);const resolve=pending.get(r.id);if(resolve){pending.delete(r.id);resolve(r)}}catch(_){}}
             function setMsg(t){document.getElementById('msg').textContent=t}
             function submitPin(){
               const pin=document.getElementById('pin').value;
@@ -279,7 +297,7 @@ class MainActivity : ComponentActivity() {
               ${confirmCheck}
               ${submitLogic}
             }
-            function bio(){AndroidNativeHost.authenticateBiometric()}
+            function bio(){setMsg('Waiting for biometric verification...');request('authenticateBiometric')}
           </script>
         </body>
         </html>
@@ -394,84 +412,81 @@ class MainActivity : ComponentActivity() {
         } catch (_: Exception) {}
     }
 
-    inner class NativeBridge {
-        @JavascriptInterface
-        fun exitApp() {
-            finishAndRemoveTask()
-        }
+    private fun handleBridgeMessage(payload: String, replyProxy: androidx.webkit.JavaScriptReplyProxy) {
+        try {
+            val request = JSONObject(payload)
+            val id = request.optString("id")
+            val action = request.optString("action")
+            val args = request.optJSONObject("args") ?: JSONObject()
+            val response = JSONObject().put("id", id)
 
-        @JavascriptInterface
-        fun registerBackButton() {
-            backButtonHandler = {
-                webView.evaluateJavascript(
-                    "window.onAndroidBackPressed && window.onAndroidBackPressed()",
-                    null
-                )
-                true
-            }
-        }
-
-        @JavascriptInterface
-        fun unregisterBackButton() {
-            backButtonHandler = null
-        }
-
-        @JavascriptInterface
-        fun requestNotificationPermission() {
-            if (!nativeUnlocked) return
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                runOnUiThread {
-                    requestNotificationPermissionLauncher.launch(
-                        Manifest.permission.POST_NOTIFICATIONS
-                    )
+            when (action) {
+                "exitApp" -> { finishAndRemoveTask(); response.put("ok", true) }
+                "requestNotificationPermission" -> {
+                    if (nativeUnlocked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        runOnUiThread { requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+                    }
+                    response.put("ok", nativeUnlocked)
                 }
+                "setNotificationsEnabled" -> {
+                    if (nativeUnlocked && args.optBoolean("enabled", false)) triggerNotificationSetup()
+                    response.put("ok", nativeUnlocked)
+                }
+                "authenticateBiometric" -> {
+                    runOnUiThread { authenticateBiometricInternal() }
+                    response.put("ok", true).put("started", true)
+                }
+                "setPin" -> {
+                    val saved = setJarvisPin(args.optString("pin"))
+                    if (saved) { nativeUnlocked = true; runOnUiThread { loadAppAfterUnlock() } }
+                    response.put("ok", saved)
+                }
+                "verifyPin" -> {
+                    val locked = isNativeRateLimited()
+                    val verified = !locked && verifyJarvisPin(args.optString("pin"))
+                    if (verified) { nativeUnlocked = true; runOnUiThread { loadAppAfterUnlock() } }
+                    response.put("ok", verified).put("locked", locked)
+                }
+                "launchNativeAction" -> response.put("ok", launchNativeAction(args.optString("action")))
+                "getDeviceCapabilities" -> {
+                    val biometricReady =
+                        BiometricManager.from(this@MainActivity)
+                            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
+                            BiometricManager.BIOMETRIC_SUCCESS
+                    response.put("ok", nativeUnlocked)
+                    response.put("capabilities", JSONObject()
+                        .put("biometric", biometricReady)
+                        .put("pinGate", true)
+                        .put("secureUnlock", true)
+                        .put("nativeIntents", true))
+                }
+                else -> response.put("ok", false).put("error", "Unsupported native action")
             }
-        }
-
-        @JavascriptInterface
-        fun setNotificationsEnabled(enabled: Boolean) {
-            if (!nativeUnlocked) return
-            if (enabled) triggerNotificationSetup()
-        }
-
-        @JavascriptInterface
-        fun authenticateBiometric() {
-            runOnUiThread { authenticateBiometricInternal() }
-        }
-
-        @JavascriptInterface
-        fun setJarvisPin(pin: String): Boolean {
-            val saved = this@MainActivity.setJarvisPin(pin)
-            if (saved) nativeUnlocked = true
-            return saved
-        }
-
-        @JavascriptInterface
-        fun verifyJarvisPin(pin: String): Boolean {
-            if (isNativeRateLimited()) return false
-            val verified = this@MainActivity.verifyJarvisPin(pin)
-            if (verified) nativeUnlocked = true
-            return verified
-        }
-
-        @JavascriptInterface
-        fun unlockApp() {
-            runOnUiThread { loadAppAfterUnlock() }
-        }
-
-        @JavascriptInterface
-        fun launchNativeAction(action: String) {
-            runOnUiThread { launchNativeAction(action) }
-        }
-
-        @JavascriptInterface
-        fun getDeviceCapabilities(): String {
-            val biometricReady =
-                BiometricManager.from(this@MainActivity)
-                    .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
-                    BiometricManager.BIOMETRIC_SUCCESS
-
-            return "{"biometric":$biometricReady,"pinGate":true,"secureUnlock":true,"nativeIntents":true}"
+            replyProxy.postMessage(response.toString())
+        } catch (_: Exception) {
+            replyProxy.postMessage(JSONObject().put("id", "").put("ok", false).put("error", "Invalid bridge message").toString())
         }
     }
+
+    private fun launchNativeAction(action: String): Boolean {
+        if (!nativeUnlocked) return false
+        return try {
+            when (action.lowercase()) {
+                "browser" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.google.com".toUri()))
+                "camera" -> startActivity(Intent("android.media.action.IMAGE_CAPTURE"))
+                "settings" -> startActivity(Intent(Settings.ACTION_SETTINGS))
+                "wifi" -> startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                "bluetooth" -> startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
+                "calendar" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CALENDAR))
+                "clock" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CLOCK))
+                "phone" -> startActivity(Intent(Intent.ACTION_DIAL))
+                "messages" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MESSAGING))
+                "whatsapp" -> packageManager.getLaunchIntentForPackage("com.whatsapp")?.let { startActivity(it) } ?: return false
+                "youtube" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.youtube.com".toUri()))
+                else -> return false
+            }
+            true
+        } catch (_: Exception) { false }
+    }
+}
 }
