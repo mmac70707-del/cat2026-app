@@ -28,7 +28,13 @@ function base64UrlToBytes(value: string) {
   return Uint8Array.from(binary, c => c.charCodeAt(0))
 }
 
-async function derivePin(pin: string, salt: Uint8Array, iterations = PBKDF2_ITERATIONS) {
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new Uint8Array(bytes.byteLength)
+  copy.set(bytes)
+  return copy.buffer
+}
+
+async function derivePin(pin: string, salt: ArrayBuffer, iterations = PBKDF2_ITERATIONS) {
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(pin),
@@ -55,7 +61,7 @@ function constantTimeEqual(a: Uint8Array, b: Uint8Array) {
 
 async function createRecord(pin: string): Promise<PinRecord> {
   const salt = crypto.getRandomValues(new Uint8Array(16))
-  const hash = await derivePin(pin, salt)
+  const hash = await derivePin(pin, toArrayBuffer(salt))
   return {
     version: 2,
     algorithm: 'PBKDF2-SHA-256',
@@ -66,7 +72,7 @@ async function createRecord(pin: string): Promise<PinRecord> {
 }
 
 async function verifyRecord(pin: string, record: PinRecord) {
-  const derived = await derivePin(pin, base64UrlToBytes(record.salt), record.iterations)
+  const derived = await derivePin(pin, toArrayBuffer(base64UrlToBytes(record.salt)), record.iterations)
   return constantTimeEqual(derived, base64UrlToBytes(record.hash))
 }
 
