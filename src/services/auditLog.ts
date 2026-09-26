@@ -1,4 +1,4 @@
-import { openDB, dbPut } from '@/db'
+import { openDB, dbGetAll, dbPut } from '@/db'
 
 export type AuditEvent = {
   id: string
