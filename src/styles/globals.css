@@ -1563,3 +1563,78 @@ body.jarvis-theme { min-width: 320px; }
 @media (prefers-reduced-motion: reduce) {
   .jarvis-focus-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+
+/* ── Command Library UX v2 ── */
+.jarvis-library { padding-top: 14px; }
+.jarvis-library-hero {
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center;
+  padding:16px; margin-bottom:12px; border:1px solid rgba(0,245,255,.16); border-radius:16px;
+  background:radial-gradient(circle at 100% 0,rgba(57,255,136,.07),transparent 42%),rgba(3,12,15,.90);
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+}
+.jarvis-library-kicker { color:var(--jarvis-green); font:900 7px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing:1.4px; }
+.jarvis-library-hero h1 { margin-top:7px; font:900 21px/1.05 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--jarvis-text); }
+.jarvis-library-hero h1 span { color:var(--jarvis-cyan); }
+.jarvis-library-hero p { margin-top:7px; max-width:290px; color:var(--jarvis-muted); font-size:9px; line-height:1.45; }
+.jarvis-library-search-button {
+  min-width:58px; min-height:58px; display:grid; place-items:center; border:1px solid rgba(0,245,255,.25);
+  border-radius:14px; background:#031014; color:var(--jarvis-cyan); cursor:pointer; font:900 20px/1 ui-monospace,monospace;
+}
+.jarvis-library-search-button span { display:block; font-size:6px; letter-spacing:1px; margin-top:-5px; }
+.jarvis-now-card {
+  padding:13px; margin-bottom:12px; border:1px solid rgba(57,255,136,.17); border-radius:14px;
+  background:linear-gradient(145deg,rgba(4,19,15,.94),rgba(3,12,15,.92));
+}
+.jarvis-now-top { display:flex; justify-content:space-between; gap:10px; align-items:start; }
+.jarvis-now-title { margin-top:5px; color:var(--jarvis-text); font:900 12px/1.15 ui-monospace,monospace; }
+.jarvis-now-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:12px; }
+.jarvis-now-grid > div { padding:8px; border:1px solid rgba(0,245,255,.08); border-radius:9px; background:rgba(1,8,10,.55); }
+.jarvis-now-grid b { display:block; color:var(--jarvis-cyan); font:900 15px/1 ui-monospace,monospace; }
+.jarvis-now-grid span { display:block; margin-top:4px; color:var(--jarvis-muted); font-size:6px; text-transform:uppercase; letter-spacing:.5px; }
+.jarvis-now-action {
+  width:100%; min-height:40px; display:flex; align-items:center; justify-content:space-between; margin-top:9px;
+  padding:0 12px; border:1px solid rgba(57,255,136,.25); border-radius:9px; background:#03110D; color:var(--jarvis-green);
+  cursor:pointer; font:900 8px/1 ui-monospace,monospace; letter-spacing:.6px;
+}
+.jarvis-now-action span { font-size:14px; }
+.jarvis-library-featured { display:grid; gap:7px; margin-bottom:14px; }
+.jarvis-feature-card {
+  min-height:52px; width:100%; display:grid; grid-template-columns:34px minmax(0,1fr) 16px; gap:9px; align-items:center;
+  padding:8px 10px; text-align:left; border:1px solid rgba(0,245,255,.12); border-radius:10px;
+  background:rgba(4,13,16,.86); color:var(--jarvis-text); cursor:pointer;
+}
+.jarvis-feature-card:hover,.jarvis-feature-card:focus-visible { border-color:rgba(0,245,255,.34); transform:translateY(-1px); }
+.jarvis-feature-icon { width:30px; height:30px; display:grid; place-items:center; border:1px solid rgba(0,245,255,.12); border-radius:8px; background:#02090B; font-size:15px; }
+.jarvis-feature-card b { display:block; font-size:9px; }
+.jarvis-feature-card small { display:block; margin-top:3px; color:var(--jarvis-muted); font-size:7px; }
+.jarvis-feature-card strong { color:var(--jarvis-cyan); font-size:13px; }
+.jarvis-library-tools { position:sticky; top:0; z-index:8; padding:6px 0 8px; background:linear-gradient(var(--navy) 75%,transparent); }
+.jarvis-library-search {
+  height:42px; display:grid; grid-template-columns:18px minmax(0,1fr) 24px; gap:6px; align-items:center;
+  padding:0 9px; border:1px solid rgba(0,245,255,.18); border-radius:10px; background:rgba(2,9,11,.96);
+}
+.jarvis-library-search > span { color:var(--jarvis-cyan); font-size:16px; }
+.jarvis-library-search input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--jarvis-text); font:9px ui-monospace,monospace; }
+.jarvis-library-search input::placeholder { color:#4F6669; }
+.jarvis-library-search button { border:0; background:transparent; color:var(--jarvis-muted); font-size:17px; cursor:pointer; }
+.jarvis-library-filters { display:flex; gap:6px; overflow:auto; padding:7px 1px 2px; scrollbar-width:none; }
+.jarvis-library-filters::-webkit-scrollbar { display:none; }
+.jarvis-library-filters button {
+  flex:0 0 auto; min-height:30px; padding:0 10px; border:1px solid rgba(0,245,255,.10); border-radius:99px;
+  background:rgba(3,12,15,.72); color:var(--jarvis-muted); cursor:pointer; font:900 7px/1 ui-monospace,monospace; letter-spacing:.5px;
+}
+.jarvis-library-filters button.active { color:var(--jarvis-cyan); border-color:rgba(0,245,255,.34); background:rgba(0,245,255,.06); }
+.jarvis-library-result-meta { display:flex; justify-content:space-between; gap:8px; margin:5px 1px 8px; color:#4F6669; font:700 6px/1.2 ui-monospace,monospace; letter-spacing:.6px; }
+.jarvis-library-grid { margin-bottom:14px; }
+.jarvis-library-tile { min-height:92px; position:relative; text-align:left; cursor:pointer; border:1px solid rgba(0,245,255,.09); }
+.jarvis-library-tile:hover,.jarvis-library-tile:focus-visible { border-color:rgba(0,245,255,.32); background:rgba(7,21,25,.98); transform:translateY(-1px); }
+.jarvis-library-tile-hint { margin-top:4px; color:#557174; font-size:6px; line-height:1.2; }
+.jarvis-library-empty { padding:24px 12px; margin-bottom:14px; border:1px dashed rgba(0,245,255,.15); border-radius:12px; color:var(--jarvis-muted); text-align:center; font:800 8px/1.5 ui-monospace,monospace; }
+@media (max-width:360px) {
+  .jarvis-library-hero h1 { font-size:18px; }
+  .jarvis-now-grid b { font-size:13px; }
+  .jarvis-library-tile { min-height:86px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jarvis-feature-card:hover,.jarvis-library-tile:hover { transform:none; }
+}
