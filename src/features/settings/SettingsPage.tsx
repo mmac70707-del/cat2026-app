@@ -8,6 +8,7 @@ import { useToast } from '@/components/Toast'
 import { todayKey } from '@/services/domain'
 import { downloadScheduleICS } from '@/services/calendarExport'
 import { isNative, requestNotificationPermission, setNotificationsEnabled } from '@/services/native'
+import { enableWebNotificationScheduler, disableWebNotificationScheduler, isWebNotificationSupported, requestWebNotificationPermission, getWebNotificationPermission, sendWebNotificationTest } from '@/services/webNotifications'
 
 interface Props { onBack: () => void }
 
@@ -60,15 +61,44 @@ export function SettingsPage({ onBack }: Props) {
 
   async function toggleNotifications() {
     const next = !notifications
-    await SettingsRepository.set('notifications', next)
-    setNotifications(next)
+
     if (isNative()) {
+      await SettingsRepository.set('notifications', next)
+      setNotifications(next)
       if (next) requestNotificationPermission()
       else setNotificationsEnabled(false)
-      toast(next ? 'Notifications on — grant the Android permission if prompted' : 'Notifications off')
-    } else {
-      toast('Native app only — open this in the Android app to receive real reminders', '#D97706')
+      toast(next ? 'Android notifications on — allow the permission if prompted' : 'Notifications off')
+      return
     }
+
+    if (!isWebNotificationSupported()) {
+      toast('This browser does not support app notifications', '#D97706')
+      return
+    }
+
+    if (next) {
+      const permission = await requestWebNotificationPermission()
+      if (permission !== 'granted') {
+        await SettingsRepository.set('notifications', false)
+        setNotifications(false)
+        toast('Notification permission was not granted', '#D97706')
+        return
+      }
+      await SettingsRepository.set('notifications', true)
+      setNotifications(true)
+      enableWebNotificationScheduler()
+      toast('App alerts ON — CAT blocks will notify while this app is running')
+    } else {
+      await SettingsRepository.set('notifications', false)
+      setNotifications(false)
+      disableWebNotificationScheduler()
+      toast('App alerts off')
+    }
+  }
+
+  function testNotification() {
+    const ok = sendWebNotificationTest()
+    toast(ok ? 'Test notification sent ✓' : 'Allow notifications first', ok ? '#16A34A' : '#D97706')
   }
 
   function exportCalendar() {
@@ -146,13 +176,23 @@ export function SettingsPage({ onBack }: Props) {
           <div>
             <div style={{ fontSize: 13, fontWeight: 600 }}>Daily Reminders</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>
-              {isNative() ? 'Real notifications — 09:00 mission, 21:00 error log' : 'Android app only'}
+              {isNative() ? 'Native reminders — permission-controlled Android alerts' : isWebNotificationSupported() ? 'Web/PWA alerts — CAT block notifications while app is running' : 'Notifications are not supported in this browser'}
             </div>
           </div>
           <div className={`toggle ${notifications ? 'on' : ''}`} onClick={toggleNotifications}>
             <div className="toggle-knob" />
           </div>
         </div>
+        {!isNative() && isWebNotificationSupported() && notifications && getWebNotificationPermission() === 'granted' && (
+          <div style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+            <button className="btn-ghost" onClick={testNotification} style={{ width: '100%' }}>
+              🔔 Send Test App Notification
+            </button>
+            <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 6, lineHeight: 1.5 }}>
+              Browser/PWA alerts work while the app is running. For alerts when the app is fully closed, keep the existing Outlook Calendar reminders enabled.
+            </div>
+          </div>
+        )}
         {rows.map((r, i) => (
           <div key={r.key} className="setting-row" style={{ borderBottom: i < rows.length - 1 ? '1px solid var(--border)' : 'none' }}>
             <div>
