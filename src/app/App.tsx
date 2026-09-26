@@ -41,9 +41,10 @@ import { registerBackButtonHandler, registerAppStateHandler } from '@/services/n
 import { SettingsRepository } from '@/repositories/index'
 import { enableWebNotificationScheduler } from '@/services/webNotifications'
 import { JarvisWebSecurityGate } from '@/features/jarvis/JarvisWebSecurityGate'
+import { JarvisCommandCenter } from '@/features/jarvis/JarvisCommandCenter'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -196,6 +197,7 @@ function AppUnlocked() {
         {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
 
         {/* SUB PAGES */}
+        {activePage === 'jarvis'        && <JarvisCommandCenter onBack={() => setActivePage('more')} onNavigate={p => setActivePage(p as ActivePage)} />}
         {activePage === 'mission'      && <MissionPage          onBack={() => setActivePage('more')} />}
         {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
         {activePage === 'mindset'      && <MindsetPage          onBack={() => setActivePage('more')} />}
