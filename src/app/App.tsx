@@ -57,7 +57,10 @@ const FOCUS_REMINDERS = [
 ]
 
 export function App() {
-  return <JarvisWebSecurityGate><AppUnlocked /></JarvisWebSecurityGate>\n}\n\nfunction AppUnlocked() {
+  return <JarvisWebSecurityGate><AppUnlocked /></JarvisWebSecurityGate>
+}
+
+function AppUnlocked() {
   const [activePage, setActivePage]             = useState<ActivePage>('dashboard')
   const [loading, setLoading]                   = useState(true)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
