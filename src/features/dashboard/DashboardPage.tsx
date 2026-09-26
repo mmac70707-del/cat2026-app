@@ -25,6 +25,21 @@ const SEQUENCE_STRIP = [
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 const MONTHS_ARR = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
+const DAILY_LINES = [
+  { quote: 'Become the man who promised himself he would.', action: 'Protect the next study block. No negotiation.' },
+  { quote: 'Small disciplined days become extraordinary results.', action: 'Finish one block completely before chasing the next.' },
+  { quote: 'You do not need a perfect day. You need an executed day.', action: 'Start the next planned block within five minutes.' },
+  { quote: 'Confidence is built after the work, not before it.', action: 'Do the practice first. Let confidence follow.' },
+  { quote: 'Your future score is hidden inside today’s repetitions.', action: 'Choose accuracy first, then speed.' },
+  { quote: 'When the plan is clear, your job is simply to execute.', action: 'Follow the locked sequence exactly as written.' },
+  { quote: 'One focused hour can change the direction of a whole day.', action: 'Put the phone away and enter Focus Core.' },
+  { quote: 'Repair the weakness, then earn the next level.', action: 'Do not skip today’s error-repair step.' },
+  { quote: 'Consistency beats intensity when intensity cannot be repeated.', action: 'Keep today strong, simple and repeatable.' },
+  { quote: 'Make today a vote for the person you are becoming.', action: 'Complete the next action before adding anything new.' },
+  { quote: 'Discipline is remembering what matters when distraction gets loud.', action: 'Return to CAT-first mode immediately.' },
+  { quote: 'The gap closes every time you solve, analyze and repair.', action: 'Finish the loop: Solve → Analyze → Repair → Retest.' },
+]
+
 function getRealWeekDates(now: Date = new Date()) {
   const p = getKolkataDateParts(now)
   const kolkataDate = new Date(Date.UTC(p.year, p.month - 1, p.date))
@@ -161,6 +176,19 @@ export function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ── DAILY MOTIVATION ── */}
+      {(() => {
+        const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
+        const line = DAILY_LINES[seed % DAILY_LINES.length]
+        return (
+          <div className="daily-motivation-card">
+            <div className="daily-motivation-kicker">🔥 TODAY'S LINE</div>
+            <div className="daily-motivation-quote">“{line.quote}”</div>
+            <div className="daily-motivation-action"><span>NEXT ACTION</span>{line.action}</div>
+          </div>
+        )
+      })()}
 
       {/* ── MISSION BAR ── */}
       <div className="mission-bar">
