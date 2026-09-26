@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { dbGetAll, dbPut } from '@/db'
 import type { MasteryTopic } from '@/types'
+import { useTodayTasks } from '@/hooks/useTasks'
 
 type MissionSubject = 'QA' | 'DILR' | 'VARC'
 type MissionRun = {
@@ -23,13 +24,14 @@ type ErrorRow = {
 
 const todayKey = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
 
-function dayDiff(a: string, b: string) {
-  const aa = new Date(a + 'T00:00:00Z').getTime()
-  const bb = new Date(b + 'T00:00:00Z').getTime()
-  return Math.round((bb - aa) / 86400000)
-}
-
-export function MissionOSPage({ onBack }: { onBack?: () => void }) {
+export function MissionOSPage({
+  onBack,
+  onOpenToday,
+}: {
+  onBack?: () => void
+  onOpenToday?: () => void
+}) {
+  const { tasks, loading: tasksLoading, done: todayDone, pct: todayPct, updateStatus } = useTodayTasks()
   const [topics, setTopics] = useState<MasteryTopic[]>([])
   const [errors, setErrors] = useState<ErrorRow[]>([])
   const [runs, setRuns] = useState<MissionRun[]>([])
@@ -57,7 +59,7 @@ export function MissionOSPage({ onBack }: { onBack?: () => void }) {
 
   const plan = useMemo(() => {
     const subjectOrder: MissionSubject[] = ['QA', 'DILR', 'VARC']
-    const candidates = subjectOrder.map(subject => {
+    return subjectOrder.map(subject => {
       const subjectTopics = topics.filter(t => t.subject === subject)
       const weak = [...subjectTopics].sort((a, b) => a.currentLevel - b.currentLevel)[0]
       const openErrors = errors.filter(e => e.subject === subject && e.repairStatus !== 'DONE').length
@@ -70,12 +72,18 @@ export function MissionOSPage({ onBack }: { onBack?: () => void }) {
         score,
       }
     }).sort((a, b) => b.score - a.score)
-
-    return candidates
   }, [topics, errors])
 
-  const current = plan[0] ?? { subject: 'QA' as MissionSubject, topic: 'Foundation practice', level: 0, openErrors: 0, score: 0 }
+  const current = plan[0] ?? {
+    subject: 'QA' as MissionSubject,
+    topic: 'Foundation practice',
+    level: 0,
+    openErrors: 0,
+    score: 0,
+  }
 
+  const nextTask = tasks.find(t => t.status !== 'DONE' && t.status !== 'SKIPPED')
+  const openRepairTotal = errors.filter(e => e.repairStatus !== 'DONE').length
   const todayRuns = runs.filter(r => r.date === todayKey())
   const totalTodayMinutes = todayRuns.reduce((sum, r) => sum + r.minutes, 0)
 
@@ -91,6 +99,12 @@ export function MissionOSPage({ onBack }: { onBack?: () => void }) {
     }
     return count
   }, [runs])
+
+  const recommendation = current.openErrors > 0
+    ? 'REPAIR SIGNAL • close the root cause before adding difficulty'
+    : current.level <= 2
+      ? 'FOUNDATION SIGNAL • concept → guided practice → recall'
+      : 'MASTERY SIGNAL • timed practice → analysis → retest'
 
   async function completeMission() {
     const now = new Date()
@@ -110,96 +124,122 @@ export function MissionOSPage({ onBack }: { onBack?: () => void }) {
   }
 
   function startFocus() {
+    if (nextTask && nextTask.status === 'TODO') {
+      void updateStatus(nextTask.id, nextTask.blockId, 'IN_PROGRESS')
+    }
     window.dispatchEvent(new Event('jarvis:focus:start'))
-    setToast('FOCUS CORE ONLINE • MISSION LOCKED')
+    setToast(nextTask ? `FOCUS LOCKED • ${nextTask.blockId} • ${nextTask.subject}` : 'FOCUS CORE ONLINE • MISSION LOCKED')
     window.setTimeout(() => setToast(''), 2200)
   }
 
   return (
-    <div className="section-pad">
+    <div className="section-pad mission-os-page">
       <div className="page-header">
         {onBack && <button className="back-btn" onClick={onBack}>← Back</button>}
-        <div className="page-header-title">Mission OS</div>
-      </div>
-
-      <div className="jarvis-panel" style={{ marginBottom: 10 }}>
-        <div className="jarvis-panel-title">◉ ADAPTIVE MISSION ENGINE</div>
-        <div style={{ fontSize: 9, color: 'var(--jarvis-muted)', lineHeight: 1.5 }}>
-          Local-first prioritisation from mastery + open repairs. No fake AI score: every priority is derived from your stored study data.
+        <div>
+          <div className="page-header-title">Mission OS</div>
+          <div className="mission-os-header-sub">ONE DECISION → ONE ACTION → ONE VERIFIED RESULT</div>
         </div>
       </div>
 
-      <div className="jarvis-stat-grid" style={{ marginBottom: 10 }}>
-        <div className="card-sm jarvis-stat-card">
-          <div className="jarvis-stat-label">Today</div>
-          <div className="jarvis-stat-value" style={{ color: 'var(--jarvis-cyan)' }}>{totalTodayMinutes}m</div>
+      <div className="mission-os-hero">
+        <div>
+          <div className="jarvis-panel-title">◉ ADAPTIVE EXECUTION CORE</div>
+          <h1>{nextTask ? `DO ${nextTask.blockId} NOW` : 'CHOOSE THE NEXT MISSION'}</h1>
+          <p>{nextTask ? nextTask.title : `${current.subject} • ${current.topic}`}</p>
         </div>
-        <div className="card-sm jarvis-stat-card">
-          <div className="jarvis-stat-label">Streak</div>
-          <div className="jarvis-stat-value" style={{ color: 'var(--jarvis-green)' }}>{streak}d</div>
-        </div>
-        <div className="card-sm jarvis-stat-card">
-          <div className="jarvis-stat-label">Open repairs</div>
-          <div className="jarvis-stat-value" style={{ color: 'var(--jarvis-amber)' }}>{errors.filter(e => e.repairStatus !== 'DONE').length}</div>
-        </div>
-        <div className="card-sm jarvis-stat-card">
-          <div className="jarvis-stat-label">Mastery topics</div>
-          <div className="jarvis-stat-value" style={{ color: 'var(--jarvis-cyan)' }}>{topics.length}</div>
+        <div className="mission-os-hero-ring" aria-hidden="true">
+          <span>{todayPct}%</span>
+          <small>TODAY</small>
         </div>
       </div>
 
-      <div className="jarvis-panel" style={{ marginBottom: 10, borderColor: 'rgba(57,255,136,.28)' }}>
-        <div className="jarvis-panel-title">🎯 NEXT MISSION</div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start' }}>
-          <div>
-            <div style={{ color: 'var(--jarvis-green)', font: '900 9px ui-monospace', letterSpacing: 1 }}>{current.subject} // PRIORITY {Math.max(1, Math.round(current.score))}</div>
-            <div style={{ color: 'var(--jarvis-text)', fontSize: 18, fontWeight: 900, marginTop: 5 }}>{current.topic}</div>
-            <div style={{ color: 'var(--jarvis-muted)', fontSize: 9, marginTop: 5 }}>
-              Mastery L{current.level}/5 • {current.openErrors} open repair{current.openErrors === 1 ? '' : 's'}
-            </div>
+      <div className="mission-os-primary-actions">
+        {onOpenToday && <button className="mission-os-primary" onClick={onOpenToday}>OPEN TODAY <span>→</span></button>}
+        <button className="mission-os-secondary" onClick={startFocus}>▶ START FOCUS</button>
+      </div>
+
+      <div className="mission-os-signal">
+        <span className="mission-os-signal-dot" />
+        <span>{recommendation}</span>
+      </div>
+
+      <div className="jarvis-stat-grid mission-os-stats">
+        <div className="card-sm jarvis-stat-card"><div className="jarvis-stat-label">Today focus</div><div className="jarvis-stat-value" style={{ color: 'var(--jarvis-cyan)' }}>{totalTodayMinutes}m</div></div>
+        <div className="card-sm jarvis-stat-card"><div className="jarvis-stat-label">Daily blocks</div><div className="jarvis-stat-value" style={{ color: 'var(--jarvis-green)' }}>{todayDone}/8</div></div>
+        <div className="card-sm jarvis-stat-card"><div className="jarvis-stat-label">Open repairs</div><div className="jarvis-stat-value" style={{ color: 'var(--jarvis-amber)' }}>{openRepairTotal}</div></div>
+        <div className="card-sm jarvis-stat-card"><div className="jarvis-stat-label">Streak</div><div className="jarvis-stat-value" style={{ color: 'var(--jarvis-cyan)' }}>{streak}d</div></div>
+      </div>
+
+      <div className="mission-os-section">
+        <div className="jarvis-panel-title">▣ TODAY'S EXECUTION QUEUE</div>
+        {tasksLoading ? (
+          <div className="jarvis-helper">Reading today's verified plan…</div>
+        ) : (
+          <div className="mission-os-queue">
+            {tasks.map((task, i) => {
+              const isDone = task.status === 'DONE'
+              const isCurrent = nextTask?.id === task.id
+              return (
+                <div key={task.id} className={`mission-os-queue-row ${isDone ? 'done' : ''} ${isCurrent ? 'current' : ''}`}>
+                  <div className="mission-os-queue-index">{String(i + 1).padStart(2, '0')}</div>
+                  <div className="mission-os-queue-main">
+                    <b>{task.blockId} <span>• {task.subject}</span></b>
+                    <small>{task.title}</small>
+                  </div>
+                  <div className={`mission-os-queue-state ${isDone ? 'done' : isCurrent ? 'current' : ''}`}>
+                    {isDone ? 'DONE' : isCurrent ? 'NEXT' : 'WAIT'}
+                  </div>
+                </div>
+              )
+            })}
           </div>
-          <div style={{ color: 'var(--jarvis-cyan)', font: '900 24px ui-monospace' }}>{minutes}m</div>
-        </div>
+        )}
+      </div>
 
-        <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
-          {[15, 25, 40].map(m => (
-            <button key={m} className="jarvis-action" style={{ aspectRatio: 'auto', minHeight: 38 }} onClick={() => setMinutes(m)}>
-              {m} MIN
-            </button>
-          ))}
-        </div>
-
-        <div className="jarvis-native-actions">
-          <button className="jarvis-action" onClick={startFocus}>▶ START FOCUS</button>
-          <button className="jarvis-action" onClick={completeMission}>✓ LOG COMPLETE</button>
+      <div className="mission-os-section">
+        <div className="jarvis-panel-title">🎯 SYSTEM RECOMMENDATION</div>
+        <div className="mission-os-recommendation">
+          <div className="mission-os-rec-top">
+            <span>{current.subject} // PRIORITY {Math.max(1, Math.round(current.score))}</span>
+            <strong>L{current.level}/5</strong>
+          </div>
+          <div className="mission-os-rec-topic">{current.topic}</div>
+          <div className="mission-os-rec-meta">{current.openErrors} open repair{current.openErrors === 1 ? '' : 's'} • {current.level <= 2 ? 'build the base' : 'prove consistency'}</div>
+          <div className="mission-os-time-row">
+            {[15, 25, 40].map(m => (
+              <button key={m} className={minutes === m ? 'selected' : ''} onClick={() => setMinutes(m)}>{m} MIN</button>
+            ))}
+          </div>
+          <button className="mission-os-log" onClick={completeMission}>✓ LOG ADAPTIVE MISSION COMPLETE</button>
         </div>
       </div>
 
-      <div className="jarvis-panel">
+      <div className="mission-os-section">
         <div className="jarvis-panel-title">📡 PRIORITY RADAR</div>
         {loading ? <div className="jarvis-helper">Reading local mastery matrix…</div> : plan.map((p, i) => (
-          <div key={p.subject} style={{ display: 'grid', gridTemplateColumns: '24px 52px minmax(0,1fr) 42px', gap: 7, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(0,245,255,.08)' }}>
-            <span style={{ color: i === 0 ? 'var(--jarvis-green)' : 'var(--jarvis-muted)', font: '900 10px ui-monospace' }}>0{i + 1}</span>
-            <span style={{ color: 'var(--jarvis-cyan)', font: '800 8px ui-monospace' }}>{p.subject}</span>
-            <span style={{ color: 'var(--jarvis-text)', fontSize: 9 }}>{p.topic}</span>
-            <span style={{ color: p.openErrors ? 'var(--jarvis-amber)' : 'var(--jarvis-muted)', font: '800 8px ui-monospace', textAlign: 'right' }}>{p.openErrors} ERR</span>
+          <div key={p.subject} className="mission-os-radar-row">
+            <span className={i === 0 ? 'hot' : ''}>0{i + 1}</span>
+            <b>{p.subject}</b>
+            <div><strong>{p.topic}</strong><small>Mastery L{p.level}/5</small></div>
+            <em>{p.openErrors} ERR</em>
           </div>
         ))}
       </div>
 
-      <div className="jarvis-panel" style={{ marginTop: 10 }}>
-        <div className="jarvis-panel-title">▣ MISSION HISTORY</div>
+      <div className="mission-os-section">
+        <div className="jarvis-panel-title">▦ MISSION HISTORY</div>
         {todayRuns.length === 0 ? (
-          <div className="jarvis-helper">No mission logged today. Execute one focused block and log it.</div>
+          <div className="jarvis-helper">No adaptive mission logged today. The queue above is your source of truth.</div>
         ) : todayRuns.slice(0, 6).map(r => (
-          <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '7px 0', borderBottom: '1px solid rgba(0,245,255,.07)', fontSize: 9 }}>
+          <div key={r.id} className="mission-os-history-row">
             <span>{r.subject} • {r.topic}</span>
-            <span style={{ color: 'var(--jarvis-green)', fontFamily: 'ui-monospace' }}>+{r.minutes}m</span>
+            <b>+{r.minutes}m</b>
           </div>
         ))}
       </div>
 
-      {toast && <div role="status" style={{ position: 'fixed', left: '50%', bottom: 86, transform: 'translateX(-50%)', zIndex: 2000, padding: '10px 14px', border: '1px solid rgba(0,245,255,.4)', borderRadius: 10, background: '#02090B', color: 'var(--jarvis-cyan)', font: '900 9px ui-monospace', whiteSpace: 'nowrap' }}>{toast}</div>}
+      {toast && <div role="status" className="mission-os-toast">{toast}</div>}
     </div>
   )
 }

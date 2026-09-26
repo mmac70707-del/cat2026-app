@@ -296,7 +296,7 @@ function AppUnlocked() {
         {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
         {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
         {activePage === 'security'    && <SecuritySentinelPage  onBack={() => setActivePage('more')} />}
-        {activePage === 'missionos'   && <MissionOSPage         onBack={() => setActivePage('more')} />}
+        {activePage === 'missionos'   && <MissionOSPage         onBack={() => setActivePage('more')} onOpenToday={() => setActivePage('today')} />}
         {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
       </div>
 
