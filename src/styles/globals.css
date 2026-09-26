@@ -883,3 +883,112 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-hub-grid { gap: 8px; }
   .jarvis-hub-tile { min-height: 94px; padding: 11px; }
 }
+
+
+/* ── JARVIS Mission Radar ── */
+.jarvis-radar-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  gap: 12px;
+  align-items: center;
+}
+.jarvis-radar {
+  position: relative;
+  width: min(100%, 218px);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(0,245,255,.42);
+  background:
+    radial-gradient(circle, rgba(57,255,136,.10) 0 2%, transparent 3% 100%),
+    radial-gradient(circle, rgba(0,245,255,.08), rgba(1,8,10,.98) 68%);
+  box-shadow: inset 0 0 35px rgba(0,245,255,.10), 0 0 28px rgba(0,245,255,.08);
+}
+.jarvis-radar-ring {
+  position: absolute;
+  border: 1px solid rgba(0,245,255,.18);
+  border-radius: 50%;
+  inset: 50%;
+  transform: translate(-50%,-50%);
+}
+.jarvis-radar-ring-a { width: 30%; height: 30%; }
+.jarvis-radar-ring-b { width: 58%; height: 58%; }
+.jarvis-radar-ring-c { width: 84%; height: 84%; }
+.jarvis-radar-cross {
+  position: absolute;
+  background: rgba(0,245,255,.12);
+}
+.jarvis-radar-cross.horizontal { left: 0; right: 0; top: 50%; height: 1px; }
+.jarvis-radar-cross.vertical { top: 0; bottom: 0; left: 50%; width: 1px; }
+.jarvis-radar-sweep {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  left: 50%;
+  top: 50%;
+  transform-origin: 0 0;
+  background: conic-gradient(from 0deg, rgba(57,255,136,.0), rgba(57,255,136,.28));
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  animation: jarvis-radar-sweep 4s linear infinite;
+  pointer-events: none;
+}
+@keyframes jarvis-radar-sweep { to { transform: rotate(360deg); } }
+.jarvis-radar-core {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  color: var(--jarvis-green);
+  font-size: 20px;
+  text-shadow: 0 0 15px rgba(57,255,136,.75);
+}
+.jarvis-radar-blip {
+  position: absolute;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--jarvis-green);
+  box-shadow: 0 0 12px rgba(57,255,136,.9);
+  animation: jarvis-blip 1.8s ease-in-out infinite;
+}
+.jarvis-radar-blip.b1 { left: 29%; top: 30%; }
+.jarvis-radar-blip.b2 { right: 24%; top: 43%; animation-delay: .5s; }
+.jarvis-radar-blip.b3 { left: 42%; bottom: 22%; animation-delay: 1s; }
+@keyframes jarvis-blip { 50% { transform: scale(1.8); opacity: .45; } }
+.jarvis-radar-label {
+  position: absolute;
+  color: rgba(0,245,255,.62);
+  font: 800 7px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-radar-label.north { top: 7px; left: 50%; transform: translateX(-50%); }
+.jarvis-radar-label.east { right: 8px; top: 50%; transform: translateY(-50%); }
+.jarvis-radar-label.south { bottom: 7px; left: 50%; transform: translateX(-50%); }
+.jarvis-radar-label.west { left: 8px; top: 50%; transform: translateY(-50%); }
+.jarvis-radar-readout {
+  display: grid;
+  gap: 8px;
+}
+.jarvis-radar-readout > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px;
+  border: 1px solid rgba(0,245,255,.10);
+  border-radius: 8px;
+  background: rgba(1,7,9,.78);
+}
+.jarvis-radar-readout span {
+  color: var(--jarvis-muted);
+  font: 7px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .8px;
+}
+.jarvis-radar-readout b {
+  color: var(--jarvis-green);
+  font: 900 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (max-width: 360px) {
+  .jarvis-radar-wrap { grid-template-columns: 1fr 82px; gap: 8px; }
+  .jarvis-radar-readout > div { padding: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jarvis-radar-sweep, .jarvis-radar-blip { animation: none; }
+}
