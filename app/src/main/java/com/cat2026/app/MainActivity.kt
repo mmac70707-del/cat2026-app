@@ -358,6 +358,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkNotificationPermission() {
+        if (!nativeUnlocked) return
+
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
