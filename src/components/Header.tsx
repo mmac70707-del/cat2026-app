@@ -26,27 +26,19 @@ export function Header({
             {onOpenVoiceJarvis && (
               <button
                 onClick={onOpenVoiceJarvis}
-                style={{
-                  background: 'rgba(245,166,35,0.2)', border: '1px solid #F5A623',
-                  color: '#F5A623', borderRadius: 12, padding: '2px 8px',
-                  fontSize: 10, fontWeight: 800, cursor: 'pointer', display: 'flex',
-                  alignItems: 'center', gap: 4
-                }}
+                className="header-utility header-utility-voice"
+                aria-label="Open JARVIS voice"
               >
-                <span>🎙️</span> Jarvis
+                <span aria-hidden="true">●</span><span className="header-utility-label">JARVIS</span>
               </button>
             )}
             {onOpenJarvisHud && (
               <button
                 onClick={onOpenJarvisHud}
-                style={{
-                  background: 'rgba(0,240,255,0.15)', border: '1px solid #00F0FF',
-                  color: '#00F0FF', borderRadius: 12, padding: '2px 8px',
-                  fontSize: 10, fontWeight: 800, cursor: 'pointer', display: 'flex',
-                  alignItems: 'center', gap: 4
-                }}
+                className="header-utility header-utility-hud"
+                aria-label="Open JARVIS HUD"
               >
-                <span>🚀</span> HUD
+                <span aria-hidden="true">◉</span><span className="header-utility-label">HUD</span>
               </button>
             )}
           </div>
