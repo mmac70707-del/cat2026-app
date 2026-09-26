@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { recordAudit } from '@/services/auditLog'
 
 interface Props { children: ReactNode }
 interface State { hasError: boolean; message: string }
@@ -12,6 +13,7 @@ export class AppErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error('[CAT2026][JARVIS][UI_ERROR]', error, info)
+    void recordAudit('ui_error', error?.message || 'Unexpected application error', 'react-error-boundary')
   }
 
   render() {
