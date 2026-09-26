@@ -3,7 +3,7 @@ import { speakJarvisResponse, createSpeechRecognizer, getCurrentActiveScheduleSl
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { useToast } from '@/components/Toast'
-import { isNative, launchNativeAction, authenticateBiometric } from '@/services/native'
+import { isNative, launchNativeAction } from '@/services/native'
 
 interface Props {
   isOpen: boolean
