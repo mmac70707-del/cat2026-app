@@ -1,10 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { getKolkataDateParts } from '@/services/calendarEngine'
 
-type Lesson = {
-  concept:string; simple:string; analogy:string; example:string; takeaway:string; question:string
-  series:string; hook:string; body:string; cta:string
-}
+type Lesson = [string,string,string,string,string,string,string,string,string,string]
 
 const LESSONS: Lesson[] = [
   ['Observe → Hypothesis → Test','Good decisions start with an observation, a possible explanation, and a small test.','Science lab: an idea is not a fact until tested.','A shop notices smaller packs are requested and tests a lower-price pack for a week.','Test assumptions before scaling effort.','What is the smallest test for an idea I have?','From Science to Business','A business idea is still a hypothesis until reality tests it.','I’m learning to connect scientific thinking with business: observe, form a hypothesis, test, learn, improve.','What assumption should be tested before a product is fully built?'],
@@ -81,7 +78,8 @@ export function LinkedInDailyCard() {
   const today=useMemo(()=>dateKeyIndia(),[tick])
   const offset=Math.max(0,daysBetween(ANCHOR,today.key))
   const cycleDay=(offset%7)+1
-  const lesson=LESSONS[offset%LESSONS.length]
+  const row=LESSONS[offset%LESSONS.length]
+  const lesson={concept:row[0],simple:row[1],analogy:row[2],example:row[3],takeaway:row[4],question:row[5],series:row[6],hook:row[7],body:row[8],cta:row[9]}
   const weekly=cycleDay===7
   const monthly=offset>0 && offset%30===0
   const postDay=!weekly && [1,3,5].includes(today.p.dayOfWeek)
