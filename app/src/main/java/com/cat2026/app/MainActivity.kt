@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
                 WebViewCompat.WebMessageListener { _, message, sourceOrigin, isMainFrame, replyProxy ->
                     if (!isMainFrame || sourceOrigin.toString() != "https://appassets.androidforward.site") return@WebMessageListener
                     if (message.type != WebMessageCompat.TYPE_STRING) return@WebMessageListener
-                    handleBridgeMessage(message.stringValue ?: return@WebMessageListener, replyProxy)
+                    handleBridgeMessage(message.data ?: return@WebMessageListener, replyProxy)
                 }
             )
         }
