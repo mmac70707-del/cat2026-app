@@ -38,6 +38,8 @@ import { SettingsPage }         from '@/features/settings/SettingsPage'
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
+import { SettingsRepository } from '@/repositories/index'
+import { enableWebNotificationScheduler } from '@/services/webNotifications'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
 export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
@@ -69,6 +71,8 @@ export function App() {
       try {
         await openDB()
         await MasteryRepository.init()
+        const notificationsOn = await SettingsRepository.get('notifications', false)
+        if (notificationsOn) enableWebNotificationScheduler()
       } catch (err) {
         console.error('[CAT2026] Boot error:', err)
       } finally {
