@@ -360,3 +360,129 @@
   .dash-root .stats-row { grid-template-columns: repeat(2, 1fr); }
   .dash-root .week-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ═══════════════════════════════════════════════════
+   CAT DASHBOARD // PRODUCT SURFACE V2
+   Override legacy inline visual language so the main
+   dashboard matches the real-app shell.
+═══════════════════════════════════════════════════ */
+.jarvis-theme .dash-root {
+  --bg:#050B0E !important; --bg2:#0A1317 !important; --bg3:#0F1A1E !important;
+  --card:#0B1519 !important; --border:#203136 !important; --text:#EAF4F3 !important; --muted:#779093 !important;
+  background:
+    radial-gradient(900px 300px at 50% -60px, rgba(0,245,255,.055), transparent 70%),
+    #050B0E !important;
+  color:var(--text) !important;
+  padding-bottom:90px;
+}
+.jarvis-theme .dash-root .header {
+  background:rgba(6,13,16,.96) !important;
+  border-bottom:1px solid rgba(0,245,255,.16) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+.jarvis-theme .dash-root .header-inner {
+  padding:14px 18px !important;
+  gap:12px;
+}
+.jarvis-theme .dash-root .header-brand {
+  background:linear-gradient(90deg,#EAF4F3,#8AEFF3) !important;
+  -webkit-background-clip:text !important; background-clip:text !important;
+  font-size:19px;
+}
+.jarvis-theme .dash-root .header-sub {
+  color:#637A7D !important;
+  font-size:8px;
+  letter-spacing:1.1px;
+}
+.jarvis-theme .dash-root .phase-badge {
+  background:rgba(57,255,136,.055) !important;
+  border:1px solid rgba(57,255,136,.18) !important;
+  color:#8DF0B4 !important;
+  box-shadow:none;
+}
+.jarvis-theme .dash-root .countdown-big { color:#9AF3F4 !important; font-size:24px; }
+.jarvis-theme .dash-root .countdown-label { color:#657B7E !important; }
+.jarvis-theme .dash-root .mission-bar {
+  background:#071114 !important;
+  border-bottom:1px solid rgba(255,255,255,.065) !important;
+  padding:11px 18px !important;
+}
+.jarvis-theme .dash-root .mission-text { color:#8DF0B4 !important; font-size:10px; }
+.jarvis-theme .dash-root .mission-quote { color:#5E7477 !important; font-size:8px; }
+.jarvis-theme .dash-root .date-display {
+  background:#0D191D !important; color:#A7BCBE !important;
+  border:1px solid rgba(255,255,255,.055);
+}
+.jarvis-theme .dash-root .main { padding:14px 18px !important; gap:14px; }
+.jarvis-theme .dash-root .stats-row { gap:7px; }
+.jarvis-theme .dash-root .stat-card {
+  background:linear-gradient(145deg,#0C171B,#081115) !important;
+  border:1px solid rgba(255,255,255,.065) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.02),0 7px 18px rgba(0,0,0,.18);
+}
+.jarvis-theme .dash-root .stat-card::before { opacity:.65; height:2px; }
+.jarvis-theme .dash-root .stat-seq { color:#EAF4F3 !important; }
+.jarvis-theme .dash-root .stat-label { color:#637A7D !important; }
+.jarvis-theme .dash-root .two-col { gap:14px; }
+.jarvis-theme .dash-root .card {
+  background:#0A1519 !important;
+  border:1px solid rgba(255,255,255,.065) !important;
+  border-radius:13px !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.02),0 9px 24px rgba(0,0,0,.18);
+}
+.jarvis-theme .dash-root .today-header {
+  background:linear-gradient(145deg,#0D1C21,#091317) !important;
+  border:1px solid rgba(0,245,255,.14) !important;
+  box-shadow:none;
+}
+.jarvis-theme .dash-root .today-title { color:#9AEFF2 !important; font-size:14px; letter-spacing:.2px; }
+.jarvis-theme .dash-root .today-sub { color:#6A8184 !important; font-size:9px; }
+.jarvis-theme .dash-root .block-item {
+  background:#0D181C !important;
+  border-left-width:3px;
+  border-top:1px solid rgba(255,255,255,.035);
+  border-right:1px solid rgba(255,255,255,.035);
+  border-bottom:1px solid rgba(255,255,255,.035);
+  box-shadow:0 6px 16px rgba(0,0,0,.12);
+}
+.jarvis-theme .dash-root .block-item:hover { background:#112126 !important; }
+.jarvis-theme .dash-root .block-title { color:#EAF4F3 !important; font-size:12px; }
+.jarvis-theme .dash-root .block-details { color:#71898B !important; font-size:9px; }
+.jarvis-theme .dash-root .meta-time { color:#5A7073 !important; font-size:8px; }
+.jarvis-theme .dash-root .meta-target { color:#8CA5A7 !important; font-size:8px; }
+.jarvis-theme .dash-root .block-check { border-color:#334A4E !important; background:#091114 !important; }
+.jarvis-theme .dash-root .block-check.done { background:#257A54 !important; border-color:#257A54 !important; }
+.jarvis-theme .dash-root .week-grid { gap:6px; }
+.jarvis-theme .dash-root .day-card {
+  background:#0D181C !important; border-color:rgba(255,255,255,.065) !important;
+}
+.jarvis-theme .dash-root .day-card.today {
+  border-color:rgba(0,245,255,.28) !important; background:rgba(0,245,255,.045) !important;
+}
+.jarvis-theme .dash-root .day-date { color:#DCEAE9 !important; }
+.jarvis-theme .dash-root .day-name { color:#62787B !important; }
+.jarvis-theme .dash-root .day-card.today .day-date { color:#92EEF1 !important; }
+.jarvis-theme .dash-root .mastery-bar-wrap { background:#091215 !important; }
+.jarvis-theme .dash-root .error-card {
+  background:#0B1519 !important; border-color:rgba(255,255,255,.065) !important;
+}
+.jarvis-theme .dash-root .score-input {
+  background:#091316 !important; border-color:#22373B !important; color:#EAF4F3 !important;
+}
+.jarvis-theme .dash-root .score-btn {
+  background:linear-gradient(135deg,#0B6B72,#09878F) !important;
+  box-shadow:0 8px 18px rgba(0,245,255,.10);
+}
+.jarvis-theme .dash-root .mantra-bar {
+  background:#091417 !important;
+  border-color:rgba(0,245,255,.14) !important;
+}
+.jarvis-theme .dash-root .mantra-text { color:#9AEFF2 !important; }
+.jarvis-theme .dash-root .instruction {
+  background:rgba(0,245,255,.035) !important; border-color:rgba(0,245,255,.12) !important;
+}
+@media (max-width:600px) {
+  .jarvis-theme .dash-root .main { padding:11px 14px !important; }
+  .jarvis-theme .dash-root .stats-row { gap:6px; }
+  .jarvis-theme .dash-root .stat-card { padding:9px 7px; }
+}
