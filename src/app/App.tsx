@@ -42,6 +42,9 @@ import { SettingsRepository } from '@/repositories/index'
 import { enableWebNotificationScheduler } from '@/services/webNotifications'
 import { JarvisWebSecurityGate } from '@/features/jarvis/JarvisWebSecurityGate'
 import { JarvisCommandCenter } from '@/features/jarvis/JarvisCommandCenter'
+import { JarvisCommandPalette } from '@/features/jarvis/JarvisCommandPalette'
+import { AppErrorBoundary } from '@/components/AppErrorBoundary'
+import { initPwaInstall } from '@/services/pwaInstall'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
 export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
@@ -58,12 +61,19 @@ const FOCUS_REMINDERS = [
 ]
 
 export function App() {
-  return <JarvisWebSecurityGate><AppUnlocked /></JarvisWebSecurityGate>
+  return (
+    <AppErrorBoundary>
+      <JarvisWebSecurityGate>
+        <AppUnlocked />
+      </JarvisWebSecurityGate>
+    </AppErrorBoundary>
+  )
 }
 
 function AppUnlocked() {
   const [activePage, setActivePage]             = useState<ActivePage>('dashboard')
   const [loading, setLoading]                   = useState(true)
+  const [bootStage, setBootStage]               = useState(0)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
   const [showJarvisHud, setShowJarvisHud]       = useState(false)
   const { show: toast }                         = useToast()
@@ -73,12 +83,18 @@ function AppUnlocked() {
 
   // ── Boot: open DB + seed mastery ────────────────
   useEffect(() => {
+    initPwaInstall()
+
     async function boot() {
       try {
+        setBootStage(1)
         await openDB()
+        setBootStage(2)
         await MasteryRepository.init()
+        setBootStage(3)
         const notificationsOn = await SettingsRepository.get('notifications', false)
         if (notificationsOn) enableWebNotificationScheduler()
+        setBootStage(4)
       } catch (err) {
         console.error('[CAT2026] Boot error:', err)
       } finally {
@@ -154,26 +170,49 @@ function AppUnlocked() {
   const isMain = MAIN_PAGES.includes(activePage as MainPage)
 
   if (loading) {
+    const steps = [
+      'WAKE JARVIS CORE',
+      'OPEN LOCAL DATA VAULT',
+      'LOAD MASTERY MATRIX',
+      'SYNC DAILY EXECUTION',
+    ]
+
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 12 }}>
-        <div style={{ fontSize: 28, fontWeight: 900, background: 'linear-gradient(90deg,#F5A623,#FBBF24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          CAT 2026
+      <div className="jarvis-boot-screen">
+        <div className="jarvis-boot-orb">
+          <div>◉</div>
         </div>
-        <div style={{ fontSize: 12, color: '#94A3B8' }}>Loading execution system…</div>
+        <div className="jarvis-boot-kicker">JARVIS // SYSTEM STARTUP</div>
+        <h1 className="jarvis-boot-title">CAT 2026</h1>
+        <p className="jarvis-boot-sub">Personal execution system initializing…</p>
+        <div className="jarvis-boot-progress">
+          <div className="jarvis-boot-progress-fill" style={{ width: `${bootStage * 25}%` }} />
+        </div>
+        <div className="jarvis-boot-steps">
+          {steps.map((step, i) => (
+            <div key={step} className={bootStage > i ? 'done' : bootStage === i ? 'active' : ''}>
+              <span>{bootStage > i ? '✓' : bootStage === i ? '›' : '·'}</span>
+              <span>{step}</span>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
 
   if (activePage === 'dashboard') {
     return (
-      <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+      <>
+        <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
         <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
           <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
             ← Exit 1:1 Dashboard
           </button>
         </div>
         <DashboardPage />
-      </div>
+        </div>
+        <JarvisCommandPalette onNavigate={p => setActivePage(p as ActivePage)} />
+      </>
     )
   }
 
@@ -250,6 +289,7 @@ function AppUnlocked() {
       )}
 
       <StudyTimer />
+      <JarvisCommandPalette onNavigate={p => setActivePage(p as ActivePage)} />
     </div>
   )
 }
