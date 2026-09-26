@@ -98,7 +98,14 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
             Personal Intelligence • CAT Execution • Secure Device Layer
           </div>
         </div>
-        {onBack && <button className="jarvis-action" onClick={onBack}>← BACK</button>}
+        <div style={{display:'flex',gap:7}}>
+          <button
+            className="jarvis-action"
+            onClick={() => window.dispatchEvent(new Event('jarvis:lock'))}
+            aria-label="Lock JARVIS"
+          >🔒 LOCK</button>
+          {onBack && <button className="jarvis-action" onClick={onBack}>← BACK</button>}
+        </div>
       </div>
 
       <div className="jarvis-status-grid">
