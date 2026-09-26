@@ -111,6 +111,11 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     setConfigured(configuredNow)
     setReady(true)
 
+    const onUnlock = () => {
+      sessionStorage.setItem(SESSION_KEY, '1')
+      window.location.reload()
+    }
+
     const onLock = () => {
       sessionStorage.removeItem(SESSION_KEY)
       window.location.reload()
@@ -126,6 +131,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       if (document.visibilityState === 'visible') resetIdle()
     }
 
+    window.addEventListener('jarvis:unlocked', onUnlock as EventListener)
     window.addEventListener('jarvis:lock', onLock)
     window.addEventListener('pointerdown', resetIdle)
     window.addEventListener('keydown', resetIdle)
@@ -134,6 +140,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
     const interval = window.setInterval(() => setLockedMs(getLockRemainingMs()), 250)
     return () => {
+      window.removeEventListener('jarvis:unlocked', onUnlock as EventListener)
       window.removeEventListener('jarvis:lock', onLock)
       window.removeEventListener('pointerdown', resetIdle)
       window.removeEventListener('keydown', resetIdle)
