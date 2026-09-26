@@ -1810,3 +1810,20 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-theme .jarvis-action:hover, .jarvis-theme .score-btn:hover, .jarvis-theme .btn-primary:hover,
   .jarvis-theme .jarvis-now-action:active, .jarvis-theme .mission-os-primary:active, .jarvis-theme .mission-os-secondary:active { transform: none; }
 }
+
+.jarvis-theme .app-title-row { display:flex; align-items:center; gap:6px; }
+.jarvis-theme .header-utility {
+  width:30px; height:24px; display:inline-flex; align-items:center; justify-content:center; gap:4px;
+  padding:0 6px; border:1px solid rgba(0,245,255,.16); border-radius:7px; background:rgba(255,255,255,.025);
+  color:#7FA7AA; cursor:pointer; font:800 6px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.5px;
+}
+.jarvis-theme .header-utility span:first-child { color:var(--jarvis-cyan); font-size:8px; }
+.jarvis-theme .header-utility-voice:hover, .jarvis-theme .header-utility-hud:hover {
+  border-color:rgba(0,245,255,.35); color:var(--jarvis-text); background:rgba(0,245,255,.055);
+}
+.jarvis-theme .app-week { color:var(--jarvis-green); font-weight:800; }
+@media (max-width:360px) {
+  .jarvis-theme .header-utility-label { display:none; }
+  .jarvis-theme .header-utility { width:24px; padding:0; }
+}
