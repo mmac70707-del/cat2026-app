@@ -1,96 +1,95 @@
-// ═══════════════════════════════════════════════════
-//  CAT 2026 — Native Bridge Service
-//
-//  This app's real native host is a hand-written Android
-//  WebView (MainActivity.kt using WebViewAssetLoader), NOT
-//  Capacitor — there are zero Capacitor dependencies in
-//  build.gradle.kts. The previous version of this file checked
-//  `Capacitor.isNativePlatform()`, which is always false here
-//  since no Capacitor bridge is ever injected — every function
-//  below silently no-opped on the actual shipped app. Fixed to
-//  detect the real bridge that exists: `window.AndroidNativeHost`,
-//  registered via `addJavascriptInterface(...)` in MainActivity.kt.
-// ═══════════════════════════════════════════════════
-
+// CAT 2026 — Secure Android WebMessage bridge client.
+// Native transport is origin-restricted in MainActivity.kt; no addJavascriptInterface.
+// All privileged calls are explicit, allowlisted actions.
 declare global {
   interface Window {
     AndroidNativeHost?: {
-      exitApp: () => void
-      requestNotificationPermission: () => void
-      setNotificationsEnabled: (enabled: boolean) => void
-      authenticateBiometric: () => void
-      launchNativeAction: (action: string) => void
-      getDeviceCapabilities: () => string
+      postMessage: (message: string) => void
+      onmessage?: (event: MessageEvent<string>) => void
     }
   }
 }
 
-export const isNative = () => typeof window !== 'undefined' && !!window.AndroidNativeHost
+type NativeResponse = {
+  id: string
+  ok: boolean
+  error?: string
+  locked?: boolean
+  capabilities?: Record<string, boolean>
+}
 
-// ── Android hardware back button ─────────────────────
-// MainActivity.kt's OnBackPressedCallback dispatches a real
-// `android:backbutton` window event on every back-press (it no
-// longer trusts webView.canGoBack(), which is always false for
-// this in-memory-routed SPA). This listener decides what happens:
-// on a sub-page, hand it to the app's own back-navigation
-// (App.tsx's onSubPageBack, same as the on-screen ← Back button);
-// on a main tab, call back into Kotlin to actually exit.
+type NativeRequest = {
+  action: string
+  args?: Record<string, unknown>
+}
+
+const pending = new Map<string, (response: NativeResponse) => void>()
+let requestSeq = 0
+let listenerInstalled = false
+
+function installReplyListener() {
+  if (listenerInstalled || !isNative()) return
+  listenerInstalled = true
+  window.AndroidNativeHost!.onmessage = (event) => {
+    try {
+      const response = JSON.parse(String(event.data)) as NativeResponse
+      const resolve = pending.get(response.id)
+      if (!resolve) return
+      pending.delete(response.id)
+      resolve(response)
+    } catch {
+      // Ignore malformed native replies.
+    }
+  }
+}
+
+export const isNative = () => typeof window !== 'undefined' && !!window.AndroidNativeHost?.postMessage
+
+export function nativeRequest(request: NativeRequest): Promise<NativeResponse> {
+  if (!isNative()) return Promise.resolve({ id: '', ok: false, error: 'Not running in Android host' })
+  installReplyListener()
+  return new Promise(resolve => {
+    const id = `native-${Date.now()}-${++requestSeq}`
+    pending.set(id, resolve)
+    window.AndroidNativeHost!.postMessage(JSON.stringify({ id, action: request.action, args: request.args ?? {} }))
+    window.setTimeout(() => {
+      if (!pending.has(id)) return
+      pending.delete(id)
+      resolve({ id, ok: false, error: 'Native request timeout' })
+    }, 5000)
+  })
+}
+
 export function registerBackButtonHandler(onSubPageBack: () => boolean): () => void {
   const handler = () => {
     const handled = onSubPageBack()
-    if (!handled) window.AndroidNativeHost?.exitApp()
+    if (!handled) void nativeRequest({ action: 'exitApp' })
   }
   window.addEventListener('android:backbutton', handler)
   return () => window.removeEventListener('android:backbutton', handler)
 }
 
-// ── App resume (foreground) ──────────────────────────
-// MainActivity.kt's onResume() dispatches `cat2026:resume`
-// (mirrors the back-button pattern above). useCountdown / usePhase
-// / useTodayTasks all listen for this alongside the web's own
-// `visibilitychange`, so state is correct the instant the app
-// reopens rather than stale until the next timer tick.
 export function registerAppStateHandler(): () => void {
-  // No-op registration needed on the JS side — Kotlin dispatches
-  // directly to `window`, and the consuming hooks already listen
-  // for it. This function exists so App.tsx has one consistent
-  // native-lifecycle entry point to call, matching the back-button
-  // handler's shape, and so future native events have one place
-  // to plug into.
   return () => {}
 }
 
-// ── Notifications ─────────────────────────────────────
-// Android 13+ requires a runtime POST_NOTIFICATIONS permission
-// prompt — this can't be silently granted. Call this from a real
-// user action (the Settings toggle), not on app load, so the
-// permission dialog has context.
 export function requestNotificationPermission(): void {
-  if (!isNative()) return
-  window.AndroidNativeHost?.requestNotificationPermission()
+  void nativeRequest({ action: 'requestNotificationPermission' })
 }
 
 export function setNotificationsEnabled(enabled: boolean): void {
-  if (!isNative()) return
-  window.AndroidNativeHost?.setNotificationsEnabled(enabled)
+  void nativeRequest({ action: 'setNotificationsEnabled', args: { enabled } })
 }
 
-
 export function authenticateBiometric(): void {
-  if (!isNative()) return
-  window.AndroidNativeHost?.authenticateBiometric()
+  void nativeRequest({ action: 'authenticateBiometric' })
 }
 
 export function launchNativeAction(action: string): void {
-  if (!isNative()) return
-  window.AndroidNativeHost?.launchNativeAction(action)
+  void nativeRequest({ action: 'launchNativeAction', args: { action } })
 }
 
-export function getDeviceCapabilities(): Record<string, boolean> | null {
-  if (!isNative()) return null
-  try {
-    return JSON.parse(window.AndroidNativeHost?.getDeviceCapabilities?.() || '{}')
-  } catch {
-    return null
-  }
+export async function getDeviceCapabilities(): Promise<Record<string, boolean> | null> {
+  const response = await nativeRequest({ action: 'getDeviceCapabilities' })
+  return response.ok ? (response.capabilities ?? null) : null
 }
