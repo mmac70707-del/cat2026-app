@@ -118,6 +118,8 @@ function getBlockLiveState(blockId: string, minutes: number, status: string) {
   const slot = getBlockSlot(blockId)
   if (!slot) return 'READY'
   if (isSlotActive(slot, minutes)) return 'NOW'
+  const bounds = slotBounds(slot)
+  if (!bounds.wraps && minutes >= bounds.end) return 'PASSED'
   const distance = minutesUntilStart(slot, minutes)
   if (distance > 0 && distance <= 180) return 'NEXT'
   if (distance > 0) return 'UPCOMING'
