@@ -18,6 +18,7 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
   ])
   const [memory, setMemory] = useState(() => localStorage.getItem('jarvis_quick_memory') || '')
   const [saved, setSaved] = useState(false)
+  const [caps, setCaps] = useState<Record<string, boolean> | null>(null)
   const { stats } = useQuickStats()
 
   useEffect(() => {
@@ -35,7 +36,13 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
 
   const dateKey = getKolkataDateKey()
   const target = getPercentylDailyTarget(dateKey)
-  const caps = getDeviceCapabilities()
+
+  useEffect(() => {
+    let active = true
+    if (!isNative()) { setCaps(null); return () => { active = false } }
+    void getDeviceCapabilities().then(value => { if (active) setCaps(value) })
+    return () => { active = false }
+  }, [])
   const time = new Intl.DateTimeFormat('en-IN', {
     hour: '2-digit', minute: '2-digit', second: '2-digit',
     hour12: false, timeZone: 'Asia/Kolkata'
