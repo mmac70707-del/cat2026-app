@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
+import { useQuickStats } from '@/hooks/index'
 import { isNative, getDeviceCapabilities, authenticateBiometric, launchNativeAction } from '@/services/native'
 
 interface Props { onBack?: () => void; onNavigate?: (page: string) => void }
@@ -17,6 +18,7 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
   ])
   const [memory, setMemory] = useState(() => localStorage.getItem('jarvis_quick_memory') || '')
   const [saved, setSaved] = useState(false)
+  const { stats } = useQuickStats()
 
   useEffect(() => {
     const id = window.setInterval(() => setNow(new Date()), 1000)
@@ -42,6 +44,14 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
     weekday: 'long', day: '2-digit', month: 'short', year: 'numeric',
     timeZone: 'Asia/Kolkata'
   }).format(now)
+
+  const missionHealth = useMemo(() => {
+    if (!stats) return 0
+    const blockScore = Math.min(100, Math.round((stats.blocksDone / 8) * 100))
+    const accuracyScore = stats.lastAccuracy == null ? 60 : Math.max(0, Math.min(100, stats.lastAccuracy))
+    const repairPenalty = Math.min(25, stats.repairPending * 3)
+    return Math.max(0, Math.round(blockScore * 0.45 + accuracyScore * 0.40 + (100 - repairPenalty) * 0.15))
+  }, [stats])
 
   const status = useMemo(() => [
     ['CORE', 'ONLINE', '#39FF88'],
@@ -118,6 +128,33 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
       </div>
 
       <div className="jarvis-main-grid">
+        <Panel title="◉ JARVIS RADAR">
+          <div className="jarvis-radar-wrap" aria-label="JARVIS mission radar">
+            <div className="jarvis-radar">
+              <div className="jarvis-radar-ring jarvis-radar-ring-a" />
+              <div className="jarvis-radar-ring jarvis-radar-ring-b" />
+              <div className="jarvis-radar-ring jarvis-radar-ring-c" />
+              <div className="jarvis-radar-cross horizontal" />
+              <div className="jarvis-radar-cross vertical" />
+              <div className="jarvis-radar-sweep" />
+              <span className="jarvis-radar-blip b1" />
+              <span className="jarvis-radar-blip b2" />
+              <span className="jarvis-radar-blip b3" />
+              <span className="jarvis-radar-core">◉</span>
+              <span className="jarvis-radar-label north">N</span>
+              <span className="jarvis-radar-label east">E</span>
+              <span className="jarvis-radar-label south">S</span>
+              <span className="jarvis-radar-label west">W</span>
+            </div>
+            <div className="jarvis-radar-readout">
+              <div><span>MISSION</span><b>{missionHealth}%</b></div>
+              <div><span>BLOCKS</span><b>{stats ? `${stats.blocksDone}/8` : '--'}</b></div>
+              <div><span>REPAIR</span><b>{stats ? stats.repairPending : '--'}</b></div>
+              <div><span>NETWORK</span><b>{online ? 'LIVE' : 'OFFLINE'}</b></div>
+            </div>
+          </div>
+        </Panel>
+
         <Panel title="⚡ LIVE CORE">
           <div className="jarvis-live-clock">
             <div className="jarvis-live-clock-time">{time}</div>
