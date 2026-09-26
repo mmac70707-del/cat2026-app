@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var webView: WebView
     private lateinit var biometricExecutor: Executor
     private var backButtonHandler: (() -> Boolean)? = null
+    private var nativeUnlocked = false
     private val prefs by lazy { getSharedPreferences("jarvis_security", MODE_PRIVATE) }
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
@@ -49,8 +51,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.navigationBarColor = "#0D1B2A".toColorInt()
-        window.statusBarColor = "#0D1B2A".toColorInt()
+        window.navigationBarColor = "#03070A".toColorInt()
+        window.statusBarColor = "#03070A".toColorInt()
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         biometricExecutor = ContextCompat.getMainExecutor(this)
 
         val assetLoader = WebViewAssetLoader.Builder()
@@ -67,6 +70,11 @@ class MainActivity : ComponentActivity() {
             settings.domStorageEnabled = true
             settings.allowFileAccess = false
             settings.allowContentAccess = false
+            settings.allowFileAccessFromFileURLs = false
+            settings.allowUniversalAccessFromFileURLs = false
+            settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            settings.safeBrowsingEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            settings.setSupportMultipleWindows(false)
             webChromeClient = WebChromeClient()
 
             webViewClient = object : WebViewClient() {
@@ -74,14 +82,15 @@ class MainActivity : ComponentActivity() {
                     assetLoader.shouldInterceptRequest(request.url)
 
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                    if (!request.isForMainFrame) return false
                     val url = request.url.toString()
-                    return if (
-                        url.startsWith("https://appassets.androidforward.site/") ||
-                        url.startsWith("http://localhost")
-                    ) {
+                    val trusted = url.startsWith("https://appassets.androidforward.site/")
+                    val debug = BuildConfig.DEBUG && url.startsWith("http://localhost")
+
+                    return if (trusted || debug) {
                         false
                     } else {
-                        try { startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) } catch (_: Exception) {}
+                        try { startActivity(Intent(Intent.ACTION_VIEW, request.url)) } catch (_: Exception) {}
                         true
                     }
                 }
@@ -148,6 +157,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setJarvisPin(pin: String): Boolean {
+        if (hasJarvisPin()) return false
         if (!pin.matches(Regex("\\d{6}"))) return false
         val digest = pinDigest(pin) ?: return false
 
@@ -159,11 +169,35 @@ class MainActivity : ComponentActivity() {
         return true
     }
 
+    private fun isNativeRateLimited(): Boolean =
+        System.currentTimeMillis() < prefs.getLong("pin_lock_until", 0L)
+
+    private fun clearNativeFailures() {
+        prefs.edit().remove("pin_failures").remove("pin_lock_until").apply()
+    }
+
+    private fun recordNativeFailure() {
+        val attempts = prefs.getInt("pin_failures", 0) + 1
+        val cooldownMs = minOf(15 * 60_000L, 1000L * (1L shl minOf(attempts - 1, 10)))
+        prefs.edit()
+            .putInt("pin_failures", attempts)
+            .putLong("pin_lock_until", System.currentTimeMillis() + cooldownMs)
+            .apply()
+    }
+
     private fun verifyJarvisPin(pin: String): Boolean {
         if (!pin.matches(Regex("\\d{6}"))) return false
+        if (isNativeRateLimited()) return false
+
         val expected = prefs.getString("pin_digest", null) ?: return false
         val actual = pinDigest(pin) ?: return false
-        return expected == actual
+        val valid = java.security.MessageDigest.isEqual(
+            expected.toByteArray(StandardCharsets.UTF_8),
+            actual.toByteArray(StandardCharsets.UTF_8)
+        )
+
+        if (valid) clearNativeFailures() else recordNativeFailure()
+        return valid
     }
 
     private fun showJarvisSecurityGate() {
@@ -261,6 +295,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun loadAppAfterUnlock() {
+        if (!nativeUnlocked) return
         webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
         webView.postDelayed({
             webView.evaluateJavascript(
@@ -295,6 +330,8 @@ class MainActivity : ComponentActivity() {
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
+                    nativeUnlocked = true
+                    clearNativeFailures()
                     loadAppAfterUnlock()
                 }
 
@@ -337,6 +374,7 @@ class MainActivity : ComponentActivity() {
     private fun triggerNotificationSetup() {}
 
     private fun launchNativeAction(action: String) {
+        if (!nativeUnlocked) return
         try {
             when (action.lowercase()) {
                 "browser" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.google.com".toUri()))
@@ -356,6 +394,11 @@ class MainActivity : ComponentActivity() {
 
     inner class NativeBridge {
         @JavascriptInterface
+        fun exitApp() {
+            finishAndRemoveTask()
+        }
+
+        @JavascriptInterface
         fun registerBackButton() {
             backButtonHandler = {
                 webView.evaluateJavascript(
@@ -373,6 +416,7 @@ class MainActivity : ComponentActivity() {
 
         @JavascriptInterface
         fun requestNotificationPermission() {
+            if (!nativeUnlocked) return
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 runOnUiThread {
                     requestNotificationPermissionLauncher.launch(
@@ -384,6 +428,7 @@ class MainActivity : ComponentActivity() {
 
         @JavascriptInterface
         fun setNotificationsEnabled(enabled: Boolean) {
+            if (!nativeUnlocked) return
             if (enabled) triggerNotificationSetup()
         }
 
@@ -393,12 +438,19 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface
-        fun setJarvisPin(pin: String): Boolean =
-            this@MainActivity.setJarvisPin(pin)
+        fun setJarvisPin(pin: String): Boolean {
+            val saved = this@MainActivity.setJarvisPin(pin)
+            if (saved) nativeUnlocked = true
+            return saved
+        }
 
         @JavascriptInterface
-        fun verifyJarvisPin(pin: String): Boolean =
-            this@MainActivity.verifyJarvisPin(pin)
+        fun verifyJarvisPin(pin: String): Boolean {
+            if (isNativeRateLimited()) return false
+            val verified = this@MainActivity.verifyJarvisPin(pin)
+            if (verified) nativeUnlocked = true
+            return verified
+        }
 
         @JavascriptInterface
         fun unlockApp() {
