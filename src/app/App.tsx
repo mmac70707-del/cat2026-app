@@ -40,6 +40,7 @@ import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 import { SettingsRepository } from '@/repositories/index'
 import { enableWebNotificationScheduler } from '@/services/webNotifications'
+import { JarvisWebSecurityGate } from '@/features/jarvis/JarvisWebSecurityGate'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
 export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
@@ -56,6 +57,7 @@ const FOCUS_REMINDERS = [
 ]
 
 export function App() {
+  return <JarvisWebSecurityGate><AppUnlocked /></JarvisWebSecurityGate>\n}\n\nfunction AppUnlocked() {
   const [activePage, setActivePage]             = useState<ActivePage>('dashboard')
   const [loading, setLoading]                   = useState(true)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
