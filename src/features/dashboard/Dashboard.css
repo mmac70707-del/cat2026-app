@@ -487,6 +487,155 @@
   .jarvis-theme .dash-root .stat-card { padding:9px 7px; }
 }
 
+
+/* ── LIVE CLOCK + TIME-AWARE DASHBOARD ── */
+.jarvis-theme .live-time-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:6px 18px;
+  background:#061013;
+  border-bottom:1px solid rgba(0,245,255,.10);
+  color:#6F878A;
+  font:700 9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.55px;
+}
+.jarvis-theme .live-time-clock {
+  color:#DFFDFC;
+  font-size:12px;
+  letter-spacing:1px;
+  font-variant-numeric:tabular-nums;
+}
+.jarvis-theme .live-time-label {
+  color:#75E7B2;
+  text-align:center;
+}
+.jarvis-theme .live-time-date {
+  color:#71898C;
+  white-space:nowrap;
+}
+.jarvis-theme .live-schedule-panel {
+  display:grid;
+  grid-template-columns:minmax(0,1.6fr) minmax(180px,1fr) minmax(160px,.8fr);
+  gap:10px;
+  margin:10px 18px 0;
+  padding:13px 14px;
+  border:1px solid rgba(0,245,255,.12);
+  border-radius:13px;
+  background:
+    radial-gradient(circle at 0 0,rgba(0,245,255,.055),transparent 34%),
+    linear-gradient(145deg,#0B171B,#071014);
+  box-shadow:inset 0 1px rgba(255,255,255,.025),0 8px 22px rgba(0,0,0,.16);
+}
+.jarvis-theme .live-schedule-main,
+.jarvis-theme .live-schedule-next,
+.jarvis-theme .live-schedule-day {
+  min-width:0;
+}
+.jarvis-theme .live-schedule-next,
+.jarvis-theme .live-schedule-day {
+  padding-left:12px;
+  border-left:1px solid rgba(255,255,255,.055);
+}
+.jarvis-theme .live-schedule-kicker,
+.jarvis-theme .live-schedule-next-label,
+.jarvis-theme .live-schedule-day-label {
+  color:#63DFA5;
+  font:900 7px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:1.1px;
+}
+.jarvis-theme .live-schedule-title {
+  margin-top:6px;
+  color:#ECF8F7;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:900;
+}
+.jarvis-theme .live-schedule-detail {
+  margin-top:5px;
+  color:#789194;
+  font-size:9px;
+  line-height:1.45;
+}
+.jarvis-theme .live-schedule-next-title {
+  margin-top:7px;
+  color:#A7EFF1;
+  font-size:11px;
+  line-height:1.35;
+  font-weight:800;
+}
+.jarvis-theme .live-schedule-next-time,
+.jarvis-theme .live-schedule-day-sub {
+  margin-top:4px;
+  color:#667D80;
+  font-size:8px;
+  line-height:1.4;
+}
+.jarvis-theme .live-schedule-day-focus {
+  margin-top:7px;
+  color:#E9F6F5;
+  font-size:12px;
+  font-weight:900;
+}
+.jarvis-theme .stat-live-tag {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:36px;
+  padding:2px 5px;
+  border-radius:5px;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.45px;
+  color:#7E9496;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.045);
+}
+.jarvis-theme .stat-live-tag.now,
+.jarvis-theme .stat-live-tag.working {
+  color:#8DF0B4;
+  background:rgba(57,255,136,.08);
+  border-color:rgba(57,255,136,.20);
+  box-shadow:0 0 12px rgba(57,255,136,.08);
+}
+.jarvis-theme .stat-live-tag.done {
+  color:#8CA5A7;
+  background:rgba(255,255,255,.045);
+}
+.jarvis-theme .stat-live-tag.next {
+  color:#9AEFF2;
+  border-color:rgba(0,245,255,.16);
+  background:rgba(0,245,255,.055);
+}
+.jarvis-theme .meta-target.live-state-now,
+.jarvis-theme .meta-target.live-state-working {
+  color:#8DF0B4 !important;
+}
+.jarvis-theme .meta-target.live-state-next {
+  color:#9AEFF2 !important;
+}
+.jarvis-theme .meta-target.live-state-done {
+  color:#7CD8A6 !important;
+}
+.jarvis-theme .meta-target.live-state-passed {
+  color:#D3A25B !important;
+}
+@media (max-width:760px) {
+  .jarvis-theme .live-time-bar { padding:6px 14px; }
+  .jarvis-theme .live-time-label { display:none; }
+  .jarvis-theme .live-schedule-panel {
+    grid-template-columns:1fr;
+    margin-inline:14px;
+  }
+  .jarvis-theme .live-schedule-next,
+  .jarvis-theme .live-schedule-day {
+    padding-left:0;
+    padding-top:10px;
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.055);
+  }
+}
+
 /* ── DAILY MOTIVATION / ACTION CARD ── */
 .jarvis-theme .daily-motivation-card {
   margin: 10px 18px 0;
