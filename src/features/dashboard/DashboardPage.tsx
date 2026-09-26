@@ -9,6 +9,7 @@ import { ROADMAP_44 } from '@/data/roadmap44'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
+import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
 
 const SEQUENCE_STRIP = [
   { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: 'LIVE', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
@@ -172,6 +173,7 @@ export function DashboardPage() {
       <div className="main">
 
         <DailyControlCard />
+        <LinkedInDailyCard />
 
         {/* DAILY 8-BLOCK SEQUENCE JETPACK GRID */}
         <div className="stats-row">
