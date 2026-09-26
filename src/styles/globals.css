@@ -1148,3 +1148,327 @@ body.jarvis-theme { min-width: 320px; }
     content: 'JARVIS // SECURE // CAT 2026';
   }
 }
+
+
+/* ── Real-app system surfaces ── */
+.jarvis-boot-screen {
+  width: min(398px, calc(100vw - 32px));
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 18px;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(0,245,255,.09), transparent 27%),
+    #03070A;
+  color: var(--jarvis-text);
+}
+.jarvis-boot-orb {
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(0,245,255,.5);
+  box-shadow: 0 0 30px rgba(0,245,255,.10), inset 0 0 25px rgba(0,245,255,.08);
+  margin-bottom: 18px;
+}
+.jarvis-boot-orb > div {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--jarvis-green);
+  border: 1px solid rgba(57,255,136,.45);
+  font-size: 18px;
+  animation: jarvis-boot-pulse 1.4s ease-in-out infinite;
+}
+@keyframes jarvis-boot-pulse {
+  50% { transform: scale(1.08); box-shadow: 0 0 22px rgba(57,255,136,.22); }
+}
+.jarvis-boot-kicker {
+  color: var(--jarvis-green);
+  font: 800 9px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 1.8px;
+}
+.jarvis-boot-title {
+  margin-top: 8px;
+  font: 900 30px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--jarvis-cyan);
+  text-shadow: 0 0 18px rgba(0,245,255,.23);
+}
+.jarvis-boot-sub {
+  margin-top: 8px;
+  color: var(--jarvis-muted);
+  font-size: 10px;
+}
+.jarvis-boot-progress {
+  width: 100%;
+  max-width: 320px;
+  height: 5px;
+  margin-top: 22px;
+  border: 1px solid rgba(0,245,255,.12);
+  background: rgba(0,245,255,.04);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.jarvis-boot-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--jarvis-cyan), var(--jarvis-green));
+  box-shadow: 0 0 12px rgba(0,245,255,.25);
+  transition: width .25s ease;
+}
+.jarvis-boot-steps {
+  width: 100%;
+  max-width: 320px;
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+}
+.jarvis-boot-steps > div {
+  display: grid;
+  grid-template-columns: 14px minmax(0,1fr);
+  gap: 8px;
+  color: #4F6669;
+  font: 8px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .55px;
+}
+.jarvis-boot-steps > div.active { color: var(--jarvis-cyan); }
+.jarvis-boot-steps > div.done { color: var(--jarvis-green); }
+
+.jarvis-command-trigger {
+  position: fixed;
+  right: 14px;
+  bottom: calc(76px + env(safe-area-inset-bottom));
+  z-index: 220;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(0,245,255,.34);
+  border-radius: 14px;
+  background: rgba(2,10,13,.94);
+  color: var(--jarvis-cyan);
+  box-shadow: 0 0 22px rgba(0,245,255,.09), 0 8px 24px rgba(0,0,0,.35);
+  cursor: pointer;
+}
+.jarvis-command-trigger span { font-size: 17px; line-height: 1; }
+.jarvis-command-trigger small {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  color: var(--jarvis-green);
+  font: 700 5px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-command-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: start center;
+  padding: 72px 12px 18px;
+  background: rgba(0,0,0,.68);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.jarvis-command-palette {
+  width: min(398px, calc(100vw - 24px));
+  max-height: min(680px, calc(100dvh - 90px));
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  border: 1px solid rgba(0,245,255,.24);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(5,16,20,.98), rgba(1,6,8,.99));
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 0 30px rgba(0,245,255,.08);
+}
+.jarvis-command-header {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px;
+  padding: 15px;
+  border-bottom: 1px solid rgba(0,245,255,.12);
+}
+.jarvis-command-kicker {
+  color: var(--jarvis-cyan);
+  font: 900 10px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 1.4px;
+}
+.jarvis-command-sub {
+  margin-top: 4px;
+  color: var(--jarvis-muted);
+  font-size: 8px;
+}
+.jarvis-command-close {
+  align-self: start;
+  padding: 6px 8px;
+  border: 1px solid rgba(0,245,255,.18);
+  border-radius: 7px;
+  background: #03090B;
+  color: var(--jarvis-muted);
+  font: 800 8px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-command-search {
+  width: calc(100% - 20px);
+  margin: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(0,245,255,.16);
+  border-radius: 9px;
+  background: #010608;
+  color: var(--jarvis-text);
+  outline: none;
+  font: 10px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-command-search:focus { border-color: rgba(0,245,255,.45); box-shadow: 0 0 0 2px rgba(0,245,255,.06); }
+.jarvis-command-list {
+  overflow: auto;
+  padding: 0 10px 10px;
+}
+.jarvis-command-item {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 9px;
+  margin-bottom: 6px;
+  text-align: left;
+  border: 1px solid rgba(0,245,255,.09);
+  border-radius: 9px;
+  background: rgba(4,12,15,.92);
+  color: var(--jarvis-text);
+  cursor: pointer;
+}
+.jarvis-command-item:hover,
+.jarvis-command-item:focus-visible {
+  border-color: rgba(0,245,255,.35);
+  background: rgba(7,21,25,.98);
+}
+.jarvis-command-index {
+  color: var(--jarvis-green);
+  font: 900 8px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-command-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.jarvis-command-copy b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+}
+.jarvis-command-copy small {
+  color: var(--jarvis-muted);
+  font-size: 7px;
+}
+.jarvis-command-arrow {
+  color: var(--jarvis-cyan);
+  font-size: 12px;
+}
+.jarvis-command-empty {
+  padding: 30px 10px;
+  color: var(--jarvis-muted);
+  text-align: center;
+  font: 800 8px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-command-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 12px;
+  color: #4F6669;
+  border-top: 1px solid rgba(0,245,255,.10);
+  font: 700 7px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.jarvis-app-control {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 14px;
+  padding: 11px;
+  border: 1px solid rgba(0,245,255,.13);
+  border-radius: 10px;
+  background: rgba(3,12,15,.86);
+}
+.jarvis-app-control-kicker {
+  color: var(--jarvis-green);
+  font: 800 7px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 1px;
+}
+.jarvis-app-control-title {
+  margin-top: 4px;
+  color: var(--jarvis-cyan);
+  font: 900 10px/1.15 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-app-control-copy {
+  margin-top: 4px;
+  color: var(--jarvis-muted);
+  font-size: 8px;
+  line-height: 1.35;
+}
+.jarvis-app-install {
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(57,255,136,.30);
+  border-radius: 8px;
+  background: #03110D;
+  color: var(--jarvis-green);
+  font: 900 8px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.jarvis-crash-screen {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #020607;
+}
+.jarvis-crash-card {
+  width: min(398px, 100%);
+  padding: 20px;
+  border: 1px solid rgba(255,59,92,.28);
+  border-radius: 16px;
+  background: rgba(7,12,14,.98);
+}
+.jarvis-crash-card h1 {
+  margin-top: 8px;
+  color: var(--jarvis-red);
+  font: 900 22px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.jarvis-crash-card p {
+  margin-top: 10px;
+  color: var(--jarvis-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.jarvis-crash-code {
+  margin-top: 12px;
+  padding: 9px;
+  border: 1px solid rgba(255,59,92,.12);
+  border-radius: 8px;
+  background: #010405;
+  color: #B8C8CA;
+  font: 8px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+.jarvis-crash-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 12px;
+}
+.jarvis-crash-actions button {
+  min-height: 40px;
+  border: 1px solid rgba(0,245,255,.18);
+  border-radius: 8px;
+  background: #031014;
+  color: var(--jarvis-cyan);
+  font: 900 8px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
