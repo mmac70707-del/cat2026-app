@@ -23,13 +23,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.webkit.WebViewAssetLoader
+import java.nio.charset.StandardCharsets
+import java.security.KeyStore
 import java.util.concurrent.Executor
+import javax.crypto.KeyGenerator
+import javax.crypto.Mac
+import javax.crypto.SecretKey
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
-    private var backButtonHandler: (() -> Boolean)? = null
     private lateinit var biometricExecutor: Executor
+    private var backButtonHandler: (() -> Boolean)? = null
+    private val prefs by lazy { getSharedPreferences("jarvis_security", MODE_PRIVATE) }
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -37,7 +45,6 @@ class MainActivity : ComponentActivity() {
         if (isGranted) triggerNotificationSetup()
     }
 
-    @Suppress("DEPRECATION")
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +62,7 @@ class MainActivity : ComponentActivity() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.allowFileAccess = false
@@ -67,7 +75,10 @@ class MainActivity : ComponentActivity() {
 
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     val url = request.url.toString()
-                    return if (url.startsWith("https://appassets.androidforward.site/") || url.startsWith("http://localhost")) {
+                    return if (
+                        url.startsWith("https://appassets.androidforward.site/") ||
+                        url.startsWith("http://localhost")
+                    ) {
                         false
                     } else {
                         try { startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) } catch (_: Exception) {}
@@ -83,201 +94,226 @@ class MainActivity : ComponentActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val handledByJs = backButtonHandler?.invoke() ?: false
-                if (!handledByJs) {
+                val handled = backButtonHandler?.invoke() ?: false
+                if (!handled) {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
                 }
             }
         })
 
-        authenticateForAppUnlock()
+        showJarvisSecurityGate()
         checkNotificationPermission()
     }
 
-    private fun loadAppAfterUnlock() {
-        webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
-        webView.postDelayed({
-            webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('jarvis:unlocked'))", null)
-        }, 250)
-    }
+    private fun hasJarvisPin(): Boolean =
+        prefs.getBoolean("pin_configured", false) &&
+        !prefs.getString("pin_digest", null).isNullOrBlank()
 
-    private fun authenticateForAppUnlock() {
-        val manager = BiometricManager.from(this)
-        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
-        } else {
-            BiometricManager.Authenticators.BIOMETRIC_WEAK
-        }
+    private fun getOrCreateJarvisKey(): SecretKey? {
+        return try {
+            val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+            val alias = "JARVIS_PIN_HMAC_KEY"
 
-        if (manager.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
-            loadAppAfterUnlock()
-            return
-        }
-
-        val prompt = BiometricPrompt(this, biometricExecutor, object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                loadAppAfterUnlock()
+            if (!keyStore.containsAlias(alias)) {
+                val generator = KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_HMAC_SHA256,
+                    "AndroidKeyStore"
+                )
+                generator.init(
+                    KeyGenParameterSpec.Builder(
+                        alias,
+                        KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY
+                    ).build()
+                )
+                generator.generateKey()
             }
 
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                // Keep the app closed behind the system prompt. User can retry by relaunching.
-                webView.loadDataWithBaseURL(null,
-                    "<html><body style='background:#0A0F1E;color:#F5A623;font-family:sans-serif;text-align:center;padding:60px'><h2>JARVIS LOCKED</h2><p>Authenticate with your device biometric or credential to continue.</p></body></html>",
-                    "text/html", "UTF-8", null)
-            }
-        })
-
-        val info = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("JARVIS Secure Unlock")
-            .setSubtitle("Authenticate to open CAT 2026 Command System")
-            .setDescription("Face or fingerprint can be used when enrolled on this device.")
-            .setAllowedAuthenticators(authenticators)
-            .build()
-
-        prompt.authenticate(info)
-    }
-
-    private fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            triggerNotificationSetup()
+            keyStore.getKey(alias, null) as? SecretKey
+        } catch (_: Exception) {
+            null
         }
     }
 
-    private fun triggerNotificationSetup() {
-        // Intentionally left for the user-controlled Settings flow.
-    }
-
-    private fun launchNativeAction(action: String) {
-        try {
-            when (action.lowercase()) {
-                "browser" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.google.com".toUri()))
-                "camera" -> startActivity(Intent("android.media.action.IMAGE_CAPTURE"))
-                "settings" -> startActivity(Intent(Settings.ACTION_SETTINGS))
-                "wifi" -> startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                "bluetooth" -> startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
-                "calendar" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CALENDAR))
-                "clock" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CLOCK))
-                "phone" -> startActivity(Intent(Intent.ACTION_DIAL))
-                "messages" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MESSAGING))
-                "whatsapp" -> {
-                    val launch = packageManager.getLaunchIntentForPackage("com.whatsapp")
-                    if (launch != null) startActivity(launch)
-                }
-                "youtube" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.youtube.com".toUri()))
-                else -> {}
-            }
-        } catch (_: Exception) {}
-    }
-
-    inner class NativeBridge {
-        @JavascriptInterface fun registerBackButton() {
-            backButtonHandler = {
-                webView.evaluateJavascript("window.onAndroidBackPressed && window.onAndroidBackPressed()", null)
-                true
-            }
-        }
-
-        @JavascriptInterface fun unregisterBackButton() { backButtonHandler = null }
-
-        @JavascriptInterface fun requestNotificationPermission() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                runOnUiThread {
-                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }
-        }
-
-        @JavascriptInterface fun setNotificationsEnabled(enabled: Boolean) {
-            if (enabled) triggerNotificationSetup()
-        }
-
-        @JavascriptInterface fun authenticateBiometric() {
-            runOnUiThread { authenticateForAppUnlock() }
-        }
-
-        @JavascriptInterface fun launchNativeAction(action: String) {
-            runOnUiThread { launchNativeAction(action) }
-        }
-
-        @JavascriptInterface fun getDeviceCapabilities(): String {
-            val manager = BiometricManager.from(this@MainActivity)
-            val biometricReady = manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
-            return "{\"biometric\":$biometricReady,\"camera\":true,\"nativeIntents\":true,\"secureUnlock\":true}"
+    private fun pinDigest(pin: String): String? {
+        return try {
+            val key = getOrCreateJarvisKey() ?: return null
+            val mac = Mac.getInstance("HmacSHA256")
+            mac.init(key)
+            mac.doFinal(pin.toByteArray(StandardCharsets.UTF_8))
+                .joinToString("") { "%02x".format(it) }
+        } catch (_: Exception) {
+            null
         }
     }
-}
+
+    private fun setJarvisPin(pin: String): Boolean {
+        if (!pin.matches(Regex("\\d{6}"))) return false
+        val digest = pinDigest(pin) ?: return false
+
+        prefs.edit()
+            .putString("pin_digest", digest)
+            .putBoolean("pin_configured", true)
+            .apply()
+
+        return true
+    }
+
+    private fun verifyJarvisPin(pin: String): Boolean {
+        if (!pin.matches(Regex("\\d{6}"))) return false
+        val expected = prefs.getString("pin_digest", null) ?: return false
+        val actual = pinDigest(pin) ?: return false
+        return expected == actual
+    }
+
     private fun showJarvisSecurityGate() {
-        val hasPin = prefs.contains("pin_hash")
-        val pinLogic = if (!hasPin) {
-            "AndroidNativeHost.setJarvisPin(p); msg('PIN created. Verifying identity...'); AndroidNativeHost.authenticateBiometric();"
+        val hasPin = hasJarvisPin()
+
+        val titleText = if (hasPin) "WELCOME BACK, ASHISH" else "INITIAL JARVIS SETUP"
+        val subtitleText = if (hasPin) {
+            "Enter your 6-digit JARVIS PIN or use biometric unlock."
         } else {
-            "const ok=AndroidNativeHost.verifyJarvisPin(p); msg(ok?'PIN accepted.':'Incorrect PIN.'); if(ok) AndroidNativeHost.unlockApp();"
+            "Create your private 6-digit JARVIS PIN for this device."
         }
-        val buttonText = if (hasPin) "UNLOCK WITH PIN" else "CREATE JARVIS PIN"
-        val message = if (hasPin) "Use your JARVIS PIN or device biometric to enter." else "Create your private 6-digit JARVIS PIN. It is stored only as a one-way hash on this device."
+        val buttonText = if (hasPin) "UNLOCK JARVIS" else "CREATE SECURE PIN"
+        val messageText = if (hasPin) {
+            "JARVIS is locked. Verify your identity to continue."
+        } else {
+            "Create a 6-digit PIN, confirm it once, then JARVIS will unlock."
+        }
+        val confirmHtml = if (!hasPin) {
+            """<input id="confirm" class="confirm" inputmode="numeric" maxlength="6" type="password" autocomplete="off" placeholder="CONFIRM PIN">"""
+        } else {
+            ""
+        }
+        val confirmCheck = if (!hasPin) {
+            """const confirmPin=document.getElementById('confirm').value;if(pin!==confirmPin){setMsg('PINs do not match. Re-enter both.');return}"""
+        } else {
+            ""
+        }
+        val submitLogic = if (!hasPin) {
+            """const saved=AndroidNativeHost.setJarvisPin(pin);if(saved){setMsg('PIN saved securely. Opening JARVIS...');setTimeout(()=>AndroidNativeHost.unlockApp(),300)}else{setMsg('PIN could not be saved. Try again.')}"""
+        } else {
+            """const ok=AndroidNativeHost.verifyJarvisPin(pin);if(ok){setMsg('Identity verified. Opening JARVIS...');setTimeout(()=>AndroidNativeHost.unlockApp(),250)}else{document.getElementById('pin').value='';setMsg('Incorrect PIN. Try again.')}"""
+        }
+
         val page = """
-        <!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-        <style>*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 20%,#18324f 0,#08101d 45%,#050a12 100%);color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}.gate{width:min(420px,92vw);padding:30px 24px;border:1px solid #F5A623;border-radius:24px;background:rgba(7,15,27,.88);box-shadow:0 0 45px rgba(245,166,35,.18);text-align:center}.orb{width:86px;height:86px;margin:0 auto 18px;border-radius:50%;border:2px solid #F5A623;box-shadow:0 0 28px #F5A623;display:grid;place-items:center;font-size:36px;animation:p 2.2s infinite}@keyframes p{50%{box-shadow:0 0 48px rgba(245,166,35,.5)}}h1{font-size:24px;margin:8px 0;color:#F5A623}p{color:#9fb0c4;font-size:13px;line-height:1.5}.status{margin:18px 0;color:#7ee7c8;font-size:12px;letter-spacing:1px}input{width:100%;padding:15px;border-radius:12px;border:1px solid #34445a;background:#111c2c;color:#fff;text-align:center;font-size:22px;letter-spacing:8px;outline:none}button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:12px;font-weight:800;cursor:pointer}.primary{background:#F5A623;color:#08101d}.secondary{background:#1b2a3d;color:#fff;border:1px solid #34445a}.small{font-size:11px;color:#74869c;margin-top:14px}</style></head>
-        <body><main class="gate"><div class="orb">◉</div><h1>JARVIS SECURE GATE</h1><div class="status">IDENTITY VERIFICATION REQUIRED</div>
-        <p id="msg">$message</p><input id="pin" inputmode="numeric" maxlength="6" type="password" placeholder="••••••" autocomplete="off">
-        <button class="primary" onclick="submitPin()">$buttonText</button><button class="secondary" onclick="bio()">◉ UNLOCK WITH FACE / FINGERPRINT</button>
-        <div class="small">JARVIS • Personal Command System • Local security gate</div></main>
-        <script>
-        function msg(t){document.getElementById('msg').textContent=t}
-        function submitPin(){const p=document.getElementById('pin').value;if(!/^\d{6}$/.test(p)){msg('Enter exactly 6 digits.');return}
-        $pinLogic}
-        function bio(){AndroidNativeHost.authenticateBiometric()}
-        </script></body></html>
+        <!doctype html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+          <style>
+            *{box-sizing:border-box}
+            body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 15%,#173a63 0,#091423 44%,#04080e 100%);color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+            .gate{width:min(430px,92vw);padding:30px 22px 24px;border:1px solid rgba(245,166,35,.65);border-radius:24px;background:rgba(8,15,27,.94);box-shadow:0 0 50px rgba(245,166,35,.15),inset 0 0 28px rgba(255,255,255,.02);text-align:center}
+            .orb{width:92px;height:92px;margin:0 auto 16px;border-radius:50%;border:2px solid #F5A623;box-shadow:0 0 30px rgba(245,166,35,.7),inset 0 0 24px rgba(245,166,35,.12);display:grid;place-items:center}
+            .ring{width:62px;height:62px;border-radius:50%;border:1px solid rgba(147,197,253,.55);display:grid;place-items:center;color:#93C5FD;font-size:18px}
+            h1{font-size:22px;letter-spacing:1px;margin:10px 0 6px;color:#F5A623}
+            .sub{font-size:12px;color:#A5B4C7;line-height:1.5;margin:0 auto 18px;max-width:345px}
+            .status{font-size:10px;letter-spacing:1.6px;color:#6EE7B7;margin-bottom:12px}
+            input{width:100%;padding:15px;border-radius:12px;border:1px solid #34445A;background:#0F1A2B;color:#fff;text-align:center;font-size:23px;letter-spacing:9px;outline:none}
+            .confirm{margin-top:10px}
+            button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:12px;font-weight:900;cursor:pointer}
+            .primary{background:#F5A623;color:#08101D}
+            .bio{background:#19283B;color:#fff;border:1px solid #3D5069}
+            .msg{min-height:34px;margin-top:10px;font-size:12px;color:#CBD5E1;line-height:1.45}
+            .footer{margin-top:14px;font-size:10px;color:#64748B}
+          </style>
+        </head>
+        <body>
+          <main class="gate">
+            <div class="orb"><div class="ring">◉</div></div>
+            <div class="status">JARVIS SECURITY LAYER • LOCAL DEVICE</div>
+            <h1>${titleText}</h1>
+            <p class="sub">${subtitleText}</p>
+
+            <input id="pin" inputmode="numeric" maxlength="6" type="password" autocomplete="off" placeholder="••••••">
+            ${confirmHtml}
+
+            <button class="primary" onclick="submitPin()">${buttonText}</button>
+            <button class="bio" onclick="bio()">◉ USE FACE / FINGERPRINT</button>
+
+            <div id="msg" class="msg">${messageText}</div>
+            <div class="footer">CAT 2026 • JARVIS Personal Command System</div>
+          </main>
+
+          <script>
+            function setMsg(t){document.getElementById('msg').textContent=t}
+            function submitPin(){
+              const pin=document.getElementById('pin').value;
+              if(!/^\d{6}$/.test(pin)){setMsg('PIN must be exactly 6 digits.');return}
+              ${confirmCheck}
+              ${submitLogic}
+            }
+            function bio(){AndroidNativeHost.authenticateBiometric()}
+          </script>
+        </body>
+        </html>
         """.trimIndent()
-        webView.loadDataWithBaseURL(null, page, "text/html", "UTF-8", null)
+
+        webView.loadDataWithBaseURL(
+            "https://appassets.androidforward.site/",
+            page,
+            "text/html",
+            "UTF-8",
+            null
+        )
     }
 
     private fun loadAppAfterUnlock() {
         webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
         webView.postDelayed({
-            webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('jarvis:unlocked'))", null)
-        }, 250)
+            webView.evaluateJavascript(
+                "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
+                null
+            )
+        }, 300)
     }
 
-    private fun authenticateForAppUnlock() {
+    private fun authenticateBiometricInternal() {
         val manager = BiometricManager.from(this)
         val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+            BiometricManager.Authenticators.BIOMETRIC_WEAK or
+                BiometricManager.Authenticators.DEVICE_CREDENTIAL
         } else {
             BiometricManager.Authenticators.BIOMETRIC_WEAK
         }
 
         if (manager.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
-            loadAppAfterUnlock()
+            runOnUiThread {
+                webView.evaluateJavascript(
+                    "document.getElementById('msg')&&(document.getElementById('msg').textContent='Biometric unlock is unavailable. Use the JARVIS PIN.')",
+                    null
+                )
+            }
             return
         }
 
-        val prompt = BiometricPrompt(this, biometricExecutor, object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                loadAppAfterUnlock()
-            }
+        val prompt = BiometricPrompt(
+            this,
+            biometricExecutor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    loadAppAfterUnlock()
+                }
 
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                // Keep the app closed behind the system prompt. User can retry by relaunching.
-                webView.loadDataWithBaseURL(null,
-                    "<html><body style='background:#0A0F1E;color:#F5A623;font-family:sans-serif;text-align:center;padding:60px'><h2>JARVIS LOCKED</h2><p>Authenticate with your device biometric or credential to continue.</p></body></html>",
-                    "text/html", "UTF-8", null)
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    runOnUiThread {
+                        webView.evaluateJavascript(
+                            "document.getElementById('msg')&&(document.getElementById('msg').textContent='Biometric cancelled. You can still use the PIN.')",
+                            null
+                        )
+                    }
+                }
             }
-        })
+        )
 
         val info = BiometricPrompt.PromptInfo.Builder()
             .setTitle("JARVIS Secure Unlock")
-            .setSubtitle("Authenticate to open CAT 2026 Command System")
-            .setDescription("Face or fingerprint can be used when enrolled on this device.")
+            .setSubtitle("Verify your identity")
+            .setDescription("Use supported face/fingerprint or your Android device credential.")
             .setAllowedAuthenticators(authenticators)
             .build()
 
@@ -285,8 +321,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
@@ -294,9 +334,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun triggerNotificationSetup() {
-        // Intentionally left for the user-controlled Settings flow.
-    }
+    private fun triggerNotificationSetup() {}
 
     private fun launchNativeAction(action: String) {
         try {
@@ -310,50 +348,76 @@ class MainActivity : ComponentActivity() {
                 "clock" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CLOCK))
                 "phone" -> startActivity(Intent(Intent.ACTION_DIAL))
                 "messages" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MESSAGING))
-                "whatsapp" -> {
-                    val launch = packageManager.getLaunchIntentForPackage("com.whatsapp")
-                    if (launch != null) startActivity(launch)
-                }
+                "whatsapp" -> packageManager.getLaunchIntentForPackage("com.whatsapp")?.let { startActivity(it) }
                 "youtube" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.youtube.com".toUri()))
-                else -> {}
             }
         } catch (_: Exception) {}
     }
 
     inner class NativeBridge {
-        @JavascriptInterface fun registerBackButton() {
+        @JavascriptInterface
+        fun registerBackButton() {
             backButtonHandler = {
-                webView.evaluateJavascript("window.onAndroidBackPressed && window.onAndroidBackPressed()", null)
+                webView.evaluateJavascript(
+                    "window.onAndroidBackPressed && window.onAndroidBackPressed()",
+                    null
+                )
                 true
             }
         }
 
-        @JavascriptInterface fun unregisterBackButton() { backButtonHandler = null }
+        @JavascriptInterface
+        fun unregisterBackButton() {
+            backButtonHandler = null
+        }
 
-        @JavascriptInterface fun requestNotificationPermission() {
+        @JavascriptInterface
+        fun requestNotificationPermission() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 runOnUiThread {
-                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    requestNotificationPermissionLauncher.launch(
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
                 }
             }
         }
 
-        @JavascriptInterface fun setNotificationsEnabled(enabled: Boolean) {
+        @JavascriptInterface
+        fun setNotificationsEnabled(enabled: Boolean) {
             if (enabled) triggerNotificationSetup()
         }
 
-        @JavascriptInterface fun authenticateBiometric() {
-            runOnUiThread { authenticateForAppUnlock() }
+        @JavascriptInterface
+        fun authenticateBiometric() {
+            runOnUiThread { authenticateBiometricInternal() }
         }
 
-        @JavascriptInterface fun launchNativeAction(action: String) {
+        @JavascriptInterface
+        fun setJarvisPin(pin: String): Boolean =
+            this@MainActivity.setJarvisPin(pin)
+
+        @JavascriptInterface
+        fun verifyJarvisPin(pin: String): Boolean =
+            this@MainActivity.verifyJarvisPin(pin)
+
+        @JavascriptInterface
+        fun unlockApp() {
+            runOnUiThread { loadAppAfterUnlock() }
+        }
+
+        @JavascriptInterface
+        fun launchNativeAction(action: String) {
             runOnUiThread { launchNativeAction(action) }
         }
 
-        @JavascriptInterface fun getDeviceCapabilities(): String {
-            val manager = BiometricManager.from(this@MainActivity)
-            val biometricReady = manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
-            return "{\"biometric\":$biometricReady,\"camera\":true,\"nativeIntents\":true,\"secureUnlock\":true}"
+        @JavascriptInterface
+        fun getDeviceCapabilities(): String {
+            val biometricReady =
+                BiometricManager.from(this@MainActivity)
+                    .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
+                    BiometricManager.BIOMETRIC_SUCCESS
+
+            return "{"biometric":$biometricReady,"pinGate":true,"secureUnlock":true,"nativeIntents":true}"
         }
     }
 }
