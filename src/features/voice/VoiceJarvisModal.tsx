@@ -58,7 +58,7 @@ export function VoiceJarvisModal({ isOpen, onClose, onNavigate }: Props) {
     if (rec) {
       recognizerRef.current = rec
       rec.start()
-    } else if (!reply) {
+    } else {
       setTranscript('Speech recognition not supported in browser. Type command below.')
       setIsListening(false)
     }
@@ -95,7 +95,7 @@ export function VoiceJarvisModal({ isOpen, onClose, onNavigate }: Props) {
       }
     }
 
-    if (lower.includes('schedule right now') || lower.includes('what should i do') || lower.includes('current slot') || lower.includes('active slot')) {
+    if (!reply && (lower.includes('schedule right now') || lower.includes('what should i do') || lower.includes('current slot') || lower.includes('active slot'))) {
       const activeSlot = getCurrentActiveScheduleSlot()
       reply = `⏰ REAL-TIME SCHEDULE SLOT (${activeSlot.timeStr} IST):\n\n• Active Block: ${activeSlot.block}\n• Details: ${activeSlot.detail}\n\nToday's 3 Core Targets: QA ${pt.quantTopic}, DILR ${pt.dilrTopic}, VARC ${pt.varcTopic}.`
 
