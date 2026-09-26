@@ -992,3 +992,159 @@ body.jarvis-theme { min-width: 320px; }
 @media (prefers-reduced-motion: reduce) {
   .jarvis-radar-sweep, .jarvis-radar-blip { animation: none; }
 }
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS // FULL DEVICE-OPEN MODE
+   One visual language across every CAT screen.
+═══════════════════════════════════════════════════ */
+
+.jarvis-theme,
+.jarvis-theme body,
+.jarvis-theme #root {
+  color-scheme: dark;
+}
+
+.jarvis-theme .content-area {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,245,255,.045), transparent 28%),
+    linear-gradient(rgba(0,245,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,.012) 1px, transparent 1px);
+  background-size: auto, 24px 24px, 24px 24px;
+}
+
+/* Terminal-like top status rail */
+.jarvis-theme .app-header {
+  position: relative;
+  border-bottom: 1px solid rgba(0,245,255,.28);
+}
+.jarvis-theme .app-header::after {
+  content: 'JARVIS // SECURE CHANNEL // CAT 2026';
+  position: absolute;
+  left: var(--page-x);
+  bottom: -13px;
+  z-index: 12;
+  padding: 3px 7px;
+  color: rgba(57,255,136,.72);
+  background: #03070A;
+  border: 1px solid rgba(57,255,136,.15);
+  font: 700 6px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+/* Make ordinary CAT surfaces belong to the same tactical system */
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .form-input,
+.jarvis-theme .btn-primary {
+  border-radius: 10px;
+}
+
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card {
+  box-shadow:
+    inset 0 0 0 1px rgba(0,245,255,.025),
+    0 8px 24px rgba(0,0,0,.28);
+}
+
+.jarvis-theme .card-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: .65px;
+  font-size: 11px;
+}
+.jarvis-theme .card-title::before {
+  content: '›';
+  color: var(--jarvis-green);
+  text-shadow: 0 0 8px rgba(57,255,136,.6);
+}
+
+.jarvis-theme .pill {
+  border: 1px solid rgba(0,245,255,.14);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .8px;
+}
+
+.jarvis-theme .block-card.inprog-card {
+  border-color: rgba(57,255,136,.52);
+  box-shadow:
+    0 0 24px rgba(57,255,136,.07),
+    inset 3px 0 0 rgba(57,255,136,.75);
+}
+
+.jarvis-theme .block-card.done-card {
+  opacity: .68;
+  filter: saturate(.7);
+}
+
+.jarvis-theme .progress-wrap {
+  height: 5px;
+  background: rgba(0,245,255,.08);
+  border: 1px solid rgba(0,245,255,.08);
+}
+
+.jarvis-theme .btn-primary {
+  min-height: 44px;
+  border: 1px solid rgba(57,255,136,.28);
+  background:
+    linear-gradient(90deg, rgba(0,245,255,.08), rgba(57,255,136,.10)),
+    #031014;
+  color: var(--jarvis-green);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: inset 0 0 20px rgba(57,255,136,.03), 0 0 18px rgba(57,255,136,.05);
+}
+.jarvis-theme .btn-primary::before {
+  content: '▶ ';
+  color: var(--jarvis-cyan);
+}
+.jarvis-theme .btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 0 24px rgba(0,245,255,.10);
+}
+
+.jarvis-theme .nav-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+.jarvis-theme .nav-btn.active .nav-label {
+  text-shadow: 0 0 10px rgba(0,245,255,.4);
+}
+
+/* Tactical corner markers on important cards */
+.jarvis-theme .card::after,
+.jarvis-theme .block-card::after,
+.jarvis-theme .jarvis-panel::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-top: 1px solid rgba(0,245,255,.07);
+  border-left: 1px solid rgba(0,245,255,.07);
+  border-radius: 5px 0 0 0;
+  pointer-events: none;
+}
+
+/* Micro telemetry text wherever the app uses monospace */
+.jarvis-theme .mono,
+.jarvis-theme code,
+.jarvis-theme pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Never sacrifice readability for the effect */
+.jarvis-theme .muted,
+.jarvis-theme small,
+.jarvis-theme .empty-sub {
+  color: #86A5A7;
+}
+
+@media (max-width: 430px) {
+  .jarvis-theme .app-header::after {
+    content: 'JARVIS // SECURE // CAT 2026';
+  }
+}
