@@ -18,6 +18,9 @@ declare global {
       exitApp: () => void
       requestNotificationPermission: () => void
       setNotificationsEnabled: (enabled: boolean) => void
+      authenticateBiometric: () => void
+      launchNativeAction: (action: string) => void
+      getDeviceCapabilities: () => string
     }
   }
 }
@@ -70,4 +73,24 @@ export function requestNotificationPermission(): void {
 export function setNotificationsEnabled(enabled: boolean): void {
   if (!isNative()) return
   window.AndroidNativeHost?.setNotificationsEnabled(enabled)
+}
+
+
+export function authenticateBiometric(): void {
+  if (!isNative()) return
+  window.AndroidNativeHost?.authenticateBiometric()
+}
+
+export function launchNativeAction(action: string): void {
+  if (!isNative()) return
+  window.AndroidNativeHost?.launchNativeAction(action)
+}
+
+export function getDeviceCapabilities(): Record<string, boolean> | null {
+  if (!isNative()) return null
+  try {
+    return JSON.parse(window.AndroidNativeHost?.getDeviceCapabilities?.() || '{}')
+  } catch {
+    return null
+  }
 }
