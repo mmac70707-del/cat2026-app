@@ -21,7 +21,7 @@ export function Header({
       <UpdateNotifier />
       <div className="app-header">
         <div>
-          <div className="app-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="app-title app-title-row">
             <span>CAT 2026</span>
             {onOpenVoiceJarvis && (
               <button
@@ -51,7 +51,7 @@ export function Header({
             )}
           </div>
           <div className="app-subtitle">
-            <span style={{ color: '#F5A623', fontWeight: 800 }}>🔥 Week {curWeek.weekNum}/7</span> • {curWeek.dates}
+            <span className="app-week">Week {curWeek.weekNum}/7</span> <span aria-hidden="true">•</span> {curWeek.dates}
           </div>
         </div>
         <div
