@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode, type CSSProperties } from 'react'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { isNative, getDeviceCapabilities, authenticateBiometric, launchNativeAction } from '@/services/native'
@@ -145,10 +145,10 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
   )
 }
 
-function Panel({title,children}:{title:string;children:React.ReactNode}) {
+function Panel({title,children}:{title:string;children:ReactNode}) {
   return <section style={{background:'rgba(11,19,37,.94)',border:'1px solid #1E293B',borderRadius:15,padding:14,boxShadow:'0 0 24px rgba(0,0,0,.18)'}}><div style={{fontFamily:'monospace',fontSize:11,fontWeight:900,color:'#00F0FF',letterSpacing:1,marginBottom:10}}>{title}</div>{children}</section>
 }
 function Stat({label,value}:{label:string;value:string}){return <div style={{background:'#07101F',border:'1px solid #172033',borderRadius:9,padding:9}}><div style={{fontSize:9,color:'#64748B'}}>{label}</div><div style={{fontSize:11,fontWeight:800,marginTop:3}}>{value}</div></div>}
 function Action({text,onClick}:{text:string;onClick:()=>void}){return <button onClick={onClick} style={{background:'#111D38',border:'1px solid #334155',color:'#E2E8F0',borderRadius:9,padding:'10px 8px',fontWeight:800,fontSize:10,cursor:'pointer'}}>{text}</button>}
-function btn(bg:string,color:string){return {background:bg,color,border:'none',borderRadius:9,padding:'9px 12px',fontWeight:900,fontSize:10,cursor:'pointer'} as React.CSSProperties}
+function btn(bg:string,color:string){return {background:bg,color,border:'none',borderRadius:9,padding:'9px 12px',fontWeight:900,fontSize:10,cursor:'pointer'} as CSSProperties}
 const inputStyle: React.CSSProperties={width:'100%',boxSizing:'border-box',background:'#050A14',border:'1px solid #334155',borderRadius:9,color:'#F8FAFC',padding:'10px',fontSize:11,outline:'none'}
