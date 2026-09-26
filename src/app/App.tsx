@@ -34,6 +34,7 @@ import { MocksPage }            from '@/features/mocks/MocksPage'
 import { SchedulePage }         from '@/features/schedule/SchedulePage'
 import { SyllabusPage }         from '@/features/syllabus/SyllabusPage'
 import { SettingsPage }         from '@/features/settings/SettingsPage'
+import { SecuritySentinelPage }  from '@/features/security/SecuritySentinelPage'
 
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
@@ -48,7 +49,7 @@ import { initPwaInstall } from '@/services/pwaInstall'
 import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -77,6 +78,9 @@ function AppUnlocked() {
   const [bootStage, setBootStage]               = useState(0)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
   const [showJarvisHud, setShowJarvisHud]       = useState(false)
+  const [focusMode, setFocusMode]               = useState(false)
+  const [focusStartedAt, setFocusStartedAt]     = useState<number | null>(null)
+  const [focusElapsed, setFocusElapsed]         = useState(0)
   const { show: toast }                         = useToast()
   const touchStartX = useRef(0)
   const navIdxRef   = useRef(0)
@@ -108,6 +112,33 @@ function AppUnlocked() {
     boot()
     return removeErrorAudit
   }, [])
+
+  // ── Global Focus Core state ─────────────────────
+  useEffect(() => {
+    const onStart = () => {
+      setFocusMode(true)
+      setFocusStartedAt(Date.now())
+    }
+    const onStop = () => {
+      setFocusMode(false)
+      setFocusStartedAt(null)
+      setFocusElapsed(0)
+    }
+    window.addEventListener('jarvis:focus:start', onStart)
+    window.addEventListener('jarvis:focus:stop', onStop)
+    return () => {
+      window.removeEventListener('jarvis:focus:start', onStart)
+      window.removeEventListener('jarvis:focus:stop', onStop)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!focusMode || focusStartedAt == null) return
+    const tick = () => setFocusElapsed(Math.max(0, Date.now() - focusStartedAt))
+    tick()
+    const id = window.setInterval(tick, 1000)
+    return () => window.clearInterval(id)
+  }, [focusMode, focusStartedAt])
 
   // ── Android hardware back button ────────────────
   const activePageRef = useRef(activePage)
@@ -263,6 +294,7 @@ function AppUnlocked() {
         {activePage === 'mockana'      && <MocksPage            onBack={() => setActivePage('more')} />}
         {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
         {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
+        {activePage === 'security'    && <SecuritySentinelPage  onBack={() => setActivePage('more')} />}
         {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
       </div>
 
@@ -290,6 +322,25 @@ function AppUnlocked() {
           <button onClick={() => setActivePage('more')} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--muted)', borderRadius: 20, padding: '8px 24px', fontSize: 13, cursor: 'pointer' }}>
             ← Back to More Hub
           </button>
+        </div>
+      )}
+
+      {focusMode && (
+        <div className="jarvis-focus-overlay" role="dialog" aria-modal="true" aria-label="JARVIS Focus Core">
+          <div className="jarvis-focus-card">
+            <div className="jarvis-focus-kicker">JARVIS // FOCUS CORE</div>
+            <div className="jarvis-focus-orb" aria-hidden="true">◉</div>
+            <div className="jarvis-focus-title">DEEP WORK ACTIVE</div>
+            <div className="jarvis-focus-timer">
+              {new Date(focusElapsed).toISOString().slice(11, 19)}
+            </div>
+            <div className="jarvis-focus-mission">CURRENT MISSION</div>
+            <div className="jarvis-focus-copy">Stay on the current CAT block. No random resources. Finish → analyse → repair.</div>
+            <div className="jarvis-focus-actions">
+              <button className="jarvis-focus-stop" onClick={() => window.dispatchEvent(new Event('jarvis:focus:stop'))}>EXIT FOCUS</button>
+              <button className="jarvis-focus-lock" onClick={() => window.dispatchEvent(new Event('jarvis:lock'))}>LOCK JARVIS</button>
+            </div>
+          </div>
         </div>
       )}
 

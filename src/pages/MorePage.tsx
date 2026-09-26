@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQuickStats } from '@/hooks/index'
 import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
 
-export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 
@@ -21,6 +21,7 @@ const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] 
   { id: 'flashcards',   icon: '🎴', label: 'Formula Deck' },
   { id: 'achievements', icon: '🎖️', label: 'Streak & Badges' },
   { id: 'research',     icon: '🔬', label: 'Deep Research' },
+  { id: 'security',     icon: '🛡️', label: 'Security Sentinel' },
   { id: 'livesessions', icon: '📺', label: 'Masterclasses' },
   { id: 'qbank',        icon: '📚', label: 'Question Vault' },
   { id: 'drills',       icon: '⚡', label: 'Calculation Drills' },

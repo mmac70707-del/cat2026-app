@@ -48,6 +48,7 @@ export function JarvisCommandPalette({ onNavigate }: Props) {
     { id: 'mock', label: 'Open Mock Analytics', hint: 'performance', keywords: 'mock analytics score performance', run: () => onNavigate('mockana') },
     { id: 'adaptive', label: 'Open Adaptive Brain', hint: 'weakness engine', keywords: 'adaptive brain heatmap', run: () => onNavigate('adaptive') },
     { id: 'research', label: 'Open Research Lab', hint: 'deep research', keywords: 'research lab web knowledge', run: () => onNavigate('research') },
+    { id: 'security', label: 'Open Security Sentinel', hint: 'integrity + audit', keywords: 'security sentinel audit integrity pin bridge', run: () => onNavigate('security') },
     { id: 'more', label: 'Open Command Library', hint: 'all systems', keywords: 'more menu command library', run: () => onNavigate('more') },
     { id: 'lock', label: 'Lock JARVIS', hint: 'security', keywords: 'lock security panic', run: () => window.dispatchEvent(new Event('jarvis:lock')) },
   ], [onNavigate])

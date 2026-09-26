@@ -1472,3 +1472,94 @@ body.jarvis-theme { min-width: 320px; }
   color: var(--jarvis-cyan);
   font: 900 8px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
+
+
+/* ── JARVIS Focus Core ── */
+.jarvis-focus-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(1,5,7,.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.jarvis-focus-card {
+  width: min(398px,100%);
+  padding: 24px 20px 20px;
+  border: 1px solid rgba(0,245,255,.30);
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 20%, rgba(0,245,255,.08), transparent 30%), #02090B;
+  box-shadow: 0 24px 80px rgba(0,0,0,.65), 0 0 34px rgba(0,245,255,.09);
+  text-align: center;
+}
+.jarvis-focus-kicker {
+  color: var(--jarvis-green);
+  font: 800 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing: 1.8px;
+}
+.jarvis-focus-orb {
+  width: 76px; height: 76px; margin: 17px auto 12px; display: grid; place-items: center;
+  border-radius: 50%; border: 1px solid rgba(57,255,136,.42); color: var(--jarvis-green);
+  font-size: 22px; box-shadow: 0 0 25px rgba(57,255,136,.12), inset 0 0 25px rgba(57,255,136,.06);
+}
+.jarvis-focus-title {
+  color: var(--jarvis-cyan);
+  font: 900 15px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing: 1.2px;
+}
+.jarvis-focus-timer {
+  margin-top: 10px;
+  color: var(--jarvis-text);
+  font: 900 34px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.jarvis-focus-mission {
+  margin-top: 18px; color: var(--jarvis-amber);
+  font: 900 7px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing: 1.2px;
+}
+.jarvis-focus-copy {
+  max-width: 310px; margin: 7px auto 0; color: var(--jarvis-muted); font-size: 10px; line-height: 1.45;
+}
+.jarvis-focus-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 17px;
+}
+.jarvis-focus-actions button {
+  min-height: 44px; border-radius: 10px; cursor: pointer;
+  font: 900 8px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.jarvis-focus-stop { border: 1px solid rgba(57,255,136,.26); background: #03110D; color: var(--jarvis-green); }
+.jarvis-focus-lock { border: 1px solid rgba(255,176,0,.24); background: #100D03; color: var(--jarvis-amber); }
+
+/* ── Security Sentinel ── */
+.jarvis-sentinel-status {
+  align-self: start; padding: 7px 8px; border: 1px solid rgba(57,255,136,.20); border-radius: 8px;
+  color: var(--jarvis-green); background: rgba(57,255,136,.05);
+  font: 900 7px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; letter-spacing: 1px;
+}
+.jarvis-sentinel-checks { display: grid; gap: 7px; }
+.jarvis-sentinel-row {
+  display: grid; grid-template-columns: 112px minmax(0,1fr); gap: 8px; padding: 7px 0;
+  border-bottom: 1px solid rgba(0,245,255,.07);
+  color: var(--jarvis-muted); font: 7px/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.jarvis-sentinel-row:last-child { border-bottom: 0; }
+.jarvis-sentinel-row b { text-align: right; overflow-wrap: anywhere; }
+.jarvis-sentinel-row b.good { color: var(--jarvis-green); }
+.jarvis-sentinel-row b.bad { color: var(--jarvis-red); }
+.jarvis-sentinel-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.jarvis-sentinel-events { display: grid; gap: 7px; max-height: 290px; overflow: auto; }
+.jarvis-sentinel-event {
+  padding: 8px; border: 1px solid rgba(0,245,255,.08); border-radius: 8px;
+  background: rgba(1,8,10,.72); color: var(--jarvis-muted); font-size: 8px; line-height: 1.35;
+}
+.jarvis-sentinel-event-top {
+  display: flex; justify-content: space-between; gap: 8px; color: var(--jarvis-text);
+  font: 800 8px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+.jarvis-sentinel-event-top span { color: #557174; font-weight: 700; white-space: nowrap; }
+.jarvis-sentinel-event small { display: block; margin-top: 5px; color: #4F6669; font: 7px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+@media (prefers-reduced-motion: reduce) {
+  .jarvis-focus-overlay { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
