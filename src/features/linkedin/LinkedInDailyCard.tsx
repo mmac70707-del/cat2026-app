@@ -114,7 +114,7 @@ export function LinkedInDailyCard() {
         <div style={{fontSize:9,color:'#C4B5FD',fontWeight:900}}>{series}</div>
         <div style={{marginTop:5,color:'#FFF',fontSize:12,fontWeight:850}}>{weekly ? 'This week’s strongest lessons should become one coherent idea.' : lesson.hook}</div>
         <div style={{marginTop:6,color:'#CBD5E1',fontSize:10,lineHeight:1.6}}>{weekly ? 'Connect the strongest 3–5 lessons from the week. Do not invent results; use only what was actually learned or observed.' : lesson.body}</div>
-        {!weekly && <div style={{marginTop:6,color:'#93C5FD',fontSize:10}}>Question/CTA: {lesson.cta}</div>}
+        {!weekly && <div style={{marginTop:8,padding:8,borderRadius:8,background:'rgba(15,23,42,.85)',border:'1px solid rgba(148,163,184,.12)',color:'#E2E8F0',fontSize:10,lineHeight:1.6}}><strong style={{color:'#BFDBFE'}}>CAPTION:</strong><br/>{lesson.hook}<br/><br/>{lesson.body}<br/><br/><strong style={{color:'#BFDBFE'}}>Question:</strong> {lesson.cta}<br/><br/><span style={{color:'#94A3B8'}}>[PERSONALISE WITH YOUR REAL EXPERIENCE]</span></div>}
       </div>
       <div>
         <div style={{fontSize:9,color:'#93C5FD',fontWeight:900}}>REALISTIC IMAGE / VISUAL</div>
