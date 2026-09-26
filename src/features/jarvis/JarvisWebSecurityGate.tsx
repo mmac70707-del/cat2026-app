@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { recordAudit } from '@/services/auditLog'
 
 const PIN_KEY = 'jarvis_web_pin_v2'
 const LEGACY_PIN_KEY = 'jarvis_web_pin_v1'
@@ -113,12 +114,13 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
     const onUnlock = () => {
       sessionStorage.setItem(SESSION_KEY, '1')
+      void recordAudit('jarvis_unlocked', 'Web session unlocked')
       window.location.reload()
     }
 
     const onLock = () => {
       sessionStorage.removeItem(SESSION_KEY)
-      window.location.reload()
+      void recordAudit('jarvis_locked', 'Web session locked').finally(() => window.location.reload())
     }
 
     const resetIdle = () => {
@@ -174,6 +176,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       localStorage.removeItem(ATTEMPTS_KEY)
       localStorage.removeItem(LOCK_UNTIL_KEY)
       sessionStorage.setItem(SESSION_KEY, '1')
+      await recordAudit('jarvis_pin_created', 'Initial web PIN configured')
       window.location.reload()
       return
     }
@@ -196,6 +199,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       localStorage.removeItem(ATTEMPTS_KEY)
       localStorage.removeItem(LOCK_UNTIL_KEY)
       sessionStorage.setItem(SESSION_KEY, '1')
+      await recordAudit('jarvis_unlocked', 'PIN verified')
       window.location.reload()
       return
     }
@@ -206,6 +210,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     // Exponential backoff begins gently, then becomes deliberately expensive.
     const cooldown = Math.min(15 * 60_000, 1000 * 2 ** Math.min(attempts - 1, 10))
     localStorage.setItem(LOCK_UNTIL_KEY, String(Date.now() + cooldown))
+    void recordAudit('jarvis_unlock_failed', `PIN verification failed; cooldown ${Math.ceil(cooldown / 1000)}s`)
     setLockedMs(cooldown)
     setPin('')
     setMessage(`Incorrect PIN. Security cooldown: ${Math.ceil(cooldown / 1000)}s`)
