@@ -37,3 +37,16 @@ export function installGlobalErrorAudit() {
     window.removeEventListener('unhandledrejection', onRejection)
   }
 }
+
+
+export async function listRecentAudit(limit = 40): Promise<AuditEvent[]> {
+  try {
+    const events = await dbGetAll<AuditEvent>('auditEvents')
+    return events
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, Math.max(1, limit))
+  } catch (error) {
+    console.warn('[CAT2026][AUDIT] unable to read events', error)
+    return []
+  }
+}
