@@ -240,9 +240,9 @@ class MainActivity : ComponentActivity() {
             ""
         }
         val submitLogic = if (!hasPin) {
-            """const saved=AndroidNativeHost.setJarvisPin(pin);if(saved){setMsg('PIN saved securely. Opening JARVIS...');setTimeout(()=>AndroidNativeHost.unlockApp(),300)}else{setMsg('PIN could not be saved. Try again.')}"""
+            """request("setPin",{pin}).then(r=>{if(r.ok){setMsg("PIN saved securely. Opening JARVIS...")}else{setMsg("PIN could not be saved. Try again.")}})"""
         } else {
-            """const ok=AndroidNativeHost.verifyJarvisPin(pin);if(ok){setMsg('Identity verified. Opening JARVIS...');setTimeout(()=>AndroidNativeHost.unlockApp(),250)}else{document.getElementById('pin').value='';setMsg('Incorrect PIN. Try again.')}"""
+            """request("verifyPin",{pin}).then(r=>{if(r.ok){setMsg("Identity verified. Opening JARVIS...")}else{document.getElementById("pin").value="";setMsg(r.locked?"Security cooldown active. Try again shortly.":"Incorrect PIN. Try again.")}})"""
         }
 
         val page = """
@@ -286,6 +286,10 @@ class MainActivity : ComponentActivity() {
           </main>
 
           <script>
+            const pending=new Map();
+            let seq=0;
+            function request(action,args={}){return new Promise(resolve=>{const id=String(++seq);pending.set(id,resolve);AndroidNativeHost.postMessage(JSON.stringify({id,action,args}))})}
+            AndroidNativeHost.onmessage=function(event){try{const r=JSON.parse(event.data);const resolve=pending.get(r.id);if(resolve){pending.delete(r.id);resolve(r)}}catch(_){}}
             function setMsg(t){document.getElementById('msg').textContent=t}
             function submitPin(){
               const pin=document.getElementById('pin').value;
@@ -293,7 +297,7 @@ class MainActivity : ComponentActivity() {
               ${confirmCheck}
               ${submitLogic}
             }
-            function bio(){AndroidNativeHost.authenticateBiometric()}
+            function bio(){setMsg('Waiting for biometric verification...');request('authenticateBiometric')}
           </script>
         </body>
         </html>
