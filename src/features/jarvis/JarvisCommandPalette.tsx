@@ -10,7 +10,7 @@ type Command = {
 }
 
 interface Props {
-  onNavigate: (page: SubPage | 'today') => void
+  onNavigate: (page: SubPage | 'today' | 'more') => void
 }
 
 export function JarvisCommandPalette({ onNavigate }: Props) {
