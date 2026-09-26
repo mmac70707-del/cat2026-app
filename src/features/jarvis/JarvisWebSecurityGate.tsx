@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 const PIN_KEY = 'jarvis_web_pin_v1'
 
@@ -8,7 +8,7 @@ async function digest(pin: string) {
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
-export function JarvisWebSecurityGate({ children }: { children: React.ReactNode }) {
+export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [configured, setConfigured] = useState(false)
   const [pin, setPin] = useState('')
@@ -33,8 +33,8 @@ export function JarvisWebSecurityGate({ children }: { children: React.ReactNode 
         return
       }
       localStorage.setItem(PIN_KEY, await digest(pin))
-      setConfigured(true)
-      setMessage('PIN saved. JARVIS unlocked.')
+      sessionStorage.setItem('jarvis_unlocked', '1')
+      window.location.reload()
       return
     }
 
