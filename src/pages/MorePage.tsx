@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useQuickStats } from '@/hooks/index'
+import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
 
 export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
 
@@ -33,6 +35,36 @@ const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] 
 
 export function MorePage({ onNavigate }: Props) {
   const { stats } = useQuickStats()
+  const [installable, setInstallable] = useState(false)
+  const [installed, setInstalled] = useState(false)
+
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+    setInstalled(standalone)
+    setInstallable(canInstallPwa())
+
+    const onInstallable = () => setInstallable(canInstallPwa())
+    const onInstalled = () => {
+      setInstallable(false)
+      setInstalled(true)
+    }
+
+    window.addEventListener('jarvis:pwa-installable', onInstallable)
+    window.addEventListener('jarvis:pwa-installed', onInstalled)
+    return () => {
+      window.removeEventListener('jarvis:pwa-installable', onInstallable)
+      window.removeEventListener('jarvis:pwa-installed', onInstalled)
+    }
+  }, [])
+
+  async function installApp() {
+    const accepted = await promptPwaInstall()
+    if (accepted) {
+      setInstallable(false)
+      setInstalled(true)
+    }
+  }
 
   return (
     <div className="section-pad">
@@ -58,6 +90,19 @@ export function MorePage({ onNavigate }: Props) {
             <div className="jarvis-hub-tile-label">{t.label}</div>
           </div>
         ))}
+      </div>
+
+      <div className="jarvis-app-control">
+        <div>
+          <div className="jarvis-app-control-kicker">DEVICE MODE</div>
+          <div className="jarvis-app-control-title">{installed ? 'JARVIS APP INSTALLED' : 'JARVIS WEB EXPERIENCE'}</div>
+          <div className="jarvis-app-control-copy">
+            {installed ? 'Standalone app shell detected.' : 'Install the PWA for an app-like launcher, offline cache and faster startup.'}
+          </div>
+        </div>
+        {!installed && installable && (
+          <button className="jarvis-app-install" onClick={installApp}>INSTALL APP</button>
+        )}
       </div>
 
       <div className="jarvis-stat-heading">Live execution telemetry</div>
