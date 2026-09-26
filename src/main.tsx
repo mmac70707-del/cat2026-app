@@ -12,6 +12,9 @@ import './styles/globals.css'
 // assets are served straight from the APK).
 registerSW({ immediate: true })
 
+// JARVIS Nightfall visual system is the default app skin. Keep CAT content unchanged.
+document.body.classList.add('jarvis-theme')
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ToastProvider>
