@@ -52,7 +52,7 @@ function clockToMinutes(value: string) {
 function slotBounds(slot: LiveSlot) {
   const parts = slot.time.split('–')
   const start = clockToMinutes(parts[0])
-  const end = parts[1] ? clockToMinutes(parts[1]) : start + 1
+  const end = parts[1] ? clockToMinutes(parts[1]) : (slot.block === 'Sleep' ? 300 : start + 1)
   return { start, end, wraps: end <= start }
 }
 
@@ -193,6 +193,12 @@ export function DashboardPage() {
   const liveTimeStr = String(clock.hours).padStart(2, '0') + ':' + String(clock.minutes).padStart(2, '0') + ':' + String(clock.seconds).padStart(2, '0')
   const todayWeekPlan = WEEK_PLAN_TEMPLATE[kolkataParts.dayOfWeek === 0 ? 6 : kolkataParts.dayOfWeek - 1]
   const nextTask = tasks.find(task => task.status !== 'DONE') || null
+  const getSequenceState = (id: string) => {
+    const task = tasks.find(t => t.blockId === id)
+    if (task?.status === 'DONE') return 'DONE'
+    if (id === currentBlockId) return 'NOW'
+    return getBlockLiveState(id, currentMinutes, task?.status || 'TODO')
+  }
 
   useEffect(() => {
     ErrorRepository.getTypeCounts().then(counts => {
