@@ -85,6 +85,13 @@ export function LinkedInDailyCard() {
   const postDay=!weekly && [1,3,5].includes(today.p.dayOfWeek)
   const action=weekly?'POST TODAY — WEEKLY SYNTHESIS':postDay?'POST TODAY':'SAVE DRAFT'
   const series=weekly?'ASHISH’S LEARNING NETWORK — Weekly Synthesis':lesson.series
+  const weekRows=Array.from({length:5},(_,i)=>LESSONS[(Math.max(0,offset-4)+i)%LESSONS.length])
+  const weekTitles=weekRows.map(r=>r[0])
+  const synthesisBody=`This week’s connected ideas: ${weekTitles.join(' • ')}. The common thread is learning a concept, connecting it to a real business problem, and looking for evidence before making a strong claim.`
+  const synthesisLearned='Separate observation, assumption, evidence, and decision.'
+  const synthesisProof='Only count a real note, thoughtful comment, post, mini-analysis, or project actually completed this week.'
+  const synthesisProject='Only promote work after a real, documented artifact exists.'
+  const synthesisNext='Carry one concept → one analogy → one real example → one takeaway into next week.'
 
   return <section style={{margin:'0 0 18px',border:'1px solid rgba(59,130,246,.35)',borderRadius:16,overflow:'hidden',background:'linear-gradient(180deg,#0F172A,#0B1220)',boxShadow:'0 10px 28px rgba(0,0,0,.22)'}}>
     <div style={{padding:'15px 18px',background:'linear-gradient(90deg,rgba(37,99,235,.14),rgba(124,58,237,.08))',borderBottom:'1px solid rgba(255,255,255,.07)'}}>
@@ -112,9 +119,14 @@ export function LinkedInDailyCard() {
       </div>
       <div style={{padding:11,borderRadius:10,background:'rgba(124,58,237,.06)',border:'1px solid rgba(124,58,237,.16)'}}>
         <div style={{fontSize:9,color:'#C4B5FD',fontWeight:900}}>{series}</div>
-        <div style={{marginTop:5,color:'#FFF',fontSize:12,fontWeight:850}}>{weekly ? 'This week’s strongest lessons should become one coherent idea.' : lesson.hook}</div>
-        <div style={{marginTop:6,color:'#CBD5E1',fontSize:10,lineHeight:1.6}}>{weekly ? 'Connect the strongest 3–5 lessons from the week. Do not invent results; use only what was actually learned or observed.' : lesson.body}</div>
-        {!weekly && <div style={{marginTop:8,padding:8,borderRadius:8,background:'rgba(15,23,42,.85)',border:'1px solid rgba(148,163,184,.12)',color:'#E2E8F0',fontSize:10,lineHeight:1.6}}><strong style={{color:'#BFDBFE'}}>CAPTION:</strong><br/>{lesson.hook}<br/><br/>{lesson.body}<br/><br/><strong style={{color:'#BFDBFE'}}>Question:</strong> {lesson.cta}<br/><br/><span style={{color:'#94A3B8'}}>[PERSONALISE WITH YOUR REAL EXPERIENCE]</span></div>}
+        <div style={{marginTop:5,color:'#FFF',fontSize:12,fontWeight:850}}>{weekly ? 'This week’s 5 connected lessons → one coherent idea.' : lesson.hook}</div>
+        <div style={{marginTop:6,color:'#CBD5E1',fontSize:10,lineHeight:1.6}}>{weekly ? synthesisBody : lesson.body}</div>
+        {weekly ? <div style={{marginTop:7,color:'#CBD5E1',fontSize:10,lineHeight:1.55}}>
+          <div><strong style={{color:'#93C5FD'}}>Learned:</strong> {synthesisLearned}</div>
+          <div style={{marginTop:4}}><strong style={{color:'#93C5FD'}}>Proof created:</strong> {synthesisProof}</div>
+          <div style={{marginTop:4}}><strong style={{color:'#93C5FD'}}>Project / Featured:</strong> {synthesisProject}</div>
+          <div style={{marginTop:4}}><strong style={{color:'#93C5FD'}}>Carry forward:</strong> {synthesisNext}</div>
+        </div> : <div style={{marginTop:8,padding:8,borderRadius:8,background:'rgba(15,23,42,.85)',border:'1px solid rgba(148,163,184,.12)',color:'#E2E8F0',fontSize:10,lineHeight:1.6}}><strong style={{color:'#BFDBFE'}}>CAPTION:</strong><br/>{lesson.hook}<br/><br/>{lesson.body}<br/><br/><strong style={{color:'#BFDBFE'}}>Question:</strong> {lesson.cta}<br/><br/><span style={{color:'#94A3B8'}}>[PERSONALISE WITH YOUR REAL EXPERIENCE]</span></div>}
       </div>
       <div>
         <div style={{fontSize:9,color:'#93C5FD',fontWeight:900}}>REALISTIC IMAGE / VISUAL</div>
@@ -126,6 +138,9 @@ export function LinkedInDailyCard() {
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(245,166,35,.16)',background:'rgba(245,166,35,.04)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
         <strong style={{color:'#FCD34D'}}>MBA/PDPI:</strong> structured thinking + communication. &nbsp; <strong style={{color:'#FCD34D'}}>7-year founder:</strong> repeated business observation + decision practice.
+      </div>
+      <div style={{padding:10,borderRadius:9,border:'1px solid rgba(255,255,255,.07)',background:'rgba(255,255,255,.025)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
+        <strong style={{color:'#FFF'}}>Truth gate:</strong> publish only genuine learning. Never claim an experience, result, project, credential, or expertise that was not actually completed.
       </div>
       {monthly && <div style={{padding:10,borderRadius:9,border:'1px solid rgba(168,85,247,.22)',background:'rgba(168,85,247,.05)',fontSize:10,color:'#E9D5FF',lineHeight:1.55}}><strong>MONTHLY PORTFOLIO COMPOUNDING:</strong> identify only completed, evidence-backed work that can genuinely become a Featured item, CV bullet, portfolio asset or MBA interview story.</div>}
       <div style={{fontSize:10,color:'#94A3B8',display:'flex',justifyContent:'space-between',gap:8,flexWrap:'wrap'}}><span>Series lesson {offset+1} • Weekly cycle {cycleDay}/7</span><strong style={{color:'#86EFAC'}}>LEARN → NOTE → CONNECT → {weekly||postDay?'POST':'SAVE'}</strong></div>
