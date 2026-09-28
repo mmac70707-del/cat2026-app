@@ -4292,3 +4292,140 @@ body.jarvis-theme { min-width: 320px; }
 .jarvis-motivation-actions{display:grid;gap:8px}.jarvis-motivation-start,.jarvis-motivation-close{min-height:46px;border-radius:11px;cursor:pointer;font:900 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.8px}
 .jarvis-motivation-start{border:0;background:linear-gradient(100deg,#63F6FF,#75F6B0);color:#001014;box-shadow:0 10px 28px rgba(99,246,255,.10)}.jarvis-motivation-close{border:1px solid rgba(122,235,239,.12);background:rgba(2,8,10,.8);color:#789295}
 @media(max-width:360px){.jarvis-motivation-card{padding:24px 16px 18px}.jarvis-motivation-quote{font-size:17px}}
+
+
+/* NEXUS 11 // APEX COMMAND CENTER
+   Visual hierarchy pass: calm, premium, CAT-first. */
+:root{
+  --apex-bg:#020506;
+  --apex-surface:#071013;
+  --apex-surface-2:#0A171A;
+  --apex-line:rgba(126,232,238,.12);
+  --apex-line-strong:rgba(126,232,238,.23);
+  --apex-text:#F2FAFA;
+  --apex-sub:#A9C0C2;
+  --apex-muted:#6D8588;
+  --apex-cyan:#63F6FF;
+  --apex-green:#75F6B0;
+  --apex-amber:#FFD166;
+}
+.jarvis-theme{
+  min-height:100%;
+  background:
+    radial-gradient(700px 320px at 50% -80px,rgba(99,246,255,.055),transparent 70%),
+    linear-gradient(180deg,#020506 0%,#03080A 48%,#020506 100%) !important;
+}
+.jarvis-theme .content-area{
+  background-image:
+    linear-gradient(rgba(99,246,255,.012) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(99,246,255,.012) 1px,transparent 1px) !important;
+  background-size:32px 32px !important;
+}
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .jarvis-panel{
+  border-radius:18px !important;
+  background:linear-gradient(145deg,rgba(10,21,24,.92),rgba(5,12,14,.92)) !important;
+  border:1px solid var(--apex-line) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025) !important;
+  backdrop-filter:blur(14px);
+}
+.jarvis-theme .card:hover,
+.jarvis-theme .card-sm:hover,
+.jarvis-theme .block-card:hover{
+  border-color:var(--apex-line-strong) !important;
+  transform:translateY(-1px);
+}
+.jarvis-theme .app-header{
+  background:rgba(2,7,9,.84) !important;
+  border-bottom:1px solid rgba(126,232,238,.10) !important;
+  box-shadow:0 12px 40px rgba(0,0,0,.24) !important;
+}
+.jarvis-theme .bottom-nav{
+  background:rgba(2,7,9,.90) !important;
+  border-top:1px solid rgba(126,232,238,.10) !important;
+}
+.jarvis-theme .card-title,
+.jarvis-theme h1,.jarvis-theme h2,.jarvis-theme h3{
+  color:var(--apex-text);
+}
+.jarvis-theme .progress-wrap{
+  height:7px !important;
+  border-radius:99px !important;
+  background:rgba(99,246,255,.055) !important;
+  overflow:hidden;
+}
+.jarvis-theme .progress-fill{
+  border-radius:99px !important;
+  background:linear-gradient(90deg,var(--apex-cyan),var(--apex-green)) !important;
+  box-shadow:0 0 14px rgba(99,246,255,.18);
+}
+.jarvis-theme .btn-primary,
+.jarvis-theme .action-button{
+  min-height:42px;
+  border-radius:11px !important;
+  background:linear-gradient(100deg,var(--apex-cyan),var(--apex-green)) !important;
+  color:#021013 !important;
+  box-shadow:0 10px 26px rgba(99,246,255,.09) !important;
+}
+.jarvis-theme input,.jarvis-theme textarea,.jarvis-theme select{
+  border-radius:11px !important;
+}
+.jarvis-theme .nav-btn.active{
+  color:var(--apex-cyan) !important;
+}
+.jarvis-theme .inprog-card,
+.jarvis-theme [data-status="current"]{
+  border-color:rgba(117,246,176,.28) !important;
+  box-shadow:inset 3px 0 rgba(117,246,176,.75),0 18px 44px rgba(0,0,0,.22) !important;
+}
+.jarvis-theme .pill-gold,
+.jarvis-theme [data-priority="high"]{
+  color:var(--apex-amber);
+}
+.jarvis-theme ::selection{
+  background:rgba(99,246,255,.20);
+  color:#fff;
+}
+.jarvis-command-trigger{
+  border:1px solid rgba(99,246,255,.16) !important;
+  background:rgba(5,14,17,.72) !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025) !important;
+  color:var(--apex-cyan) !important;
+}
+.jarvis-command-backdrop{
+  background:rgba(0,3,5,.72) !important;
+  backdrop-filter:blur(18px) !important;
+}
+.jarvis-command-palette{
+  border:1px solid rgba(99,246,255,.18) !important;
+  border-radius:22px !important;
+  background:linear-gradient(145deg,rgba(8,19,22,.98),rgba(2,8,10,.98)) !important;
+  box-shadow:0 30px 100px rgba(0,0,0,.72),0 0 55px rgba(99,246,255,.06) !important;
+}
+.jarvis-command-search{
+  border:1px solid rgba(99,246,255,.12) !important;
+  background:#03090B !important;
+}
+.jarvis-command-item{
+  border:1px solid transparent !important;
+  border-radius:12px !important;
+}
+.jarvis-command-item:hover{
+  background:rgba(99,246,255,.045) !important;
+  border-color:rgba(99,246,255,.10) !important;
+}
+.jarvis-motivation-card{
+  border-color:rgba(99,246,255,.26) !important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(99,246,255,.12),transparent 34%),
+    linear-gradient(145deg,rgba(8,20,23,.99),rgba(2,8,10,.99)) !important;
+}
+@media(max-width:650px){
+  .jarvis-theme .content-area{padding-left:11px !important;padding-right:11px !important}
+  .jarvis-theme .card,.jarvis-theme .card-sm,.jarvis-theme .block-card{border-radius:15px !important}
+}
+@media(prefers-reduced-motion:reduce){
+  .jarvis-theme *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
