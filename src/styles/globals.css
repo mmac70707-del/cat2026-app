@@ -3743,3 +3743,45 @@ body.jarvis-theme { min-width: 320px; }
 @media(prefers-reduced-motion:reduce){
   .jarvis-lock-v5__scan{display:none}
 }
+
+
+/* NEXUS FINAL POLISH — single visual language, no neon overload */
+.jarvis-lock-v5__quote {
+  animation: nexusQuoteIn .55s ease both;
+}
+@keyframes nexusQuoteIn {
+  from { opacity:0; transform:translateY(7px); filter:blur(3px); }
+  to { opacity:1; transform:none; filter:none; }
+}
+.jarvis-lock-v5__portrait-frame::after {
+  content:'';
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;
+  pointer-events:none;
+}
+.jarvis-lock-v5__console-head {
+  position:relative;
+}
+.jarvis-lock-v5__console-head::after {
+  content:'ENCRYPTED SESSION';
+  position:absolute;
+  right:0;
+  bottom:-1px;
+  color:rgba(99,246,255,.48);
+  font-size:7px;
+  letter-spacing:1.8px;
+}
+.jarvis-lock-v5__unlock:focus-visible,
+.jarvis-lock-v5__input-wrap:focus-within {
+  outline:2px solid rgba(99,246,255,.78);
+  outline-offset:3px;
+}
+@media(max-width:430px){
+  .jarvis-lock-v5__quote { animation-duration:.35s; }
+  .jarvis-lock-v5__console-head::after { display:none; }
+}
+@media(prefers-reduced-motion:reduce){
+  .jarvis-lock-v5__quote { animation:none; }
+}
