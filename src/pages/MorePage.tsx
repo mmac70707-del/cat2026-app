@@ -1,39 +1,40 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQuickStats } from '@/hooks/index'
 import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
+import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
 export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'SYSTEM'
 
-const TILES: { id: SubPage; icon: string; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }[] = [
-  { id: 'missionos', icon: '🧭', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
-  { id: 'mission', icon: '🎯', label: 'Active Mission', category: 'EXECUTE', featured: true, hint: 'What to do now' },
-  { id: 'jarvis', icon: '🧠', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
-  { id: 'schedule', icon: '⏰', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
-  { id: 'dashboard', icon: '📊', label: 'Master Dashboard', category: 'EXECUTE', featured: true, hint: 'Full execution view' },
-  { id: 'adaptive', icon: '🧬', label: 'Weakness Heatmap', category: 'LEARN', hint: 'Find weak areas' },
-  { id: 'qbank', icon: '📚', label: 'Question Vault', category: 'LEARN', hint: 'Practice bank' },
-  { id: 'drills', icon: '⚡', label: 'Calculation Drills', category: 'LEARN', hint: 'Build speed' },
-  { id: 'livesessions', icon: '📺', label: 'Masterclasses', category: 'LEARN', hint: 'Deep learning' },
-  { id: 'syllabus', icon: '📖', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
-  { id: 'flashcards', icon: '🎴', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
-  { id: 'catmock', icon: '🏆', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
-  { id: 'mockana', icon: '🧪', label: 'Mock Analytics', category: 'REVIEW', hint: 'Score + time patterns' },
-  { id: 'errors', icon: '🔴', label: 'Error Log C1–C5', category: 'REVIEW', hint: 'Capture root causes' },
-  { id: 'repair', icon: '🔧', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },
-  { id: 'retest', icon: '✅', label: 'Retest System', category: 'REVIEW', hint: 'Prove the repair' },
-  { id: 'achievements', icon: '🎖️', label: 'Streak & Badges', category: 'REVIEW', hint: 'Execution history' },
-  { id: 'vision', icon: '👁️', label: 'Master Vision', category: 'SYSTEM', hint: 'Long-range direction' },
-  { id: 'mindset', icon: '🧘', label: 'Discipline Protocol', category: 'SYSTEM', hint: 'Mental operating rules' },
-  { id: 'roadmap', icon: '🚀', label: '44-Day Roadmap', category: 'SYSTEM', hint: 'Syllabus runway' },
-  { id: 'apexpro', icon: '⚡', label: 'Apex Pro Deck', category: 'SYSTEM', hint: 'Advanced command layer' },
-  { id: 'openjarvis', icon: '🤖', label: 'OpenJarvis Agent', category: 'SYSTEM', hint: 'Research workspace' },
-  { id: 'dailycapsule', icon: '📰', label: 'Daily Briefs', category: 'SYSTEM', hint: 'Context capsule' },
-  { id: 'research', icon: '🔬', label: 'Deep Research', category: 'SYSTEM', hint: 'Research tools' },
-  { id: 'security', icon: '🛡️', label: 'Security Sentinel', category: 'SYSTEM', hint: 'Integrity + audit' },
-  { id: 'settings', icon: '⚙️', label: 'Settings & Data', category: 'SYSTEM', hint: 'Preferences + export' },
+const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }[] = [
+  { id: 'missionos', icon: 'compass', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
+  { id: 'mission', icon: 'target', label: 'Active Mission', category: 'EXECUTE', featured: true, hint: 'What to do now' },
+  { id: 'jarvis', icon: 'jarvis', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
+  { id: 'schedule', icon: 'clock', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
+  { id: 'dashboard', icon: 'dashboard', label: 'Master Dashboard', category: 'EXECUTE', featured: true, hint: 'Full execution view' },
+  { id: 'adaptive', icon: 'adaptive', label: 'Weakness Heatmap', category: 'LEARN', hint: 'Find weak areas' },
+  { id: 'qbank', icon: 'library', label: 'Question Vault', category: 'LEARN', hint: 'Practice bank' },
+  { id: 'drills', icon: 'zap', label: 'Calculation Drills', category: 'LEARN', hint: 'Build speed' },
+  { id: 'livesessions', icon: 'monitor', label: 'Masterclasses', category: 'LEARN', hint: 'Deep learning' },
+  { id: 'syllabus', icon: 'book', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
+  { id: 'flashcards', icon: 'layers', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
+  { id: 'catmock', icon: 'trophy', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
+  { id: 'mockana', icon: 'flask', label: 'Mock Analytics', category: 'REVIEW', hint: 'Score + time patterns' },
+  { id: 'errors', icon: 'alert', label: 'Error Log C1–C5', category: 'REVIEW', hint: 'Capture root causes' },
+  { id: 'repair', icon: 'wrench', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },
+  { id: 'retest', icon: 'checkCircle', label: 'Retest System', category: 'REVIEW', hint: 'Prove the repair' },
+  { id: 'achievements', icon: 'badge', label: 'Streak & Badges', category: 'REVIEW', hint: 'Execution history' },
+  { id: 'vision', icon: 'eye', label: 'Master Vision', category: 'SYSTEM', hint: 'Long-range direction' },
+  { id: 'mindset', icon: 'meditation', label: 'Discipline Protocol', category: 'SYSTEM', hint: 'Mental operating rules' },
+  { id: 'roadmap', icon: 'rocket', label: '44-Day Roadmap', category: 'SYSTEM', hint: 'Syllabus runway' },
+  { id: 'apexpro', icon: 'zap', label: 'Apex Pro Deck', category: 'SYSTEM', hint: 'Advanced command layer' },
+  { id: 'openjarvis', icon: 'bot', label: 'OpenJarvis Agent', category: 'SYSTEM', hint: 'Research workspace' },
+  { id: 'dailycapsule', icon: 'newspaper', label: 'Daily Briefs', category: 'SYSTEM', hint: 'Context capsule' },
+  { id: 'research', icon: 'microscope', label: 'Deep Research', category: 'SYSTEM', hint: 'Research tools' },
+  { id: 'security', icon: 'security', label: 'Security Sentinel', category: 'SYSTEM', hint: 'Integrity + audit' },
+  { id: 'settings', icon: 'settings', label: 'Settings & Data', category: 'SYSTEM', hint: 'Preferences + export' },
 ]
 
 const CATEGORIES: { id: Category; label: string }[] = [
@@ -95,7 +96,7 @@ export function MorePage({ onNavigate }: Props) {
           <h1>One system. <span>Every move.</span></h1>
           <p>CAT 2026 first. Choose the next action, execute it, then let the system guide the review.</p>
         </div>
-        <button className="jarvis-library-search-button" onClick={openSearch} aria-label="Focus command search">⌕ <span>SEARCH</span></button>
+        <button className="jarvis-library-search-button" onClick={openSearch} aria-label="Focus command search"><AppIcon name="search" size={17} /><span>SEARCH</span></button>
       </section>
 
       <section className="jarvis-now-card" aria-label="Today at a glance">
@@ -111,22 +112,22 @@ export function MorePage({ onNavigate }: Props) {
           <div><b>{stats ? stats.repairPending : '--'}</b><span>repairs open</span></div>
           <div><b>{stats?.lastAccuracy != null ? `${stats.lastAccuracy}%` : '--'}</b><span>last accuracy</span></div>
         </div>
-        <button className="jarvis-now-action" onClick={() => onNavigate('missionos')}>OPEN NEXT MISSION <span>→</span></button>
+        <button className="jarvis-now-action" onClick={() => onNavigate('missionos')}>OPEN NEXT MISSION <span><AppIcon name="arrowRight" size={17} /></span></button>
       </section>
 
       <div className="jarvis-library-featured">
         {featured.map(t => (
           <button key={t.id} className="jarvis-feature-card" onClick={() => onNavigate(t.id)}>
-            <span className="jarvis-feature-icon" aria-hidden="true">{t.icon}</span>
+            <span className="jarvis-feature-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></span>
             <span><b>{t.label}</b><small>{t.hint}</small></span>
-            <strong>→</strong>
+            <strong><AppIcon name="arrowRight" size={17} /></strong>
           </button>
         ))}
       </div>
 
       <div className="jarvis-library-tools">
         <label className="jarvis-library-search">
-          <span aria-hidden="true">⌕</span>
+          <span aria-hidden="true"><AppIcon name="search" size={17} /></span>
           <input
             id="jarvis-library-search"
             value={query}
@@ -134,7 +135,7 @@ export function MorePage({ onNavigate }: Props) {
             placeholder="Search mission, mock, repair, syllabus…"
             aria-label="Search command library"
           />
-          {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search">×</button>}
+          {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search"><AppIcon name="x" size={15} /></button>}
         </label>
         <div className="jarvis-library-filters" role="tablist" aria-label="Command categories">
           {CATEGORIES.map(c => (
@@ -151,7 +152,7 @@ export function MorePage({ onNavigate }: Props) {
       <div className="jarvis-hub-grid jarvis-library-grid">
         {filteredTiles.map(t => (
           <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? ' featured' : ''}`} onClick={() => onNavigate(t.id)}>
-            <div className="jarvis-hub-icon" aria-hidden="true">{t.icon}</div>
+            <div className="jarvis-hub-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></div>
             <div className="jarvis-hub-tile-label">{t.label}</div>
             <div className="jarvis-library-tile-hint">{t.hint}</div>
           </button>
