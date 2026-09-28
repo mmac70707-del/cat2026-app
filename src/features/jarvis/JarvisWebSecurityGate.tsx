@@ -262,11 +262,17 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
               <p>One secure gate between you and today&apos;s execution system.</p>
             </div>
           </div>
-          <blockquote className="jarvis-lock-v5__quote">
-            <span>THE MAGIC YOU ARE</span>
-            <strong>LOOKING FOR</strong>
-            <em>IS IN THE WORK YOU ARE AVOIDING.</em>
-          </blockquote>
+          <div className="jarvis-lock-v5__quote-zone">
+            <span className="jarvis-lock-v5__quote-label">DAILY DIRECTIVE / 001</span>
+            <blockquote className="jarvis-lock-v5__quote">
+              <span>THE MAGIC YOU ARE</span>
+              <strong>LOOKING FOR</strong>
+              <em>IS IN THE WORK YOU ARE AVOIDING.</em>
+            </blockquote>
+            <div className="jarvis-lock-v5__signals">
+              <span>SHOW UP</span><i /><span>DO THE HARD THING</span><i /><span>MOVE FORWARD</span>
+            </div>
+          </div>
         </section>
 
         <section className="jarvis-lock-v5__console">
