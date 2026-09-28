@@ -3148,3 +3148,288 @@ body.jarvis-theme { min-width: 320px; }
 @media(prefers-reduced-motion:reduce){
   .jarvis-lock-v5__unlock::before{display:none}
 }
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS LOCK V10 // EXECUTIVE AI CORE
+   Final visual layer — OnePlus/mobile first.
+═══════════════════════════════════════════════════ */
+.jarvis-lock-v5{
+  background:#010506;
+  isolation:isolate;
+  overflow:auto;
+  scrollbar-width:none;
+}
+.jarvis-lock-v5::-webkit-scrollbar{display:none}
+.jarvis-lock-v5__backdrop{
+  background:
+    linear-gradient(180deg,rgba(1,5,7,.36) 0%,rgba(1,5,7,.58) 42%,rgba(1,5,7,.94) 100%),
+    url('/images/ashish_billboard.webp') center 18%/cover no-repeat;
+  filter:saturate(.86) contrast(1.02);
+}
+.jarvis-lock-v5__grid{
+  background-image:
+    linear-gradient(rgba(99,246,255,.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(99,246,255,.028) 1px,transparent 1px);
+  background-size:42px 42px;
+  opacity:.34;
+}
+.jarvis-lock-v5__shell{
+  position:relative;
+  width:min(760px,100%);
+  padding-bottom:2px;
+}
+.jarvis-lock-v5__topbar{
+  border-color:rgba(255,255,255,.10);
+  background:rgba(3,10,12,.54);
+  box-shadow:0 14px 45px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.035);
+}
+.jarvis-lock-v5__brand{
+  gap:8px;
+}
+.jarvis-lock-v5__brand small{
+  color:#6f8587;
+  letter-spacing:1.5px;
+}
+.jarvis-lock-v5__status{
+  color:#789092;
+}
+.jarvis-lock-v5__hero{
+  padding:20px 6px 4px;
+  gap:25px;
+}
+.jarvis-lock-v5__identity{
+  align-items:center;
+}
+.jarvis-lock-v5__portrait-frame{
+  position:relative;
+  width:118px;
+  height:146px;
+  flex-basis:118px;
+  border:1px solid rgba(99,246,255,.48);
+  border-radius:24px;
+  background:#061013;
+  box-shadow:0 28px 70px rgba(0,0,0,.58),0 0 45px rgba(99,246,255,.08);
+}
+.jarvis-lock-v5__portrait-frame img{
+  object-position:center top;
+  filter:saturate(.92) contrast(1.04);
+}
+.jarvis-lock-v5__portrait-ring{
+  border-color:rgba(117,246,176,.42);
+}
+.jarvis-lock-v5__portrait-tag{
+  background:rgba(2,9,11,.82);
+  border-color:rgba(117,246,176,.25);
+  color:#75f6b0;
+}
+.jarvis-lock-v5__identity-copy h1{
+  font-size:clamp(21px,4.3vw,35px);
+  line-height:.96;
+  text-wrap:balance;
+}
+.jarvis-lock-v5__identity-copy p{
+  max-width:280px;
+  line-height:1.45;
+}
+.jarvis-lock-v5__quote-zone{
+  min-height:230px;
+  padding:20px 0 12px 22px;
+  background:linear-gradient(90deg,rgba(4,18,21,.22),transparent 75%);
+}
+.jarvis-lock-v5__quote-zone::before{
+  width:3px;
+  background:linear-gradient(180deg,#63f6ff 0%,#75f6b0 65%,transparent 100%);
+}
+.jarvis-lock-v5__quote-label{
+  margin-bottom:12px;
+  color:#75f6b0;
+  font-size:8px;
+  letter-spacing:3px;
+}
+.jarvis-lock-v5__quote span{
+  display:block;
+  font-size:clamp(17px,3.4vw,28px);
+  font-weight:850;
+  line-height:1;
+}
+.jarvis-lock-v5__quote strong{
+  margin-top:2px;
+  font-size:clamp(38px,6.8vw,66px);
+  line-height:.86;
+  letter-spacing:-2.8px;
+}
+.jarvis-lock-v5__quote em{
+  max-width:460px;
+  margin-top:11px;
+  color:#c1d6d7;
+  font-size:clamp(12px,2vw,17px);
+  line-height:1.18;
+}
+.jarvis-lock-v5__signals{
+  margin-top:17px;
+  color:#789294;
+}
+.jarvis-lock-v5__micro-quotes span{
+  color:#829a9b;
+  border-color:rgba(255,255,255,.08);
+  background:rgba(0,0,0,.22);
+}
+.jarvis-lock-v5__console{
+  margin-top:2px;
+  padding:22px;
+  border:1px solid rgba(99,246,255,.20);
+  border-radius:22px;
+  background:
+    linear-gradient(145deg,rgba(7,18,21,.96),rgba(2,7,9,.92));
+  box-shadow:0 30px 90px rgba(0,0,0,.52),inset 0 1px rgba(255,255,255,.045);
+}
+.jarvis-lock-v5__console-head{
+  margin-bottom:3px;
+}
+.jarvis-lock-v5__console-head strong{
+  font-size:12px;
+  color:#eaffff;
+}
+.jarvis-lock-v5__shield{
+  color:#75f6b0;
+}
+.jarvis-lock-v5__hint{
+  color:#829b9d;
+}
+.jarvis-lock-v5__input-wrap{
+  height:62px;
+  border-radius:14px;
+  border-color:rgba(255,255,255,.10);
+  background:rgba(0,4,6,.82);
+}
+.jarvis-lock-v5__input-wrap > span:first-child{
+  color:#63f6ff;
+  font-size:8px;
+  letter-spacing:1.8px;
+}
+.jarvis-lock-v5__input-wrap input{
+  letter-spacing:8px;
+}
+.jarvis-lock-v5__unlock{
+  height:58px;
+  border-radius:14px;
+  background:linear-gradient(100deg,#63f6ff,#91ffd0);
+  box-shadow:0 18px 42px rgba(99,246,255,.13);
+}
+.jarvis-lock-v5__message{
+  min-height:16px;
+  color:#9eb4b5;
+}
+.jarvis-lock-v5__telemetry{
+  border-top:1px solid rgba(255,255,255,.055);
+  padding-top:11px;
+  color:#5e7678;
+}
+.jarvis-lock-v5__footer{
+  color:#5f7779;
+}
+
+/* Small Android portrait — prioritize the action, not decoration. */
+@media(max-width:430px){
+  .jarvis-lock-v5{
+    padding-left:10px;
+    padding-right:10px;
+  }
+  .jarvis-lock-v5__shell{gap:12px}
+  .jarvis-lock-v5__topbar{min-height:36px}
+  .jarvis-lock-v5__hero{
+    padding:12px 3px 2px;
+    gap:14px;
+  }
+  .jarvis-lock-v5__identity{
+    align-items:center;
+  }
+  .jarvis-lock-v5__portrait-frame{
+    width:78px;
+    height:98px;
+    flex-basis:78px;
+    border-radius:18px;
+  }
+  .jarvis-lock-v5__identity-copy h1{
+    font-size:20px;
+  }
+  .jarvis-lock-v5__identity-copy p{
+    font-size:9px;
+    max-width:225px;
+  }
+  .jarvis-lock-v5__quote-zone{
+    min-height:0;
+    padding:12px 2px 8px 14px;
+  }
+  .jarvis-lock-v5__quote-label{
+    font-size:6.5px;
+    letter-spacing:2.2px;
+    margin-bottom:9px;
+  }
+  .jarvis-lock-v5__quote span{
+    font-size:16px;
+  }
+  .jarvis-lock-v5__quote strong{
+    font-size:clamp(32px,10.8vw,46px);
+    letter-spacing:-1.8px;
+  }
+  .jarvis-lock-v5__quote em{
+    font-size:10.5px;
+    margin-top:8px;
+  }
+  .jarvis-lock-v5__signals{
+    margin-top:11px;
+    font-size:5.5px;
+  }
+  .jarvis-lock-v5__micro-quotes{
+    margin-top:9px;
+  }
+  .jarvis-lock-v5__micro-quotes span{
+    padding:5px 6px;
+    font-size:5px;
+  }
+  .jarvis-lock-v5__console{
+    padding:14px;
+    border-radius:17px;
+  }
+  .jarvis-lock-v5__console-head strong{
+    font-size:10.5px;
+  }
+  .jarvis-lock-v5__hint{
+    font-size:9px;
+    margin-top:5px;
+  }
+  .jarvis-lock-v5__input-wrap{
+    height:55px;
+  }
+  .jarvis-lock-v5__input-wrap input{
+    font-size:21px;
+    letter-spacing:6px;
+  }
+  .jarvis-lock-v5__unlock{
+    height:52px;
+    min-height:52px;
+  }
+  .jarvis-lock-v5__footer{
+    font-size:5px;
+  }
+}
+@media(max-width:370px){
+  .jarvis-lock-v5__hero{
+    padding-top:7px;
+  }
+  .jarvis-lock-v5__portrait-frame{
+    width:64px;
+    height:80px;
+    flex-basis:64px;
+  }
+  .jarvis-lock-v5__identity-copy h1{font-size:17px}
+  .jarvis-lock-v5__identity-copy p{display:none}
+  .jarvis-lock-v5__quote strong{
+    font-size:30px;
+  }
+  .jarvis-lock-v5__quote em{font-size:9.5px}
+  .jarvis-lock-v5__micro-quotes{display:none}
+  .jarvis-lock-v5__console{padding:12px}
+}
