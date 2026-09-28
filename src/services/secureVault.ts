@@ -1,5 +1,6 @@
 import { dbDelete, dbGet, dbPut, openDB } from '@/db'
-import { getNativeVaultKeyMaterial, isNative, nativeRequest } from '@/services/native'
+import { getNativeVaultKeyMaterial } from '@/services/native'
+
 
 const VAULT_KEY = 'jarvis_secure_vault_v1'
 const PBKDF2_ITERATIONS = 600_000
