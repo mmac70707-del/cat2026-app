@@ -1,0 +1,664 @@
+/* CAT 2026 // APEX DISPLAY SYSTEM
+   Research-led theme layer: layered surfaces, clear hierarchy,
+   stronger contrast, restrained glow, persistent Light/Dark/System.
+*/
+
+:root {
+  --theme-light-bg: #F5F7FA;
+  --theme-light-surface: #FFFFFF;
+  --theme-light-surface-2: #EEF2F6;
+  --theme-light-line: #D9E1E8;
+  --theme-light-text: #17212B;
+  --theme-light-sub: #536271;
+  --theme-light-muted: #748493;
+
+  --theme-dark-bg: #0A0F14;
+  --theme-dark-surface: #111820;
+  --theme-dark-surface-2: #17212B;
+  --theme-dark-line: #263543;
+  --theme-dark-text: #EEF4F7;
+  --theme-dark-sub: #B7C4CD;
+  --theme-dark-muted: #80909C;
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root {
+  background: var(--theme-dark-bg) !important;
+  color: var(--theme-dark-text) !important;
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] #root {
+  background: var(--theme-light-bg) !important;
+  color: var(--theme-light-text) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme {
+  --jarvis-bg: #0A0F14 !important;
+  --jarvis-panel: rgba(17,24,32,.94) !important;
+  --jarvis-panel-2: #17212B !important;
+  --jarvis-text: #EEF4F7 !important;
+  --jarvis-muted: #80909C !important;
+  --jarvis-line: rgba(151,190,205,.16) !important;
+  --nexus-bg: #0A0F14 !important;
+  --nexus-panel: #111820 !important;
+  --apex-bg: #0A0F14 !important;
+  --apex-surface: #111820 !important;
+  --apex-surface-2: #17212B !important;
+  --apex-line: rgba(151,190,205,.16) !important;
+  --apex-text: #EEF4F7 !important;
+  --apex-sub: #B7C4CD !important;
+  --apex-muted: #80909C !important;
+  background:
+    radial-gradient(900px 360px at 50% -160px, rgba(99,246,255,.055), transparent 70%),
+    linear-gradient(180deg,#0A0F14 0%,#0B1118 48%,#091016 100%) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .card,
+html[data-theme="dark"] .jarvis-theme .card-sm,
+html[data-theme="dark"] .jarvis-theme .block-card,
+html[data-theme="dark"] .jarvis-theme .jarvis-panel {
+  background: linear-gradient(145deg,#121B24,#0E151C) !important;
+  border-color: rgba(151,190,205,.14) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.20), inset 0 1px rgba(255,255,255,.028) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .app-header {
+  background: rgba(10,16,22,.92) !important;
+  border-bottom-color: rgba(151,190,205,.13) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .bottom-nav {
+  background: rgba(10,16,22,.96) !important;
+  border-top-color: rgba(151,190,205,.13) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .form-input,
+html[data-theme="dark"] .jarvis-theme input,
+html[data-theme="dark"] .jarvis-theme textarea,
+html[data-theme="dark"] .jarvis-theme select {
+  background: #0D141B !important;
+  border-color: #2B3B49 !important;
+  color: #EEF4F7 !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .section-pad,
+html[data-theme="dark"] .jarvis-theme .content-area {
+  scrollbar-color: #344955 transparent !important;
+}
+
+html[data-theme="light"] .jarvis-theme {
+  --jarvis-bg: #F5F7FA !important;
+  --jarvis-panel: rgba(255,255,255,.97) !important;
+  --jarvis-panel-2: #EEF2F6 !important;
+  --jarvis-text: #17212B !important;
+  --jarvis-muted: #748493 !important;
+  --jarvis-line: rgba(72,92,110,.16) !important;
+  --nexus-bg: #F5F7FA !important;
+  --nexus-panel: #FFFFFF !important;
+  --apex-bg: #F5F7FA !important;
+  --apex-surface: #FFFFFF !important;
+  --apex-surface-2: #EEF2F6 !important;
+  --apex-line: rgba(72,92,110,.16) !important;
+  --apex-text: #17212B !important;
+  --apex-sub: #536271 !important;
+  --apex-muted: #748493 !important;
+  min-height: 100%;
+  background:
+    radial-gradient(850px 380px at 50% -120px, rgba(14,159,159,.08), transparent 70%),
+    linear-gradient(180deg,#F7F9FB 0%,#F5F7FA 52%,#EEF2F6 100%) !important;
+  color: #17212B !important;
+}
+
+html[data-theme="light"] .jarvis-theme .card,
+html[data-theme="light"] .jarvis-theme .card-sm,
+html[data-theme="light"] .jarvis-theme .block-card,
+html[data-theme="light"] .jarvis-theme .jarvis-panel {
+  background: linear-gradient(145deg,#FFFFFF,#F8FAFC) !important;
+  border-color: #D9E1E8 !important;
+  box-shadow: 0 12px 30px rgba(23,33,43,.07), inset 0 1px rgba(255,255,255,.9) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .card:hover,
+html[data-theme="light"] .jarvis-theme .card-sm:hover,
+html[data-theme="light"] .jarvis-theme .block-card:hover {
+  border-color: #B9C7D2 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .app-header {
+  background: rgba(247,249,251,.92) !important;
+  border-bottom: 1px solid #D9E1E8 !important;
+  box-shadow: 0 10px 28px rgba(23,33,43,.05) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .bottom-nav {
+  background: rgba(255,255,255,.94) !important;
+  border-top: 1px solid #D9E1E8 !important;
+  box-shadow: 0 -10px 26px rgba(23,33,43,.06) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .app-title {
+  background: linear-gradient(90deg,#0B7880,#167A5A) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+html[data-theme="light"] .jarvis-theme .app-subtitle,
+html[data-theme="light"] .jarvis-theme .countdown-label {
+  color: #6C7B89 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .countdown-days {
+  color: #0A7F87 !important;
+  text-shadow: none !important;
+}
+
+html[data-theme="light"] .jarvis-theme .card-title,
+html[data-theme="light"] .jarvis-theme h1,
+html[data-theme="light"] .jarvis-theme h2,
+html[data-theme="light"] .jarvis-theme h3 {
+  color: #17212B !important;
+}
+
+html[data-theme="light"] .jarvis-theme .form-input,
+html[data-theme="light"] .jarvis-theme input,
+html[data-theme="light"] .jarvis-theme textarea,
+html[data-theme="light"] .jarvis-theme select {
+  background: #FFFFFF !important;
+  border-color: #CAD5DE !important;
+  color: #17212B !important;
+  box-shadow: 0 1px 2px rgba(23,33,43,.03) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .form-input:focus,
+html[data-theme="light"] .jarvis-theme input:focus,
+html[data-theme="light"] .jarvis-theme textarea:focus,
+html[data-theme="light"] .jarvis-theme select:focus {
+  border-color: #0E9F9F !important;
+  box-shadow: 0 0 0 3px rgba(14,159,159,.12) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .btn-primary,
+html[data-theme="light"] .jarvis-theme .action-button {
+  background: linear-gradient(135deg,#0B7D86,#16875F) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 10px 24px rgba(14,159,159,.15) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-terminal {
+  background: #F0F6F7 !important;
+  border-color: rgba(14,159,159,.24) !important;
+  color: #0D7B61 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-command-trigger {
+  background: rgba(255,255,255,.86) !important;
+  color: #16727A !important;
+  border-color: #CBD8E1 !important;
+  box-shadow: 0 8px 20px rgba(23,33,43,.06) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-command-palette {
+  background: linear-gradient(145deg,#FFFFFF,#F5F8FA) !important;
+  border-color: #CBD8E1 !important;
+  box-shadow: 0 28px 80px rgba(23,33,43,.16) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-command-search {
+  background: #F4F7F9 !important;
+  border-color: #D4DEE6 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-command-item:hover {
+  background: #EDF4F5 !important;
+  border-color: #CCDDDF !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-motivation-card {
+  background:
+    radial-gradient(circle at 50% 0%,rgba(14,159,159,.12),transparent 34%),
+    linear-gradient(145deg,#FFFFFF,#F0F5F7) !important;
+  border-color: #BED0D4 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-motivation-quote {
+  color: #17212B !important;
+}
+
+html[data-theme="light"] .jarvis-theme .jarvis-motivation-sub {
+  color: #5D6D7A !important;
+}
+
+/* Dashboard inherits the same theme but keeps its information architecture. */
+html[data-theme="dark"] .jarvis-theme .dash-root {
+  --bg:#0A0F14 !important;
+  --bg2:#111820 !important;
+  --bg3:#17212B !important;
+  --card:#121B24 !important;
+  --border:#2A3947 !important;
+  --text:#EEF4F7 !important;
+  --muted:#80909C !important;
+  background:
+    radial-gradient(900px 280px at 50% -60px,rgba(99,246,255,.045),transparent 70%),
+    #0A0F14 !important;
+  color: #EEF4F7 !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .header {
+  background: linear-gradient(135deg,#111B24 0%,#18232D 50%,#111B24 100%) !important;
+  border-bottom: 1px solid #40505D !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.22) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .header-brand {
+  background: linear-gradient(90deg,#F0F7FA,#8EEEF2) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .header-sub,
+html[data-theme="dark"] .jarvis-theme .dash-root .countdown-label,
+html[data-theme="dark"] .jarvis-theme .dash-root .sec-title {
+  color:#93A4AF !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .live-time-bar {
+  background:#0F171E !important;
+  border-bottom-color:#2A3947 !important;
+  color:#7E8F9B !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .mission-bar {
+  background:linear-gradient(90deg,#101920,#17232C,#101920) !important;
+  border-bottom-color:#2A3947 !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .stat-card,
+html[data-theme="dark"] .jarvis-theme .dash-root .card {
+  background:linear-gradient(145deg,#121B24,#0F171E) !important;
+  border-color:#2A3947 !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.03) !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .block-item,
+html[data-theme="dark"] .jarvis-theme .dash-root .day-card,
+html[data-theme="dark"] .jarvis-theme .dash-root .priority-item,
+html[data-theme="dark"] .jarvis-theme .dash-root .date-display,
+html[data-theme="dark"] .jarvis-theme .dash-root .score-input {
+  background:#17212B !important;
+  border-color:#31424F !important;
+  color:#EEF4F7 !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .block-title,
+html[data-theme="dark"] .jarvis-theme .dash-root .day-date,
+html[data-theme="dark"] .jarvis-theme .dash-root .error-count {
+  color:#EEF4F7 !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .block-details,
+html[data-theme="dark"] .jarvis-theme .dash-root .meta-time,
+html[data-theme="dark"] .jarvis-theme .dash-root .meta-target,
+html[data-theme="dark"] .jarvis-theme .dash-root .day-name,
+html[data-theme="dark"] .jarvis-theme .dash-root .day-topic,
+html[data-theme="dark"] .jarvis-theme .dash-root .mission-quote {
+  color:#8596A1 !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .today-header,
+html[data-theme="dark"] .jarvis-theme .dash-root .mantra-bar {
+  background:linear-gradient(145deg,#15222B,#101920) !important;
+  border-color:#45616A !important;
+}
+
+html[data-theme="dark"] .jarvis-theme .dash-root .score-btn {
+  background:linear-gradient(135deg,#0B7580,#11865F) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root {
+  --bg:#F5F7FA !important;
+  --bg2:#EEF2F6 !important;
+  --bg3:#E8EEF3 !important;
+  --card:#FFFFFF !important;
+  --border:#D7E0E7 !important;
+  --text:#17212B !important;
+  --muted:#6C7B89 !important;
+  background:
+    radial-gradient(900px 300px at 50% -60px,rgba(14,159,159,.065),transparent 72%),
+    #F5F7FA !important;
+  color:#17212B !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .header {
+  background:linear-gradient(135deg,#FFFFFF 0%,#EEF4F6 50%,#FFFFFF 100%) !important;
+  border-bottom:1px solid #D2DCE4 !important;
+  box-shadow:0 10px 28px rgba(23,33,43,.07) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .header-brand {
+  background:linear-gradient(90deg,#14727A,#23815E) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .header-sub,
+html[data-theme="light"] .jarvis-theme .dash-root .countdown-label,
+html[data-theme="light"] .jarvis-theme .dash-root .sec-title {
+  color:#617181 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .live-time-bar {
+  background:#FFFFFF !important;
+  border-bottom-color:#D7E0E7 !important;
+  color:#687988 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .mission-bar {
+  background:linear-gradient(90deg,#F8FAFB,#EEF4F6,#F8FAFB) !important;
+  border-bottom-color:#D7E0E7 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .stat-card,
+html[data-theme="light"] .jarvis-theme .dash-root .card {
+  background:linear-gradient(145deg,#FFFFFF,#F9FBFC) !important;
+  border-color:#D7E0E7 !important;
+  box-shadow:0 10px 24px rgba(23,33,43,.06),inset 0 1px rgba(255,255,255,.95) !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .block-item,
+html[data-theme="light"] .jarvis-theme .dash-root .day-card,
+html[data-theme="light"] .jarvis-theme .dash-root .priority-item,
+html[data-theme="light"] .jarvis-theme .dash-root .date-display,
+html[data-theme="light"] .jarvis-theme .dash-root .score-input {
+  background:#F0F4F7 !important;
+  border-color:#CFDAE2 !important;
+  color:#17212B !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .block-title,
+html[data-theme="light"] .jarvis-theme .dash-root .day-date,
+html[data-theme="light"] .jarvis-theme .dash-root .error-count {
+  color:#17212B !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .block-details,
+html[data-theme="light"] .jarvis-theme .dash-root .meta-time,
+html[data-theme="light"] .jarvis-theme .dash-root .meta-target,
+html[data-theme="light"] .jarvis-theme .dash-root .day-name,
+html[data-theme="light"] .jarvis-theme .dash-root .day-topic,
+html[data-theme="light"] .jarvis-theme .dash-root .mission-quote {
+  color:#667786 !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .today-header,
+html[data-theme="light"] .jarvis-theme .dash-root .mantra-bar {
+  background:linear-gradient(145deg,#FFFFFF,#EDF4F5) !important;
+  border-color:#C5D7DA !important;
+}
+
+html[data-theme="light"] .jarvis-theme .dash-root .score-btn {
+  background:linear-gradient(135deg,#0B7D86,#16875F) !important;
+}
+
+/* Theme switcher — compact corner control inspired by modern app preferences. */
+.theme-switcher {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(12px, calc((100vw - 430px) / 2 + 12px));
+  z-index: 5000;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html:has(.dashboard-screen) .theme-switcher {
+  top: max(58px, calc(env(safe-area-inset-top) + 58px));
+}
+
+.theme-switcher-trigger {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border-radius: 12px;
+  border: 1px solid rgba(134,159,174,.30);
+  background: rgba(18,27,36,.88);
+  color: #EAF3F7;
+  box-shadow: 0 10px 26px rgba(0,0,0,.20), inset 0 1px rgba(255,255,255,.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+}
+
+.theme-switcher-trigger:hover {
+  border-color: rgba(134,207,213,.55);
+  transform: translateY(-1px);
+}
+
+.theme-switcher-trigger:focus-visible,
+.theme-switcher-option:focus-visible {
+  outline: 2px solid #63DCE2;
+  outline-offset: 2px;
+}
+
+.theme-switcher-trigger-icon {
+  width: 22px;
+  height: 22px;
+  display:grid;
+  place-items:center;
+  border-radius:7px;
+  background: rgba(99,220,226,.10);
+  color:#7FE6EA;
+  font-size:16px;
+  line-height:1;
+}
+
+.theme-switcher-trigger-label {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .95px;
+}
+
+.theme-switcher-chevron {
+  opacity: .62;
+  font-size: 11px;
+  margin-left: 1px;
+}
+
+.theme-switcher-popover {
+  width: 238px;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(134,159,174,.25);
+  background: rgba(14,21,28,.97);
+  box-shadow: 0 24px 70px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.theme-switcher-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 3px 4px 10px;
+  border-bottom:1px solid rgba(134,159,174,.14);
+}
+
+.theme-switcher-kicker {
+  font-size: 7px;
+  line-height:1;
+  letter-spacing:1.5px;
+  font-weight:900;
+  color:#7CB6BB;
+}
+
+.theme-switcher-title {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color:#EDF4F6;
+}
+
+.theme-switcher-live {
+  padding: 5px 7px;
+  border:1px solid rgba(99,220,226,.18);
+  border-radius: 8px;
+  color:#77DEE4;
+  background:rgba(99,220,226,.06);
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.65px;
+}
+
+.theme-switcher-options {
+  display:grid;
+  gap: 6px;
+  padding-top: 9px;
+}
+
+.theme-switcher-option {
+  width:100%;
+  min-height: 49px;
+  display:grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items:center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 11px;
+  border:1px solid transparent;
+  background:transparent;
+  color:#DCE8EC;
+  text-align:left;
+  cursor:pointer;
+}
+
+.theme-switcher-option:hover {
+  background:rgba(134,207,213,.06);
+  border-color:rgba(134,207,213,.12);
+}
+
+.theme-switcher-option.is-active {
+  background:rgba(134,207,213,.09);
+  border-color:rgba(134,207,213,.22);
+}
+
+.theme-switcher-option-icon {
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:rgba(134,207,213,.08);
+  color:#83E5EA;
+  font-size:16px;
+}
+
+.theme-switcher-option-copy {
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.theme-switcher-option-copy strong {
+  font-size:10px;
+  font-weight:800;
+}
+
+.theme-switcher-option-copy small {
+  font-size:8px;
+  color:#7E919D;
+}
+
+.theme-switcher-option-check {
+  width:18px;
+  color:#75E8AF;
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+}
+
+.theme-switcher-foot {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:9px;
+  padding:8px 5px 2px;
+  border-top:1px solid rgba(134,159,174,.11);
+  color:#7A8D98;
+  font-size:7px;
+  font-weight:700;
+  letter-spacing:.55px;
+}
+
+html[data-theme="light"] .theme-switcher-trigger {
+  background:rgba(255,255,255,.88);
+  border-color:#CAD6DF;
+  color:#24313D;
+  box-shadow:0 10px 26px rgba(23,33,43,.12), inset 0 1px #FFFFFF;
+}
+
+html[data-theme="light"] .theme-switcher-trigger-icon {
+  background:rgba(14,159,159,.08);
+  color:#0E7F87;
+}
+
+html[data-theme="light"] .theme-switcher-trigger-label { color:#425463; }
+
+html[data-theme="light"] .theme-switcher-popover {
+  background:rgba(255,255,255,.98);
+  border-color:#D2DDE5;
+  box-shadow:0 24px 65px rgba(23,33,43,.18), inset 0 1px #FFFFFF;
+}
+
+html[data-theme="light"] .theme-switcher-head {
+  border-bottom-color:#E0E6EB;
+}
+
+html[data-theme="light"] .theme-switcher-kicker { color:#0E7F87; }
+html[data-theme="light"] .theme-switcher-title { color:#1C2934; }
+html[data-theme="light"] .theme-switcher-live {
+  color:#0E7F87;
+  border-color:#BFD7DA;
+  background:#F0F7F7;
+}
+
+html[data-theme="light"] .theme-switcher-option {
+  color:#263440;
+}
+
+html[data-theme="light"] .theme-switcher-option:hover {
+  background:#F1F7F7;
+  border-color:#D6E4E5;
+}
+
+html[data-theme="light"] .theme-switcher-option.is-active {
+  background:#EDF5F5;
+  border-color:#C3DCDD;
+}
+
+html[data-theme="light"] .theme-switcher-option-icon {
+  background:#F0F7F7;
+  color:#0E7F87;
+}
+
+html[data-theme="light"] .theme-switcher-option-copy small,
+html[data-theme="light"] .theme-switcher-foot {
+  color:#73818D;
+}
+
+@media (max-width: 600px) {
+  .theme-switcher-trigger {
+    min-height: 36px;
+    padding: 6px 8px;
+  }
+  .theme-switcher-trigger-label { display: none; }
+  .theme-switcher-popover {
+    width: min(238px, calc(100vw - 24px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-switcher-trigger { transition: none !important; }
+}
