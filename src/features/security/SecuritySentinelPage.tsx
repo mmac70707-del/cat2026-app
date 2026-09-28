@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { dbGetAll, openDB } from '@/db'
 import { listRecentAudit, recordAudit, type AuditEvent } from '@/services/auditLog'
 import { getDeviceCapabilities, isNative } from '@/services/native'
+import { secureVaultDelete, secureVaultGet, secureVaultSet } from '@/services/secureVault'
 
 interface Props { onBack?: () => void }
 type Check = { label: string; value: string; ok: boolean }
@@ -17,6 +18,19 @@ export function SecuritySentinelPage({ onBack }: Props) {
     const next: Check[] = []
     const cryptoReady = typeof crypto !== 'undefined' && !!crypto.subtle
     next.push({ label: 'WEB CRYPTO', value: cryptoReady ? 'AVAILABLE' : 'UNAVAILABLE', ok: cryptoReady })
+
+    let vaultOk = false
+    if (cryptoReady) {
+      try {
+        const probe = 'JARVIS-VVAULT-PROBE-' + String(Date.now())
+        await secureVaultSet('__integrity_probe__', probe)
+        vaultOk = (await secureVaultGet('__integrity_probe__')) === probe
+        await secureVaultDelete('__integrity_probe__')
+      } catch {
+        vaultOk = false
+      }
+    }
+    next.push({ label: 'ENCRYPTED VAULT', value: vaultOk ? 'AES-GCM ROUND-TRIP OK' : 'LOCKED / FAILED', ok: vaultOk })
 
     let dbOk = false
     let storeCount = 0
