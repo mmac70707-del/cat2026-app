@@ -239,8 +239,8 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const lockedSeconds = Math.ceil(lockedMs / 1000)
 
   return (
-    <div style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'radial-gradient(circle at 50% 15%,rgba(0,245,255,.10),transparent 36%),#03070A',color:'#E7FDFB',fontFamily:'Inter,Arial,sans-serif',padding:20}}>
-      <div style={{width:'min(430px,94vw)',padding:'30px 22px',border:'1px solid rgba(0,245,255,.28)',borderRadius:24,background:'rgba(4,13,16,.96)',boxShadow:'0 0 50px rgba(0,245,255,.10)',textAlign:'center'}}>
+    <div className="jarvis-unlock-screen" style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'radial-gradient(circle at 50% 15%,rgba(0,245,255,.10),transparent 36%),#03070A',color:'#E7FDFB',fontFamily:'Inter,Arial,sans-serif',padding:20}}>
+      <div className="jarvis-unlock-card" style={{width:'min(430px,94vw)',padding:'30px 22px',border:'1px solid rgba(0,245,255,.28)',borderRadius:24,background:'rgba(4,13,16,.96)',boxShadow:'0 0 50px rgba(0,245,255,.10)',textAlign:'center'}}>
         <div style={{width:86,height:86,margin:'0 auto 16px',borderRadius:'50%',border:'2px solid #00F5FF',boxShadow:'0 0 30px rgba(0,245,255,.28)',display:'grid',placeItems:'center',fontSize:30,color:'#00F5FF'}}>◉</div>
         <div style={{fontSize:10,letterSpacing:1.6,color:'#39FF88',marginBottom:10}}>JARVIS // SECURITY CORE</div>
         <h1 style={{fontSize:23,color:'#00F5FF',margin:'8px 0'}}>{configured ? 'WELCOME BACK, ASHISH' : 'INITIAL JARVIS SETUP'}</h1>
