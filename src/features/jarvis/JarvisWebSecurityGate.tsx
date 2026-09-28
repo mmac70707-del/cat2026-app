@@ -239,23 +239,60 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const lockedSeconds = Math.ceil(lockedMs / 1000)
 
   return (
-    <div className="jarvis-unlock-screen" style={{minHeight:'100vh',display:'grid',placeItems:'center',background:'radial-gradient(circle at 50% 15%,rgba(0,245,255,.10),transparent 36%),#03070A',color:'#E7FDFB',fontFamily:'Inter,Arial,sans-serif',padding:20}}>
-      <div className="jarvis-unlock-card" style={{width:'min(430px,94vw)',padding:'30px 22px',border:'1px solid rgba(0,245,255,.28)',borderRadius:24,background:'rgba(4,13,16,.96)',boxShadow:'0 0 50px rgba(0,245,255,.10)',textAlign:'center'}}>
-        <div className="jarvis-unlock-motivation" aria-label="Motivation">
-          <span className="line-main">THE MAGIC YOU ARE</span>
-          <span className="line-accent">LOOKING FOR</span>
-          <span className="line-foot">IS IN THE WORK YOU ARE AVOIDING.</span>
-        </div>
-        <div style={{width:86,height:86,margin:'0 auto 16px',borderRadius:'50%',border:'2px solid #00F5FF',boxShadow:'0 0 30px rgba(0,245,255,.28)',display:'grid',placeItems:'center',fontSize:30,color:'#00F5FF'}}>◉</div>
-        <div style={{fontSize:10,letterSpacing:1.6,color:'#39FF88',marginBottom:10}}>JARVIS // SECURITY CORE</div>
-        <h1 style={{fontSize:23,color:'#00F5FF',margin:'8px 0'}}>{configured ? 'WELCOME BACK, ASHISH' : 'INITIAL JARVIS SETUP'}</h1>
-        <p style={{fontSize:12,color:'#7E9EA0',lineHeight:1.5}}>{configured ? 'Enter your private 6-digit PIN to unlock the execution system.' : 'Create a private 6-digit PIN. It is protected with a salted slow derivation on this browser.'}</p>
-        <input value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} autoFocus placeholder="••••••" disabled={lockedMs>0} style={{width:'100%',padding:15,borderRadius:12,border:'1px solid rgba(0,245,255,.20)',background:'#010608',color:'#E7FDFB',textAlign:'center',fontSize:23,letterSpacing:9,outline:'none'}} />
-        {!configured && <input value={confirm} onChange={e=>setConfirm(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} placeholder="CONFIRM PIN" disabled={lockedMs>0} style={{width:'100%',padding:15,marginTop:10,borderRadius:12,border:'1px solid rgba(0,245,255,.20)',background:'#010608',color:'#E7FDFB',textAlign:'center',fontSize:20,letterSpacing:7,outline:'none'}} />}
-        <button onClick={submit} disabled={lockedMs>0} style={{width:'100%',padding:14,marginTop:12,border:0,borderRadius:12,fontWeight:900,background:lockedMs>0?'#334155':'#00F5FF',color:'#001114',cursor:lockedMs>0?'not-allowed':'pointer'}}>{lockedMs>0?`LOCKED ${lockedSeconds}s`:configured?'UNLOCK JARVIS':'CREATE SECURE PIN'}</button>
-        <div style={{minHeight:40,marginTop:12,fontSize:12,color:'#CBD5E1'}}>{message}</div>
-        <div style={{fontSize:10,color:'#4F6669'}}>Defense-in-depth • PBKDF2 • salted PIN • cooldown • auto-lock</div>
-      </div>
-    </div>
+    <main className="jarvis-lock-v5" aria-label="JARVIS secure lock screen">
+      <div className="jarvis-lock-v5__backdrop" aria-hidden="true" />
+      <div className="jarvis-lock-v5__grid" aria-hidden="true" />
+      <div className="jarvis-lock-v5__scan" aria-hidden="true" />
+      <section className="jarvis-lock-v5__shell">
+        <header className="jarvis-lock-v5__topbar">
+          <div className="jarvis-lock-v5__brand"><span className="jarvis-lock-v5__orb" /><span>JARVIS</span><small>PRIVATE CORE</small></div>
+          <div className="jarvis-lock-v5__status"><span className="jarvis-lock-v5__dot" /> LOCAL / LOCKED</div>
+        </header>
+
+        <section className="jarvis-lock-v5__hero">
+          <div className="jarvis-lock-v5__identity">
+            <div className="jarvis-lock-v5__portrait-frame">
+              <img src="/images/ashish_billboard.webp" alt="Ashish" />
+              <span className="jarvis-lock-v5__portrait-ring" />
+              <span className="jarvis-lock-v5__portrait-tag">01</span>
+            </div>
+            <div className="jarvis-lock-v5__identity-copy">
+              <span className="jarvis-lock-v5__eyebrow">EXECUTION PROTOCOL</span>
+              <h1>WELCOME BACK, ASHISH</h1>
+              <p>One secure gate between you and today&apos;s execution system.</p>
+            </div>
+          </div>
+          <blockquote className="jarvis-lock-v5__quote">
+            <span>THE MAGIC YOU ARE</span>
+            <strong>LOOKING FOR</strong>
+            <em>IS IN THE WORK YOU ARE AVOIDING.</em>
+          </blockquote>
+        </section>
+
+        <section className="jarvis-lock-v5__console">
+          <div className="jarvis-lock-v5__console-head">
+            <div><span>SECURITY CORE</span><strong>{configured ? 'AUTHENTICATE TO CONTINUE' : 'INITIALISE PRIVATE CORE'}</strong></div>
+            <div className="jarvis-lock-v5__shield">SECURE</div>
+          </div>
+          <p className="jarvis-lock-v5__hint">{configured ? 'Enter your private 6-digit PIN to unlock JARVIS.' : 'Create a private 6-digit PIN for this browser.'}</p>
+          <div className="jarvis-lock-v5__input-wrap">
+            <span>PIN</span>
+            <input value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} autoFocus placeholder="••••••" disabled={lockedMs>0} aria-label="JARVIS six digit PIN" />
+            <span className="jarvis-lock-v5__pin-count">{pin.length}/6</span>
+          </div>
+          {!configured && <div className="jarvis-lock-v5__input-wrap jarvis-lock-v5__input-wrap--confirm">
+            <span>CONFIRM</span>
+            <input value={confirm} onChange={e=>setConfirm(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} placeholder="••••••" disabled={lockedMs>0} aria-label="Confirm JARVIS six digit PIN" />
+          </div>}
+          <button className="jarvis-lock-v5__unlock" onClick={submit} disabled={lockedMs>0}>
+            <span>{lockedMs>0 ? `LOCKED ${lockedSeconds}s` : configured ? 'UNLOCK JARVIS' : 'CREATE SECURE PIN'}</span><b>↗</b>
+          </button>
+          <div className="jarvis-lock-v5__message" role="status">{message}</div>
+          <div className="jarvis-lock-v5__telemetry"><span>PBKDF2</span><i /><span>SALTED</span><i /><span>AUTO-LOCK</span><i /><span>LOCAL</span></div>
+        </section>
+
+        <footer className="jarvis-lock-v5__footer"><span>CAT 2026 / PERSONAL INTELLIGENCE OS</span><span>DEFENSE IN DEPTH</span></footer>
+      </section>
+    </main>
   )
 }
