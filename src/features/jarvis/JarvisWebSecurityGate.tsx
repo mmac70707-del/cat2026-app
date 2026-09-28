@@ -272,6 +272,11 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
             <div className="jarvis-lock-v5__signals">
               <span>SHOW UP</span><i /><span>DO THE HARD THING</span><i /><span>MOVE FORWARD</span>
             </div>
+            <div className="jarvis-lock-v5__micro-quotes" aria-label="Personal directives">
+              <span>DISCIPLINE &gt; MOOD</span>
+              <span>CONSISTENCY &gt; INTENSITY</span>
+              <span>BECOME THE MAN YOU PROMISED</span>
+            </div>
           </div>
         </section>
 
@@ -294,7 +299,9 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
             <span>{lockedMs>0 ? `LOCKED ${lockedSeconds}s` : configured ? 'UNLOCK JARVIS' : 'CREATE SECURE PIN'}</span><b>↗</b>
           </button>
           <div className="jarvis-lock-v5__message" role="status">{message}</div>
-          <div className="jarvis-lock-v5__telemetry"><span>PBKDF2</span><i /><span>SALTED</span><i /><span>AUTO-LOCK</span><i /><span>LOCAL</span></div>
+          <div className="jarvis-lock-v5__telemetry">
+            <span>PBKDF2</span><i /><span>SALTED</span><i /><span>AUTO-LOCK 30M</span><i /><span>LOCAL VAULT</span><i /><span>READY</span>
+          </div>
         </section>
 
         <footer className="jarvis-lock-v5__footer"><span>CAT 2026 / PERSONAL INTELLIGENCE OS</span><span>DEFENSE IN DEPTH</span></footer>
