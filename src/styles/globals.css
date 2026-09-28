@@ -2334,3 +2334,35 @@ body.jarvis-theme { min-width: 320px; }
   vertical-align:-3px;
   color:#55F4FF;
 }
+
+
+/* ── COMMAND LIBRARY // CSS-GENERATED SEQUENCE ── */
+.jarvis-library-grid {
+  counter-reset: jarvis-command;
+}
+
+.jarvis-library-tile {
+  counter-increment: jarvis-command;
+  position:relative;
+}
+
+.jarvis-library-tile::after {
+  content: counter(jarvis-command, decimal-leading-zero);
+  position:absolute;
+  top:9px;
+  right:10px;
+  min-width:20px;
+  padding:3px 4px;
+  border-radius:5px;
+  border:1px solid rgba(85,244,255,.11);
+  background:rgba(2,8,10,.72);
+  color:rgba(170,214,216,.55);
+  font:800 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.25px;
+}
+
+.jarvis-library-tile:focus-visible::after,
+.jarvis-library-tile:hover::after {
+  color:#B8FFFF;
+  border-color:rgba(85,244,255,.26);
+}
