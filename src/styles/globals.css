@@ -2878,3 +2878,71 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-lock-v5__signals{margin-top:13px;gap:6px}
   .jarvis-lock-v5__console{padding:16px}
 }
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS LOCK V7 // EXECUTION-FIRST REFINEMENT
+═══════════════════════════════════════════════════ */
+.jarvis-lock-v5__hero{
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  align-items:center;
+}
+.jarvis-lock-v5__quote-zone{
+  min-height:205px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.jarvis-lock-v5__quote-label{
+  font-size:8px;
+  letter-spacing:2.6px;
+}
+.jarvis-lock-v5__quote strong{
+  background:linear-gradient(90deg,#63f6ff 0%,#d7ffff 52%,#75f6b0 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.jarvis-lock-v5__micro-quotes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:14px;
+}
+.jarvis-lock-v5__micro-quotes span{
+  padding:6px 8px;
+  border:1px solid rgba(99,246,255,.10);
+  border-radius:6px;
+  background:rgba(1,7,9,.38);
+  color:#739092;
+  font:900 6px/1 ui-monospace,monospace;
+  letter-spacing:1px;
+}
+.jarvis-lock-v5__console-head strong{
+  letter-spacing:.4px;
+}
+.jarvis-lock-v5__shield{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.jarvis-lock-v5__shield::before{
+  content:'';
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#75f6b0;
+  box-shadow:0 0 8px rgba(117,246,176,.7);
+}
+.jarvis-lock-v5__input-wrap input{
+  caret-color:#63f6ff;
+}
+.jarvis-lock-v5__telemetry{
+  padding-top:3px;
+}
+@media(max-width:650px){
+  .jarvis-lock-v5__hero{grid-template-columns:1fr}
+  .jarvis-lock-v5__quote-zone{min-height:0}
+  .jarvis-lock-v5__micro-quotes{margin-top:11px}
+  .jarvis-lock-v5__micro-quotes span{font-size:5.5px;padding:5px 6px}
+}
