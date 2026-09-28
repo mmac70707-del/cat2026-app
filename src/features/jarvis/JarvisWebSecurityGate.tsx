@@ -239,12 +239,14 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
   const lockedSeconds = Math.ceil(lockedMs / 1000)
   const directives = [
+    ['THE MAGIC', 'YOU ARE LOOKING FOR', 'IS IN THE WORK YOU ARE AVOIDING.'],
     ['THE WORK', 'YOU KEEP AVOIDING', 'IS THE DOOR YOU KEEP LOOKING FOR.'],
     ['DISCIPLINE', 'BEATS MOTIVATION', 'WHEN MOTIVATION DISAPPEARS.'],
-    ['SMALL STEPS', 'DONE EVERY DAY', 'BECOME A LIFE YOU CAN TRUST.'],
+    ['CONSISTENCY', 'BUILDS THE MAN', 'YOU WANT TO BECOME.'],
     ['FOCUS', 'ON WHAT MATTERS', 'AND LET THE NOISE LOSE.'],
     ['BECOME', 'THE MAN YOU PROMISED', 'ONE DECISION AT A TIME.'],
     ['START BEFORE', 'YOU FEEL READY', 'CLARITY COMES FROM ACTION.'],
+    ['NO RANDOM MOVES', 'JUST THE NEXT BLOCK', 'EXECUTE. REVIEW. REPAIR. RETEST.'],
   ] as const
 
   useEffect(() => {
@@ -278,7 +280,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
             </div>
           </div>
           <div className="jarvis-lock-v5__quote-zone">
-            <span className="jarvis-lock-v5__quote-label">DAILY DIRECTIVE / 001</span>
+            <span className="jarvis-lock-v5__quote-label">DAILY DIRECTIVE / {String(directiveIndex + 1).padStart(2, '0')} OF {String(directives.length).padStart(2, '0')}</span>
             <blockquote className="jarvis-lock-v5__quote" key={directiveIndex}>
               <span>{directives[directiveIndex][0]}</span>
               <strong>{directives[directiveIndex][1]}</strong>
