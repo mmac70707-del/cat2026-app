@@ -184,7 +184,8 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
         return
       }
 
-      localStorage.setItem(PIN_KEY, JSON.stringify(await createRecord(pin)))
+      const record = await createRecord(pin)
+      localStorage.setItem(PIN_KEY, JSON.stringify(record))
       localStorage.removeItem(LEGACY_PIN_KEY)
       localStorage.removeItem(ATTEMPTS_KEY)
       localStorage.removeItem(LOCK_UNTIL_KEY)
@@ -200,21 +201,24 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
     if (record) {
       valid = await verifyRecord(pin, record)
+      if (valid) await unlockVaultWithPin(pin, record.salt, record.iterations)
     } else {
       const legacy = localStorage.getItem(LEGACY_PIN_KEY)
       valid = legacy === (await legacyDigest(pin))
       if (valid) {
-        localStorage.setItem(PIN_KEY, JSON.stringify(await createRecord(pin)))
+        const upgraded = await createRecord(pin)
+        localStorage.setItem(PIN_KEY, JSON.stringify(upgraded))
         localStorage.removeItem(LEGACY_PIN_KEY)
+        await unlockVaultWithPin(pin, upgraded.salt, upgraded.iterations)
       }
     }
 
-    if (valid) {
+    if (valid && isVaultUnlocked()) {
       localStorage.removeItem(ATTEMPTS_KEY)
       localStorage.removeItem(LOCK_UNTIL_KEY)
-      sessionStorage.setItem(SESSION_KEY, '1')
-      await recordAudit('jarvis_unlocked', 'PIN verified')
-      window.location.reload()
+      unlockedRef.current = true
+      setUnlocked(true)
+      await recordAudit('jarvis_unlocked', 'PIN verified and secure vault unlocked')
       return
     }
 
