@@ -16,6 +16,9 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import androidx.fragment.app.FragmentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +34,7 @@ import androidx.webkit.WebViewFeature
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import java.util.concurrent.Executor
+import java.util.Locale
 import org.json.JSONObject
 import javax.crypto.KeyGenerator
 import javax.crypto.Mac
@@ -43,12 +47,21 @@ class MainActivity : FragmentActivity() {
     private lateinit var webView: WebView
     private lateinit var biometricExecutor: Executor
     private var nativeUnlocked = false
+    private var speechRecognizer: SpeechRecognizer? = null
+    private var voiceListening = false
     private val prefs by lazy { getSharedPreferences("jarvis_security", MODE_PRIVATE) }
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) triggerNotificationSetup()
+    }
+
+    private val requestRecordAudioPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) startNativeVoiceRecognition()
+        else updateGateMessage("Microphone permission was denied. Use Face / Fingerprint or the JARVIS PIN.")
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -230,9 +243,9 @@ class MainActivity : FragmentActivity() {
 
         val titleText = if (hasPin) "WELCOME BACK, ASHISH" else "INITIAL JARVIS SETUP"
         val subtitleText = if (hasPin) {
-            "Enter your 6-digit JARVIS PIN or use biometric unlock."
+            "Enter your 6-digit JARVIS PIN, use real Face / Fingerprint, or use Voice → Biometric."
         } else {
-            "Create your private 6-digit JARVIS PIN for this device."
+            "Create your private 6-digit JARVIS PIN for this device. Voice is only a trigger; identity is still verified by the device."
         }
         val buttonText = if (hasPin) "UNLOCK JARVIS" else "CREATE SECURE PIN"
         val messageText = if (hasPin) {
@@ -263,18 +276,19 @@ class MainActivity : FragmentActivity() {
           <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
           <style>
             *{box-sizing:border-box}
-            body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 15%,#173a63 0,#091423 44%,#04080e 100%);color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}
-            .gate{width:min(430px,92vw);padding:30px 22px 24px;border:1px solid rgba(245,166,35,.65);border-radius:24px;background:rgba(8,15,27,.94);box-shadow:0 0 50px rgba(245,166,35,.15),inset 0 0 28px rgba(255,255,255,.02);text-align:center}
-            .orb{width:92px;height:92px;margin:0 auto 16px;border-radius:50%;border:2px solid #F5A623;box-shadow:0 0 30px rgba(245,166,35,.7),inset 0 0 24px rgba(245,166,35,.12);display:grid;place-items:center}
+            body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 15%,#0D3135 0,#071519 44%,#020607 100%);color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+            .gate{width:min(430px,92vw);padding:30px 22px 24px;border:1px solid rgba(99,246,255,.30);border-radius:24px;background:rgba(8,15,27,.94);box-shadow:0 0 50px rgba(99,246,255,.10),inset 0 0 28px rgba(255,255,255,.02);text-align:center}
+            .orb{width:92px;height:92px;margin:0 auto 16px;border-radius:50%;border:2px solid #63F6FF;box-shadow:0 0 30px rgba(99,246,255,.28),inset 0 0 24px rgba(99,246,255,.09);display:grid;place-items:center}
             .ring{width:62px;height:62px;border-radius:50%;border:1px solid rgba(147,197,253,.55);display:grid;place-items:center;color:#93C5FD;font-size:18px}
-            h1{font-size:22px;letter-spacing:1px;margin:10px 0 6px;color:#F5A623}
+            h1{font-size:22px;letter-spacing:1px;margin:10px 0 6px;color:#63F6FF}
             .sub{font-size:12px;color:#A5B4C7;line-height:1.5;margin:0 auto 18px;max-width:345px}
             .status{font-size:10px;letter-spacing:1.6px;color:#6EE7B7;margin-bottom:12px}
             input{width:100%;padding:15px;border-radius:12px;border:1px solid #34445A;background:#0F1A2B;color:#fff;text-align:center;font-size:23px;letter-spacing:9px;outline:none}
             .confirm{margin-top:10px}
             button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:12px;font-weight:900;cursor:pointer}
-            .primary{background:#F5A623;color:#08101D}
-            .bio{background:#19283B;color:#fff;border:1px solid #3D5069}
+            .primary{background:linear-gradient(100deg,#63F6FF,#75F6B0);color:#031113;box-shadow:0 10px 28px rgba(99,246,255,.12)}
+            .bio{background:#071A1E;color:#E7FEFF;border:1px solid rgba(99,246,255,.24)}
+            .voice{background:#0B1518;color:#B6F9DD;border:1px solid rgba(117,246,176,.24);font-size:12px}
             .msg{min-height:34px;margin-top:10px;font-size:12px;color:#CBD5E1;line-height:1.45}
             .footer{margin-top:14px;font-size:10px;color:#64748B}
           </style>
@@ -291,6 +305,7 @@ class MainActivity : FragmentActivity() {
 
             <button class="primary" onclick="submitPin()">${buttonText}</button>
             <button class="bio" onclick="bio()">◉ USE FACE / FINGERPRINT</button>
+            <button class="voice" onclick="voice()">◌ SAY “HEY JARVIS, UNLOCK”</button>
 
             <div id="msg" class="msg">${messageText}</div>
             <div class="footer">CAT 2026 • JARVIS Personal Command System</div>
@@ -308,7 +323,8 @@ class MainActivity : FragmentActivity() {
               ${confirmCheck}
               ${submitLogic}
             }
-            function bio(){setMsg('Waiting for biometric verification...');request('authenticateBiometric')}
+            function bio(){setMsg('Waiting for real biometric verification...');request('authenticateBiometric')}
+            function voice(){setMsg('Listening for “Hey Jarvis, unlock”…');request('startVoiceUnlock')}
           </script>
         </body>
         </html>
@@ -321,6 +337,107 @@ class MainActivity : FragmentActivity() {
             "UTF-8",
             null
         )
+    }
+
+    private fun updateGateMessage(message: String) {
+        runOnUiThread {
+            webView.evaluateJavascript(
+                "document.getElementById('msg')&&(document.getElementById('msg').textContent=" + JSONObject.quote(message) + ")",
+                null
+            )
+        }
+    }
+
+    private fun startNativeVoiceUnlock() {
+        if (voiceListening) {
+            stopNativeVoiceRecognition("Voice trigger stopped.")
+            return
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            requestRecordAudioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            return
+        }
+
+        startNativeVoiceRecognition()
+    }
+
+    private fun startNativeVoiceRecognition() {
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+            updateGateMessage("Speech recognition is unavailable on this device. Use Face / Fingerprint or the JARVIS PIN.")
+            return
+        }
+
+        speechRecognizer?.destroy()
+        val recognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        speechRecognizer = recognizer
+        voiceListening = true
+
+        recognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {
+                updateGateMessage("Listening: say “Hey Jarvis, unlock”.")
+            }
+
+            override fun onBeginningOfSpeech() {
+                updateGateMessage("Voice detected. Listening for the unlock command…")
+            }
+
+            override fun onRmsChanged(rmsdB: Float) = Unit
+            override fun onBufferReceived(buffer: ByteArray?) = Unit
+            override fun onEndOfSpeech() = Unit
+
+            override fun onError(error: Int) {
+                stopNativeVoiceRecognition(
+                    if (error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS)
+                        "Microphone permission is required."
+                    else
+                        "Voice trigger ended. Use Face / Fingerprint or try again."
+                )
+            }
+
+            override fun onResults(results: Bundle?) {
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).orEmpty()
+                val heard = matches.joinToString(" ").lowercase(Locale.US)
+                    .replace(Regex("[^a-z0-9 ]"), " ")
+                    .replace(Regex("\s+"), " ")
+                    .trim()
+
+                stopNativeVoiceRecognition("")
+
+                val wake = heard.contains("hey jarvis") || heard.contains("jarvis")
+                val unlock = heard.contains("unlock") || heard.contains("open")
+                if (wake && unlock) {
+                    updateGateMessage("Voice command accepted. Confirm your identity with real Face / Fingerprint.")
+                    authenticateBiometricInternal()
+                } else {
+                    updateGateMessage("Say “Hey Jarvis, unlock” to start biometric verification.")
+                }
+            }
+
+            override fun onPartialResults(partialResults: Bundle?) = Unit
+            override fun onEvent(eventType: Int, params: Bundle?) = Unit
+        })
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US)
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+        }
+
+        try {
+            recognizer.startListening(intent)
+        } catch (_: Exception) {
+            stopNativeVoiceRecognition("Voice trigger could not start. Use Face / Fingerprint or PIN.")
+        }
+    }
+
+    private fun stopNativeVoiceRecognition(message: String) {
+        voiceListening = false
+        try { speechRecognizer?.stopListening() } catch (_: Exception) {}
+        speechRecognizer?.destroy()
+        speechRecognizer = null
+        if (message.isNotBlank()) updateGateMessage(message)
     }
 
     private fun loadAppAfterUnlock() {
@@ -428,6 +545,10 @@ class MainActivity : FragmentActivity() {
                     runOnUiThread { authenticateBiometricInternal() }
                     response.put("ok", true).put("started", true)
                 }
+                "startVoiceUnlock" -> {
+                    runOnUiThread { startNativeVoiceUnlock() }
+                    response.put("ok", true).put("started", true)
+                }
                 "setPin" -> {
                     val saved = setJarvisPin(args.optString("pin"))
                     if (saved) { nativeUnlocked = true; runOnUiThread { loadAppAfterUnlock() } }
@@ -457,6 +578,7 @@ class MainActivity : FragmentActivity() {
                         .put("biometric", biometricReady)
                         .put("pinGate", true)
                         .put("secureUnlock", true)
+                        .put("voiceTrigger", true)
                         .put("nativeIntents", true))
                 }
                 else -> response.put("ok", false).put("error", "Unsupported native action")
@@ -465,6 +587,11 @@ class MainActivity : FragmentActivity() {
         } catch (_: Exception) {
             replyProxy.postMessage(JSONObject().put("id", "").put("ok", false).put("error", "Invalid bridge message").toString())
         }
+    }
+
+    override fun onDestroy() {
+        stopNativeVoiceRecognition("")
+        super.onDestroy()
     }
 
     private fun launchNativeAction(action: String): Boolean {
