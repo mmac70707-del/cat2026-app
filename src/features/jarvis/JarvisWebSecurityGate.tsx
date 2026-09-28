@@ -110,7 +110,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const [directiveIndex, setDirectiveIndex] = useState(0)
   const [lockedMs, setLockedMs] = useState(getLockRemainingMs())
   const [biometricState, setBiometricState] = useState<'idle' | 'scanning' | 'verified'>('idle')
-  const [voiceActive, setVoiceActive] = useState(false)
   const [voiceListening, setVoiceListening] = useState(false)
   const idleTimer = useRef<number | null>(null)
   const voiceRecognizerRef = useRef<{ stop: () => void } | null>(null)
@@ -307,26 +306,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     }
   }
 
-  function speakJarvisGreeting() {
-    if (!('speechSynthesis' in window)) {
-      setMessage('Voice playback is not available in this browser.')
-      return
-    }
-
-    window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(
-      'Hello Ashish. This is JARVIS. Voice trigger ready. Say: Hey Jarvis, unlock.'
-    )
-    utterance.rate = 0.92
-    utterance.pitch = 0.86
-    utterance.volume = 0.9
-    utterance.onstart = () => setVoiceActive(true)
-    utterance.onend = () => setVoiceActive(false)
-    utterance.onerror = () => setVoiceActive(false)
-    setMessage('JARVIS voice link active. The spoken phrase only triggers the real device verification step.')
-    window.speechSynthesis.speak(utterance)
-  }
-
   function startVoiceUnlock() {
     if (lockedMs > 0) return
     if (voiceListening) {
@@ -351,7 +330,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
         rec.stop()
         voiceRecognizerRef.current = null
         setVoiceListening(false)
-        setVoiceActive(false)
         setMessage('Voice command accepted. Now confirm your identity with the real device biometric.')
         void startDeviceBiometric()
       },
@@ -375,7 +353,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
     voiceRecognizerRef.current = rec
     setVoiceListening(true)
-    setVoiceActive(true)
     setMessage('Listening for: “Hey Jarvis, unlock”')
     rec.start()
   }
