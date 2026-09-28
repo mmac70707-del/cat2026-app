@@ -7,33 +7,35 @@ export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' 
 interface Props { onNavigate: (page: SubPage) => void }
 type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'SYSTEM'
 
-const TILES: { id: SubPage; icon: string; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }[] = [
-  { id: 'missionos', icon: '🧭', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
-  { id: 'mission', icon: '🎯', label: 'Active Mission', category: 'EXECUTE', featured: true, hint: 'What to do now' },
-  { id: 'jarvis', icon: '🧠', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
-  { id: 'schedule', icon: '⏰', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
-  { id: 'dashboard', icon: '📊', label: 'Master Dashboard', category: 'EXECUTE', featured: true, hint: 'Full execution view' },
-  { id: 'adaptive', icon: '🧬', label: 'Weakness Heatmap', category: 'LEARN', hint: 'Find weak areas' },
-  { id: 'qbank', icon: '📚', label: 'Question Vault', category: 'LEARN', hint: 'Practice bank' },
-  { id: 'drills', icon: '⚡', label: 'Calculation Drills', category: 'LEARN', hint: 'Build speed' },
-  { id: 'livesessions', icon: '📺', label: 'Masterclasses', category: 'LEARN', hint: 'Deep learning' },
-  { id: 'syllabus', icon: '📖', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
-  { id: 'flashcards', icon: '🎴', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
-  { id: 'catmock', icon: '🏆', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
-  { id: 'mockana', icon: '🧪', label: 'Mock Analytics', category: 'REVIEW', hint: 'Score + time patterns' },
-  { id: 'errors', icon: '🔴', label: 'Error Log C1–C5', category: 'REVIEW', hint: 'Capture root causes' },
-  { id: 'repair', icon: '🔧', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },
-  { id: 'retest', icon: '✅', label: 'Retest System', category: 'REVIEW', hint: 'Prove the repair' },
-  { id: 'achievements', icon: '🎖️', label: 'Streak & Badges', category: 'REVIEW', hint: 'Execution history' },
-  { id: 'vision', icon: '👁️', label: 'Master Vision', category: 'SYSTEM', hint: 'Long-range direction' },
-  { id: 'mindset', icon: '🧘', label: 'Discipline Protocol', category: 'SYSTEM', hint: 'Mental operating rules' },
-  { id: 'roadmap', icon: '🚀', label: '44-Day Roadmap', category: 'SYSTEM', hint: 'Syllabus runway' },
-  { id: 'apexpro', icon: '⚡', label: 'Apex Pro Deck', category: 'SYSTEM', hint: 'Advanced command layer' },
-  { id: 'openjarvis', icon: '🤖', label: 'OpenJarvis Agent', category: 'SYSTEM', hint: 'Research workspace' },
-  { id: 'dailycapsule', icon: '📰', label: 'Daily Briefs', category: 'SYSTEM', hint: 'Context capsule' },
-  { id: 'research', icon: '🔬', label: 'Deep Research', category: 'SYSTEM', hint: 'Research tools' },
-  { id: 'security', icon: '🛡️', label: 'Security Sentinel', category: 'SYSTEM', hint: 'Integrity + audit' },
-  { id: 'settings', icon: '⚙️', label: 'Settings & Data', category: 'SYSTEM', hint: 'Preferences + export' },
+type Tile = { id: SubPage; icon: AppIconName; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }
+
+const TILES: Tile[] = [
+  { id: 'missionos', icon: 'target', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
+  { id: 'mission', icon: 'target', label: 'Active Mission', category: 'EXECUTE', featured: true, hint: 'What to do now' },
+  { id: 'jarvis', icon: 'jarvis', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
+  { id: 'schedule', icon: 'week', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
+  { id: 'dashboard', icon: 'mastery', label: 'Master Dashboard', category: 'EXECUTE', featured: true, hint: 'Full execution view' },
+  { id: 'adaptive', icon: 'adaptive', label: 'Weakness Heatmap', category: 'LEARN', hint: 'Find weak areas' },
+  { id: 'qbank', icon: 'today', label: 'Question Vault', category: 'LEARN', hint: 'Practice bank' },
+  { id: 'drills', icon: 'focus', label: 'Calculation Drills', category: 'LEARN', hint: 'Build speed' },
+  { id: 'livesessions', icon: 'today', label: 'Masterclasses', category: 'LEARN', hint: 'Deep learning' },
+  { id: 'syllabus', icon: 'week', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
+  { id: 'flashcards', icon: 'mastery', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
+  { id: 'catmock', icon: 'mock', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
+  { id: 'mockana', icon: 'mock', label: 'Mock Analytics', category: 'REVIEW', hint: 'Score + time patterns' },
+  { id: 'errors', icon: 'errors', label: 'Error Log C1–C5', category: 'REVIEW', hint: 'Capture root causes' },
+  { id: 'repair', icon: 'repair', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },
+  { id: 'retest', icon: 'retest', label: 'Retest System', category: 'REVIEW', hint: 'Prove the repair' },
+  { id: 'achievements', icon: 'mastery', label: 'Streak & Badges', category: 'REVIEW', hint: 'Execution history' },
+  { id: 'vision', icon: 'radar', label: 'Master Vision', category: 'SYSTEM', hint: 'Long-range direction' },
+  { id: 'mindset', icon: 'focus', label: 'Discipline Protocol', category: 'SYSTEM', hint: 'Mental operating rules' },
+  { id: 'roadmap', icon: 'phases', label: '44-Day Roadmap', category: 'SYSTEM', hint: 'Syllabus runway' },
+  { id: 'apexpro', icon: 'focus', label: 'Apex Pro Deck', category: 'SYSTEM', hint: 'Advanced command layer' },
+  { id: 'openjarvis', icon: 'jarvis', label: 'OpenJarvis Agent', category: 'SYSTEM', hint: 'Research workspace' },
+  { id: 'dailycapsule', icon: 'today', label: 'Daily Briefs', category: 'SYSTEM', hint: 'Context capsule' },
+  { id: 'research', icon: 'research', label: 'Deep Research', category: 'SYSTEM', hint: 'Research tools' },
+  { id: 'security', icon: 'security', label: 'Security Sentinel', category: 'SYSTEM', hint: 'Integrity + audit' },
+  { id: 'settings', icon: 'settings', label: 'Settings & Data', category: 'SYSTEM', hint: 'Preferences + export' },
 ]
 
 const CATEGORIES: { id: Category; label: string }[] = [
@@ -149,9 +151,12 @@ export function MorePage({ onNavigate }: Props) {
       </div>
 
       <div className="jarvis-hub-grid jarvis-library-grid">
-        {filteredTiles.map(t => (
+        {filteredTiles.map((t, index) => (
           <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? ' featured' : ''}`} onClick={() => onNavigate(t.id)}>
-            <div className="jarvis-hub-icon" aria-hidden="true">{t.icon}</div>
+            <div className="jarvis-hub-icon" aria-hidden="true">
+              <span className="jarvis-tile-seq">{String(index + 1).padStart(2, '0')}</span>
+              <AppIcon name={t.icon} size={24} />
+            </div>
             <div className="jarvis-hub-tile-label">{t.label}</div>
             <div className="jarvis-library-tile-hint">{t.hint}</div>
           </button>
