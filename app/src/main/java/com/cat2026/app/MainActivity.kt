@@ -4,9 +4,11 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.provider.AlarmClock
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.webkit.WebChromeClient
@@ -14,7 +16,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
@@ -36,7 +38,7 @@ import javax.crypto.SecretKey
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private lateinit var webView: WebView
     private lateinit var biometricExecutor: Executor
@@ -87,7 +89,7 @@ class MainActivity : ComponentActivity() {
                     if (!request.isForMainFrame) return false
                     val url = request.url.toString()
                     val trusted = url.startsWith("https://appassets.androidforward.site/")
-                    val debug = BuildConfig.DEBUG && url.startsWith("http://localhost")
+                    val debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0 && url.startsWith("http://localhost")
 
                     return if (trusted || debug) {
                         false
@@ -402,25 +404,6 @@ class MainActivity : ComponentActivity() {
 
     private fun triggerNotificationSetup() {}
 
-    private fun launchNativeAction(action: String) {
-        if (!nativeUnlocked) return
-        try {
-            when (action.lowercase()) {
-                "browser" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.google.com".toUri()))
-                "camera" -> startActivity(Intent("android.media.action.IMAGE_CAPTURE"))
-                "settings" -> startActivity(Intent(Settings.ACTION_SETTINGS))
-                "wifi" -> startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                "bluetooth" -> startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
-                "calendar" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CALENDAR))
-                "clock" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CLOCK))
-                "phone" -> startActivity(Intent(Intent.ACTION_DIAL))
-                "messages" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MESSAGING))
-                "whatsapp" -> packageManager.getLaunchIntentForPackage("com.whatsapp")?.let { startActivity(it) }
-                "youtube" -> startActivity(Intent(Intent.ACTION_VIEW, "https://www.youtube.com".toUri()))
-            }
-        } catch (_: Exception) {}
-    }
-
     private fun handleBridgeMessage(payload: String, replyProxy: androidx.webkit.JavaScriptReplyProxy) {
         try {
             val request = JSONObject(payload)
@@ -494,7 +477,7 @@ class MainActivity : ComponentActivity() {
                 "wifi" -> startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
                 "bluetooth" -> startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
                 "calendar" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CALENDAR))
-                "clock" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_CLOCK))
+                "clock" -> startActivity(Intent(AlarmClock.ACTION_SHOW_ALARMS))
                 "phone" -> startActivity(Intent(Intent.ACTION_DIAL))
                 "messages" -> startActivity(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MESSAGING))
                 "whatsapp" -> packageManager.getLaunchIntentForPackage("com.whatsapp")?.let { startActivity(it) } ?: return false
@@ -504,5 +487,4 @@ class MainActivity : ComponentActivity() {
             true
         } catch (_: Exception) { false }
     }
-}
 }
