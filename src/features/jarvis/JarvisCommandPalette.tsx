@@ -16,6 +16,7 @@ interface Props {
 export function JarvisCommandPalette({ onNavigate }: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [motivationOpen, setMotivationOpen] = useState(false)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -36,6 +37,7 @@ export function JarvisCommandPalette({ onNavigate }: Props) {
   }, [])
 
   const commands = useMemo<Command[]>(() => [
+    { id: 'motivation', label: 'Motivation — Start the Avoided Work', hint: 'execution trigger', keywords: 'motivation quote magic work avoiding discipline start', run: () => setMotivationOpen(true) },
     { id: 'today', label: "Open Today's Command", hint: 'CAT mission', keywords: 'today mission command cat', run: () => onNavigate('today') },
     { id: 'jarvis', label: 'JARVIS Command Center', hint: 'system core', keywords: 'jarvis radar core command center', run: () => onNavigate('jarvis') },
     { id: 'focus', label: 'Start Focus Core', hint: 'timer + Today', keywords: 'focus timer study deep work', run: () => {
@@ -76,6 +78,21 @@ export function JarvisCommandPalette({ onNavigate }: Props) {
         <small>CMD</small>
       </button>
 
+      {motivationOpen && (
+        <div className="jarvis-motivation-overlay" role="dialog" aria-modal="true" aria-label="Motivation">
+          <div className="jarvis-motivation-card">
+            <div className="jarvis-command-kicker">JARVIS // EXECUTION PROTOCOL</div>
+            <div className="jarvis-motivation-orb">◉</div>
+            <div className="jarvis-motivation-quote">THE MAGIC YOU ARE LOOKING FOR<br/>IS IN THE WORK YOU ARE AVOIDING.</div>
+            <div className="jarvis-motivation-sub">Don’t search for another quote.<br/><b>Do the next thing you’ve been avoiding.</b></div>
+            <div className="jarvis-motivation-actions">
+              <button className="jarvis-motivation-start" onClick={() => { setMotivationOpen(false); onNavigate('today') }}>START TODAY’S CAT TASK →</button>
+              <button className="jarvis-motivation-close" onClick={() => setMotivationOpen(false)}>CLOSE</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {open && (
         <div className="jarvis-command-backdrop" onMouseDown={() => setOpen(false)}>
           <div className="jarvis-command-palette" role="dialog" aria-modal="true" aria-label="JARVIS command palette" onMouseDown={e => e.stopPropagation()}>
@@ -91,7 +108,7 @@ export function JarvisCommandPalette({ onNavigate }: Props) {
               autoFocus
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Search mission, errors, focus, radar…"
+              placeholder="Search motivation, mission, errors, focus, radar…"
               className="jarvis-command-search"
             />
 
