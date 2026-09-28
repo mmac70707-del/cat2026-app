@@ -1,9 +1,10 @@
 import { useQuickStats } from '@/hooks/index'
+import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
 interface Badge {
   id: string
   title: string
-  icon: string
+  icon: AppIconName
   desc: string
   unlocked: boolean
   progressText: string
@@ -14,30 +15,30 @@ export function AchievementsPage({ onBack }: { onBack?: () => void }) {
 
   const BADGES: Badge[] = [
     {
-      id: 'b1', title: 'Execution Flame', icon: '🔥',
+      id: 'b1', title: 'Execution Flame', icon: 'zap',
       desc: 'Maintained a 3-day consecutive study execution streak.',
       unlocked: true, progressText: 'Streak: 3 Days Active'
     },
     {
-      id: 'b2', title: 'Accuracy Champion', icon: '🎯',
+      id: 'b2', title: 'Accuracy Champion', icon: 'target',
       desc: 'Achieved 70%+ overall accuracy on practice sessions.',
       unlocked: (stats?.lastAccuracy || 0) >= 70,
       progressText: stats?.lastAccuracy != null ? `Current: ${stats.lastAccuracy}%` : '0/70%'
     },
     {
-      id: 'b3', title: 'Repair Master', icon: '🔧',
+      id: 'b3', title: 'Repair Master', icon: 'wrench',
       desc: 'Logged and repaired at least 5 C1–C5 errors.',
       unlocked: (stats?.totalErrors || 0) >= 5,
       progressText: `${stats?.totalErrors || 0} / 5 Errors Logged`
     },
     {
-      id: 'b4', title: 'Mock Dominator', icon: '🏆',
+      id: 'b4', title: 'Mock Dominator', icon: 'trophy',
       desc: 'Completed and submitted 1 full CAT mock exam.',
       unlocked: (stats?.mocksLogged || 0) >= 1,
       progressText: `${stats?.mocksLogged || 0} / 1 Mocks Completed`
     },
     {
-      id: 'b5', title: 'Speed Demon', icon: '⚡',
+      id: 'b5', title: 'Speed Demon', icon: 'zap',
       desc: 'Mastered 10 fraction-percentage speed recall cards.',
       unlocked: true, progressText: 'Speed Drills Unlocked'
     }
@@ -51,7 +52,7 @@ export function AchievementsPage({ onBack }: { onBack?: () => void }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 24 }}>🎖️</span>
+            <span style={{ display: "inline-flex", color: "#F5A623" }}><AppIcon name="badge" size={25} /></span>
             <h1 style={{ fontSize: 22, fontWeight: 900, color: '#F5A623', margin: 0 }}>
               Gamified Streak & Badges
             </h1>
@@ -72,7 +73,7 @@ export function AchievementsPage({ onBack }: { onBack?: () => void }) {
         <div>
           <div style={{ fontSize: 11, fontWeight: 800, color: '#F5A623' }}>DAILY STREAK</div>
           <div style={{ fontSize: 28, fontWeight: 900, color: '#FFF', display: 'flex', alignItems: 'center', gap: 6 }}>
-            🔥 3 Days Active Streak
+            <AppIcon name="zap" size={24} /> 3 Days Active Streak
           </div>
           <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 2 }}>Keep completing daily blocks to maintain your streak!</div>
         </div>
@@ -97,9 +98,9 @@ export function AchievementsPage({ onBack }: { onBack?: () => void }) {
               opacity: b.unlocked ? 1 : 0.6
             }}
           >
-            <div style={{ fontSize: 32, marginBottom: 8 }}>{b.icon}</div>
+            <div style={{ fontSize: 32, marginBottom: 8, color: b.unlocked ? '#F5A623' : '#64748B' }}><AppIcon name={b.icon} size={30} /></div>
             <div style={{ fontSize: 15, fontWeight: 800, color: b.unlocked ? '#4ADE80' : '#94A3B8' }}>
-              {b.title} {b.unlocked && '✅'}
+              {b.title} {b.unlocked && <AppIcon name="checkCircle" size={14} />}
             </div>
             <p style={{ fontSize: 12, color: '#CBD5E1', margin: '4px 0 10px', lineHeight: 1.4 }}>
               {b.desc}
