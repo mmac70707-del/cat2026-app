@@ -1,4 +1,4 @@
-// Stanford Jarvis 3.0 Voice Engine (Wake-Word, Memory, STT & TTS)
+// JARVIS Voice Engine (Wake-Word, Memory, STT & TTS)
 import { getKolkataDateParts } from '@/services/calendarEngine'
 import { JarvisMemoryStore } from '@/services/jarvisMemoryService'
 
