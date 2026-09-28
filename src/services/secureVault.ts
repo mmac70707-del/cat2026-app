@@ -2,7 +2,6 @@ import { dbDelete, dbGet, dbPut, openDB } from '@/db'
 import { getNativeVaultKeyMaterial } from '@/services/native'
 
 
-const VAULT_KEY = 'jarvis_secure_vault_v1'
 const PBKDF2_ITERATIONS = 600_000
 
 type VaultRecord = {
@@ -21,7 +20,8 @@ function toBase64(bytes: Uint8Array): string {
 }
 
 function fromBase64(value: string): Uint8Array {
-  const binary = atob(value)
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(value.length / 4) * 4, '=')
+  const binary = atob(normalized)
   return Uint8Array.from(binary, char => char.charCodeAt(0))
 }
 
