@@ -105,6 +105,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const [pin, setPin] = useState('')
   const [confirm, setConfirm] = useState('')
   const [message, setMessage] = useState('')
+  const [directiveIndex, setDirectiveIndex] = useState(0)
   const [lockedMs, setLockedMs] = useState(getLockRemainingMs())
   const idleTimer = useRef<number | null>(null)
   const unlockedRef = useRef(false)
@@ -237,6 +238,20 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   if (unlocked) return <>{children}</>
 
   const lockedSeconds = Math.ceil(lockedMs / 1000)
+  const directives = [
+    ['THE WORK', 'YOU KEEP AVOIDING', 'IS THE DOOR YOU KEEP LOOKING FOR.'],
+    ['DISCIPLINE', 'BEATS MOTIVATION', 'WHEN MOTIVATION DISAPPEARS.'],
+    ['SMALL STEPS', 'DONE EVERY DAY', 'BECOME A LIFE YOU CAN TRUST.'],
+    ['FOCUS', 'ON WHAT MATTERS', 'AND LET THE NOISE LOSE.'],
+    ['BECOME', 'THE MAN YOU PROMISED', 'ONE DECISION AT A TIME.'],
+    ['START BEFORE', 'YOU FEEL READY', 'CLARITY COMES FROM ACTION.'],
+  ] as const
+
+  useEffect(() => {
+    const id = window.setInterval(() => setDirectiveIndex(i => (i + 1) % directives.length), 7000)
+    return () => window.clearInterval(id)
+  }, [])
+
 
   return (
     <main className="jarvis-lock-v5" aria-label="JARVIS secure lock screen">
@@ -264,10 +279,10 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
           </div>
           <div className="jarvis-lock-v5__quote-zone">
             <span className="jarvis-lock-v5__quote-label">DAILY DIRECTIVE / 001</span>
-            <blockquote className="jarvis-lock-v5__quote">
-              <span>THE MAGIC YOU ARE</span>
-              <strong>LOOKING FOR</strong>
-              <em>IS IN THE WORK YOU ARE AVOIDING.</em>
+            <blockquote className="jarvis-lock-v5__quote" key={directiveIndex}>
+              <span>{directives[directiveIndex][0]}</span>
+              <strong>{directives[directiveIndex][1]}</strong>
+              <em>{directives[directiveIndex][2]}</em>
             </blockquote>
             <div className="jarvis-lock-v5__signals">
               <span>SHOW UP</span><i /><span>DO THE HARD THING</span><i /><span>MOVE FORWARD</span>
