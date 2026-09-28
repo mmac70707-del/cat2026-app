@@ -1472,3 +1472,244 @@ body.jarvis-theme { min-width: 320px; }
   color: var(--jarvis-cyan);
   font: 900 8px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
+
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS // SIGNATURE APEX THEME v2
+   Premium command-center finish — restrained, cinematic,
+   high-contrast and CAT-first.
+═══════════════════════════════════════════════════ */
+
+.jarvis-theme {
+  --apex-cyan: #54F7FF;
+  --apex-cyan-soft: rgba(84,247,255,.12);
+  --apex-green: #67FFB0;
+  --apex-gold: #FFD166;
+  --apex-white: #F5FEFF;
+}
+
+.jarvis-theme .app-shell {
+  background:
+    radial-gradient(900px 420px at 50% -120px, rgba(84,247,255,.13), transparent 62%),
+    radial-gradient(520px 360px at 100% 72%, rgba(103,255,176,.045), transparent 65%),
+    linear-gradient(180deg, #020609 0%, #03090C 48%, #010506 100%);
+}
+
+.jarvis-theme .app-shell::before {
+  opacity: .16;
+  background:
+    linear-gradient(rgba(2,6,9,.72), rgba(2,6,9,.88)),
+    url('/images/app_background_billboard.png');
+  filter: saturate(.55) contrast(1.08);
+}
+
+.jarvis-theme .app-header {
+  background: linear-gradient(180deg, rgba(3,12,16,.96), rgba(2,8,11,.90));
+  border-bottom-color: rgba(84,247,255,.24);
+  box-shadow: 0 10px 32px rgba(0,0,0,.35), 0 1px 0 rgba(84,247,255,.08);
+}
+
+.jarvis-theme .app-title {
+  background: linear-gradient(100deg, #FFFFFF 0%, var(--apex-cyan) 55%, var(--apex-green) 100%);
+  text-shadow: 0 0 20px rgba(84,247,255,.18);
+}
+
+.jarvis-theme .countdown-days {
+  color: var(--apex-gold);
+  text-shadow: 0 0 18px rgba(255,209,102,.22);
+}
+
+.jarvis-theme .content-area {
+  background:
+    radial-gradient(500px 260px at 50% 0%, rgba(84,247,255,.035), transparent 72%),
+    linear-gradient(rgba(84,247,255,.009) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(84,247,255,.009) 1px, transparent 1px);
+  background-size: auto, 28px 28px, 28px 28px;
+}
+
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card {
+  background: linear-gradient(145deg, rgba(7,19,23,.92), rgba(2,9,12,.94));
+  border-color: rgba(84,247,255,.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    inset 0 0 32px rgba(84,247,255,.012),
+    0 14px 36px rgba(0,0,0,.24);
+}
+
+.jarvis-theme .card:hover,
+.jarvis-theme .card-sm:hover,
+.jarvis-theme .block-card:hover {
+  border-color: rgba(84,247,255,.23);
+}
+
+.jarvis-theme .card-title {
+  color: var(--apex-white);
+  font-weight: 850;
+}
+
+.jarvis-theme .card-title::before {
+  color: var(--apex-green);
+}
+
+.jarvis-theme .block-card.inprog-card {
+  border-color: rgba(103,255,176,.52);
+  background: linear-gradient(145deg, rgba(7,25,23,.94), rgba(2,10,12,.96));
+  box-shadow:
+    0 0 28px rgba(103,255,176,.065),
+    inset 3px 0 0 rgba(103,255,176,.85),
+    inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+.jarvis-theme .bottom-nav {
+  background: linear-gradient(180deg, rgba(2,9,12,.94), rgba(1,5,7,.98));
+  border-top-color: rgba(84,247,255,.18);
+  box-shadow: 0 -14px 36px rgba(0,0,0,.42);
+}
+
+.jarvis-theme .nav-btn.active {
+  color: var(--apex-cyan);
+}
+
+.jarvis-theme .nav-btn.active .nav-icon {
+  background: rgba(84,247,255,.09);
+  box-shadow: inset 0 0 0 1px rgba(84,247,255,.10), 0 0 18px rgba(84,247,255,.08);
+}
+
+.jarvis-theme .btn-primary {
+  background:
+    linear-gradient(90deg, rgba(84,247,255,.09), rgba(103,255,176,.08)),
+    #031014;
+  border-color: rgba(103,255,176,.34);
+  color: var(--apex-green);
+}
+
+.jarvis-theme .progress-wrap {
+  background: rgba(84,247,255,.055);
+}
+
+.jarvis-theme .progress-fill {
+  background: linear-gradient(90deg, var(--apex-cyan), var(--apex-green)) !important;
+}
+
+.jarvis-theme .pill-gold {
+  color: var(--apex-gold);
+  background: rgba(255,209,102,.09);
+  border-color: rgba(255,209,102,.20);
+}
+
+.jarvis-theme ::-webkit-scrollbar { width: 5px; height: 5px; }
+.jarvis-theme ::-webkit-scrollbar-track { background: transparent; }
+.jarvis-theme ::-webkit-scrollbar-thumb {
+  background: rgba(84,247,255,.18);
+  border-radius: 99px;
+}
+
+/* Signature motivation overlay */
+.jarvis-motivation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0,3,5,.78);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+}
+
+.jarvis-motivation-card {
+  position: relative;
+  width: min(398px, 100%);
+  overflow: hidden;
+  padding: 28px 22px 22px;
+  text-align: center;
+  border: 1px solid rgba(84,247,255,.30);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(84,247,255,.13), transparent 34%),
+    linear-gradient(145deg, rgba(7,21,25,.98), rgba(1,7,9,.99));
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.72),
+    0 0 60px rgba(84,247,255,.09),
+    inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+.jarvis-motivation-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(84,247,255,.07);
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+.jarvis-motivation-orb {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  margin: 20px auto 18px;
+  border-radius: 50%;
+  color: var(--apex-cyan);
+  font-size: 24px;
+  border: 1px solid rgba(84,247,255,.42);
+  background: radial-gradient(circle, rgba(84,247,255,.16), rgba(84,247,255,.025) 60%, transparent 61%);
+  box-shadow: 0 0 35px rgba(84,247,255,.14), inset 0 0 22px rgba(84,247,255,.10);
+}
+
+.jarvis-motivation-quote {
+  color: #F5FEFF;
+  font: 950 20px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: -.3px;
+  text-shadow: 0 0 24px rgba(84,247,255,.10);
+}
+
+.jarvis-motivation-sub {
+  margin: 16px auto 20px;
+  max-width: 300px;
+  color: #86A5A7;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.jarvis-motivation-sub b { color: var(--apex-green); }
+
+.jarvis-motivation-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.jarvis-motivation-start,
+.jarvis-motivation-close {
+  min-height: 44px;
+  border-radius: 10px;
+  cursor: pointer;
+  font: 900 9px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .8px;
+}
+
+.jarvis-motivation-start {
+  border: 1px solid rgba(103,255,176,.34);
+  background: linear-gradient(90deg, rgba(84,247,255,.10), rgba(103,255,176,.10));
+  color: var(--apex-green);
+  box-shadow: 0 0 22px rgba(103,255,176,.06);
+}
+
+.jarvis-motivation-close {
+  border: 1px solid rgba(84,247,255,.10);
+  background: rgba(3,9,12,.8);
+  color: #718E91;
+}
+
+.jarvis-motivation-start:active,
+.jarvis-motivation-close:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 360px) {
+  .jarvis-motivation-card { padding: 24px 16px 18px; }
+  .jarvis-motivation-quote { font-size: 17px; }
+}
