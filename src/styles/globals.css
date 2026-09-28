@@ -3433,3 +3433,313 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-lock-v5__micro-quotes{display:none}
   .jarvis-lock-v5__console{padding:12px}
 }
+
+
+/* ═══════════════════════════════════════════════════
+   NEXUS APEX 6.0 // CTO PASS
+   Obsidian cockpit + identity backdrop + clear execution UI.
+═══════════════════════════════════════════════════ */
+
+.jarvis-theme,
+.jarvis-lock-v5 {
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* Dashboard: portrait stays visible, but content remains dominant. */
+.jarvis-theme.dashboard-screen::before {
+  z-index:0;
+  background:
+    linear-gradient(180deg,rgba(2,7,9,.50),rgba(2,7,9,.78)),
+    url('/images/ashish_billboard.webp') center/cover no-repeat;
+  opacity:.54;
+  filter:saturate(.78) contrast(.97);
+}
+
+.jarvis-theme.dashboard-screen::after {
+  z-index:0;
+  background:
+    radial-gradient(circle at 50% 8%,rgba(99,246,255,.10),transparent 31%),
+    linear-gradient(90deg,rgba(2,8,10,.22),transparent 50%,rgba(2,8,10,.24));
+}
+
+.jarvis-theme.dashboard-screen > *,
+.jarvis-theme.dashboard-screen .dash-root {
+  position:relative;
+  z-index:1;
+}
+
+.jarvis-theme.dashboard-screen .dash-root {
+  background:
+    linear-gradient(180deg,rgba(2,7,9,.18),rgba(2,7,9,.34)),
+    transparent !important;
+}
+
+/* Global interior surfaces: premium, calmer, higher readability. */
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .jarvis-panel,
+.jarvis-theme .jarvis-library-hero,
+.jarvis-theme .jarvis-now-card,
+.jarvis-theme .mission-os-section,
+.jarvis-theme .jarvis-terminal {
+  border-color:rgba(160,235,238,.13);
+  background:
+    linear-gradient(145deg,rgba(8,19,23,.92),rgba(3,10,13,.88));
+  box-shadow:
+    0 16px 38px rgba(0,0,0,.22),
+    inset 0 1px rgba(255,255,255,.028);
+}
+
+.jarvis-theme .card-title {
+  color:#EFFDFC;
+  letter-spacing:.25px;
+}
+
+.jarvis-theme .form-input,
+.jarvis-theme input,
+.jarvis-theme textarea,
+.jarvis-theme select {
+  min-height:44px;
+  border-color:rgba(160,235,238,.15);
+  background:rgba(1,7,9,.76);
+  color:#F0FFFE;
+}
+
+.jarvis-theme button {
+  min-height:44px;
+  touch-action:manipulation;
+}
+
+.jarvis-theme .btn-primary,
+.jarvis-theme .jarvis-action,
+.jarvis-theme .jarvis-run {
+  border-radius:12px;
+  box-shadow:0 10px 26px rgba(0,0,0,.22);
+}
+
+.jarvis-theme .content-area {
+  scrollbar-color:rgba(99,246,255,.22) transparent;
+}
+
+/* JARVIS Lock: identity + directive + security console. */
+.jarvis-lock-v5 {
+  background:
+    radial-gradient(800px 380px at 50% -8%,rgba(99,246,255,.12),transparent 65%),
+    #010506;
+}
+
+.jarvis-lock-v5__backdrop {
+  opacity:.95;
+  background:
+    linear-gradient(180deg,rgba(1,5,7,.22),rgba(1,5,7,.68)),
+    url('/images/ashish_billboard.webp') center/cover no-repeat;
+}
+
+.jarvis-lock-v5__grid {
+  opacity:.10;
+  background-size:34px 34px;
+}
+
+.jarvis-lock-v5__scan {
+  opacity:.22;
+}
+
+.jarvis-lock-v5__shell {
+  gap:16px;
+}
+
+.jarvis-lock-v5__topbar {
+  border-color:rgba(99,246,255,.12);
+  background:rgba(2,9,12,.62);
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+
+.jarvis-lock-v5__hero {
+  padding:12px 4px 5px;
+  gap:20px;
+}
+
+.jarvis-lock-v5__portrait-frame {
+  border-color:rgba(99,246,255,.48);
+  background:#061114;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.48),
+    0 0 28px rgba(99,246,255,.12);
+}
+
+.jarvis-lock-v5__identity-copy h1 {
+  color:#F2FFFF;
+}
+
+.jarvis-lock-v5__identity-copy p {
+  color:#B4CACA;
+}
+
+.jarvis-lock-v5__quote-zone {
+  min-height:0;
+  padding:12px 0 8px 16px;
+}
+
+.jarvis-lock-v5__quote {
+  max-width:560px;
+}
+
+.jarvis-lock-v5__quote span {
+  color:#F4FFFF;
+  font-weight:850;
+}
+
+.jarvis-lock-v5__quote strong {
+  font-size:clamp(37px,6.5vw,64px);
+  line-height:.88;
+  background:linear-gradient(90deg,#63F6FF 0%,#F2FFFF 50%,#75F6B0 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:none;
+}
+
+.jarvis-lock-v5__quote em {
+  color:#D7EAEA;
+  font-weight:750;
+}
+
+.jarvis-lock-v5__signals {
+  margin-top:14px;
+}
+
+.jarvis-lock-v5__micro-quotes {
+  margin-top:12px;
+  gap:6px;
+}
+
+.jarvis-lock-v5__micro-quotes span {
+  border-color:rgba(99,246,255,.13);
+  background:rgba(1,6,8,.56);
+  color:#A8C3C5;
+  min-height:24px;
+  display:inline-flex;
+  align-items:center;
+}
+
+.jarvis-lock-v5__micro-quotes span:nth-child(2) {
+  color:#7CFFD0;
+  border-color:rgba(117,246,176,.25);
+  background:rgba(117,246,176,.055);
+}
+
+.jarvis-lock-v5__micro-quotes span:nth-child(3) {
+  color:#63F6FF;
+  border-color:rgba(99,246,255,.28);
+  background:rgba(99,246,255,.055);
+  box-shadow:0 0 22px rgba(99,246,255,.05);
+}
+
+.jarvis-lock-v5__console {
+  border-color:rgba(99,246,255,.24);
+  background:
+    linear-gradient(145deg,rgba(7,18,22,.96),rgba(2,8,10,.92));
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.46),
+    inset 0 1px rgba(255,255,255,.035);
+}
+
+.jarvis-lock-v5__console-head strong {
+  color:#F0FFFF;
+}
+
+.jarvis-lock-v5__hint {
+  color:#8FAAAC;
+}
+
+.jarvis-lock-v5__input-wrap {
+  min-height:58px;
+  background:rgba(0,5,7,.86);
+}
+
+.jarvis-lock-v5__unlock {
+  min-height:56px;
+  background:linear-gradient(100deg,#63F6FF 0%,#75F6B0 100%);
+  color:#001014;
+  box-shadow:0 16px 36px rgba(99,246,255,.13);
+}
+
+@media(max-width:650px){
+  .jarvis-lock-v5 {
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .jarvis-lock-v5__topbar {
+    min-height:40px;
+  }
+
+  .jarvis-lock-v5__hero {
+    padding:8px 2px 2px;
+    gap:14px;
+  }
+
+  .jarvis-lock-v5__identity {
+    gap:11px;
+  }
+
+  .jarvis-lock-v5__portrait-frame {
+    width:86px;
+    height:108px;
+    flex-basis:86px;
+  }
+
+  .jarvis-lock-v5__identity-copy h1 {
+    font-size:20px;
+  }
+
+  .jarvis-lock-v5__identity-copy p {
+    font-size:10px;
+  }
+
+  .jarvis-lock-v5__quote-zone {
+    padding-left:11px;
+  }
+
+  .jarvis-lock-v5__quote-label {
+    font-size:7px;
+    letter-spacing:2px;
+  }
+
+  .jarvis-lock-v5__quote span {
+    font-size:20px;
+  }
+
+  .jarvis-lock-v5__quote strong {
+    font-size:clamp(36px,11.2vw,48px);
+    letter-spacing:-1.8px;
+  }
+
+  .jarvis-lock-v5__quote em {
+    font-size:15px;
+    line-height:1.13;
+  }
+
+  .jarvis-lock-v5__micro-quotes span {
+    font-size:6px;
+    padding:5px 7px;
+  }
+
+  .jarvis-lock-v5__console {
+    padding:14px;
+  }
+
+  .jarvis-lock-v5__unlock {
+    min-height:55px;
+  }
+
+  .jarvis-theme.dashboard-screen::before {
+    opacity:.44;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .jarvis-lock-v5__scan{display:none}
+}
