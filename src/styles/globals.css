@@ -2946,3 +2946,89 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-lock-v5__micro-quotes{margin-top:11px}
   .jarvis-lock-v5__micro-quotes span{font-size:5.5px;padding:5px 6px}
 }
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS LOCK V8 // ONEPLUS MOBILE COCKPIT
+   Designed for narrow Android screens: calm, premium,
+   readable first, effects second.
+═══════════════════════════════════════════════════ */
+.jarvis-lock-v5{
+  min-height:100dvh;
+  min-height:100svh;
+  padding:max(14px,env(safe-area-inset-top)) 13px max(14px,env(safe-area-inset-bottom));
+  -webkit-tap-highlight-color:transparent;
+}
+.jarvis-lock-v5__shell{width:min(720px,100%);gap:14px}
+.jarvis-lock-v5__topbar{min-height:38px}
+.jarvis-lock-v5__brand span{font-size:11px}
+.jarvis-lock-v5__hero{gap:18px}
+.jarvis-lock-v5__identity-copy h1{font-weight:900}
+.jarvis-lock-v5__quote-zone{padding-left:13px}
+.jarvis-lock-v5__quote strong{
+  font-weight:950;
+  text-shadow:0 0 22px rgba(99,246,255,.08);
+}
+.jarvis-lock-v5__console-head strong{font-size:12px}
+.jarvis-lock-v5__input-wrap input{
+  font-size:22px;
+  min-height:44px;
+}
+.jarvis-lock-v5__unlock{
+  min-height:54px;
+  font-size:12px;
+  touch-action:manipulation;
+}
+.jarvis-lock-v5__unlock:active{
+  transform:scale(.985);
+}
+.jarvis-lock-v5__message:empty{display:none}
+.jarvis-lock-v5__footer{margin-top:-2px}
+
+@media(max-width:430px){
+  .jarvis-lock-v5{padding-left:11px;padding-right:11px}
+  .jarvis-lock-v5__topbar{padding:6px 8px}
+  .jarvis-lock-v5__status{font-size:7px}
+  .jarvis-lock-v5__hero{gap:15px;padding:5px 2px 0}
+  .jarvis-lock-v5__identity{gap:11px}
+  .jarvis-lock-v5__portrait-frame{width:72px;height:92px;flex-basis:72px}
+  .jarvis-lock-v5__identity-copy h1{font-size:19px;letter-spacing:-.7px}
+  .jarvis-lock-v5__identity-copy p{font-size:9px}
+  .jarvis-lock-v5__quote-label{font-size:7px;letter-spacing:1.9px}
+  .jarvis-lock-v5__quote span{font-size:16px}
+  .jarvis-lock-v5__quote strong{font-size:clamp(28px,9.7vw,40px)}
+  .jarvis-lock-v5__quote em{font-size:11px;line-height:1.18}
+  .jarvis-lock-v5__signals{font-size:6px;letter-spacing:.9px}
+  .jarvis-lock-v5__micro-quotes{display:grid;grid-template-columns:1fr 1fr}
+  .jarvis-lock-v5__micro-quotes span:last-child{grid-column:1/-1}
+  .jarvis-lock-v5__console{padding:14px;border-radius:16px}
+  .jarvis-lock-v5__hint{font-size:9px;line-height:1.35}
+  .jarvis-lock-v5__input-wrap{height:56px}
+  .jarvis-lock-v5__telemetry{gap:5px;font-size:5.5px;letter-spacing:.7px}
+  .jarvis-lock-v5__footer{font-size:5.5px}
+}
+@media(max-width:370px){
+  .jarvis-lock-v5{padding-top:9px;padding-bottom:9px}
+  .jarvis-lock-v5__shell{gap:10px}
+  .jarvis-lock-v5__topbar{min-height:32px}
+  .jarvis-lock-v5__portrait-frame{width:62px;height:80px;flex-basis:62px}
+  .jarvis-lock-v5__identity-copy h1{font-size:17px}
+  .jarvis-lock-v5__identity-copy p{font-size:8px}
+  .jarvis-lock-v5__quote-zone{padding-top:2px}
+  .jarvis-lock-v5__quote em{margin-top:5px;font-size:10px}
+  .jarvis-lock-v5__signals{margin-top:9px}
+  .jarvis-lock-v5__micro-quotes{display:none}
+  .jarvis-lock-v5__console{padding:12px}
+  .jarvis-lock-v5__console-head strong{font-size:11px}
+  .jarvis-lock-v5__input-wrap{height:52px}
+  .jarvis-lock-v5__unlock{height:50px;min-height:50px}
+  .jarvis-lock-v5__telemetry{display:none}
+}
+@media(orientation:landscape) and (max-height:520px){
+  .jarvis-lock-v5{padding:8px 14px}
+  .jarvis-lock-v5__hero{grid-template-columns:1fr 1fr;gap:18px}
+  .jarvis-lock-v5__portrait-frame{width:62px;height:78px;flex-basis:62px}
+  .jarvis-lock-v5__quote-zone{min-height:0}
+  .jarvis-lock-v5__console{padding:12px}
+  .jarvis-lock-v5__footer{display:none}
+}
