@@ -11,6 +11,7 @@ import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
+import { AppIcon } from '@/components/AppIcon'
 
 const SEQUENCE_STRIP = [
   { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: 'LIVE', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
@@ -287,7 +288,7 @@ export function DashboardPage() {
       <div style={{ background: '#161D2E', border: '1px solid #F5A623', padding: '14px 24px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12 }} className="glow-border-amber">
         <div>
           <div style={{ fontSize: 11, fontWeight: 800, color: '#F5A623', letterSpacing: 1, textTransform: 'uppercase' }}>
-            🎯 TODAY'S EXECUTION DIRECTIVE
+            <AppIcon name="target" size={15} /> TODAY'S EXECUTION DIRECTIVE
           </div>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#FFF', marginTop: 4 }}>
             Follow today's generated QA → DILR → VARC → TEST → ANALYSIS → REVISION → REPAIR → RETEST sequence.
@@ -305,8 +306,8 @@ export function DashboardPage() {
       {/* ── LIVE SCHEDULE CONTROL ── */}
       <div className="live-schedule-panel">
         <div className="live-schedule-main">
-          <div className="live-schedule-kicker">◉ RIGHT NOW • {liveTimeStr} IST</div>
-          <div className="live-schedule-title">{currentSlot?.icon || '⏱️'} {currentSlot?.block || 'Buffer / Transition'}</div>
+          <div className="live-schedule-kicker"><AppIcon name="radar" size={12} /> RIGHT NOW • {liveTimeStr} IST</div>
+          <div className="live-schedule-title"><AppIcon name="focus" size={16} /> {currentSlot?.block || 'Buffer / Transition'}</div>
           <div className="live-schedule-detail">{currentSlot?.detail || 'Use this gap for water, movement, setup, or the next planned study block.'}</div>
         </div>
         <div className="live-schedule-next">
@@ -327,7 +328,7 @@ export function DashboardPage() {
         const line = DAILY_LINES[seed % DAILY_LINES.length]
         return (
           <div className="daily-motivation-card">
-            <div className="daily-motivation-kicker">🔥 TODAY'S LINE</div>
+            <div className="daily-motivation-kicker"><AppIcon name="target" size={13} /> TODAY'S LINE</div>
             <div className="daily-motivation-quote">“{line.quote}”</div>
             <div className="daily-motivation-action"><span>NEXT ACTION</span>{line.action}</div>
           </div>
@@ -336,7 +337,7 @@ export function DashboardPage() {
 
       {/* ── MISSION BAR ── */}
       <div className="mission-bar">
-        <div className="mission-text">🎯 MISSION: {phase.mission}</div>
+        <div className="mission-text"><AppIcon name="target" size={13} /> MISSION: {phase.mission}</div>
         <div className="date-display">{realDayName}, {realDateStr}</div>
         <div className="mission-quote">"Discipline Today Builds the Freedom Tomorrow"</div>
       </div>
@@ -377,7 +378,7 @@ export function DashboardPage() {
           {/* TODAY'S EXACT PLAN */}
           <div>
             <div className="today-header">
-              <div className="today-title">📅 {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44</div>
+              <div className="today-title"><AppIcon name="week" size={14} /> {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44</div>
               <div className="today-sub">Today's Topic: <strong style={{ color: 'var(--gold)' }}>{roadmapItem.chapter}</strong> &nbsp;|&nbsp; Week {getWeekNumber()}</div>
             </div>
 
@@ -413,7 +414,7 @@ export function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
-                    🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
+                    <AppIcon name="phases" size={13} /> 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
                     Chapter: {roadmapItem.chapter} ({roadmapItem.category})
@@ -437,7 +438,7 @@ export function DashboardPage() {
 
             {/* SECTIONAL PRECISION MATRIX — VERIFIED DATA ONLY */}
             <div className="card glow-border-cobalt" style={{ border: '1px solid #3B82F6' }}>
-              <div className="card-title" style={{ color: '#60A5FA' }}>📈 Sectional Precision Matrix</div>
+              <div className="card-title" style={{ color: '#60A5FA' }}><AppIcon name="mastery" size={14} /> Sectional Precision Matrix</div>
               <div style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid #334155', borderRadius: 8, padding: 12, fontSize: 11, color: '#CBD5E1', lineHeight: 1.6 }}>
                 <strong style={{ color: '#60A5FA' }}>LIVE / VERIFIED ONLY:</strong> sectional percentile, score and accuracy values appear here only after they are actually logged from a sectional/mock result.
                 <br />
@@ -447,7 +448,7 @@ export function DashboardPage() {
 
             {/* WEEK CALENDAR */}
             <div className="card">
-              <div className="card-title">📅 Week {getWeekNumber()} — Real Master Schedule</div>
+              <div className="card-title"><AppIcon name="week" size={14} /> Week {getWeekNumber()} — Real Master Schedule</div>
               <div className="week-grid">
                 {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((dName, dIdx) => {
                   const curDate = realWeekDates[dIdx]
@@ -474,7 +475,7 @@ export function DashboardPage() {
 
             {/* DAILY SCORECARD INPUT */}
             <div className="card">
-              <div className="card-title">📊 Daily Update — DONE format</div>
+              <div className="card-title"><AppIcon name="today" size={14} /> Daily Update — DONE format</div>
               <div className="instruction" style={{ marginBottom: 12 }}>
                 <p>Type your day's data: <strong>DONE [study hrs] [screen hrs] [accuracy%]</strong></p>
               </div>
@@ -506,7 +507,7 @@ export function DashboardPage() {
 
           {/* MASTERY TRACKER */}
           <div className="card">
-            <div className="card-title">📈 Mastery Tracker — Real-Time Level</div>
+            <div className="card-title"><AppIcon name="mastery" size={14} /> Mastery Tracker — Real-Time Level</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
               <div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green2)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: .5 }}>QA Progress</div>
@@ -557,7 +558,7 @@ export function DashboardPage() {
 
             {/* ERROR LOG */}
             <div className="card">
-              <div className="card-title">🔴 Error Log System — C1 to C5</div>
+              <div className="card-title"><AppIcon name="errors" size={14} /> Error Log System — C1 to C5</div>
               <div className="error-types">
                 <div className="error-card c1" onClick={() => handleLogErrorCard('C1')}>
                   <div className="error-code">C1</div>
@@ -615,7 +616,7 @@ export function DashboardPage() {
 
         {/* MASTER LOOP */}
         <div className="card">
-          <div className="card-title">♾️ Master Learning Loop — Every Topic Must Complete This</div>
+          <div className="card-title"><AppIcon name="adaptive" size={14} /> Master Learning Loop — Every Topic Must Complete This</div>
           <div className="flow-wrap">
             <span className="flow-step flow-done">CONCEPT</span><span className="flow-arrow">→</span>
             <span className="flow-step flow-done">BASIC</span><span className="flow-arrow">→</span>
