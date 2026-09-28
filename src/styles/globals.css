@@ -2538,3 +2538,169 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-unlock-motivation .line-accent { font-size:clamp(27px,7.6vw,42px); }
   .jarvis-unlock-motivation .line-foot { font-size:clamp(15px,4.5vw,24px); }
 }
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS NEXUS // 5.0
+   Premium AI command-center theme: obsidian + aurora.
+═══════════════════════════════════════════════════ */
+:root{
+  --nexus-bg:#03070a;
+  --nexus-panel:rgba(7,15,18,.86);
+  --nexus-panel-2:rgba(10,21,25,.76);
+  --nexus-line:rgba(151,235,238,.12);
+  --nexus-cyan:#63F6FF;
+  --nexus-mint:#75F6B0;
+  --nexus-text:#F2FFFE;
+  --nexus-muted:#789396;
+}
+
+.jarvis-theme{
+  background:
+    radial-gradient(900px 420px at 50% -8%,rgba(99,246,255,.055),transparent 68%),
+    radial-gradient(650px 500px at 100% 42%,rgba(117,246,176,.025),transparent 70%),
+    var(--nexus-bg);
+}
+
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .jarvis-panel{
+  background:linear-gradient(145deg,rgba(9,20,24,.92),rgba(4,11,14,.88));
+  border:1px solid var(--nexus-line);
+  box-shadow:0 14px 36px rgba(0,0,0,.20), inset 0 1px rgba(255,255,255,.025);
+}
+
+.jarvis-theme .card:hover,
+.jarvis-theme .card-sm:hover,
+.jarvis-theme .block-card:hover{
+  border-color:rgba(99,246,255,.22);
+  transform:translateY(-1px);
+}
+
+.jarvis-theme .app-header{
+  background:rgba(2,7,9,.78);
+  border-bottom:1px solid rgba(99,246,255,.09);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+.jarvis-theme .bottom-nav{
+  background:rgba(3,8,11,.88);
+  border-top:1px solid rgba(99,246,255,.10);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+
+.jarvis-theme button{
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+
+.jarvis-theme .primary,
+.jarvis-theme .btn-primary{
+  background:linear-gradient(135deg,#63F6FF,#35DCE7);
+  color:#001014;
+  box-shadow:0 8px 24px rgba(99,246,255,.10);
+}
+
+.jarvis-theme .app-title{
+  letter-spacing:-.35px;
+  text-shadow:0 0 24px rgba(99,246,255,.10);
+}
+
+/* Dashboard: personal portrait, but intentionally very quiet. */
+.jarvis-theme.dashboard-screen::before{
+  opacity:.19;
+  background:
+    linear-gradient(180deg,rgba(2,7,9,.82),rgba(2,7,9,.93)),
+    url("/images/ashish_billboard.webp") center/cover no-repeat;
+  filter:saturate(.65) contrast(.96);
+}
+
+.jarvis-theme.dashboard-screen::after{
+  background:
+    linear-gradient(180deg,transparent 0%,rgba(2,7,9,.20) 55%,rgba(2,7,9,.52) 100%),
+    radial-gradient(circle at 50% 0%,rgba(99,246,255,.08),transparent 34%);
+}
+
+/* Unlock: photo is clearly visible behind the security glass. */
+.jarvis-unlock-screen{
+  background:#020608 !important;
+}
+
+.jarvis-unlock-screen::before{
+  opacity:.48 !important;
+  background:
+    linear-gradient(180deg,rgba(2,7,9,.38),rgba(2,7,9,.70)),
+    url("/images/ashish_billboard.webp") center/cover no-repeat !important;
+  filter:saturate(.84) contrast(1.02) !important;
+}
+
+.jarvis-unlock-screen::after{
+  background:
+    radial-gradient(circle at 50% 14%,rgba(99,246,255,.13),transparent 28%),
+    linear-gradient(90deg,rgba(2,7,9,.10),transparent 50%,rgba(2,7,9,.16));
+}
+
+.jarvis-unlock-screen .jarvis-unlock-card{
+  width:min(460px,94vw) !important;
+  padding:26px 22px 22px !important;
+  background:linear-gradient(145deg,rgba(4,12,15,.80),rgba(3,9,12,.72)) !important;
+  border:1px solid rgba(99,246,255,.24) !important;
+  box-shadow:0 30px 90px rgba(0,0,0,.48),0 0 60px rgba(99,246,255,.08) !important;
+  backdrop-filter:blur(10px) saturate(1.08);
+  -webkit-backdrop-filter:blur(10px) saturate(1.08);
+}
+
+.jarvis-unlock-motivation{
+  max-width:100% !important;
+  margin:0 auto 17px !important;
+  padding:0 !important;
+  line-height:.96 !important;
+}
+
+.jarvis-unlock-motivation::before{
+  content:"JARVIS // EXECUTION PROTOCOL" !important;
+  margin-bottom:12px !important;
+  color:var(--nexus-mint) !important;
+  font-size:8px !important;
+  letter-spacing:2.2px !important;
+}
+
+.jarvis-unlock-motivation .line-main{
+  font-size:clamp(22px,6.4vw,39px) !important;
+  color:#F4FFFE !important;
+}
+
+.jarvis-unlock-motivation .line-accent{
+  margin-top:5px !important;
+  font-size:clamp(28px,7.8vw,49px) !important;
+  color:var(--nexus-cyan) !important;
+  text-shadow:0 0 32px rgba(99,246,255,.20) !important;
+}
+
+.jarvis-unlock-motivation .line-foot{
+  margin-top:8px !important;
+  font-size:clamp(15px,4.3vw,24px) !important;
+  color:#C9E6E4 !important;
+}
+
+.jarvis-unlock-motivation::after{
+  content:"EXECUTE WHAT YOU ALREADY KNOW." !important;
+  margin-top:12px !important;
+  color:rgba(201,235,233,.56) !important;
+  font-size:8px !important;
+  letter-spacing:1.5px !important;
+}
+
+@media(max-width:600px){
+  .jarvis-theme.dashboard-screen::before{opacity:.15;}
+  .jarvis-unlock-screen::before{opacity:.38 !important;}
+  .jarvis-unlock-screen .jarvis-unlock-card{padding:22px 18px 18px !important;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .jarvis-theme .card:hover,
+  .jarvis-theme .card-sm:hover,
+  .jarvis-theme .block-card:hover{transform:none;}
+}
