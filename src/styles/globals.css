@@ -3785,3 +3785,172 @@ body.jarvis-theme { min-width: 320px; }
 @media(prefers-reduced-motion:reduce){
   .jarvis-lock-v5__quote { animation:none; }
 }
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS LOCK V9 // MIDNIGHT EXECUTION
+   Final mobile-first visual layer
+═══════════════════════════════════════════════════ */
+.jarvis-lock-v5{
+  min-height:100svh;
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:12px;
+  overflow:auto;
+  background:#020506;
+}
+
+.jarvis-lock-v5__backdrop{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  background:
+    linear-gradient(180deg,rgba(1,5,7,.48),rgba(1,5,7,.82)),
+    radial-gradient(circle at 78% 20%,rgba(99,246,255,.10),transparent 30%),
+    url('/images/ashish_billboard.webp') center/cover no-repeat;
+  filter:saturate(.84) contrast(1.03);
+  transform:scale(1.015);
+}
+
+.jarvis-lock-v5__grid{z-index:-3;opacity:.10;background-size:34px 34px}
+.jarvis-lock-v5__scan{z-index:-2;opacity:.55;animation-duration:13s}
+.jarvis-lock-v5__shell{width:min(760px,100%);gap:12px}
+
+.jarvis-lock-v5__topbar{
+  min-height:36px;
+  padding:6px 9px;
+  border:1px solid rgba(99,246,255,.12);
+  border-radius:11px;
+  background:rgba(1,8,10,.48);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+.jarvis-lock-v5__hero{
+  grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);
+  gap:18px;
+  padding:4px 1px 0;
+}
+
+.jarvis-lock-v5__identity{align-items:center;gap:12px}
+
+.jarvis-lock-v5__portrait-frame{
+  width:86px;
+  height:112px;
+  flex-basis:86px;
+  border-radius:17px;
+  border-color:rgba(99,246,255,.38);
+  box-shadow:0 18px 45px rgba(0,0,0,.46),0 0 28px rgba(99,246,255,.08);
+}
+
+.jarvis-lock-v5__portrait-frame img{
+  object-position:center 15%;
+  filter:saturate(.9) contrast(1.02);
+}
+
+.jarvis-lock-v5__identity-copy h1{
+  margin:5px 0 4px;
+  font-size:clamp(20px,4vw,31px);
+  letter-spacing:-1px;
+}
+
+.jarvis-lock-v5__identity-copy p{font-size:10px;line-height:1.4}
+
+.jarvis-lock-v5__quote-zone{
+  min-height:190px;
+  padding:14px 0 6px 17px;
+  border-left:1px solid rgba(99,246,255,.10);
+}
+
+.jarvis-lock-v5__quote-zone::before{
+  left:-2px;
+  top:4px;
+  bottom:4px;
+  width:3px;
+  border-radius:3px;
+  background:linear-gradient(180deg,#63f6ff,#75f6b0,transparent);
+}
+
+.jarvis-lock-v5__quote-label{margin-bottom:8px;font-size:7px;letter-spacing:2px}
+.jarvis-lock-v5__quote{letter-spacing:-1.35px;line-height:.91}
+.jarvis-lock-v5__quote span{font-size:clamp(15px,2.8vw,25px)}
+.jarvis-lock-v5__quote strong{
+  font-size:clamp(29px,5.4vw,56px);
+  letter-spacing:-1.9px;
+}
+.jarvis-lock-v5__quote em{
+  max-width:420px;
+  margin-top:7px;
+  font-size:clamp(11px,1.9vw,16px);
+  line-height:1.2;
+}
+
+.jarvis-lock-v5__signals{margin-top:13px;gap:6px;font-size:6px;letter-spacing:1px}
+.jarvis-lock-v5__micro-quotes{margin-top:11px;gap:5px}
+.jarvis-lock-v5__micro-quotes span{
+  padding:5px 7px;
+  font-size:5.7px;
+  letter-spacing:.9px;
+  background:rgba(1,7,9,.50);
+}
+
+.jarvis-lock-v5__console{
+  padding:16px;
+  border-radius:18px;
+  border-color:rgba(99,246,255,.20);
+  background:linear-gradient(145deg,rgba(3,12,15,.92),rgba(1,6,8,.86));
+}
+
+.jarvis-lock-v5__console-head strong{font-size:12px}
+.jarvis-lock-v5__hint{margin:8px 0 11px;font-size:9px}
+.jarvis-lock-v5__input-wrap{height:56px;border-radius:12px}
+.jarvis-lock-v5__input-wrap input{font-size:21px;letter-spacing:7px}
+.jarvis-lock-v5__unlock{height:52px;font-size:11px;border-radius:12px}
+.jarvis-lock-v5__telemetry{flex-wrap:wrap;padding-top:6px;font-size:5.5px}
+.jarvis-lock-v5__footer{opacity:.72;font-size:6px}
+
+@media(max-width:650px){
+  .jarvis-lock-v5{place-items:start center;padding:10px 10px 12px}
+  .jarvis-lock-v5__shell{gap:10px}
+  .jarvis-lock-v5__hero{grid-template-columns:1fr;gap:10px;padding-top:2px}
+  .jarvis-lock-v5__identity{justify-content:flex-start}
+  .jarvis-lock-v5__portrait-frame{width:68px;height:88px;flex-basis:68px;border-radius:14px}
+  .jarvis-lock-v5__identity-copy h1{font-size:18px;letter-spacing:-.65px}
+  .jarvis-lock-v5__identity-copy p{font-size:8.5px;max-width:270px}
+  .jarvis-lock-v5__quote-zone{
+    min-height:0;
+    padding:10px 0 4px 13px;
+    border-left:0;
+    border-top:1px solid rgba(99,246,255,.07);
+  }
+  .jarvis-lock-v5__quote-zone::before{top:10px;bottom:5px}
+  .jarvis-lock-v5__quote-label{font-size:6.5px;margin-bottom:6px}
+  .jarvis-lock-v5__quote span{font-size:15px}
+  .jarvis-lock-v5__quote strong{font-size:clamp(26px,9.5vw,39px);letter-spacing:-1.2px}
+  .jarvis-lock-v5__quote em{font-size:10px}
+  .jarvis-lock-v5__signals{margin-top:9px;font-size:5.5px}
+  .jarvis-lock-v5__micro-quotes{margin-top:8px}
+  .jarvis-lock-v5__micro-quotes span{font-size:5.2px;padding:4px 6px}
+  .jarvis-lock-v5__console{padding:13px;border-radius:15px}
+  .jarvis-lock-v5__input-wrap{height:54px}
+  .jarvis-lock-v5__input-wrap input{font-size:20px;letter-spacing:6px}
+  .jarvis-lock-v5__unlock{min-height:50px;height:50px}
+  .jarvis-lock-v5__footer{display:none}
+}
+
+@media(max-width:360px){
+  .jarvis-lock-v5__topbar{font-size:8px}
+  .jarvis-lock-v5__brand small{display:none}
+  .jarvis-lock-v5__portrait-frame{width:62px;height:80px;flex-basis:62px}
+  .jarvis-lock-v5__identity-copy h1{font-size:17px}
+  .jarvis-lock-v5__identity-copy p{font-size:8px}
+  .jarvis-lock-v5__quote strong{font-size:28px}
+  .jarvis-lock-v5__micro-quotes{display:grid;grid-template-columns:1fr 1fr}
+  .jarvis-lock-v5__micro-quotes span:last-child{grid-column:1/-1}
+  .jarvis-lock-v5__telemetry{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .jarvis-lock-v5__scan{animation:none;opacity:0}
+}
