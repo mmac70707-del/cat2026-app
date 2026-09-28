@@ -170,6 +170,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun vaultKeyMaterial(): String {
+        val key = getOrCreateJarvisKey() ?: throw IllegalStateException("JARVIS keystore unavailable")
+        val mac = Mac.getInstance("HmacSHA256")
+        mac.init(key)
+        return mac.doFinal("CAT2026_JARVIS_SECURE_VAULT_V1".toByteArray(StandardCharsets.UTF_8))
+            .joinToString("") { "%02x".format(it) }
+    }
+
+
     private fun setJarvisPin(pin: String): Boolean {
         if (hasJarvisPin()) return false
         if (!pin.matches(Regex("\\d{6}"))) return false
@@ -448,6 +457,13 @@ class MainActivity : ComponentActivity() {
                     response.put("ok", verified).put("locked", locked)
                 }
                 "launchNativeAction" -> response.put("ok", launchNativeAction(args.optString("action")))
+                "getVaultKeyMaterial" -> {
+                    if (!nativeUnlocked) {
+                        response.put("ok", false).put("error", "Native unlock required")
+                    } else {
+                        response.put("ok", true).put("vaultKey", vaultKeyMaterial())
+                    }
+                }
                 "getDeviceCapabilities" -> {
                     val biometricReady =
                         BiometricManager.from(this@MainActivity)
