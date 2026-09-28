@@ -43,15 +43,13 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: { '@': resolve(__dirname, './src') },
+    alias: { '@': resolve(process.cwd(), './src') },
   },
   build: {
     target: 'es2020',
     outDir: 'dist',
     sourcemap: true,
-    rollupOptions: {
-      output: { manualChunks: { vendor: ['react', 'react-dom'] } },
-    },
+
   },
   server: { port: 5173, host: true },
 })
