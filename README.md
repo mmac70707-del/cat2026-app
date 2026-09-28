@@ -24,7 +24,7 @@ npm install          # install all dependencies
 npm run dev          # development server (hot reload)
 npm run build        # production build → dist/
 npm run preview      # preview production build locally
-npm run type-check   # TypeScript type check only
+npm run typecheck   # TypeScript type check only
 ```
 
 ---
