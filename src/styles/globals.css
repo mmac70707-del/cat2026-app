@@ -1827,3 +1827,392 @@ body.jarvis-theme { min-width: 320px; }
   .jarvis-theme .header-utility-label { display:none; }
   .jarvis-theme .header-utility { width:24px; padding:0; }
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   JARVIS APEX UI/UX 4.0
+   Calm intelligence • strong hierarchy • tactile mobile ergonomics
+   Neon = state signal, never decoration.
+═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --ui-bg: #020608;
+  --ui-surface: rgba(8, 16, 19, .94);
+  --ui-surface-2: rgba(11, 22, 25, .96);
+  --ui-surface-3: rgba(15, 29, 32, .98);
+  --ui-line: rgba(255,255,255,.075);
+  --ui-line-strong: rgba(0,245,255,.20);
+  --ui-text: #E9F7F6;
+  --ui-secondary: #A7B9BA;
+  --ui-muted: #65797B;
+  --ui-cyan: #55F4FF;
+  --ui-green: #65F6A0;
+  --ui-amber: #FFC45C;
+  --ui-red: #FF7189;
+  --ui-radius: 18px;
+  --ui-radius-sm: 12px;
+  --ui-shadow: 0 18px 45px rgba(0,0,0,.24);
+}
+
+.jarvis-theme,
+.jarvis-theme body {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+}
+
+.jarvis-theme .app-shell {
+  background:
+    radial-gradient(600px 300px at 50% -160px, rgba(85,244,255,.095), transparent 70%),
+    linear-gradient(180deg,#061013 0%,#03080A 42%,#020608 100%);
+}
+
+.jarvis-theme .app-shell::after {
+  background:
+    radial-gradient(420px 180px at 50% 0, rgba(255,255,255,.035), transparent 72%),
+    linear-gradient(180deg,transparent,rgba(0,0,0,.14));
+  opacity: 1;
+}
+
+.jarvis-theme .content-area {
+  padding: 12px 16px calc(92px + env(safe-area-inset-bottom));
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(85,244,255,.18) transparent;
+}
+
+.jarvis-theme .app-header {
+  min-height: 66px;
+  padding: 10px 16px;
+  background: rgba(3,9,11,.90);
+  border-bottom: 1px solid var(--ui-line);
+  box-shadow: 0 12px 32px rgba(0,0,0,.24);
+}
+
+.jarvis-theme .app-title {
+  font-size: 16px;
+  font-weight: 950;
+  letter-spacing: -.15px;
+  background: linear-gradient(90deg,var(--ui-cyan),#B5FFFF);
+  -webkit-background-clip:text;
+  background-clip:text;
+  text-shadow: 0 0 22px rgba(85,244,255,.12);
+}
+
+.jarvis-theme .app-subtitle {
+  margin-top: 4px;
+  color: var(--ui-muted);
+  font-size: 8px;
+  letter-spacing: .45px;
+}
+
+.jarvis-theme .app-week { color: var(--ui-green); }
+
+.jarvis-theme .phase-badge {
+  max-width: 112px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: rgba(85,244,255,.055) !important;
+  border: 1px solid rgba(85,244,255,.17);
+  color: var(--ui-cyan) !important;
+  font-size: 7px;
+  font-weight: 850;
+  text-align:center;
+}
+
+.jarvis-theme .countdown-wrap {
+  min-width: 58px;
+  padding-left: 10px;
+  border-left: 1px solid var(--ui-line);
+}
+
+.jarvis-theme .countdown-days {
+  font-size: 20px;
+  color: var(--ui-text);
+  text-shadow:none;
+}
+
+.jarvis-theme .countdown-label {
+  color:var(--ui-muted);
+  font-size:6px;
+  letter-spacing:1px;
+}
+
+.jarvis-theme .countdown-hms {
+  color:#789092;
+  font-size:7px;
+}
+
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .jarvis-panel {
+  background: linear-gradient(145deg,rgba(10,20,23,.97),rgba(5,12,15,.97));
+  border:1px solid var(--ui-line);
+  border-radius:var(--ui-radius);
+  box-shadow:var(--ui-shadow), inset 0 1px rgba(255,255,255,.025);
+}
+
+.jarvis-theme .card {
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.jarvis-theme .card-sm { padding:13px; }
+
+.jarvis-theme .card-title {
+  color:var(--ui-text);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.65px;
+}
+
+.jarvis-theme .card:hover,
+.jarvis-theme .card-sm:hover,
+.jarvis-theme .block-card:hover {
+  border-color:rgba(85,244,255,.14);
+}
+
+.jarvis-theme button {
+  -webkit-font-smoothing:antialiased;
+  touch-action:manipulation;
+  transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease,opacity .16s ease;
+}
+
+.jarvis-theme button:active {
+  transform:scale(.985);
+}
+
+.jarvis-theme button:focus-visible,
+.jarvis-theme input:focus-visible,
+.jarvis-theme textarea:focus-visible {
+  outline:2px solid rgba(85,244,255,.62);
+  outline-offset:3px;
+}
+
+.jarvis-theme .btn-primary {
+  min-height:46px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#087984,#0B9EAA);
+  box-shadow:0 10px 24px rgba(0,245,255,.10);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.25px;
+}
+
+.jarvis-theme .form-input {
+  min-height:44px;
+  padding:0 12px;
+  background:#030A0C;
+  border:1px solid var(--ui-line);
+  border-radius:12px;
+  color:var(--ui-text);
+}
+
+.jarvis-theme .form-input:focus {
+  border-color:rgba(85,244,255,.42);
+  box-shadow:0 0 0 3px rgba(85,244,255,.07);
+}
+
+.jarvis-theme .progress-wrap {
+  height:7px;
+  background:#0B1619;
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:99px;
+}
+
+.jarvis-theme .progress-fill {
+  background:linear-gradient(90deg,var(--ui-cyan),var(--ui-green)) !important;
+  box-shadow:0 0 12px rgba(85,244,255,.18);
+}
+
+.jarvis-theme .bottom-nav {
+  height:calc(76px + env(safe-area-inset-bottom));
+  width:min(100vw,430px);
+  background:rgba(3,9,11,.96);
+  border-top:1px solid var(--ui-line);
+  box-shadow:0 -16px 38px rgba(0,0,0,.34);
+  padding:4px 8px env(safe-area-inset-bottom);
+}
+
+.jarvis-theme .nav-btn {
+  position:relative;
+  min-height:58px;
+  gap:2px;
+  color:#607477;
+  border-radius:13px;
+}
+
+.jarvis-theme .nav-btn.active {
+  color:var(--ui-cyan);
+  background:rgba(85,244,255,.045);
+}
+
+.jarvis-theme .nav-btn.active::before {
+  content:'';
+  position:absolute;
+  top:3px;
+  width:22px;
+  height:2px;
+  border-radius:99px;
+  background:var(--ui-cyan);
+  box-shadow:0 0 10px rgba(85,244,255,.35);
+}
+
+.jarvis-theme .nav-icon {
+  width:34px;
+  height:29px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  font-size:17px;
+  filter:saturate(.72);
+}
+
+.jarvis-theme .nav-label {
+  font-size:7px;
+  font-weight:850;
+  letter-spacing:.35px;
+}
+
+.jarvis-theme .section-pad,
+.jarvis-theme .jarvis-page {
+  max-width:398px;
+}
+
+.jarvis-theme .jarvis-command-trigger {
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  background:rgba(5,13,16,.98);
+  border:1px solid rgba(85,244,255,.18);
+  box-shadow:0 10px 24px rgba(0,0,0,.25);
+}
+
+.jarvis-theme .jarvis-hub-grid {
+  gap:9px;
+}
+
+.jarvis-theme .jarvis-hub-tile {
+  min-height:112px;
+  padding:14px;
+  border-radius:16px;
+  background:linear-gradient(145deg,#0A191D,#050D10);
+  border-color:var(--ui-line);
+  box-shadow:0 12px 28px rgba(0,0,0,.23);
+}
+
+.jarvis-theme .jarvis-hub-tile.featured {
+  min-height:92px;
+  border-color:rgba(85,244,255,.21);
+  background:
+    radial-gradient(circle at 90% 5%,rgba(85,244,255,.11),transparent 38%),
+    linear-gradient(145deg,#0B2024,#050D10);
+}
+
+.jarvis-theme .jarvis-hub-icon {
+  width:36px;
+  height:36px;
+  border-radius:11px;
+  background:rgba(255,255,255,.035);
+  border-color:rgba(255,255,255,.07);
+}
+
+.jarvis-theme .jarvis-hub-tile-label {
+  font-size:10px;
+  line-height:1.35;
+}
+
+.jarvis-theme .jarvis-hub-tile.featured .jarvis-hub-tile-label {
+  color:var(--ui-cyan);
+  font-size:11px;
+}
+
+.jarvis-theme .jarvis-library-hero {
+  padding:18px;
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 100% 0,rgba(101,246,160,.08),transparent 40%),
+    linear-gradient(145deg,#09191D,#040B0D);
+  border-color:var(--ui-line);
+}
+
+.jarvis-theme .jarvis-library-hero h1 {
+  font-size:22px;
+  letter-spacing:-.8px;
+}
+
+.jarvis-theme .jarvis-now-card {
+  border-color:rgba(101,246,160,.16);
+  border-radius:16px;
+  background:linear-gradient(145deg,#071A14,#050D10);
+}
+
+.jarvis-theme .jarvis-feature-card,
+.jarvis-theme .jarvis-library-tile {
+  border-color:var(--ui-line);
+  border-radius:12px;
+  background:rgba(7,16,19,.96);
+}
+
+.jarvis-theme .mission-os-hero {
+  border-radius:20px;
+  padding:17px;
+  background:
+    radial-gradient(circle at 100% 0,rgba(101,246,160,.10),transparent 45%),
+    linear-gradient(145deg,#081A18,#040C0F);
+}
+
+.jarvis-theme .mission-os-hero h1 {
+  font-size:19px;
+  letter-spacing:-.25px;
+}
+
+.jarvis-theme .mission-os-section {
+  border-radius:16px;
+  border-color:var(--ui-line);
+  background:rgba(7,16,19,.88);
+}
+
+.jarvis-theme .mission-os-primary,
+.jarvis-theme .mission-os-secondary,
+.jarvis-theme .mission-os-log {
+  min-height:46px;
+  border-radius:11px;
+}
+
+.jarvis-theme .mission-os-primary {
+  background:#071A13;
+  border-color:rgba(101,246,160,.23);
+}
+
+.jarvis-theme .mission-os-secondary {
+  background:#061216;
+  border-color:rgba(85,244,255,.20);
+}
+
+.jarvis-theme .mission-os-recommendation {
+  border-radius:12px;
+}
+
+.jarvis-theme .jarvis-terminal {
+  border-radius:14px;
+  background:#020708;
+  border-color:rgba(101,246,160,.15);
+}
+
+.jarvis-theme .jarvis-scanline::after {
+  opacity:.35;
+}
+
+@media (max-width:360px) {
+  .jarvis-theme .content-area { padding-inline:12px; }
+  .jarvis-theme .app-header { padding-inline:12px; }
+  .jarvis-theme .app-title { font-size:14px; }
+  .jarvis-theme .jarvis-hub-tile { min-height:104px; }
+  .jarvis-theme .jarvis-library-hero h1 { font-size:19px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .jarvis-theme button,
+  .jarvis-theme .nav-btn { transition:none; }
+}
