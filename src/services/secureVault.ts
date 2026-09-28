@@ -1,4 +1,4 @@
-import { dbDelete, dbGet, dbPut, openDB } from '@/db'
+import { dbDelete, dbGet, dbGetAll, dbPut, openDB } from '@/db'
 import { getNativeVaultKeyMaterial } from '@/services/native'
 
 
@@ -102,6 +102,37 @@ export async function secureVaultDelete(keyId: string): Promise<void> {
   if (!vaultKey) throw new Error('Secure vault is locked')
   await dbDelete('secureVault', keyId)
 }
+
+export async function exportSecureMemory(): Promise<Array<{ keyId: string; value: string }>> {
+  if (!vaultKey) throw new Error('Secure vault is locked')
+  const records = await dbGetAll<VaultRecord>('secureVault')
+  const result: Array<{ keyId: string; value: string }> = []
+  for (const record of records) {
+    try {
+      const plaintext = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: toArrayBuffer(fromBase64(record.iv)) },
+        vaultKey,
+        toArrayBuffer(fromBase64(record.ciphertext))
+      )
+      result.push({ keyId: record.keyId, value: new TextDecoder().decode(plaintext) })
+    } catch {
+      // Skip unreadable records rather than aborting the whole backup.
+    }
+  }
+  return result
+}
+
+export async function importSecureMemory(items: Array<{ keyId: string; value: string }>): Promise<number> {
+  if (!vaultKey) throw new Error('Secure vault is locked')
+  let imported = 0
+  for (const item of items) {
+    if (!item || typeof item.keyId !== 'string' || typeof item.value !== 'string') continue
+    await secureVaultSet(item.keyId, item.value)
+    imported++
+  }
+  return imported
+}
+
 
 export async function migrateLegacyLocalSecret(
   keyId: string,
