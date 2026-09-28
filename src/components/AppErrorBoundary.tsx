@@ -13,8 +13,8 @@ async function recoverStaleRuntime() {
   } catch {}
 
   try {
-    const keys = await caches?.keys()
-    await Promise.all((keys || []).map(key => caches.delete(key)))
+    const keys = await globalThis.caches?.keys()
+    await Promise.all((keys || []).map(key => globalThis.caches.delete(key)))
   } catch {}
 
   await new Promise(resolve => setTimeout(resolve, 120))
