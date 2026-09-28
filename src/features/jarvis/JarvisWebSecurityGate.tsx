@@ -166,6 +166,22 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const directives = [
+    ['THE MAGIC', 'YOU ARE LOOKING FOR', 'IS IN THE WORK YOU ARE AVOIDING.'],
+    ['THE WORK', 'YOU KEEP AVOIDING', 'IS THE DOOR YOU KEEP LOOKING FOR.'],
+    ['DISCIPLINE', 'BEATS MOTIVATION', 'WHEN MOTIVATION DISAPPEARS.'],
+    ['CONSISTENCY', 'BUILDS THE MAN', 'YOU WANT TO BECOME.'],
+    ['FOCUS', 'ON WHAT MATTERS', 'AND LET THE NOISE LOSE.'],
+    ['BECOME', 'THE MAN YOU PROMISED', 'ONE DECISION AT A TIME.'],
+    ['START BEFORE', 'YOU FEEL READY', 'CLARITY COMES FROM ACTION.'],
+    ['NO RANDOM MOVES', 'JUST THE NEXT BLOCK', 'EXECUTE. REVIEW. REPAIR. RETEST.'],
+  ] as const
+
+  useEffect(() => {
+    const id = window.setInterval(() => setDirectiveIndex(i => (i + 1) % directives.length), 7000)
+    return () => window.clearInterval(id)
+  }, [])
+
   if (!ready) return null
 
   async function submit() {
@@ -236,21 +252,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   }
 
   const lockedSeconds = Math.ceil(lockedMs / 1000)
-  const directives = [
-    ['THE MAGIC', 'YOU ARE LOOKING FOR', 'IS IN THE WORK YOU ARE AVOIDING.'],
-    ['THE WORK', 'YOU KEEP AVOIDING', 'IS THE DOOR YOU KEEP LOOKING FOR.'],
-    ['DISCIPLINE', 'BEATS MOTIVATION', 'WHEN MOTIVATION DISAPPEARS.'],
-    ['CONSISTENCY', 'BUILDS THE MAN', 'YOU WANT TO BECOME.'],
-    ['FOCUS', 'ON WHAT MATTERS', 'AND LET THE NOISE LOSE.'],
-    ['BECOME', 'THE MAN YOU PROMISED', 'ONE DECISION AT A TIME.'],
-    ['START BEFORE', 'YOU FEEL READY', 'CLARITY COMES FROM ACTION.'],
-    ['NO RANDOM MOVES', 'JUST THE NEXT BLOCK', 'EXECUTE. REVIEW. REPAIR. RETEST.'],
-  ] as const
 
-  useEffect(() => {
-    const id = window.setInterval(() => setDirectiveIndex(i => (i + 1) % directives.length), 7000)
-    return () => window.clearInterval(id)
-  }, [])
 
   if (unlocked) return <>{children}</>
 
