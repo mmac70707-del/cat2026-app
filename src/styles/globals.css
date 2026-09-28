@@ -2287,3 +2287,50 @@ body.jarvis-theme { min-width: 320px; }
 @media (prefers-reduced-motion: reduce) {
   .nav-btn svg { transition:none; }
 }
+
+
+/* ── COMMAND LIBRARY // ORDERED ICONS ── */
+.jarvis-hub-icon {
+  position:relative;
+  display:grid !important;
+  place-items:center;
+  gap:4px;
+}
+
+.jarvis-hub-icon svg {
+  color:var(--jarvis-cyan,#55F4FF);
+  filter:drop-shadow(0 0 12px rgba(85,244,255,.11));
+}
+
+.jarvis-library-tile.featured .jarvis-hub-icon svg {
+  color:var(--jarvis-green,#65F6A0);
+}
+
+.jarvis-tile-seq {
+  position:absolute;
+  top:-7px;
+  right:-7px;
+  min-width:18px;
+  padding:2px 4px;
+  border-radius:5px;
+  border:1px solid rgba(85,244,255,.14);
+  background:rgba(2,8,10,.92);
+  color:#78A1A4;
+  font:800 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.25px;
+}
+
+.jarvis-library-tile:hover .jarvis-tile-seq,
+.jarvis-library-tile:focus-visible .jarvis-tile-seq {
+  color:#B9FFFF;
+  border-color:rgba(85,244,255,.32);
+}
+
+.dash-root .card-title > svg,
+.dash-root .live-schedule-kicker > svg,
+.dash-root .mission-text > svg,
+.dash-root .daily-motivation-kicker > svg {
+  flex:0 0 auto;
+  vertical-align:-3px;
+  color:#55F4FF;
+}
