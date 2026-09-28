@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { recordAudit } from '@/services/auditLog'
+import { clearVaultKey, isVaultUnlocked, unlockVaultWithNative, unlockVaultWithPin } from '@/services/secureVault'
 
 const PIN_KEY = 'jarvis_web_pin_v2'
 const LEGACY_PIN_KEY = 'jarvis_web_pin_v1'
 const ATTEMPTS_KEY = 'jarvis_failed_attempts_v1'
 const LOCK_UNTIL_KEY = 'jarvis_lock_until_v1'
-const SESSION_KEY = 'jarvis_unlocked'
 const INACTIVITY_MS = 30 * 60 * 1000
 const PBKDF2_ITERATIONS = 600_000
 
@@ -101,30 +101,43 @@ function getLockRemainingMs() {
 export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [configured, setConfigured] = useState(false)
+  const [unlocked, setUnlocked] = useState(false)
   const [pin, setPin] = useState('')
   const [confirm, setConfirm] = useState('')
   const [message, setMessage] = useState('')
   const [lockedMs, setLockedMs] = useState(getLockRemainingMs())
   const idleTimer = useRef<number | null>(null)
+  const unlockedRef = useRef(false)
 
   useEffect(() => {
     const configuredNow = Boolean(getRecord() || localStorage.getItem(LEGACY_PIN_KEY))
     setConfigured(configuredNow)
     setReady(true)
 
-    const onUnlock = () => {
-      sessionStorage.setItem(SESSION_KEY, '1')
-      void recordAudit('jarvis_unlocked', 'Web session unlocked')
-      window.location.reload()
+    const onUnlock = async () => {
+      try {
+        await unlockVaultWithNative()
+        unlockedRef.current = true
+        setUnlocked(true)
+        await recordAudit('jarvis_unlocked', 'Native Android verification accepted')
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : 'Secure native vault unavailable')
+        await recordAudit('jarvis_unlock_error', String(error))
+      }
     }
 
-    const onLock = () => {
-      sessionStorage.removeItem(SESSION_KEY)
-      void recordAudit('jarvis_locked', 'Web session locked').finally(() => window.location.reload())
+    const onLock = async () => {
+      clearVaultKey()
+      unlockedRef.current = false
+      setUnlocked(false)
+      setPin('')
+      setConfirm('')
+      setMessage('JARVIS locked.')
+      await recordAudit('jarvis_locked', 'Session locked')
     }
 
     const resetIdle = () => {
-      if (sessionStorage.getItem(SESSION_KEY) !== '1') return
+      if (!unlockedRef.current) return
       if (idleTimer.current) window.clearTimeout(idleTimer.current)
       idleTimer.current = window.setTimeout(onLock, INACTIVITY_MS)
     }
@@ -175,9 +188,10 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       localStorage.removeItem(LEGACY_PIN_KEY)
       localStorage.removeItem(ATTEMPTS_KEY)
       localStorage.removeItem(LOCK_UNTIL_KEY)
-      sessionStorage.setItem(SESSION_KEY, '1')
-      await recordAudit('jarvis_pin_created', 'Initial web PIN configured')
-      window.location.reload()
+      await unlockVaultWithPin(pin, record.salt, record.iterations)
+      unlockedRef.current = true
+      setUnlocked(true)
+      await recordAudit('jarvis_pin_created', 'Initial web PIN configured and secure vault unlocked')
       return
     }
 
@@ -216,7 +230,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     setMessage(`Incorrect PIN. Security cooldown: ${Math.ceil(cooldown / 1000)}s`)
   }
 
-  if (sessionStorage.getItem(SESSION_KEY) === '1') return <>{children}</>
+  if (unlocked) return <>{children}</>
 
   const lockedSeconds = Math.ceil(lockedMs / 1000)
 
