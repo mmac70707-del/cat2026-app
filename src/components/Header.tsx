@@ -3,6 +3,7 @@ import { usePhase } from '@/hooks/usePhase'
 import { UpdateNotifier } from '@/components/UpdateNotifier'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 import { PERCENTYL_WEEKS } from '@/data/percentylPlan2'
+import { AppIcon } from '@/components/AppIcon'
 
 export function Header({
   onOpenVoiceJarvis,
@@ -29,7 +30,7 @@ export function Header({
                 className="header-utility header-utility-voice"
                 aria-label="Open JARVIS voice"
               >
-                <span aria-hidden="true">●</span><span className="header-utility-label">JARVIS</span>
+                <AppIcon name="jarvis" size={17} /><span className="header-utility-label">JARVIS</span>
               </button>
             )}
             {onOpenJarvisHud && (
@@ -38,7 +39,7 @@ export function Header({
                 className="header-utility header-utility-hud"
                 aria-label="Open JARVIS HUD"
               >
-                <span aria-hidden="true">◉</span><span className="header-utility-label">HUD</span>
+                <AppIcon name="hud" size={17} /><span className="header-utility-label">HUD</span>
               </button>
             )}
           </div>
