@@ -240,9 +240,9 @@ function AppUnlocked() {
   if (activePage === 'dashboard') {
     return (
       <>
-        <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+        <div className="jarvis-theme dashboard-screen" style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
         <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
-          <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+          <button className="dashboard-exit" onClick={() => setActivePage('more')}>
             ← Exit 1:1 Dashboard
           </button>
         </div>
