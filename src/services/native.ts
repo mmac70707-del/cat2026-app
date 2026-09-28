@@ -16,6 +16,7 @@ type NativeResponse = {
   error?: string
   locked?: boolean
   capabilities?: Record<string, boolean>
+  vaultKey?: string
 }
 
 type NativeRequest = {
@@ -87,6 +88,13 @@ export function authenticateBiometric(): void {
 
 export function launchNativeAction(action: string): void {
   void nativeRequest({ action: 'launchNativeAction', args: { action } })
+}
+
+export async function getNativeVaultKeyMaterial(): Promise<string | null> {
+  const response = await nativeRequest({ action: 'getVaultKeyMaterial' })
+  return response.ok && typeof (response as NativeResponse & { vaultKey?: string }).vaultKey === 'string'
+    ? (response as NativeResponse & { vaultKey: string }).vaultKey
+    : null
 }
 
 export async function getDeviceCapabilities(): Promise<Record<string, boolean> | null> {
