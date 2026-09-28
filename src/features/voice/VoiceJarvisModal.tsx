@@ -164,7 +164,7 @@ export function VoiceJarvisModal({ isOpen, onClose, onNavigate }: Props) {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: 16, fontWeight: 900, color: '#F5A623', display: 'flex', alignItems: 'center', gap: 8 }}>
-            🎙️ STANFORD VOICE JARVIS
+            🎙️ JARVIS VOICE COMMAND
           </div>
           <button onClick={onClose} style={{ background: '#1F2937', border: '1px solid #374151', color: '#FFF', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', fontWeight: 800 }}>
             ✕
