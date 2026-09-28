@@ -83,11 +83,18 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
     setLog(v => [message, ...v].slice(0, 8))
   }
 
+  function toggleFocus() {
+    window.dispatchEvent(new Event(focus ? 'jarvis:focus:stop' : 'jarvis:focus:start'))
+    setFocus(!focus)
+    addLog(focus ? 'Focus mode ended' : 'Deep Focus activated')
+  }
+
   function runCommand() {
     const q = command.trim().toLowerCase()
     if (!q) return
 
     if (q.includes('focus')) {
+      window.dispatchEvent(new Event('jarvis:focus:start'))
       setFocus(true)
       addLog('Deep Focus mode activated')
     } else if (q.includes('dashboard') && onNavigate) {
@@ -195,10 +202,7 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
         <Panel title="🎯 ONE-TAP EXECUTION">
           <div className="jarvis-action-grid">
             <Action text="TODAY'S COMMAND" onClick={() => onNavigate?.('today')} />
-            <Action text={focus ? 'EXIT DEEP FOCUS' : 'DEEP FOCUS'} onClick={() => {
-              setFocus(v => !v)
-              addLog(focus ? 'Focus mode ended' : 'Deep Focus activated')
-            }} />
+            <Action text={focus ? 'EXIT DEEP FOCUS' : 'DEEP FOCUS'} onClick={toggleFocus} />
             <Action text="ERROR TRIAGE" onClick={() => onNavigate?.('errors')} />
             <Action text="MOCK ANALYTICS" onClick={() => onNavigate?.('mockana')} />
             <Action text="ADAPTIVE BRAIN" onClick={() => onNavigate?.('adaptive')} />
