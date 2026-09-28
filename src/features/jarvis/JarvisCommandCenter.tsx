@@ -3,6 +3,7 @@ import { getKolkataDateKey } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { useQuickStats } from '@/hooks/index'
 import { isNative, getDeviceCapabilities, authenticateBiometric, launchNativeAction } from '@/services/native'
+import { migrateLegacyLocalSecret, secureVaultSet } from '@/services/secureVault'
 
 interface Props { onBack?: () => void; onNavigate?: (page: string) => void }
 
@@ -16,7 +17,8 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
     'Security gate verified',
     'CAT execution matrix loaded'
   ])
-  const [memory, setMemory] = useState(() => localStorage.getItem('jarvis_quick_memory') || '')
+  const [memory, setMemory] = useState('')
+  const [memoryLoading, setMemoryLoading] = useState(true)
   const [saved, setSaved] = useState(false)
   const [caps, setCaps] = useState<Record<string, boolean> | null>(null)
   const { stats } = useQuickStats()
@@ -39,8 +41,18 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
 
   useEffect(() => {
     let active = true
-    if (!isNative()) { setCaps(null); return () => { active = false } }
-    void getDeviceCapabilities().then(value => { if (active) setCaps(value) })
+    if (!isNative()) { setCaps(null); }
+    else { void getDeviceCapabilities().then(value => { if (active) setCaps(value) }) }
+    void (async () => {
+      try {
+        const value = await migrateLegacyLocalSecret('jarvis_quick_memory', () => localStorage.getItem('jarvis_quick_memory'), () => localStorage.removeItem('jarvis_quick_memory'))
+        if (active) setMemory(value || '')
+      } catch (error) {
+        addLog('Secure memory unavailable')
+      } finally {
+        if (active) setMemoryLoading(false)
+      }
+    })()
     return () => { active = false }
   }, [])
   const time = new Intl.DateTimeFormat('en-IN', {
@@ -99,11 +111,15 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
     setCommand('')
   }
 
-  function saveMemory() {
-    localStorage.setItem('jarvis_quick_memory', memory)
-    setSaved(true)
-    addLog('Quick memory saved to this browser')
-    window.setTimeout(() => setSaved(false), 1600)
+  async function saveMemory() {
+    try {
+      await secureVaultSet('jarvis_quick_memory', memory)
+      setSaved(true)
+      addLog('Quick memory encrypted and saved locally')
+      window.setTimeout(() => setSaved(false), 1600)
+    } catch (error) {
+      addLog('Secure memory save failed — no plaintext fallback used')
+    }
   }
 
   return (
@@ -223,11 +239,12 @@ export function JarvisCommandCenter({ onBack, onNavigate }: Props) {
           <textarea
             value={memory}
             onChange={e => setMemory(e.target.value)}
+            disabled={memoryLoading}
             placeholder="One thing JARVIS should remember in this browser…"
             className="jarvis-command-input jarvis-memory"
           />
           <button className="jarvis-save" onClick={saveMemory}>
-            {saved ? 'SAVED ✓' : 'SAVE MEMORY'}
+            {memoryLoading ? 'LOADING SECURE MEMORY…' : saved ? 'SAVED ✓' : 'SAVE MEMORY'}
           </button>
         </Panel>
 
