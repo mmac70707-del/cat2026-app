@@ -107,6 +107,8 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
   const [message, setMessage] = useState('')
   const [directiveIndex, setDirectiveIndex] = useState(0)
   const [lockedMs, setLockedMs] = useState(getLockRemainingMs())
+  const [biometricState, setBiometricState] = useState<'idle' | 'scanning' | 'verified'>('idle')
+  const [voiceActive, setVoiceActive] = useState(false)
   const idleTimer = useRef<number | null>(null)
   const unlockedRef = useRef(false)
 
@@ -257,6 +259,60 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
   const lockedSeconds = Math.ceil(lockedMs / 1000)
 
+  async function startDeviceBiometric() {
+    if (lockedMs > 0 || biometricState === 'scanning') return
+    if (!window.PublicKeyCredential || !navigator.credentials) {
+      setMessage('Device biometric is not available here. Use your secure 6-digit PIN.')
+      return
+    }
+
+    setBiometricState('scanning')
+    setMessage('JARVIS is requesting device verification. Your device may use fingerprint or face.')
+
+    try {
+      const challenge = crypto.getRandomValues(new Uint8Array(32))
+      await navigator.credentials.get({
+        publicKey: {
+          challenge,
+          rpId: window.location.hostname,
+          userVerification: 'required',
+          timeout: 45000,
+          allowCredentials: [],
+        }
+      })
+      setBiometricState('verified')
+      setMessage('Device verification completed. Enter your PIN to unlock the private vault.')
+      await recordAudit('jarvis_device_verification_completed', 'WebAuthn ceremony completed; PIN remains the vault unlock authority')
+    } catch (error) {
+      setBiometricState('idle')
+      const name = error instanceof DOMException ? error.name : ''
+      if (name === 'NotAllowedError' || name === 'AbortError') {
+        setMessage('Device verification was cancelled or timed out. Your PIN is still ready.')
+      } else {
+        setMessage('No compatible fingerprint / face / passkey response. Use your secure 6-digit PIN.')
+      }
+    }
+  }
+
+  function speakJarvisGreeting() {
+    if (!('speechSynthesis' in window)) {
+      setMessage('Voice playback is not available in this browser.')
+      return
+    }
+
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(
+      'Hello Ashish. This is JARVIS. Your execution system is waiting. Ready when you are.'
+    )
+    utterance.rate = 0.92
+    utterance.pitch = 0.86
+    utterance.volume = 0.9
+    utterance.onstart = () => setVoiceActive(true)
+    utterance.onend = () => setVoiceActive(false)
+    utterance.onerror = () => setVoiceActive(false)
+    setMessage('JARVIS voice link active.')
+    window.speechSynthesis.speak(utterance)
+  }
 
   if (unlocked) return <>{children}</>
 
@@ -301,6 +357,50 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
               <span>FOCUS &gt; DISTRACTION</span>
               <span>BECOME THE MAN YOU PROMISED</span>
             </div>
+          </div>
+        </section>
+
+        <section className="jarvis-lock-v5__auth-rail" aria-label="Quick JARVIS authentication">
+          <div className="jarvis-lock-v5__auth-heading">
+            <span className="jarvis-lock-v5__auth-kicker">JARVIS QUICK AUTH</span>
+            <span className="jarvis-lock-v5__auth-note">DEVICE-ASSISTED • PIN PROTECTED</span>
+          </div>
+
+          <div className="jarvis-lock-v5__auth-grid">
+            <button
+              type="button"
+              className={`jarvis-lock-v5__auth-card ${biometricState === 'verified' ? 'is-verified' : ''}`}
+              onClick={startDeviceBiometric}
+              disabled={lockedMs > 0 || biometricState === 'scanning'}
+              aria-label="Use fingerprint or face device verification"
+            >
+              <span className="jarvis-lock-v5__auth-glyph jarvis-lock-v5__auth-glyph--biometric" aria-hidden="true">◉</span>
+              <span className="jarvis-lock-v5__auth-copy">
+                <strong>{biometricState === 'scanning' ? 'SCANNING DEVICE' : biometricState === 'verified' ? 'DEVICE VERIFIED' : 'FINGER / FACE'}</strong>
+                <small>Use your phone or laptop biometric</small>
+              </span>
+              <span className="jarvis-lock-v5__auth-action">{biometricState === 'scanning' ? '•••' : biometricState === 'verified' ? '✓' : 'SCAN'}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`jarvis-lock-v5__auth-card ${voiceActive ? 'is-speaking' : ''}`}
+              onClick={speakJarvisGreeting}
+              aria-label="Hear JARVIS voice greeting"
+            >
+              <span className="jarvis-lock-v5__auth-glyph jarvis-lock-v5__auth-glyph--voice" aria-hidden="true">◌</span>
+              <span className="jarvis-lock-v5__auth-copy">
+                <strong>{voiceActive ? 'JARVIS SPEAKING' : 'VOICE GREETING'}</strong>
+                <small>Hello Ashish • execution system standing by</small>
+              </span>
+              <span className="jarvis-lock-v5__auth-action">{voiceActive ? 'LIVE' : 'PLAY'}</span>
+            </button>
+          </div>
+
+          <div className={`jarvis-lock-v5__voice-banner ${voiceActive ? 'is-active' : ''}`} role="status" aria-live="polite">
+            <span className="jarvis-lock-v5__voice-dot" aria-hidden="true" />
+            <span><strong>JARVIS:</strong> {voiceActive ? 'HELLO ASHISH — VOICE LINK ACTIVE.' : 'HELLO ASHISH. THIS IS JARVIS.'}</span>
+            <span className="jarvis-lock-v5__wave" aria-hidden="true"><i/><i/><i/><i/><i/></span>
           </div>
         </section>
 
