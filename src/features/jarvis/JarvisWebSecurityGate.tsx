@@ -235,8 +235,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     setMessage(`Incorrect PIN. Security cooldown: ${Math.ceil(cooldown / 1000)}s`)
   }
 
-  if (unlocked) return <>{children}</>
-
   const lockedSeconds = Math.ceil(lockedMs / 1000)
   const directives = [
     ['THE MAGIC', 'YOU ARE LOOKING FOR', 'IS IN THE WORK YOU ARE AVOIDING.'],
@@ -253,6 +251,8 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     const id = window.setInterval(() => setDirectiveIndex(i => (i + 1) % directives.length), 7000)
     return () => window.clearInterval(id)
   }, [])
+
+  if (unlocked) return <>{children}</>
 
   return (
     <main className="jarvis-lock-v5" aria-label="JARVIS secure lock screen">
