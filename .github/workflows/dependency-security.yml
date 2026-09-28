@@ -1,0 +1,50 @@
+name: Dependency Security Maintenance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/dependency-security.yml'
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit-and-repair:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[deps]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Reconcile lockfile
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Repair non-breaking audit findings
+        run: npm audit fix --package-lock-only --ignore-scripts || true
+
+      - name: Security audit
+        run: npm audit --audit-level=high
+
+      - name: Commit lockfile repairs
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            echo "No dependency changes required."
+            exit 0
+          fi
+          git config user.name "CAT 2026 Dependency Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add package-lock.json package.json
+          git commit -m "deps: reconcile and harden npm lockfile [deps]"
+          git push
