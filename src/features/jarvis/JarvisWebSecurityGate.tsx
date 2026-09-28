@@ -312,7 +312,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       voiceRecognizerRef.current?.stop()
       voiceRecognizerRef.current = null
       setVoiceListening(false)
-      setVoiceActive(false)
       setMessage('Voice unlock trigger stopped.')
       return
     }
@@ -336,14 +335,12 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       (error) => {
         voiceRecognizerRef.current = null
         setVoiceListening(false)
-        setVoiceActive(false)
-        setMessage('Voice trigger unavailable: ' + error + '. Use Passkey / Face / Fingerprint or PIN.')
+          setMessage('Voice trigger unavailable: ' + error + '. Use Passkey / Face / Fingerprint or PIN.')
       },
       () => {
         voiceRecognizerRef.current = null
         setVoiceListening(false)
-        setVoiceActive(false)
-      }
+        }
     )
 
     if (!rec) {
@@ -440,7 +437,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
             </button>
           </div>
 
-          <div className={`jarvis-lock-v5__voice-banner ${voiceActive ? 'is-active' : ''}`} role="status" aria-live="polite">
+          <div className={`jarvis-lock-v5__voice-banner ${voiceListening ? 'is-active' : ''}`} role="status" aria-live="polite">
             <span className="jarvis-lock-v5__voice-dot" aria-hidden="true" />
             <span><strong>JARVIS:</strong> {voiceListening ? 'VOICE TRIGGER ACTIVE — SAY “HEY JARVIS, UNLOCK”.' : 'VOICE NEVER BYPASSES BIOMETRIC SECURITY.'}</span>
             <span className="jarvis-lock-v5__wave" aria-hidden="true"><i/><i/><i/><i/><i/></span>
