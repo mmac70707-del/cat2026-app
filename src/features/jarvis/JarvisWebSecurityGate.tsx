@@ -254,7 +254,6 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     return () => window.clearInterval(id)
   }, [])
 
-
   return (
     <main className="jarvis-lock-v5" aria-label="JARVIS secure lock screen">
       <div className="jarvis-lock-v5__backdrop" aria-hidden="true" />
