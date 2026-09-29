@@ -1456,3 +1456,262 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   body.jarvis-theme .dash-root .three-col{grid-template-columns:1fr!important}
   body.jarvis-theme .dash-root .today-title{font-size:13px!important}
 }
+
+
+
+/* ============================================================
+   DASHBOARD — FINAL JARVIS MATERIAL PASS
+   Keep layout; replace legacy neon/rainbow surfaces.
+   ============================================================ */
+.jarvis-theme .dash-root{
+  --bg:var(--ui-bg)!important;
+  --bg2:var(--ui-surface)!important;
+  --bg3:var(--ui-surface-2)!important;
+  --card:var(--ui-surface)!important;
+  --border:var(--ui-border)!important;
+  --text:var(--ui-text)!important;
+  --muted:var(--ui-muted)!important;
+  --gold:var(--ui-accent)!important;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace!important;
+  background:var(--ui-bg)!important;
+  color:var(--ui-text)!important;
+  background-image:
+    linear-gradient(rgba(199,170,107,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(199,170,107,.018) 1px,transparent 1px)!important;
+  background-size:28px 28px!important;
+}
+.jarvis-theme .dash-root .header{
+  background:var(--ui-surface)!important;
+  border-bottom:1px solid var(--ui-border-strong)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .header-inner{
+  max-width:1180px!important;
+  margin:0 auto!important;
+  padding:14px 18px!important;
+  min-height:78px!important;
+}
+.jarvis-theme .dash-root .header-brand{
+  color:var(--ui-text)!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+  font-size:20px!important;
+}
+.jarvis-theme .dash-root .header-sub{
+  color:var(--ui-muted)!important;
+}
+.jarvis-theme .dash-root .phase-badge{
+  background:var(--ui-accent-soft)!important;
+  border:1px solid var(--ui-border)!important;
+  color:var(--ui-accent-strong)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .phase-dot{
+  background:var(--ui-accent)!important;
+}
+.jarvis-theme .dash-root .countdown-big{
+  color:var(--ui-accent-strong)!important;
+  text-shadow:none!important;
+}
+.jarvis-theme .dash-root .mission-bar{
+  background:var(--ui-surface)!important;
+  border:1px solid var(--ui-border)!important;
+  color:var(--ui-text)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .mission-text{color:var(--ui-accent-strong)!important}
+.jarvis-theme .dash-root .mission-quote{color:var(--ui-muted)!important}
+.jarvis-theme .dash-root .date-display{
+  background:var(--ui-surface-2)!important;
+  color:var(--ui-text)!important;
+  border:1px solid var(--ui-border)!important;
+}
+.jarvis-theme .dash-root .main{
+  max-width:1180px!important;
+  margin:0 auto!important;
+  padding:16px 18px 110px!important;
+  gap:12px!important;
+}
+.jarvis-theme .dash-root .live-time-bar{
+  background:var(--ui-surface-2)!important;
+  color:var(--ui-muted)!important;
+  border-bottom:1px solid var(--ui-border)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.jarvis-theme .dash-root .live-time-clock{color:var(--ui-text)!important;text-shadow:none!important}
+.jarvis-theme .dash-root .live-time-label{color:var(--ui-accent-strong)!important}
+.jarvis-theme .dash-root .live-time-date{color:var(--ui-muted)!important}
+.jarvis-theme .dash-root .daily-motivation-card,
+.jarvis-theme .dash-root .live-schedule-panel{
+  background:var(--ui-surface)!important;
+  border-color:var(--ui-border)!important;
+  border-radius:var(--os-radius)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .daily-motivation-kicker,
+.jarvis-theme .dash-root .live-schedule-kicker,
+.jarvis-theme .dash-root .live-schedule-next-label,
+.jarvis-theme .dash-root .live-schedule-day-label{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .daily-motivation-quote,
+.jarvis-theme .dash-root .live-schedule-title,
+.jarvis-theme .dash-root .live-schedule-day-focus{
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root .daily-motivation-action,
+.jarvis-theme .dash-root .live-schedule-detail,
+.jarvis-theme .dash-root .live-schedule-next-time,
+.jarvis-theme .dash-root .live-schedule-day-sub{
+  color:var(--ui-muted)!important;
+}
+.jarvis-theme .dash-root .stats-row{
+  gap:8px!important;
+}
+.jarvis-theme .dash-root .stat-card{
+  background:var(--ui-surface)!important;
+  border:1px solid var(--ui-border)!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+  min-height:96px!important;
+}
+.jarvis-theme .dash-root .stat-card:hover{
+  border-color:var(--ui-accent)!important;
+  transform:translateY(-1px);
+}
+.jarvis-theme .dash-root .stat-seq{color:var(--ui-text)!important}
+.jarvis-theme .dash-root .stat-num{
+  color:var(--ui-accent-strong)!important;
+  border-color:var(--ui-border)!important;
+  background:var(--ui-surface-2)!important;
+}
+.jarvis-theme .dash-root .stat-label,
+.jarvis-theme .dash-root .sec-title{
+  color:var(--ui-muted)!important;
+}
+.jarvis-theme .dash-root .card{
+  background:var(--ui-surface)!important;
+  border:1px solid var(--ui-border)!important;
+  border-radius:var(--os-radius)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .today-header{
+  background:var(--ui-surface-2)!important;
+  border:1px solid var(--ui-border-strong)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .today-title,
+.jarvis-theme .dash-root .today-sub,
+.jarvis-theme .dash-root .block-title{
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root .block-details,
+.jarvis-theme .dash-root .block-details strong,
+.jarvis-theme .dash-root .meta-time,
+.jarvis-theme .dash-root .meta-target,
+.jarvis-theme .dash-root .day-name,
+.jarvis-theme .dash-root .day-focus,
+.jarvis-theme .dash-root .day-topic,
+.jarvis-theme .dash-root .error-name{
+  color:var(--ui-muted)!important;
+}
+.jarvis-theme .dash-root .block-item,
+.jarvis-theme .dash-root .priority-item,
+.jarvis-theme .dash-root .day-card,
+.jarvis-theme .dash-root .error-card,
+.jarvis-theme .dash-root .flow-next,
+.jarvis-theme .dash-root .instruction{
+  background:var(--ui-surface-2)!important;
+  border-color:var(--ui-border)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .block-item:hover,
+.jarvis-theme .dash-root .day-card:hover,
+.jarvis-theme .dash-root .error-card:hover{
+  background:var(--ui-surface-3)!important;
+  border-color:var(--ui-accent)!important;
+}
+.jarvis-theme .dash-root .day-card.today{
+  background:var(--ui-accent-soft)!important;
+  border-color:var(--ui-accent)!important;
+}
+.jarvis-theme .dash-root .day-date{
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root .day-card.today .day-date{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .mastery-bar-wrap,
+.jarvis-theme .dash-root .score-input{
+  background:var(--ui-surface-2)!important;
+  border-color:var(--ui-border)!important;
+}
+.jarvis-theme .dash-root .mastery-level,
+.jarvis-theme .dash-root .error-count,
+.jarvis-theme .dash-root .flow-arrow{
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root .score-input{color:var(--ui-text)!important}
+.jarvis-theme .dash-root .score-btn{
+  background:var(--ui-accent)!important;
+  color:#1b1914!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .score-btn:hover{opacity:.9!important}
+.jarvis-theme .dash-root .done-feedback{
+  background:var(--ui-accent-soft)!important;
+  border-color:var(--ui-border)!important;
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root .mantra-bar{
+  background:var(--ui-surface-2)!important;
+  border-color:var(--ui-border-strong)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .dash-root .mantra-text{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .mantra-sub{
+  color:var(--ui-muted)!important;
+}
+.jarvis-theme .dash-root .stat-card::before{
+  background:var(--ui-accent)!important;
+  opacity:.55!important;
+}
+.jarvis-theme .dash-root .error-types{gap:8px!important}
+.jarvis-theme .dash-root .error-card .error-code,
+.jarvis-theme .dash-root .mastery-badge,
+.jarvis-theme .dash-root .priority-rank{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .flow-active{
+  background:var(--ui-accent)!important;
+  color:#1b1914!important;
+}
+.jarvis-theme .dash-root .flow-done{
+  background:var(--ui-accent-soft)!important;
+  color:var(--ui-accent-strong)!important;
+  border-color:var(--ui-border)!important;
+}
+.jarvis-theme .dash-root .block-check{
+  background:var(--ui-bg)!important;
+  border-color:var(--ui-border-strong)!important;
+}
+.jarvis-theme .dash-root .block-check.done{
+  background:var(--ui-accent)!important;
+  border-color:var(--ui-accent)!important;
+  color:#1b1914!important;
+}
+.jarvis-theme .dash-root .glow-border-amber,
+.jarvis-theme .dash-root .glow-border-cyan{
+  box-shadow:none!important;
+}
+@media(max-width:760px){
+  .jarvis-theme .dash-root .main{padding:12px 12px 98px!important}
+  .jarvis-theme .dash-root .header-inner{padding:12px 12px!important;min-height:70px!important}
+  .jarvis-theme .dash-root .mission-bar{width:calc(100% - 24px)!important}
+  .jarvis-theme .dash-root .daily-motivation-card,
+  .jarvis-theme .dash-root .live-schedule-panel{margin-inline:12px!important}
+}
