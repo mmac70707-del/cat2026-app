@@ -104,7 +104,9 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
         <div className="today-command-meta">{formatDate(now)} · Week {getWeekNumber()} · {phase.id} {phase.name}</div>
       </div>
 
-      <ExecutionIntelligenceCard tasks={tasks} onNavigate={onNavigate} />\n\n      {/* 8-Block Sequence Strip */}
+      <ExecutionIntelligenceCard tasks={tasks} onNavigate={onNavigate} />
+
+      {/* 8-Block Sequence Strip */}
       <div style={{ padding: '12px 16px 0', overflowX: 'auto' }}>
         <div style={{ display: 'flex', gap: 6, paddingBottom: 4 }}>
           {SEQUENCE_STRIP.map(s => (
