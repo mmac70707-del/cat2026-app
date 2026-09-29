@@ -6,12 +6,11 @@ import { AppIcon, type AppIconName } from '@/components/AppIcon'
 export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
-type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'SYSTEM'
+type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'PERSONAL' | 'SYSTEM'
 
 const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }[] = [
   { id: 'missionos', icon: 'compass', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
-  { id: 'mission', icon: 'target', label: 'Active Mission', category: 'EXECUTE', featured: true, hint: 'What to do now' },
-  { id: 'jarvis', icon: 'jarvis', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
+    { id: 'jarvis', icon: 'jarvis', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
   { id: 'schedule', icon: 'clock', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
   { id: 'dashboard', icon: 'dashboard', label: 'Master Dashboard', category: 'EXECUTE', featured: true, hint: 'Full execution view' },
   { id: 'adaptive', icon: 'adaptive', label: 'Weakness Heatmap', category: 'LEARN', hint: 'Find weak areas' },
@@ -26,9 +25,10 @@ const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<
   { id: 'repair', icon: 'wrench', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },
   { id: 'retest', icon: 'checkCircle', label: 'Retest System', category: 'REVIEW', hint: 'Prove the repair' },
   { id: 'achievements', icon: 'badge', label: 'Streak & Badges', category: 'REVIEW', hint: 'Execution history' },
-  { id: 'vision', icon: 'eye', label: 'Master Vision', category: 'SYSTEM', hint: 'Long-range direction' },
-  { id: 'mindset', icon: 'meditation', label: 'Discipline Protocol', category: 'SYSTEM', hint: 'Mental operating rules' },
-  { id: 'roadmap', icon: 'rocket', label: '44-Day Roadmap', category: 'SYSTEM', hint: 'Syllabus runway' },
+  { id: 'vision', icon: 'eye', label: 'Master Vision', category: 'PERSONAL', featured: true, hint: 'Where I am going' },
+  { id: 'mission', icon: 'target', label: 'Mission & Direction', category: 'PERSONAL', featured: true, hint: 'What matters now' },
+  { id: 'mindset', icon: 'meditation', label: 'Mindset Protocol', category: 'PERSONAL', featured: true, hint: 'How I operate' },
+  { id: 'roadmap', icon: 'rocket', label: '44-Day CAT Roadmap', category: 'EXECUTE', hint: 'Syllabus runway' },
   { id: 'apexpro', icon: 'zap', label: 'Apex Pro Deck', category: 'SYSTEM', hint: 'Advanced command layer' },
   { id: 'openjarvis', icon: 'bot', label: 'OpenJarvis Agent', category: 'SYSTEM', hint: 'Research workspace' },
   { id: 'dailycapsule', icon: 'newspaper', label: 'Daily Briefs', category: 'SYSTEM', hint: 'Context capsule' },
@@ -42,6 +42,7 @@ const CATEGORIES: { id: Category; label: string }[] = [
   { id: 'EXECUTE', label: 'EXECUTE' },
   { id: 'LEARN', label: 'LEARN' },
   { id: 'REVIEW', label: 'REVIEW' },
+  { id: 'PERSONAL', label: 'PERSONAL OS' },
   { id: 'SYSTEM', label: 'SYSTEM' },
 ]
 
