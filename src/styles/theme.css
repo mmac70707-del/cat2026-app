@@ -3145,3 +3145,5 @@ html[data-theme="light"]{color-scheme:light}
   .learning-intelligence-body{grid-template-columns:1fr}
   .learning-intelligence-note{display:none}
 }
+
+.learning-calibration{margin-top:9px;padding:9px 10px;border:1px solid var(--ql-border);border-radius:10px;background:var(--ql-surface-2);display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px}.learning-calibration b{display:block;color:var(--ql-accent-strong);font-size:9px;letter-spacing:.08em}.learning-calibration span{color:var(--ql-sub)}.learning-calibration small{color:var(--ql-muted);white-space:nowrap}@media(max-width:700px){.learning-calibration{align-items:flex-start;flex-direction:column}.learning-calibration small{white-space:normal}}
