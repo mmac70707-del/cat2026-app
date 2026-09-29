@@ -1228,3 +1228,231 @@
     transition-duration:0.001ms !important;
   }
 }
+
+
+/* ============================================================
+   MASTER DASHBOARD RESTORE — 1:1 STRUCTURE + JARVIS SIGNATURE
+   Final override: keep the original execution dashboard hierarchy,
+   but use the same restrained graphite / ivory / champagne language
+   as the secure lock screen.
+   ============================================================ */
+
+body.jarvis-theme .dash-root{
+  --dash-bg:var(--ui-bg,#121411);
+  --dash-surface:var(--ui-surface,#191c18);
+  --dash-surface-2:var(--ui-surface-2,#22261f);
+  --dash-border:var(--ui-border,#343930);
+  --dash-border-strong:var(--ui-border-strong,#464c41);
+  --dash-text:var(--ui-text,#f1efe8);
+  --dash-sub:var(--ui-sub,#c5c6bd);
+  --dash-muted:var(--ui-muted,#8e9389);
+  --dash-accent:var(--ui-accent,#c7aa6b);
+  background:var(--dash-bg)!important;
+  color:var(--dash-text)!important;
+}
+body.jarvis-theme .dash-root *{text-shadow:none!important}
+body.jarvis-theme .dash-root .header{
+  background:var(--dash-surface)!important;
+  border-bottom:1px solid var(--dash-border)!important;
+  box-shadow:none!important;
+}
+body.jarvis-theme .dash-root .header-inner{
+  max-width:1400px!important; min-height:74px!important; padding:12px 20px!important;
+}
+body.jarvis-theme .dash-root .header-brand{
+  color:var(--dash-text)!important; background:none!important; -webkit-text-fill-color:initial!important;
+  font-size:22px!important; letter-spacing:-.035em!important;
+}
+body.jarvis-theme .dash-root .header-sub,
+body.jarvis-theme .dash-root .countdown-label,
+body.jarvis-theme .dash-root .mission-quote{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .phase-badge{
+  background:var(--dash-surface-2)!important; color:var(--dash-sub)!important;
+  border:1px solid var(--dash-border)!important; box-shadow:none!important;
+}
+body.jarvis-theme .dash-root .phase-dot{background:var(--dash-accent)!important;box-shadow:none!important}
+body.jarvis-theme .dash-root .countdown-big{color:var(--dash-accent)!important;text-shadow:none!important;font-size:28px!important}
+body.jarvis-theme .dash-root .live-time-bar{
+  position:relative!important;top:auto!important;background:var(--dash-bg)!important;
+  border-bottom:1px solid var(--dash-border)!important;color:var(--dash-muted)!important;
+  box-shadow:none!important;backdrop-filter:none!important;
+}
+body.jarvis-theme .dash-root .live-time-clock{color:var(--dash-text)!important;text-shadow:none!important}
+body.jarvis-theme .dash-root .live-time-label{color:var(--dash-accent)!important}
+body.jarvis-theme .dash-root .live-time-date{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .mission-bar{
+  width:calc(100% - 40px)!important;max-width:1400px!important;margin:8px auto 0!important;
+  background:var(--dash-surface)!important;border:1px solid var(--dash-border)!important;
+  border-radius:10px!important;box-shadow:none!important;
+}
+body.jarvis-theme .dash-root .mission-text{
+  display:inline-flex!important;align-items:center!important;gap:6px!important;color:var(--dash-accent)!important;
+}
+body.jarvis-theme .dash-root .main{
+  max-width:1400px!important;padding:18px 20px 110px!important;gap:18px!important;
+}
+body.jarvis-theme .dash-root .daily-control-card,
+body.jarvis-theme .dash-root .linkedin-daily-card{border-color:var(--dash-border)!important;box-shadow:none!important}
+
+/* Signature rules rail — same language as the lock screen micro-quotes. */
+body.jarvis-theme .dash-root .command-rules-rail{
+  display:grid!important;grid-template-columns:auto repeat(5,minmax(0,1fr))!important;
+  align-items:center!important;gap:7px!important;padding:8px 10px!important;
+  border:1px solid var(--dash-border)!important;border-radius:10px!important;
+  background:var(--dash-surface)!important;color:var(--dash-muted)!important;
+}
+body.jarvis-theme .dash-root .command-rules-label{
+  display:flex!important;align-items:center!important;gap:5px!important;color:var(--dash-accent)!important;
+  font:800 8px/1 ui-monospace,SFMono-Regular,Menlo,monospace!important;letter-spacing:.12em!important;
+  white-space:nowrap!important;padding-right:5px!important;
+}
+body.jarvis-theme .dash-root .command-rule{
+  min-width:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:5px!important;padding:6px 7px!important;border:1px solid var(--dash-border)!important;
+  border-radius:7px!important;background:var(--dash-bg)!important;
+  font:800 7px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  letter-spacing:.06em!important;white-space:nowrap!important;
+}
+body.jarvis-theme .dash-root .command-rule span{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .command-rule b{color:var(--dash-accent)!important}
+body.jarvis-theme .dash-root .command-rule strong{color:var(--dash-text)!important}
+
+body.jarvis-theme .dash-root .stats-row{
+  grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:9px!important;overflow:visible!important;padding:0!important;
+}
+body.jarvis-theme .dash-root .stat-card{
+  min-height:104px!important;padding:11px 9px!important;border-radius:10px!important;
+  background:var(--dash-surface)!important;border:1px solid var(--dash-border)!important;
+  box-shadow:none!important;transform:none!important;
+}
+body.jarvis-theme .dash-root .stat-card:hover{
+  transform:translateY(-1px)!important;border-color:var(--dash-accent)!important;background:var(--dash-surface-2)!important;
+}
+body.jarvis-theme .dash-root .stat-num{
+  color:var(--dash-muted)!important;border-color:var(--dash-border)!important;background:transparent!important;
+}
+body.jarvis-theme .dash-root .stat-icon-wrap{
+  width:30px!important;height:30px!important;margin:8px auto 3px!important;display:grid!important;place-items:center!important;
+  border:1px solid var(--dash-border)!important;border-radius:8px!important;color:var(--dash-accent)!important;background:transparent!important;
+}
+body.jarvis-theme .dash-root .stat-seq{margin:1px 0 3px!important;color:var(--dash-text)!important;font-size:16px!important}
+body.jarvis-theme .dash-root .stat-label{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .stat-live-tag{color:var(--dash-muted)!important;background:transparent!important;border-color:var(--dash-border)!important}
+body.jarvis-theme .dash-root .stat-live-tag.now{
+  color:var(--dash-accent)!important;background:var(--ui-accent-soft,rgba(199,170,107,.11))!important;
+  border-color:color-mix(in srgb,var(--dash-accent) 35%,var(--dash-border))!important;box-shadow:none!important;
+}
+
+body.jarvis-theme .dash-root .two-col{
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important;gap:16px!important;
+}
+body.jarvis-theme .dash-root .three-col{gap:10px!important}
+body.jarvis-theme .dash-root .card,
+body.jarvis-theme .dash-root .today-header{
+  background:var(--dash-surface)!important;border:1px solid var(--dash-border)!important;border-radius:11px!important;box-shadow:none!important;
+}
+body.jarvis-theme .dash-root .card{padding:15px!important}
+body.jarvis-theme .dash-root .today-header{padding:14px 16px!important;margin-bottom:7px!important}
+body.jarvis-theme .dash-root .today-title{
+  display:flex!important;align-items:center!important;gap:7px!important;color:var(--dash-accent)!important;font-size:16px!important;
+}
+body.jarvis-theme .dash-root .today-sub{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .block-list{gap:7px!important}
+body.jarvis-theme .dash-root .block-item{
+  background:var(--dash-surface-2)!important;border:1px solid var(--dash-border)!important;border-left-width:3px!important;
+  border-radius:9px!important;box-shadow:none!important;padding:11px 12px!important;
+}
+body.jarvis-theme .dash-root .block-item:hover{background:var(--ui-surface-3,#292d26)!important}
+body.jarvis-theme .dash-root .block-title{color:var(--dash-text)!important;font-size:13px!important}
+body.jarvis-theme .dash-root .block-details,
+body.jarvis-theme .dash-root .meta-time{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .meta-target{color:var(--dash-accent)!important}
+body.jarvis-theme .dash-root .block-check{border-color:var(--dash-border-strong)!important;background:transparent!important}
+body.jarvis-theme .dash-root .block-check.done{
+  background:var(--ui-positive,#8eae96)!important;border-color:var(--ui-positive,#8eae96)!important;
+}
+body.jarvis-theme .dash-root .week-grid{gap:6px!important}
+body.jarvis-theme .dash-root .day-card{
+  background:var(--dash-surface-2)!important;border-color:var(--dash-border)!important;border-radius:8px!important;
+}
+body.jarvis-theme .dash-root .day-card.today{
+  background:var(--ui-accent-soft,rgba(199,170,107,.11))!important;border-color:var(--dash-accent)!important;
+}
+body.jarvis-theme .dash-root .day-name{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .day-date{color:var(--dash-text)!important}
+body.jarvis-theme .dash-root .day-card.today .day-date{color:var(--dash-accent)!important}
+body.jarvis-theme .dash-root .priority-item,
+body.jarvis-theme .dash-root .date-display,
+body.jarvis-theme .dash-root .score-input{
+  background:var(--dash-surface-2)!important;border-color:var(--dash-border)!important;
+}
+body.jarvis-theme .dash-root .priority-name,
+body.jarvis-theme .dash-root .error-count{color:var(--dash-text)!important}
+body.jarvis-theme .dash-root .priority-rank,
+body.jarvis-theme .dash-root .day-focus,
+body.jarvis-theme .dash-root .day-topics,
+body.jarvis-theme .dash-root .section-label{color:var(--dash-muted)!important}
+body.jarvis-theme .dash-root .score-btn{
+  background:var(--dash-accent)!important;color:#17150f!important;border-color:var(--dash-accent)!important;box-shadow:none!important;
+}
+body.jarvis-theme .dash-root .mantra-bar{
+  background:var(--dash-surface)!important;border:1px solid var(--dash-border)!important;border-radius:11px!important;box-shadow:none!important;
+}
+body.jarvis-theme .dash-root .mantra-text{color:var(--dash-accent)!important}
+body.jarvis-theme .dash-root .mantra-sub{color:var(--dash-muted)!important}
+
+/* One restrained dashboard accent instead of rainbow status tiles. */
+body.jarvis-theme .dash-root .qa-text,
+body.jarvis-theme .dash-root .dilr-text,
+body.jarvis-theme .dash-root .varc-text,
+body.jarvis-theme .dash-root .test-text,
+body.jarvis-theme .dash-root .ana-text,
+body.jarvis-theme .dash-root .rev-text,
+body.jarvis-theme .dash-root .rep-text,
+body.jarvis-theme .dash-root .rts-text,
+body.jarvis-theme .dash-root .stat-card .stat-num{color:var(--dash-accent)!important}
+body.jarvis-theme .dash-root .qa-num,
+body.jarvis-theme .dash-root .dilr-num,
+body.jarvis-theme .dash-root .varc-num,
+body.jarvis-theme .dash-root .test-num,
+body.jarvis-theme .dash-root .ana-num,
+body.jarvis-theme .dash-root .rev-num,
+body.jarvis-theme .dash-root .rep-num,
+body.jarvis-theme .dash-root .rts-num{
+  background:var(--ui-accent-soft,rgba(199,170,107,.11))!important;color:var(--dash-accent)!important;
+}
+body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!important;opacity:.45!important}
+
+@media (min-width:761px) and (max-height:760px){
+  body.jarvis-theme .dash-root .header-inner{min-height:66px!important;padding-block:9px!important}
+  body.jarvis-theme .dash-root .stat-card{min-height:88px!important}
+  body.jarvis-theme .dash-root .main{gap:13px!important;padding-top:13px!important}
+  body.jarvis-theme .dash-root .command-rules-rail{padding-block:6px!important}
+}
+@media (max-width:760px){
+  body.jarvis-theme .dash-root .header-inner{
+    grid-template-columns:1fr auto!important;padding:10px 12px!important;gap:10px!important;
+  }
+  body.jarvis-theme .dash-root .header-center{
+    grid-column:1/-1!important;grid-row:2!important;justify-self:start!important;text-align:left!important;
+  }
+  body.jarvis-theme .dash-root .header-right{grid-column:2!important;grid-row:1!important}
+  body.jarvis-theme .dash-root .header-brand{font-size:19px!important}
+  body.jarvis-theme .dash-root .mission-bar{
+    width:calc(100% - 24px)!important;display:grid!important;grid-template-columns:1fr auto!important;
+    gap:8px!important;margin-top:6px!important;padding:9px 10px!important;
+  }
+  body.jarvis-theme .dash-root .mission-text{grid-column:1/-1!important}
+  body.jarvis-theme .dash-root .mission-quote{display:none!important}
+  body.jarvis-theme .dash-root .main{padding:11px 12px 100px!important;gap:11px!important}
+  body.jarvis-theme .dash-root .command-rules-rail{grid-template-columns:1fr 1fr!important;gap:6px!important;padding:7px!important}
+  body.jarvis-theme .dash-root .command-rules-label{grid-column:1/-1!important;padding-bottom:1px!important}
+  body.jarvis-theme .dash-root .command-rule{padding:7px 5px!important;font-size:6.5px!important}
+  body.jarvis-theme .dash-root .stats-row{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+  body.jarvis-theme .dash-root .stat-card{min-height:82px!important;padding:8px 6px!important}
+  body.jarvis-theme .dash-root .stat-icon-wrap{width:26px!important;height:26px!important;margin-top:5px!important}
+  body.jarvis-theme .dash-root .stat-seq{font-size:13px!important}
+  body.jarvis-theme .dash-root .two-col{grid-template-columns:1fr!important;gap:11px!important}
+  body.jarvis-theme .dash-root .three-col{grid-template-columns:1fr!important}
+  body.jarvis-theme .dash-root .today-title{font-size:13px!important}
+}
