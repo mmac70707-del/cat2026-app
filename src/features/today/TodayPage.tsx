@@ -35,6 +35,16 @@ export function TodayPage() {
   const pt = getPercentylDailyTarget(dateKey)
   const dayNum = pt.dayNum || getFirstPassDayNum(dateKey)
 
+  const activeTask = tasks.find(t => t.status === 'IN_PROGRESS')
+  const nextTask = tasks.find(t => t.status === 'TODO')
+  const currentBlock = activeTask ? SEQUENCE_STRIP.find(s => s.id === activeTask.blockId) : null
+  const nextBlock = nextTask ? SEQUENCE_STRIP.find(s => s.id === nextTask.blockId) : null
+  const executionState = activeTask
+    ? 'IN PROGRESS'
+    : nextTask
+      ? 'READY'
+      : 'DAY COMPLETE'
+
   async function submitDone() {
     const s  = parseFloat(study)  || 0
     const sc = parseFloat(screen) || 0
@@ -72,14 +82,25 @@ export function TodayPage() {
 
   return (
     <div>
-      {/* Mission Banner */}
-      <div style={{ background: 'linear-gradient(135deg,#0D1B2A,#1A2E45)', borderBottom: '1px solid rgba(245,166,35,.2)', padding: '12px 16px' }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold)' }}>
-          🎯 MISSION: {phase.mission}
+      {/* Command Center */}
+      <div className="today-command-center">
+        <div className="today-command-kicker">TODAY · COMMAND CENTER</div>
+        <div className="today-command-grid">
+          <div className="today-command-main">
+            <div className="today-command-state">{executionState}</div>
+            <div className="today-command-title">{currentBlock?.label || nextBlock?.label || 'ALL CLEAR'}</div>
+            <div className="today-command-detail">
+              {activeTask?.title || nextTask?.title || 'All scheduled blocks are complete. Protect recovery and review the day.'}
+            </div>
+          </div>
+          <div className="today-command-side">
+            <div><span>DONE</span><strong>{done}/8</strong></div>
+            <div><span>PROGRESS</span><strong>{pct}%</strong></div>
+            <div><span>NEXT</span><strong>{nextBlock?.label || '—'}</strong></div>
+          </div>
         </div>
-        <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>
-          {formatDate(now)} · Week {getWeekNumber()} · {phase.id} {phase.name}
-        </div>
+        <div className="today-command-mission">Mission: {phase.mission}</div>
+        <div className="today-command-meta">{formatDate(now)} · Week {getWeekNumber()} · {phase.id} {phase.name}</div>
       </div>
 
       {/* 8-Block Sequence Strip */}
@@ -95,7 +116,7 @@ export function TodayPage() {
               }}
             >
               <div style={{ fontSize: 9, fontWeight: 800, color: s.col, fontFamily: 'monospace' }}>{s.seq}</div>
-              <div style={{ fontSize: 11, fontWeight: 900, color: '#FFF' }}>{s.label}</div>
+              <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--ql-text)' }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -103,18 +124,18 @@ export function TodayPage() {
 
       {/* Today's 3 Core Targets Card */}
       <div style={{ padding: '12px 16px 0' }}>
-        <div style={{ background: '#161D2E', border: '1px solid #F5A623', borderRadius: 10, padding: 14 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: '#F5A623', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' }}>
+        <div style={{ background: 'var(--ql-surface)', border: '1px solid var(--ql-accent)', borderRadius: 10, padding: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--ql-accent-strong)', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' }}>
             🎯 TODAY'S 3 CORE TARGETS (DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44)
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 12, fontWeight: 700 }}>
-            <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: '#4ADE80' }}>
+            <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-accent-strong)' }}>
               📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.quantTopic.toUpperCase()} ({pt.quantTargetQs} Qs)</span>
             </div>
-            <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: '#60A5FA' }}>
+            <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
               🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.dilrTopic.toUpperCase()} ({pt.dilrTargetSets} Sets)</span>
             </div>
-            <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: '#C084FC' }}>
+            <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
               📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.varcTopic.toUpperCase()} ({pt.varcTargetPsg} Psg)</span>
             </div>
           </div>
@@ -129,7 +150,7 @@ export function TodayPage() {
               <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
                 🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
               </div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ql-text)', marginTop: 2 }}>
                 Target Topic: {pt.quantTopic} ({pt.quantTargetQs} Qs)
               </div>
             </div>
@@ -143,7 +164,7 @@ export function TodayPage() {
           <div className="progress-wrap" style={{ marginTop: 8 }}>
             <div
               className="progress-fill"
-              style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#16A34A,#22C55E)' }}
+              style={{ width: `${pct}%`, background: 'var(--ql-accent)' }}
             />
           </div>
         </div>
