@@ -360,3 +360,871 @@
   .dash-root .stats-row { grid-template-columns: repeat(2, 1fr); }
   .dash-root .week-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ═══════════════════════════════════════════════════
+   CAT DASHBOARD // PRODUCT SURFACE V2
+   Override legacy inline visual language so the main
+   dashboard matches the real-app shell.
+═══════════════════════════════════════════════════ */
+.jarvis-theme .dash-root {
+  --bg:#050B0E !important; --bg2:#0A1317 !important; --bg3:#0F1A1E !important;
+  --card:#0B1519 !important; --border:#203136 !important; --text:#EAF4F3 !important; --muted:#779093 !important;
+  background:
+    radial-gradient(900px 300px at 50% -60px, rgba(0,245,255,.055), transparent 70%),
+    #050B0E !important;
+  color:var(--text) !important;
+  padding-bottom:90px;
+}
+.jarvis-theme .dash-root .header {
+  background:rgba(6,13,16,.96) !important;
+  border-bottom:1px solid rgba(0,245,255,.16) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+.jarvis-theme .dash-root .header-inner {
+  padding:14px 18px !important;
+  gap:12px;
+}
+.jarvis-theme .dash-root .header-brand {
+  background:linear-gradient(90deg,#EAF4F3,#8AEFF3) !important;
+  -webkit-background-clip:text !important; background-clip:text !important;
+  font-size:19px;
+}
+.jarvis-theme .dash-root .header-sub {
+  color:#637A7D !important;
+  font-size:8px;
+  letter-spacing:1.1px;
+}
+.jarvis-theme .dash-root .phase-badge {
+  background:rgba(57,255,136,.055) !important;
+  border:1px solid rgba(57,255,136,.18) !important;
+  color:#8DF0B4 !important;
+  box-shadow:none;
+}
+.jarvis-theme .dash-root .countdown-big { color:#9AF3F4 !important; font-size:24px; }
+.jarvis-theme .dash-root .countdown-label { color:#657B7E !important; }
+.jarvis-theme .dash-root .mission-bar {
+  background:#071114 !important;
+  border-bottom:1px solid rgba(255,255,255,.065) !important;
+  padding:11px 18px !important;
+}
+.jarvis-theme .dash-root .mission-text { color:#8DF0B4 !important; font-size:10px; }
+.jarvis-theme .dash-root .mission-quote { color:#5E7477 !important; font-size:8px; }
+.jarvis-theme .dash-root .date-display {
+  background:#0D191D !important; color:#A7BCBE !important;
+  border:1px solid rgba(255,255,255,.055);
+}
+.jarvis-theme .dash-root .main { padding:14px 18px !important; gap:14px; }
+.jarvis-theme .dash-root .stats-row { gap:7px; }
+.jarvis-theme .dash-root .stat-card {
+  background:linear-gradient(145deg,#0C171B,#081115) !important;
+  border:1px solid rgba(255,255,255,.065) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.02),0 7px 18px rgba(0,0,0,.18);
+}
+.jarvis-theme .dash-root .stat-card::before { opacity:.65; height:2px; }
+.jarvis-theme .dash-root .stat-seq { color:#EAF4F3 !important; }
+.jarvis-theme .dash-root .stat-label { color:#637A7D !important; }
+.jarvis-theme .dash-root .two-col { gap:14px; }
+.jarvis-theme .dash-root .card {
+  background:#0A1519 !important;
+  border:1px solid rgba(255,255,255,.065) !important;
+  border-radius:13px !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.02),0 9px 24px rgba(0,0,0,.18);
+}
+.jarvis-theme .dash-root .today-header {
+  background:linear-gradient(145deg,#0D1C21,#091317) !important;
+  border:1px solid rgba(0,245,255,.14) !important;
+  box-shadow:none;
+}
+.jarvis-theme .dash-root .today-title { color:#9AEFF2 !important; font-size:14px; letter-spacing:.2px; }
+.jarvis-theme .dash-root .today-sub { color:#6A8184 !important; font-size:9px; }
+.jarvis-theme .dash-root .block-item {
+  background:#0D181C !important;
+  border-left-width:3px;
+  border-top:1px solid rgba(255,255,255,.035);
+  border-right:1px solid rgba(255,255,255,.035);
+  border-bottom:1px solid rgba(255,255,255,.035);
+  box-shadow:0 6px 16px rgba(0,0,0,.12);
+}
+.jarvis-theme .dash-root .block-item:hover { background:#112126 !important; }
+.jarvis-theme .dash-root .block-title { color:#EAF4F3 !important; font-size:12px; }
+.jarvis-theme .dash-root .block-details { color:#71898B !important; font-size:9px; }
+.jarvis-theme .dash-root .meta-time { color:#5A7073 !important; font-size:8px; }
+.jarvis-theme .dash-root .meta-target { color:#8CA5A7 !important; font-size:8px; }
+.jarvis-theme .dash-root .block-check { border-color:#334A4E !important; background:#091114 !important; }
+.jarvis-theme .dash-root .block-check.done { background:#257A54 !important; border-color:#257A54 !important; }
+.jarvis-theme .dash-root .week-grid { gap:6px; }
+.jarvis-theme .dash-root .day-card {
+  background:#0D181C !important; border-color:rgba(255,255,255,.065) !important;
+}
+.jarvis-theme .dash-root .day-card.today {
+  border-color:rgba(0,245,255,.28) !important; background:rgba(0,245,255,.045) !important;
+}
+.jarvis-theme .dash-root .day-date { color:#DCEAE9 !important; }
+.jarvis-theme .dash-root .day-name { color:#62787B !important; }
+.jarvis-theme .dash-root .day-card.today .day-date { color:#92EEF1 !important; }
+.jarvis-theme .dash-root .mastery-bar-wrap { background:#091215 !important; }
+.jarvis-theme .dash-root .error-card {
+  background:#0B1519 !important; border-color:rgba(255,255,255,.065) !important;
+}
+.jarvis-theme .dash-root .score-input {
+  background:#091316 !important; border-color:#22373B !important; color:#EAF4F3 !important;
+}
+.jarvis-theme .dash-root .score-btn {
+  background:linear-gradient(135deg,#0B6B72,#09878F) !important;
+  box-shadow:0 8px 18px rgba(0,245,255,.10);
+}
+.jarvis-theme .dash-root .mantra-bar {
+  background:#091417 !important;
+  border-color:rgba(0,245,255,.14) !important;
+}
+.jarvis-theme .dash-root .mantra-text { color:#9AEFF2 !important; }
+.jarvis-theme .dash-root .instruction {
+  background:rgba(0,245,255,.035) !important; border-color:rgba(0,245,255,.12) !important;
+}
+@media (max-width:600px) {
+  .jarvis-theme .dash-root .main { padding:11px 14px !important; }
+  .jarvis-theme .dash-root .stats-row { gap:6px; }
+  .jarvis-theme .dash-root .stat-card { padding:9px 7px; }
+}
+
+
+/* ── LIVE CLOCK + TIME-AWARE DASHBOARD ── */
+.jarvis-theme .live-time-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:6px 18px;
+  background:#061013;
+  border-bottom:1px solid rgba(0,245,255,.10);
+  color:#6F878A;
+  font:700 9px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.55px;
+}
+.jarvis-theme .live-time-clock {
+  color:#DFFDFC;
+  font-size:12px;
+  letter-spacing:1px;
+  font-variant-numeric:tabular-nums;
+}
+.jarvis-theme .live-time-label {
+  color:#75E7B2;
+  text-align:center;
+}
+.jarvis-theme .live-time-date {
+  color:#71898C;
+  white-space:nowrap;
+}
+.jarvis-theme .live-schedule-panel {
+  display:grid;
+  grid-template-columns:minmax(0,1.6fr) minmax(180px,1fr) minmax(160px,.8fr);
+  gap:10px;
+  margin:10px 18px 0;
+  padding:13px 14px;
+  border:1px solid rgba(0,245,255,.12);
+  border-radius:13px;
+  background:
+    radial-gradient(circle at 0 0,rgba(0,245,255,.055),transparent 34%),
+    linear-gradient(145deg,#0B171B,#071014);
+  box-shadow:inset 0 1px rgba(255,255,255,.025),0 8px 22px rgba(0,0,0,.16);
+}
+.jarvis-theme .live-schedule-main,
+.jarvis-theme .live-schedule-next,
+.jarvis-theme .live-schedule-day {
+  min-width:0;
+}
+.jarvis-theme .live-schedule-next,
+.jarvis-theme .live-schedule-day {
+  padding-left:12px;
+  border-left:1px solid rgba(255,255,255,.055);
+}
+.jarvis-theme .live-schedule-kicker,
+.jarvis-theme .live-schedule-next-label,
+.jarvis-theme .live-schedule-day-label {
+  color:#63DFA5;
+  font:900 7px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:1.1px;
+}
+.jarvis-theme .live-schedule-title {
+  margin-top:6px;
+  color:#ECF8F7;
+  font-size:15px;
+  line-height:1.25;
+  font-weight:900;
+}
+.jarvis-theme .live-schedule-detail {
+  margin-top:5px;
+  color:#789194;
+  font-size:9px;
+  line-height:1.45;
+}
+.jarvis-theme .live-schedule-next-title {
+  margin-top:7px;
+  color:#A7EFF1;
+  font-size:11px;
+  line-height:1.35;
+  font-weight:800;
+}
+.jarvis-theme .live-schedule-next-time,
+.jarvis-theme .live-schedule-day-sub {
+  margin-top:4px;
+  color:#667D80;
+  font-size:8px;
+  line-height:1.4;
+}
+.jarvis-theme .live-schedule-day-focus {
+  margin-top:7px;
+  color:#E9F6F5;
+  font-size:12px;
+  font-weight:900;
+}
+.jarvis-theme .stat-live-tag {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:36px;
+  padding:2px 5px;
+  border-radius:5px;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing:.45px;
+  color:#7E9496;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.045);
+}
+.jarvis-theme .stat-live-tag.now,
+.jarvis-theme .stat-live-tag.working {
+  color:#8DF0B4;
+  background:rgba(57,255,136,.08);
+  border-color:rgba(57,255,136,.20);
+  box-shadow:0 0 12px rgba(57,255,136,.08);
+}
+.jarvis-theme .stat-live-tag.done {
+  color:#8CA5A7;
+  background:rgba(255,255,255,.045);
+}
+.jarvis-theme .stat-live-tag.next {
+  color:#9AEFF2;
+  border-color:rgba(0,245,255,.16);
+  background:rgba(0,245,255,.055);
+}
+.jarvis-theme .meta-target.live-state-now,
+.jarvis-theme .meta-target.live-state-working {
+  color:#8DF0B4 !important;
+}
+.jarvis-theme .meta-target.live-state-next {
+  color:#9AEFF2 !important;
+}
+.jarvis-theme .meta-target.live-state-done {
+  color:#7CD8A6 !important;
+}
+.jarvis-theme .meta-target.live-state-passed {
+  color:#D3A25B !important;
+}
+@media (max-width:760px) {
+  .jarvis-theme .live-time-bar { padding:6px 14px; }
+  .jarvis-theme .live-time-label { display:none; }
+  .jarvis-theme .live-schedule-panel {
+    grid-template-columns:1fr;
+    margin-inline:14px;
+  }
+  .jarvis-theme .live-schedule-next,
+  .jarvis-theme .live-schedule-day {
+    padding-left:0;
+    padding-top:10px;
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.055);
+  }
+}
+
+/* ── DAILY MOTIVATION / ACTION CARD ── */
+.jarvis-theme .daily-motivation-card {
+  margin: 10px 18px 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,245,255,.14);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(57,255,136,.08), transparent 34%),
+    linear-gradient(145deg,#0B171B,#071014);
+  box-shadow: inset 0 1px rgba(255,255,255,.025), 0 8px 22px rgba(0,0,0,.18);
+}
+.jarvis-theme .daily-motivation-kicker {
+  color: var(--jarvis-green);
+  font: 900 7px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing: 1.2px;
+}
+.jarvis-theme .daily-motivation-quote {
+  margin-top: 7px;
+  color: #EAF4F3;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 800;
+}
+.jarvis-theme .daily-motivation-action {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255,255,255,.055);
+  color: #789194;
+  font-size: 8px;
+  line-height: 1.4;
+}
+.jarvis-theme .daily-motivation-action span {
+  flex: 0 0 auto;
+  color: var(--jarvis-cyan);
+  font: 900 6px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  letter-spacing: .8px;
+}
+@media (max-width:600px) {
+  .jarvis-theme .daily-motivation-card { margin-inline: 14px; }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   JARVIS APEX 5.1 // VISIBLE HOME OVERHAUL
+   The dashboard is the primary CAT execution surface.
+   Keep the information architecture; upgrade the feel.
+═══════════════════════════════════════════════════ */
+
+.jarvis-theme.dashboard-screen {
+  background:
+    radial-gradient(circle at 50% -12%, rgba(85,244,255,.10), transparent 30%),
+    radial-gradient(circle at 100% 35%, rgba(101,246,160,.055), transparent 24%),
+    #020608 !important;
+  color: #EAF4F3;
+  isolation: isolate;
+}
+
+.jarvis-theme .dash-root {
+  --apex-cyan:#55F4FF;
+  --apex-green:#65F6A0;
+  --apex-amber:#FFC45C;
+  --apex-red:#FF7189;
+  --apex-line:rgba(255,255,255,.075);
+  --apex-panel:rgba(8,18,22,.88);
+  --apex-panel-2:rgba(12,25,30,.94);
+  max-width: none !important;
+  background:
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px),
+    radial-gradient(circle at 50% 0%, rgba(0,245,255,.045), transparent 34%),
+    #020608 !important;
+  background-size: 30px 30px, 30px 30px, auto, auto;
+}
+
+.jarvis-theme .dash-root .live-time-bar {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  min-height: 34px;
+  padding: 8px 18px;
+  background: rgba(3,10,13,.90);
+  border-bottom: 1px solid rgba(85,244,255,.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.jarvis-theme .dash-root .live-time-clock {
+  color: #DDFCF8;
+  text-shadow: 0 0 20px rgba(85,244,255,.16);
+}
+
+.jarvis-theme .dash-root .header {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(85,244,255,.085), transparent 42%),
+    linear-gradient(180deg, rgba(7,18,22,.96), rgba(4,11,14,.94));
+  border-bottom: 1px solid rgba(85,244,255,.16);
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
+}
+
+.jarvis-theme .dash-root .header-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  min-height: 92px;
+}
+
+.jarvis-theme .dash-root .header-brand {
+  color: #F4FFFF;
+  -webkit-text-fill-color: initial;
+  background: none;
+  font-size: 24px;
+  letter-spacing: -.7px;
+}
+
+.jarvis-theme .dash-root .header-sub {
+  color:#6E8588;
+  letter-spacing:1.15px;
+}
+
+.jarvis-theme .dash-root .header-center .phase-badge {
+  background: rgba(101,246,160,.08);
+  color:#A8FFCA;
+  border:1px solid rgba(101,246,160,.18);
+  box-shadow:0 0 24px rgba(101,246,160,.06);
+  border-radius: 999px;
+}
+
+.jarvis-theme .dash-root .header-center > div:last-child {
+  color:#6E8588 !important;
+}
+
+.jarvis-theme .dash-root .countdown-big {
+  color:var(--apex-cyan);
+  font-size:32px;
+  letter-spacing:-1px;
+  text-shadow:0 0 26px rgba(85,244,255,.14);
+}
+
+.jarvis-theme .dash-root .mission-bar {
+  max-width:1180px;
+  margin:10px auto 0;
+  width:calc(100% - 36px);
+  padding:11px 14px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:14px;
+  background:rgba(8,17,21,.78);
+  box-shadow:inset 0 1px rgba(255,255,255,.018);
+}
+
+.jarvis-theme .dash-root .mission-text {
+  color:var(--apex-cyan) !important;
+}
+
+.jarvis-theme .dash-root .date-display {
+  border-radius:9px;
+  color:#A5BBBD !important;
+  background:#0A1418 !important;
+}
+
+.jarvis-theme .dash-root .main {
+  max-width:1180px !important;
+  padding:18px 18px 110px !important;
+  gap:16px !important;
+}
+
+.jarvis-theme .dash-root .live-schedule-panel,
+.jarvis-theme .dash-root .daily-motivation-card {
+  max-width:1180px;
+}
+
+.jarvis-theme .dash-root .live-schedule-panel {
+  border-radius:18px;
+  padding:16px;
+  border-color:rgba(85,244,255,.16);
+  background:
+    radial-gradient(circle at 0 0, rgba(85,244,255,.075), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(101,246,160,.045), transparent 30%),
+    linear-gradient(145deg,#0A171B,#061014);
+}
+
+.jarvis-theme .dash-root .live-schedule-title {
+  font-size:18px;
+  letter-spacing:-.2px;
+}
+
+.jarvis-theme .dash-root .live-schedule-main::before {
+  content:'NOW';
+  display:inline-flex;
+  align-items:center;
+  min-height:18px;
+  padding:3px 7px;
+  margin-bottom:7px;
+  border-radius:999px;
+  background:rgba(101,246,160,.08);
+  border:1px solid rgba(101,246,160,.18);
+  color:#98FFC1;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:1px;
+}
+
+.jarvis-theme .dash-root .daily-motivation-card {
+  border-radius:18px;
+  padding:16px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(101,246,160,.10), transparent 28%),
+    linear-gradient(145deg,#0A181C,#061014);
+  border-color:rgba(101,246,160,.13);
+}
+
+.jarvis-theme .dash-root .daily-motivation-quote {
+  font-size:16px;
+  line-height:1.5;
+  max-width:850px;
+}
+
+.jarvis-theme .dash-root .stats-row {
+  grid-template-columns:repeat(8,minmax(92px,1fr));
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:2px 1px 4px;
+}
+
+.jarvis-theme .dash-root .stats-row::-webkit-scrollbar { display:none; }
+
+.jarvis-theme .dash-root .stat-card {
+  min-height:102px;
+  padding:12px 11px;
+  border-radius:15px;
+  background:
+    radial-gradient(circle at 50% 0, rgba(255,255,255,.035), transparent 38%),
+    linear-gradient(150deg,#0B181C,#071115) !important;
+  border-color:rgba(255,255,255,.075) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.024),0 12px 24px rgba(0,0,0,.16);
+  transform:none;
+}
+
+.jarvis-theme .dash-root .stat-card:hover {
+  transform:translateY(-2px);
+  border-color:rgba(85,244,255,.22) !important;
+}
+
+.jarvis-theme .dash-root .stat-card:active {
+  transform:translateY(0) scale(.985);
+}
+
+.jarvis-theme .dash-root .stat-num {
+  padding:3px 6px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:7px;
+  background:rgba(255,255,255,.025);
+  font-size:8px;
+}
+
+.jarvis-theme .dash-root .stat-seq {
+  margin-top:12px;
+  font-size:17px;
+  letter-spacing:.25px;
+}
+
+.jarvis-theme .dash-root .stat-label {
+  margin-top:5px;
+  line-height:1.25;
+}
+
+.jarvis-theme .dash-root .stat-live-tag {
+  min-width:40px;
+}
+
+.jarvis-theme .dash-root .two-col {
+  gap:16px !important;
+}
+
+.jarvis-theme .dash-root .card {
+  padding:18px;
+  border-radius:18px !important;
+  background:
+    radial-gradient(circle at 100% 0, rgba(85,244,255,.035), transparent 25%),
+    var(--apex-panel) !important;
+  border-color:rgba(255,255,255,.075) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.024),0 12px 28px rgba(0,0,0,.16);
+}
+
+.jarvis-theme .dash-root .card-title {
+  min-height:22px;
+  color:#EAF7F6;
+  font-size:12px;
+  letter-spacing:.35px;
+}
+
+.jarvis-theme .dash-root .today-header {
+  border-radius:15px !important;
+  padding:15px 16px !important;
+  border-color:rgba(85,244,255,.16) !important;
+}
+
+.jarvis-theme .dash-root .today-title {
+  font-size:14px !important;
+  color:#B8FCFE !important;
+}
+
+.jarvis-theme .dash-root .block-list {
+  gap:9px;
+}
+
+.jarvis-theme .dash-root .block-item {
+  grid-template-columns:26px 36px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:12px 12px 12px 10px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#0C181C,#091317) !important;
+  border-top:1px solid rgba(255,255,255,.045);
+  border-right:1px solid rgba(255,255,255,.045);
+  border-bottom:1px solid rgba(255,255,255,.045);
+  box-shadow:0 7px 18px rgba(0,0,0,.12);
+}
+
+.jarvis-theme .dash-root .block-check {
+  width:23px;
+  height:23px;
+  border-radius:7px;
+  margin:0;
+}
+
+.jarvis-theme .dash-root .block-check.done::after {
+  content:'✓';
+  color:#04100B;
+  font-size:14px;
+  font-weight:1000;
+}
+
+.jarvis-theme .dash-root .block-num {
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  font-size:10px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.025);
+}
+
+.jarvis-theme .dash-root .block-section {
+  font-size:9px;
+  letter-spacing:1.1px;
+}
+
+.jarvis-theme .dash-root .block-title {
+  margin-bottom:3px;
+  font-size:13px;
+}
+
+.jarvis-theme .dash-root .block-details {
+  font-size:10px;
+  line-height:1.45;
+}
+
+.jarvis-theme .dash-root .block-meta {
+  min-width:76px;
+}
+
+.jarvis-theme .dash-root .meta-time {
+  font-size:8px;
+}
+
+.jarvis-theme .dash-root .meta-target {
+  display:inline-flex;
+  margin-top:5px;
+  padding:3px 6px;
+  border-radius:6px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.jarvis-theme .dash-root .scorecard {
+  gap:9px;
+}
+
+.jarvis-theme .dash-root .score-input-wrap {
+  min-width:0;
+}
+
+.jarvis-theme .dash-root .score-input {
+  min-height:46px;
+  border-radius:11px;
+  background:#071114 !important;
+}
+
+.jarvis-theme .dash-root .score-input:focus {
+  border-color:rgba(85,244,255,.45) !important;
+  box-shadow:0 0 0 3px rgba(85,244,255,.08);
+}
+
+.jarvis-theme .dash-root .score-btn {
+  min-height:48px;
+  border-radius:12px;
+  color:#031014;
+  font-weight:900;
+  background:linear-gradient(135deg,#55F4FF,#76FFE1) !important;
+  box-shadow:0 10px 22px rgba(85,244,255,.11);
+}
+
+.jarvis-theme .dash-root .score-btn:active {
+  transform:translateY(1px) scale(.99);
+}
+
+.jarvis-theme .dash-root .error-card {
+  min-height:84px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.jarvis-theme .dash-root .error-card:active {
+  transform:scale(.98);
+}
+
+.jarvis-theme .dash-root .flow-wrap {
+  gap:6px;
+}
+
+.jarvis-theme .dash-root .flow-step {
+  border-radius:8px;
+  padding:7px 9px;
+  font-size:8px;
+}
+
+.jarvis-theme .dash-root .flow-arrow {
+  font-size:10px;
+  opacity:.55;
+}
+
+.jarvis-theme .dash-root .mantra-bar {
+  border-radius:18px;
+  padding:18px 16px;
+  background:
+    radial-gradient(circle at 50% 0, rgba(85,244,255,.06), transparent 45%),
+    #071114 !important;
+}
+
+.jarvis-theme .dash-root .mantra-text {
+  color:#DFFBFA !important;
+  font-size:15px;
+}
+
+.jarvis-theme .dash-root .mantra-sub {
+  color:#6D8588;
+}
+
+.dashboard-exit {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:0 14px;
+  border-radius:11px;
+  border:1px solid rgba(85,244,255,.16);
+  color:#A7EFF1;
+  background:rgba(4,13,16,.88);
+  box-shadow:0 8px 18px rgba(0,0,0,.2);
+  font:800 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.65px;
+  cursor:pointer;
+  transition:transform .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.dashboard-exit:hover {
+  border-color:rgba(85,244,255,.34);
+  background:rgba(7,21,25,.96);
+}
+
+.dashboard-exit:active {
+  transform:scale(.98);
+}
+
+.dashboard-exit:focus-visible,
+.jarvis-theme .dash-root button:focus-visible,
+.jarvis-theme .dash-root input:focus-visible {
+  outline:2px solid rgba(85,244,255,.82);
+  outline-offset:2px;
+}
+
+@media (max-width:900px) {
+  .jarvis-theme .dash-root .header-inner {
+    grid-template-columns:1fr auto;
+    text-align:left;
+    align-items:end;
+    min-height:0;
+  }
+
+  .jarvis-theme .dash-root .header-center {
+    grid-column:1/-1;
+    grid-row:2;
+    text-align:left;
+  }
+
+  .jarvis-theme .dash-root .header-right {
+    text-align:right;
+  }
+
+  .jarvis-theme .dash-root .countdown-big {
+    font-size:27px;
+  }
+
+  .jarvis-theme .dash-root .stats-row {
+    grid-template-columns:repeat(8,minmax(92px,118px));
+  }
+}
+
+@media (max-width:600px) {
+  .jarvis-theme .dash-root .main {
+    padding:12px 12px 96px !important;
+  }
+
+  .jarvis-theme .dash-root .header-inner {
+    width:100%;
+    padding:14px 14px;
+  }
+
+  .jarvis-theme .dash-root .header-brand {
+    font-size:20px;
+  }
+
+  .jarvis-theme .dash-root .header-sub {
+    font-size:8px;
+  }
+
+  .jarvis-theme .dash-root .header-right .countdown-label {
+    font-size:8px;
+  }
+
+  .jarvis-theme .dash-root .mission-bar {
+    width:calc(100% - 24px);
+    margin-top:8px;
+    align-items:stretch;
+    text-align:left;
+  }
+
+  .jarvis-theme .dash-root .live-schedule-panel,
+  .jarvis-theme .dash-root .daily-motivation-card {
+    margin-inline:12px;
+  }
+
+  .jarvis-theme .dash-root .block-item {
+    grid-template-columns:24px 32px minmax(0,1fr);
+    align-items:start;
+  }
+
+  .jarvis-theme .dash-root .block-meta {
+    grid-column:3;
+    grid-row:2;
+    text-align:left;
+    min-width:0;
+    display:flex;
+    gap:7px;
+    align-items:center;
+  }
+
+  .jarvis-theme .dash-root .meta-target {
+    margin-top:0;
+  }
+
+  .jarvis-theme .dash-root .scorecard {
+    grid-template-columns:1fr 1fr 1fr;
+  }
+
+  .jarvis-theme .dash-root .score-btn {
+    grid-column:1/-1;
+  }
+
+  .jarvis-theme .dash-root .error-types {
+    gap:6px;
+  }
+
+  .jarvis-theme .dash-root .error-card {
+    min-height:78px;
+    padding:8px 5px;
+  }
+
+  .jarvis-theme .dash-root .week-grid {
+    gap:6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jarvis-theme .dash-root * {
+    animation-duration:0.001ms !important;
+    transition-duration:0.001ms !important;
+  }
+}

@@ -34,14 +34,23 @@ import { MocksPage }            from '@/features/mocks/MocksPage'
 import { SchedulePage }         from '@/features/schedule/SchedulePage'
 import { SyllabusPage }         from '@/features/syllabus/SyllabusPage'
 import { SettingsPage }         from '@/features/settings/SettingsPage'
+import { SecuritySentinelPage } from '@/features/security/SecuritySentinelPage'
+import { MissionOSPage }        from '@/features/missionos/MissionOSPage'
 
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { SettingsRepository } from '@/repositories/index'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
+import { enableWebNotificationScheduler } from '@/services/webNotifications'
+import { JarvisWebSecurityGate } from '@/features/jarvis/JarvisWebSecurityGate'
+import { JarvisCommandCenter } from '@/features/jarvis/JarvisCommandCenter'
+import { JarvisCommandPalette } from '@/features/jarvis/JarvisCommandPalette'
+import { AppErrorBoundary } from '@/components/AppErrorBoundary'
+import { initPwaInstall } from '@/services/pwaInstall'
+import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -59,6 +68,7 @@ export function App() {
   const [loading, setLoading]                   = useState(true)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
   const [showJarvisHud, setShowJarvisHud]       = useState(false)
+
   const { show: toast }                         = useToast()
   const touchStartX = useRef(0)
   const navIdxRef   = useRef(0)
@@ -70,6 +80,10 @@ export function App() {
       try {
         await openDB()
         await MasteryRepository.init()
+        installGlobalErrorAudit()
+        initPwaInstall()
+        enableWebNotificationScheduler()
+
         const savedTheme = await SettingsRepository.get('stitchTheme', 'apex')
         if (savedTheme) {
           document.documentElement.setAttribute('data-theme', savedTheme as string)
@@ -161,89 +175,104 @@ export function App() {
 
   if (activePage === 'dashboard') {
     return (
-      <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
-        <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
-          <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
-            ← Exit 1:1 Dashboard
-          </button>
-        </div>
-        <DashboardPage />
-      </div>
+      <AppErrorBoundary>
+        <JarvisWebSecurityGate>
+          <div style={{ height: '100%', overflow: 'auto', position: 'relative' }}>
+            <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
+              <button onClick={() => setActivePage('more')} style={{ background: '#F5A623', color: '#0A0F1E', padding: '10px 20px', borderRadius: 20, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+                ← Exit 1:1 Dashboard
+              </button>
+            </div>
+            <DashboardPage />
+          </div>
+        </JarvisWebSecurityGate>
+      </AppErrorBoundary>
     )
   }
 
   return (
-    <div
-      className="app-shell"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <Header
-        onOpenVoiceJarvis={() => setShowVoiceJarvis(true)}
-        onOpenJarvisHud={() => setShowJarvisHud(true)}
-      />
+    <AppErrorBoundary>
+      <JarvisWebSecurityGate>
+        <div
+          className="app-shell"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <Header
+            onOpenVoiceJarvis={() => setShowVoiceJarvis(true)}
+            onOpenJarvisHud={() => setShowJarvisHud(true)}
+          />
 
-      <div className="content-area">
-        {/* MAIN PAGES */}
-        {activePage === 'today'   && <TodayPage />}
-        {activePage === 'week'    && <WeekPage />}
-        {activePage === 'mastery' && <MasteryPage />}
-        {activePage === 'phases'  && <PhasesPage />}
-        {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
+          <div className="content-area">
+            {/* MAIN PAGES */}
+            {activePage === 'today'   && <TodayPage />}
+            {activePage === 'week'    && <WeekPage />}
+            {activePage === 'mastery' && <MasteryPage />}
+            {activePage === 'phases'  && <PhasesPage />}
+            {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
 
-        {/* SUB PAGES */}
-        {activePage === 'mission'      && <MissionPage          onBack={() => setActivePage('more')} />}
-        {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
-        {activePage === 'mindset'      && <MindsetPage          onBack={() => setActivePage('more')} />}
-        {activePage === 'apexpro'      && <ApexProSuite         onBack={() => setActivePage('more')} />}
-        {activePage === 'openjarvis'   && <OpenJarvisTerminal   onBack={() => setActivePage('more')} />}
-        {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
-        {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
-        {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
-        {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
-        {activePage === 'achievements'  && <AchievementsPage     onBack={() => setActivePage('more')} />}
-        {activePage === 'dailycapsule' && <DailyCapsulePage     onBack={() => setActivePage('more')} />}
-        {activePage === 'qbank'        && <QuestionBankPage     onBack={() => setActivePage('more')} />}
-        {activePage === 'livesessions' && <LiveSessionsPage     onBack={() => setActivePage('more')} />}
-        {activePage === 'drills'       && <SpeedDrillsPage      onBack={() => setActivePage('more')} />}
-        {activePage === 'research'     && <DeepResearchPage     onBack={() => setActivePage('more')} />}
-        {activePage === 'errors'       && <ErrorsPage           onBack={() => setActivePage('more')} />}
-        {activePage === 'repair'       && <RepairPage           onBack={() => setActivePage('more')} />}
-        {activePage === 'retest'       && <RetestPage           onBack={() => setActivePage('more')} />}
-        {activePage === 'mockana'      && <MocksPage            onBack={() => setActivePage('more')} />}
-        {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
-        {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
-        {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
-      </div>
+            {/* SUB PAGES */}
+            {activePage === 'jarvis'       && <JarvisCommandCenter  onBack={() => setActivePage('more')} />}
+            {activePage === 'mission'      && <MissionPage          onBack={() => setActivePage('more')} />}
+            {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'mindset'      && <MindsetPage          onBack={() => setActivePage('more')} />}
+            {activePage === 'apexpro'      && <ApexProSuite         onBack={() => setActivePage('more')} />}
+            {activePage === 'openjarvis'   && <OpenJarvisTerminal   onBack={() => setActivePage('more')} />}
+            {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
+            {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
+            {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'achievements'  && <AchievementsPage     onBack={() => setActivePage('more')} />}
+            {activePage === 'dailycapsule' && <DailyCapsulePage     onBack={() => setActivePage('more')} />}
+            {activePage === 'qbank'        && <QuestionBankPage     onBack={() => setActivePage('more')} />}
+            {activePage === 'livesessions' && <LiveSessionsPage     onBack={() => setActivePage('more')} />}
+            {activePage === 'drills'       && <SpeedDrillsPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'research'     && <DeepResearchPage     onBack={() => setActivePage('more')} />}
+            {activePage === 'errors'       && <ErrorsPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'repair'       && <RepairPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'retest'       && <RetestPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'mockana'      && <MocksPage            onBack={() => setActivePage('more')} />}
+            {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
+            {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
+            {activePage === 'security'     && <SecuritySentinelPage onBack={() => setActivePage('more')} />}
+            {activePage === 'missionos'    && <MissionOSPage        onBack={() => setActivePage('more')} />}
+            {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
+          </div>
 
-      <VoiceJarvisModal
-        isOpen={showVoiceJarvis}
-        onClose={() => setShowVoiceJarvis(false)}
-        onNavigate={(p) => { setShowVoiceJarvis(false); setActivePage(p); }}
-      />
+          <VoiceJarvisModal
+            isOpen={showVoiceJarvis}
+            onClose={() => setShowVoiceJarvis(false)}
+            onNavigate={(p) => { setShowVoiceJarvis(false); setActivePage(p); }}
+          />
 
-      <JarvisStartupHUD
-        isOpen={showJarvisHud}
-        onClose={() => setShowJarvisHud(false)}
-        onLaunchJarvisVoice={() => { setShowJarvisHud(false); setShowVoiceJarvis(true); }}
-      />
+          <JarvisStartupHUD
+            isOpen={showJarvisHud}
+            onClose={() => setShowJarvisHud(false)}
+            onLaunchJarvisVoice={() => { setShowJarvisHud(false); setShowVoiceJarvis(true); }}
+          />
 
-      {isMain && (
-        <BottomNav
-          current={activePage as MainPage}
-          onChange={(p) => { setActivePage(p); navIdxRef.current = MAIN_PAGES.indexOf(p) }}
-        />
-      )}
+          <JarvisCommandPalette
+            onNavigate={p => { setActivePage(p); recordAudit('PALETTE_NAVIGATE: ' + p); }}
+          />
 
-      {!isMain && activePage !== 'dashboard' && (
-        <div style={{ height: 'calc(var(--tab-h) + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)', background: '#0D1B2A', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <button onClick={() => setActivePage('more')} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--muted)', borderRadius: 20, padding: '8px 24px', fontSize: 13, cursor: 'pointer' }}>
-            ← Back to More Hub
-          </button>
+          {isMain && (
+            <BottomNav
+              current={activePage as MainPage}
+              onChange={(p) => { setActivePage(p); navIdxRef.current = MAIN_PAGES.indexOf(p) }}
+            />
+          )}
+
+          {!isMain && activePage !== 'dashboard' && (
+            <div style={{ height: 'calc(var(--tab-h) + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)', background: '#0D1B2A', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <button onClick={() => setActivePage('more')} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--muted)', borderRadius: 20, padding: '8px 24px', fontSize: 13, cursor: 'pointer' }}>
+                ← Back to More Hub
+              </button>
+            </div>
+          )}
+
+          <StudyTimer />
         </div>
-      )}
-
-      <StudyTimer />
-    </div>
+      </JarvisWebSecurityGate>
+    </AppErrorBoundary>
   )
 }

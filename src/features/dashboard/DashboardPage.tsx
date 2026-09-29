@@ -6,9 +6,11 @@ import { usePhase } from '@/hooks/usePhase'
 import { getWeekNumber, getDaysLeft } from '@/services/domain'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
+import { BLOCKS, SCHEDULE_ITEMS, WEEK_PLAN_TEMPLATE } from '@/data/config'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
+import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
 
 const SEQUENCE_STRIP = [
   { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: 'LIVE', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
@@ -23,6 +25,122 @@ const SEQUENCE_STRIP = [
 
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 const MONTHS_ARR = ['January','February','March','April','May','June','July','August','September','October','November','December']
+
+const DAILY_LINES = [
+  { quote: 'Become the man who promised himself he would.', action: 'Protect the next study block. No negotiation.' },
+  { quote: 'Small disciplined days become extraordinary results.', action: 'Finish one block completely before chasing the next.' },
+  { quote: 'You do not need a perfect day. You need an executed day.', action: 'Start the next planned block within five minutes.' },
+  { quote: 'Confidence is built after the work, not before it.', action: 'Do the practice first. Let confidence follow.' },
+  { quote: 'Your future score is hidden inside today’s repetitions.', action: 'Choose accuracy first, then speed.' },
+  { quote: 'When the plan is clear, your job is simply to execute.', action: 'Follow the locked sequence exactly as written.' },
+  { quote: 'One focused hour can change the direction of a whole day.', action: 'Put the phone away and enter Focus Core.' },
+  { quote: 'Repair the weakness, then earn the next level.', action: 'Do not skip today’s error-repair step.' },
+  { quote: 'Consistency beats intensity when intensity cannot be repeated.', action: 'Keep today strong, simple and repeatable.' },
+  { quote: 'Make today a vote for the person you are becoming.', action: 'Complete the next action before adding anything new.' },
+  { quote: 'Discipline is remembering what matters when distraction gets loud.', action: 'Return to CAT-first mode immediately.' },
+  { quote: 'The gap closes every time you solve, analyze and repair.', action: 'Finish the loop: Solve → Analyze → Repair → Retest.' },
+]
+
+
+type LiveSlot = (typeof SCHEDULE_ITEMS)[number]
+
+function clockToMinutes(value: string) {
+  const [h, m] = value.trim().split(':').map(Number)
+  return (h * 60) + m
+}
+
+function slotBounds(slot: LiveSlot) {
+  const parts = slot.time.split('–')
+  const start = clockToMinutes(parts[0])
+  const end = parts[1] ? clockToMinutes(parts[1]) : (slot.block === 'Sleep' ? 300 : start + 1)
+  return { start, end, wraps: end <= start }
+}
+
+function isSlotActive(slot: LiveSlot, minutes: number) {
+  const { start, end, wraps } = slotBounds(slot)
+  return wraps ? (minutes >= start || minutes < end) : (minutes >= start && minutes < end)
+}
+
+function minutesUntilStart(slot: LiveSlot, minutes: number) {
+  const start = slotBounds(slot).start
+  return (start - minutes + 1440) % 1440
+}
+
+function getCurrentSlot(minutes: number) {
+  return SCHEDULE_ITEMS.find(slot => isSlotActive(slot, minutes)) || null
+}
+
+function getNextSlot(minutes: number) {
+  const future = SCHEDULE_ITEMS
+    .map(slot => ({ slot, distance: minutesUntilStart(slot, minutes) }))
+    .filter(item => item.distance > 0)
+    .sort((a, b) => a.distance - b.distance)
+  return future[0]?.slot || null
+}
+
+function getCurrentBlockId(slot: LiveSlot | null) {
+  if (!slot) return ''
+  const map: Record<string, string> = {
+    'QA Session': 'QA',
+    'DILR Session': 'DILR',
+    'VARC Session': 'VARC',
+    'Library Deep Work': 'TEST',
+    'Test Analysis + Error Log': 'ANALYSIS',
+    Revision: 'REVISION',
+  }
+  return map[slot.block] || ''
+}
+
+function getBlockSlot(blockId: string) {
+  if (blockId === 'REPAIR') return SCHEDULE_ITEMS.find(s => s.block === 'Library Deep Work') || null
+  if (blockId === 'RETEST') return SCHEDULE_ITEMS.find(s => s.block === 'Revision') || null
+  const aliases: Record<string, string> = {
+    QA: 'QA Session',
+    DILR: 'DILR Session',
+    VARC: 'VARC Session',
+    TEST: 'Library Deep Work',
+    ANALYSIS: 'Test Analysis + Error Log',
+    REVISION: 'Revision',
+  }
+  const label = aliases[blockId]
+  return label ? SCHEDULE_ITEMS.find(s => s.block === label) || null : null
+}
+
+function getBlockTimeLabel(blockId: string) {
+  const scheduleSlot = getBlockSlot(blockId)
+  if (scheduleSlot) return scheduleSlot.time
+  return BLOCKS.find(b => b.id === blockId)?.time || 'Flexible'
+}
+
+function getBlockLiveState(blockId: string, minutes: number, status: string) {
+  if (status === 'DONE') return 'DONE'
+  if (status === 'IN_PROGRESS') return 'WORKING'
+  const slot = getBlockSlot(blockId)
+  if (!slot) return 'READY'
+  if (isSlotActive(slot, minutes)) return 'NOW'
+  const bounds = slotBounds(slot)
+  if (!bounds.wraps && minutes >= bounds.end) return 'PASSED'
+  const distance = minutesUntilStart(slot, minutes)
+  if (distance > 0 && distance <= 180) return 'NEXT'
+  if (distance > 0) return 'UPCOMING'
+  return 'PASSED'
+}
+
+function getKolkataClock(date: Date) {
+  const parts = new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(date)
+  const get = (type: string) => Number(parts.find(part => part.type === type)?.value || 0)
+  return {
+    hours: get('hour'),
+    minutes: get('minute'),
+    seconds: get('second'),
+  }
+}
 
 function getRealWeekDates(now: Date = new Date()) {
   const p = getKolkataDateParts(now)
@@ -51,8 +169,16 @@ export function DashboardPage() {
   const [acc, setAcc]       = useState('')
   const [feedback, setFeedback] = useState('')
   const [errorCounts, setErrorCounts] = useState<{ [key: string]: number }>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
+  const [liveNow, setLiveNow] = useState(() => new Date())
 
-  const now = new Date()
+  useEffect(() => {
+    const tick = () => setLiveNow(new Date())
+    tick()
+    const id = window.setInterval(tick, 1000)
+    return () => window.clearInterval(id)
+  }, [])
+
+  const now = liveNow
   const dateKey = getKolkataDateKey(now)
   const dayNum = getFirstPassDayNum(dateKey)
   const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
@@ -60,7 +186,21 @@ export function DashboardPage() {
   const kolkataParts = getKolkataDateParts(now)
   const realDayName = DAYS_ARR[kolkataParts.dayOfWeek]
   const realDateStr = `${kolkataParts.date} ${MONTHS_ARR[kolkataParts.month - 1]} ${kolkataParts.year}`
-  const realWeekDates = getRealWeekDates()
+  const realWeekDates = getRealWeekDates(now)
+  const clock = getKolkataClock(now)
+  const currentMinutes = kolkataParts.hours * 60 + kolkataParts.minutes
+  const currentSlot = getCurrentSlot(currentMinutes)
+  const nextSlot = getNextSlot(currentMinutes)
+  const currentBlockId = getCurrentBlockId(currentSlot)
+  const liveTimeStr = String(clock.hours).padStart(2, '0') + ':' + String(clock.minutes).padStart(2, '0') + ':' + String(clock.seconds).padStart(2, '0')
+  const todayWeekPlan = WEEK_PLAN_TEMPLATE[kolkataParts.dayOfWeek === 0 ? 6 : kolkataParts.dayOfWeek - 1]
+  const nextTask = tasks.find(task => task.status !== 'DONE') || null
+  const getSequenceState = (id: string) => {
+    const task = tasks.find(t => t.blockId === id)
+    if (task?.status === 'DONE') return 'DONE'
+    if (id === currentBlockId) return 'NOW'
+    return getBlockLiveState(id, currentMinutes, task?.status || 'TODO')
+  }
 
   useEffect(() => {
     ErrorRepository.getTypeCounts().then(counts => {
@@ -114,9 +254,10 @@ export function DashboardPage() {
   return (
     <div className="dash-root">
       {/* ── LIVE INDIA TIME BAR ── */}
-      <div style={{ background: '#0B1325', padding: '6px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, fontFamily: 'JetBrains Mono', color: '#94A3B8', borderBottom: '1px solid #1E293B' }}>
-        <span style={{ fontWeight: 700, color: '#FFF' }}>{String(kolkataParts.hours).padStart(2, '0')}:{String(kolkataParts.minutes).padStart(2, '0')}</span>
-        <span style={{ color: '#86EFAC', fontWeight: 800, fontSize: 10 }}>INDIA TIME • LIVE SYNC</span>
+      <div className="live-time-bar">
+        <span className="live-time-clock">{liveTimeStr}</span>
+        <span className="live-time-label">INDIA TIME • LIVE • AUTO REFRESH 1s</span>
+        <span className="live-time-date">{realDayName} • {realDateStr}</span>
       </div>
 
       {/* ── HEADER ── */}
@@ -132,7 +273,7 @@ export function DashboardPage() {
               {phase.id} — {phase.name} — ACTIVE
             </div>
             <div style={{ marginTop: 6, fontSize: 12, color: 'var(--muted)' }}>
-              Week {getWeekNumber()} &nbsp;|&nbsp; Real-Time Sync
+              Week {getWeekNumber()} &nbsp;|&nbsp; {liveTimeStr} IST • LIVE
             </div>
           </div>
           <div className="header-right">
@@ -161,6 +302,38 @@ export function DashboardPage() {
         </div>
       </div>
 
+      {/* ── LIVE SCHEDULE CONTROL ── */}
+      <div className="live-schedule-panel">
+        <div className="live-schedule-main">
+          <div className="live-schedule-kicker">◉ RIGHT NOW • {liveTimeStr} IST</div>
+          <div className="live-schedule-title">{currentSlot?.icon || '⏱️'} {currentSlot?.block || 'Buffer / Transition'}</div>
+          <div className="live-schedule-detail">{currentSlot?.detail || 'Use this gap for water, movement, setup, or the next planned study block.'}</div>
+        </div>
+        <div className="live-schedule-next">
+          <div className="live-schedule-next-label">NEXT WINDOW</div>
+          <div className="live-schedule-next-title">{nextSlot ? nextSlot.icon + ' ' + nextSlot.block : 'Morning Reset'}</div>
+          <div className="live-schedule-next-time">{nextSlot?.time || '05:00–05:15'} {nextTask ? '• Next task: ' + nextTask.blockId : ''}</div>
+        </div>
+        <div className="live-schedule-day">
+          <div className="live-schedule-day-label">TODAY'S MODE</div>
+          <div className="live-schedule-day-focus">{todayWeekPlan?.focus || 'CAT FIRST'}</div>
+          <div className="live-schedule-day-sub">{todayWeekPlan?.eve || 'Execute the locked sequence.'}</div>
+        </div>
+      </div>
+
+      {/* ── DAILY MOTIVATION ── */}
+      {(() => {
+        const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
+        const line = DAILY_LINES[seed % DAILY_LINES.length]
+        return (
+          <div className="daily-motivation-card">
+            <div className="daily-motivation-kicker">🔥 TODAY'S LINE</div>
+            <div className="daily-motivation-quote">“{line.quote}”</div>
+            <div className="daily-motivation-action"><span>NEXT ACTION</span>{line.action}</div>
+          </div>
+        )
+      })()}
+
       {/* ── MISSION BAR ── */}
       <div className="mission-bar">
         <div className="mission-text">🎯 MISSION: {phase.mission}</div>
@@ -172,6 +345,7 @@ export function DashboardPage() {
       <div className="main">
 
         <DailyControlCard />
+        <LinkedInDailyCard />
 
         {/* DAILY 8-BLOCK SEQUENCE JETPACK GRID */}
         <div className="stats-row">
@@ -188,7 +362,7 @@ export function DashboardPage() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                   <span className="stat-num">{s.seq}</span>
-                  <span style={{ fontSize: 8, fontWeight: 800, padding: '1px 5px', borderRadius: 4, background: s.bg, color: s.col }}>{s.tag}</span>
+                  <span className={'stat-live-tag ' + (s.id === currentBlockId ? 'now' : '')}>{s.id === currentBlockId ? 'NOW' : s.tag}</span>
                 </div>
                 <div className="stat-seq">{s.label}</div>
                 <div className="stat-label">{s.sub}</div>
@@ -226,8 +400,8 @@ export function DashboardPage() {
                       <div className="block-details">{task.notes || 'Target: 70%+ accuracy • Focus on core method.'}</div>
                     </div>
                     <div className="block-meta">
-                      <div className="meta-time">Scheduled</div>
-                      <div className="meta-target">{task.status}</div>
+                      <div className="meta-time">{getBlockTimeLabel(task.blockId)}</div>
+                      <div className={'meta-target live-state-' + getBlockLiveState(task.blockId, currentMinutes, task.status).toLowerCase()}>{getBlockLiveState(task.blockId, currentMinutes, task.status)}</div>
                     </div>
                   </div>
                 )

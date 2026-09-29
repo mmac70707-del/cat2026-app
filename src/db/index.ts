@@ -7,7 +7,7 @@
 const DB_NAME = 'cat2026_db'
 // Bumped 4 → 5 to add `weeklySummaries` (persistent weekly execution analysis records).
 // onupgradeneeded only ADDS new stores — every existing store and data is preserved intact.
-const DB_VERSION = 5
+const DB_VERSION = 8
 
 let _db: IDBDatabase | null = null
 
@@ -33,6 +33,9 @@ export function openDB(): Promise<IDBDatabase> {
         { name: 'artifacts',      key: 'id',      indexes: [['byType','type'],['byDateKey','dateKey'],['byWeekKey','weekKey'],['byMonthKey','monthKey'],['byYearKey','yearKey']] },
         { name: 'plans',          key: 'id',      indexes: [['byType','type'],['byDateKey','dateKey']] },
         { name: 'weeklySummaries',key: 'weekKey', indexes: [] },
+        { name: 'auditEvents',    key: 'id',      indexes: [['byType','type'],['byTs','ts']] },
+        { name: 'missionRuns',    key: 'id',      indexes: [['byDate','date'],['bySubject','subject']] },
+        { name: 'secureVault',   key: 'keyId',   indexes: [['byUpdatedAt','updatedAt']] },
       ]
 
       stores.forEach(({ name, key, indexes }) => {

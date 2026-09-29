@@ -1,77 +1,223 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useQuickStats } from '@/hooks/index'
+import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
+import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
-export type SubPage = 'dashboard' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'settings'
+export type SubPage = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
+type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'PERSONAL' | 'SYSTEM'
 
-const TILES: { id: SubPage; icon: string; label: string; featured?: boolean }[] = [
-  { id: 'dashboard',    icon: '📊', label: 'Master Execution Dashboard 1:1 View', featured: true },
-  { id: 'openjarvis',   icon: '🤖', label: 'Stanford OpenJarvis AI Research Agent (openjarvis.stanford.edu)', featured: true },
-  { id: 'apexpro',      icon: '⚡', label: 'Apex Pro Executive Command Deck & Triage Engine', featured: true },
-  { id: 'mission',      icon: '🎯', label: 'Current Active Mission (Visuals & Focus)', featured: true },
-  { id: 'vision',       icon: '👁️', label: 'Master Vision, 6 Pillars & 7-Year Roadmap', featured: true },
-  { id: 'mindset',      icon: '🧠', label: 'Mindset, Anti-Laziness & Discipline Protocol', featured: true },
-  { id: 'roadmap',      icon: '🚀', label: '44-Day First-Pass Roadmap' },
-  { id: 'catmock',      icon: '🏆', label: 'CAT 2026 Full Exam Simulator' },
-  { id: 'adaptive',     icon: '🧠', label: 'AI Adaptive Weakness Heatmap' },
-  { id: 'dailycapsule', icon: '📰', label: 'Daily Execution Briefs & Practice Sprints' },
-  { id: 'flashcards',   icon: '🎴', label: 'Spaced Repetition Formula Deck' },
-  { id: 'achievements', icon: '🎖️', label: 'Streak Counter & Execution Badges' },
-  { id: 'research',     icon: '🔬', label: 'Deep Research Protocol' },
-  { id: 'livesessions', icon: '📺', label: 'Expert Masterclasses & Video Seminars' },
-  { id: 'qbank',        icon: '📚', label: 'Adaptive Question Vault' },
-  { id: 'drills',       icon: '⚡', label: 'Quantum Calculation Drills' },
-  { id: 'errors',       icon: '🔴', label: 'Error Log (C1–C5)' },
-  { id: 'repair',       icon: '🔧', label: 'Repair Queue' },
-  { id: 'retest',       icon: '✅', label: 'Retest System' },
-  { id: 'mockana',      icon: '🧪', label: 'Mock Analytics' },
-  { id: 'schedule',     icon: '⏰', label: 'Daily Schedule' },
-  { id: 'syllabus',     icon: '📖', label: 'Full Syllabus' },
-  { id: 'settings',     icon: '⚙️', label: 'Settings & Data Export' },
+const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }[] = [
+  { id: 'missionos', icon: 'compass', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
+    { id: 'jarvis', icon: 'jarvis', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
+  { id: 'schedule', icon: 'clock', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
+  { id: 'dashboard', icon: 'dashboard', label: 'Master Dashboard', category: 'EXECUTE', featured: true, hint: 'Full execution view' },
+  { id: 'adaptive', icon: 'adaptive', label: 'Weakness Heatmap', category: 'LEARN', hint: 'Find weak areas' },
+  { id: 'qbank', icon: 'library', label: 'Question Vault', category: 'LEARN', hint: 'Practice bank' },
+  { id: 'drills', icon: 'zap', label: 'Calculation Drills', category: 'LEARN', hint: 'Build speed' },
+  { id: 'livesessions', icon: 'monitor', label: 'Masterclasses', category: 'LEARN', hint: 'Deep learning' },
+  { id: 'syllabus', icon: 'book', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
+  { id: 'flashcards', icon: 'layers', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
+  { id: 'catmock', icon: 'trophy', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
+  { id: 'mockana', icon: 'flask', label: 'Mock Analytics', category: 'REVIEW', hint: 'Score + time patterns' },
+  { id: 'errors', icon: 'alert', label: 'Error Log C1–C5', category: 'REVIEW', hint: 'Capture root causes' },
+  { id: 'repair', icon: 'wrench', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },
+  { id: 'retest', icon: 'checkCircle', label: 'Retest System', category: 'REVIEW', hint: 'Prove the repair' },
+  { id: 'achievements', icon: 'badge', label: 'Streak & Badges', category: 'REVIEW', hint: 'Execution history' },
+  { id: 'vision', icon: 'eye', label: 'Master Vision', category: 'PERSONAL', featured: true, hint: 'Where I am going' },
+  { id: 'mission', icon: 'target', label: 'Mission & Direction', category: 'PERSONAL', featured: true, hint: 'What matters now' },
+  { id: 'mindset', icon: 'meditation', label: 'Mindset Protocol', category: 'PERSONAL', featured: true, hint: 'How I operate' },
+  { id: 'roadmap', icon: 'rocket', label: '44-Day CAT Roadmap', category: 'EXECUTE', hint: 'Syllabus runway' },
+  { id: 'apexpro', icon: 'zap', label: 'Apex Pro Deck', category: 'SYSTEM', hint: 'Advanced command layer' },
+  { id: 'openjarvis', icon: 'bot', label: 'OpenJarvis Agent', category: 'SYSTEM', hint: 'Research workspace' },
+  { id: 'dailycapsule', icon: 'newspaper', label: 'Daily Briefs', category: 'SYSTEM', hint: 'Context capsule' },
+  { id: 'research', icon: 'microscope', label: 'Deep Research', category: 'SYSTEM', hint: 'Research tools' },
+  { id: 'security', icon: 'security', label: 'Security Sentinel', category: 'SYSTEM', hint: 'Integrity + audit' },
+  { id: 'settings', icon: 'settings', label: 'Settings & Data', category: 'SYSTEM', hint: 'Preferences + export' },
+]
+
+const CATEGORIES: { id: Category; label: string }[] = [
+  { id: 'ALL', label: 'ALL' },
+  { id: 'EXECUTE', label: 'EXECUTE' },
+  { id: 'LEARN', label: 'LEARN' },
+  { id: 'REVIEW', label: 'REVIEW' },
+  { id: 'PERSONAL', label: 'PERSONAL OS' },
+  { id: 'SYSTEM', label: 'SYSTEM' },
 ]
 
 export function MorePage({ onNavigate }: Props) {
   const { stats } = useQuickStats()
+  const [installable, setInstallable] = useState(false)
+  const [installed, setInstalled] = useState(false)
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState<Category>('ALL')
+
+  useEffect(() => {
+    const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+    setInstalled(standalone)
+    setInstallable(canInstallPwa())
+
+    const onInstallable = () => setInstallable(canInstallPwa())
+    const onInstalled = () => { setInstallable(false); setInstalled(true) }
+    window.addEventListener('jarvis:pwa-installable', onInstallable)
+    window.addEventListener('jarvis:pwa-installed', onInstalled)
+    return () => {
+      window.removeEventListener('jarvis:pwa-installable', onInstallable)
+      window.removeEventListener('jarvis:pwa-installed', onInstalled)
+    }
+  }, [])
+
+  async function installApp() {
+    const accepted = await promptPwaInstall()
+    if (accepted) { setInstallable(false); setInstalled(true) }
+  }
+
+  const filteredTiles = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return TILES.filter(t => {
+      const categoryMatch = category === 'ALL' || t.category === category
+      const textMatch = !q || `${t.label} ${t.hint} ${t.category}`.toLowerCase().includes(q)
+      return categoryMatch && textMatch
+    })
+  }, [query, category])
+
+  const featured = TILES.filter(t => t.featured)
+
+  function openSearch() {
+    document.getElementById('jarvis-library-search')?.focus()
+  }
 
   return (
-    <div className="section-pad">
-      <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--gold)', marginBottom: 12 }}>
-        CAT 2026 Master Execution &amp; Deep Research Suite
-      </div>
+    <div className="section-pad jarvis-library">
+      <section className="jarvis-library-hero" aria-label="Command Library">
+        <div>
+          <div className="jarvis-library-kicker">JARVIS // COMMAND LIBRARY</div>
+          <h1>One system. <span>Every move.</span></h1>
+          <p>CAT 2026 first. Choose the next action, execute it, then let the system guide the review.</p>
+        </div>
+        <button className="jarvis-library-search-button" onClick={openSearch} aria-label="Focus command search"><AppIcon name="search" size={17} /><span>SEARCH</span></button>
+      </section>
 
-      <div className="grid2" style={{ gap: 10, marginBottom: 12 }}>
-        {TILES.map(t => (
-          <div
-            key={t.id}
-            className="hub-tile"
-            onClick={() => onNavigate(t.id)}
-            style={{
-              gridColumn: t.featured ? 'span 2' : 'span 1',
-              background: t.featured ? 'linear-gradient(135deg, rgba(245,166,35,0.15) 0%, rgba(26,86,219,0.2) 100%)' : undefined,
-              border: t.featured ? '1px solid var(--gold)' : undefined
-            }}
-          >
-            <div style={{ fontSize: 28 }}>{t.icon}</div>
-            <div className="hub-tile-label" style={{ fontWeight: t.featured ? 800 : 600, color: t.featured ? 'var(--gold)' : undefined }}>
-              {t.label}
-            </div>
+      <section className="jarvis-now-card" aria-label="Today at a glance">
+        <div className="jarvis-now-top">
+          <div>
+            <div className="jarvis-library-kicker">NOW // EXECUTION SIGNAL</div>
+            <div className="jarvis-now-title">Protect the next block.</div>
           </div>
+          <span className="pill pill-green">CAT FIRST</span>
+        </div>
+        <div className="jarvis-now-grid">
+          <div><b>{stats ? `${stats.blocksDone}/8` : '--'}</b><span>blocks done</span></div>
+          <div><b>{stats ? stats.repairPending : '--'}</b><span>repairs open</span></div>
+          <div><b>{stats?.lastAccuracy != null ? `${stats.lastAccuracy}%` : '--'}</b><span>last accuracy</span></div>
+        </div>
+        <button className="jarvis-now-action" onClick={() => onNavigate('missionos')}>OPEN NEXT MISSION <span><AppIcon name="arrowRight" size={17} /></span></button>
+      </section>
+
+      <div className="jarvis-library-featured">
+        {featured.map(t => (
+          <button key={t.id} className="jarvis-feature-card" onClick={() => onNavigate(t.id)}>
+            <span className="jarvis-feature-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></span>
+            <span><b>{t.label}</b><small>{t.hint}</small></span>
+            <strong><AppIcon name="arrowRight" size={17} /></strong>
+          </button>
         ))}
       </div>
 
-      <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8 }}>Quick Stats (live from IndexedDB)</div>
-      <div className="grid2">
+      <div className="jarvis-library-tools">
+        <label className="jarvis-library-search">
+          <span aria-hidden="true"><AppIcon name="search" size={17} /></span>
+          <input
+            id="jarvis-library-search"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search mission, mock, repair, syllabus…"
+            aria-label="Search command library"
+          />
+          {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search"><AppIcon name="x" size={15} /></button>}
+        </label>
+        <div className="jarvis-library-filters" role="tablist" aria-label="Command categories">
+          {CATEGORIES.map(c => (
+            <button key={c.id} className={category === c.id ? 'active' : ''} onClick={() => setCategory(c.id)} role="tab" aria-selected={category === c.id}>{c.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="jarvis-library-result-meta">
+        <span>{filteredTiles.length} COMMANDS</span>
+        <span>{query ? `SEARCH: “${query}”` : 'LOCAL • FAST • NO DISTRACTION'}</span>
+      </div>
+
+      <div className="jarvis-library-groups">
+        {category === "ALL" ? (
+          (["EXECUTE", "LEARN", "REVIEW", "PERSONAL", "SYSTEM"] as const).map(group => {
+            const items = filteredTiles.filter(t => t.category === group)
+            if (!items.length) return null
+            const heading = group === "PERSONAL" ? "PERSONAL OS" : group
+            const sub = group === "PERSONAL" ? "VISION → MISSION → MINDSET PROTOCOL" :
+              group === "EXECUTE" ? "TODAY ACTION LAYER" :
+              group === "LEARN" ? "BUILD THE SKILL" :
+              group === "REVIEW" ? "MEASURE → REPAIR → RETEST" : "SUPPORTING SYSTEMS"
+            return (
+              <section key={group} className={`jarvis-library-group jarvis-library-group--${group.toLowerCase()}`}>
+                <div className="jarvis-library-group-head"><div><b>{heading}</b><small>{sub}</small></div><span>{String(items.length).padStart(2, "0")}</span></div>
+                <div className="jarvis-hub-grid jarvis-library-grid">
+                  {items.map(t => (
+                    <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? " featured" : ""}`} onClick={() => onNavigate(t.id)}>
+                      <div className="jarvis-hub-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></div>
+                      <div className="jarvis-hub-tile-label">{t.label}</div>
+                      <div className="jarvis-library-tile-hint">{t.hint}</div>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )
+          })
+        ) : (
+          <section className={`jarvis-library-group jarvis-library-group--${category.toLowerCase()}`}>
+            <div className="jarvis-hub-grid jarvis-library-grid">
+              {filteredTiles.map(t => (
+                <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? " featured" : ""}`} onClick={() => onNavigate(t.id)}>
+                  <div className="jarvis-hub-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></div>
+                  <div className="jarvis-hub-tile-label">{t.label}</div>
+                  <div className="jarvis-library-tile-hint">{t.hint}</div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      {filteredTiles.length === 0 && (
+        <div className="jarvis-library-empty">NO COMMAND MATCHED. Try “mock”, “repair”, “quant”, or “mission”.</div>
+      )}
+
+      <div className="jarvis-app-control">
+        <div>
+          <div className="jarvis-app-control-kicker">DEVICE MODE</div>
+          <div className="jarvis-app-control-title">{installed ? 'JARVIS APP INSTALLED' : 'JARVIS WEB EXPERIENCE'}</div>
+          <div className="jarvis-app-control-copy">
+            {installed ? 'Standalone app shell detected.' : 'Install the PWA for an app-like launcher, offline cache and faster startup.'}
+          </div>
+        </div>
+        {!installed && installable && <button className="jarvis-app-install" onClick={installApp}>INSTALL APP</button>}
+      </div>
+
+      <div className="jarvis-stat-heading">Live execution telemetry</div>
+      <div className="jarvis-stat-grid">
         {[
-          { label: "Today's blocks", val: stats ? `${stats.blocksDone}/8` : '--',   col: 'var(--gold)'   },
-          { label: 'Errors logged',   val: stats ? `${stats.totalErrors}` : '--',   col: 'var(--red2)'   },
-          { label: 'Mocks done',      val: stats ? `${stats.mocksLogged}` : '--',   col: 'var(--blue3)'  },
-          { label: 'Last accuracy',   val: stats?.lastAccuracy != null ? `${stats.lastAccuracy}%` : '--', col: 'var(--green2)' },
-          { label: 'Repair pending',  val: stats ? `${stats.repairPending}` : '--', col: 'var(--pink)'   },
-          { label: 'Retest pending',  val: stats ? `${stats.retestPending}` : '--', col: 'var(--teal)'   },
+          { label: "Today's blocks", val: stats ? `${stats.blocksDone}/8` : '--', col: 'var(--jarvis-cyan)' },
+          { label: 'Errors logged', val: stats ? `${stats.totalErrors}` : '--', col: 'var(--jarvis-red)' },
+          { label: 'Mocks done', val: stats ? `${stats.mocksLogged}` : '--', col: 'var(--jarvis-cyan)' },
+          { label: 'Last accuracy', val: stats?.lastAccuracy != null ? `${stats.lastAccuracy}%` : '--', col: 'var(--jarvis-green)' },
+          { label: 'Repair pending', val: stats ? `${stats.repairPending}` : '--', col: 'var(--jarvis-amber)' },
+          { label: 'Retest pending', val: stats ? `${stats.retestPending}` : '--', col: 'var(--jarvis-cyan)' },
         ].map(s => (
-          <div key={s.label} className="card-sm" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 10, color: 'var(--muted)' }}>{s.label}</div>
-            <div style={{ fontSize: 24, fontWeight: 800, color: s.col, fontFamily: 'monospace' }}>{s.val}</div>
+          <div key={s.label} className="card-sm jarvis-stat-card">
+            <div className="jarvis-stat-label">{s.label}</div>
+            <div className="jarvis-stat-value" style={{ color: s.col }}>{s.val}</div>
           </div>
         ))}
       </div>
