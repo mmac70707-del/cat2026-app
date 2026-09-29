@@ -4,6 +4,7 @@ import type { DailyScore, ErrorRecord, MasteryTopic } from '@/types'
 import { DailyScoreRepository } from '@/repositories'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
+import { QuestionEvidenceRepository } from '@/repositories'
 
 interface Props { onNavigate?: (page: string) => void }
 const SUBJECTS = ['QA', 'DILR', 'VARC'] as const
@@ -12,11 +13,12 @@ export function LearningIntelligenceCard({ onNavigate }: Props) {
   const [scores, setScores] = useState<DailyScore[]>([])
   const [errors, setErrors] = useState<ErrorRecord[]>([])
   const [topics, setTopics] = useState<MasteryTopic[]>([])
+  const [evidence, setEvidence] = useState<import('@/types').QuestionEvidence[]>([])
   useEffect(() => {
     let mounted = true
-    Promise.all([DailyScoreRepository.getLast7(), ErrorRepository.getAll(), MasteryRepository.getAll()]).then(([s, e, t]) => {
+    Promise.all([DailyScoreRepository.getLast7(), ErrorRepository.getAll(), MasteryRepository.getAll(), QuestionEvidenceRepository.getRecent(100)]).then(([s, e, t, q]) => {
       if (!mounted) return
-      setScores(s); setErrors(e); setTopics(t)
+      setScores(s); setErrors(e); setTopics(t); setEvidence(q)
     })
     return () => { mounted = false }
   }, [])
@@ -36,6 +38,7 @@ export function LearningIntelligenceCard({ onNavigate }: Props) {
     pendingErrors.forEach(e => { const key = e.topic || e.subject; counts.set(key, (counts.get(key) || 0) + 1) })
     return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3)
   }, [errors])
+  const calibration = useMemo(() => { const answered = evidence.length; const over = evidence.filter(q => !q.correct && q.confidence >= 75).length; const under = evidence.filter(q => q.correct && q.confidence <= 50).length; return { answered, over, under } }, [evidence])
   const subjectStats = SUBJECTS.map(subject => {
     const rows = topics.filter(t => t.subject === subject)
     return { subject, mastered: rows.filter(t => t.currentLevel >= 3).length, total: rows.length }
