@@ -6,7 +6,7 @@ import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
 import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { playSuccessSound } from '@/services/audioService'
-import { BlockCard } from './BlockCard'
+import { BlockCard } from './BlockCard'\nimport { ExecutionIntelligenceCard } from './ExecutionIntelligenceCard'
 import { useToast } from '@/components/Toast'
 
 const SEQUENCE_STRIP = [
@@ -20,7 +20,7 @@ const SEQUENCE_STRIP = [
   { seq: '08', id: 'RETEST',   label: 'RETEST',   col: '#0E9F9F' },
 ]
 
-export function TodayPage() {
+export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void } = {}) {
   const phase   = usePhase()
   const { tasks, loading, done, pct, updateStatus, saveNotes } = useTodayTasks()
   const { show: toast } = useToast()
@@ -103,7 +103,7 @@ export function TodayPage() {
         <div className="today-command-meta">{formatDate(now)} · Week {getWeekNumber()} · {phase.id} {phase.name}</div>
       </div>
 
-      {/* 8-Block Sequence Strip */}
+      <ExecutionIntelligenceCard tasks={tasks} onNavigate={onNavigate} />\n\n      {/* 8-Block Sequence Strip */}
       <div style={{ padding: '12px 16px 0', overflowX: 'auto' }}>
         <div style={{ display: 'flex', gap: 6, paddingBottom: 4 }}>
           {SEQUENCE_STRIP.map(s => (
