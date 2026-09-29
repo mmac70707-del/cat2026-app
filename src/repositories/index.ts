@@ -1,5 +1,5 @@
 import { dbGet, dbGetAll, dbPut, dbClear } from '@/db'
-import type { MockRecord, MockAnalysis, DailyScore } from '@/types'
+import type { MockRecord, MockAnalysis, DailyScore, QuestionEvidence } from '@/types'
 
 // ── Mock Repository ──────────────────────────────────
 export const MockRepository = {
@@ -63,4 +63,19 @@ export async function resetAllData(): Promise<void> {
   for (const store of dbStores) {
     await dbClear(store)
   }
+}
+
+
+// ── Question Evidence Repository ─────────────────────
+export const QuestionEvidenceRepository = {
+  async log(evidence: Omit<QuestionEvidence, 'id' | 'date'>): Promise<QuestionEvidence> {
+    const record: QuestionEvidence = { ...evidence, id: 'q_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), date: new Date().toISOString() }
+    await dbPut('questionEvidence', record)
+    return record
+  },
+  async getAll(): Promise<QuestionEvidence[]> { return dbGetAll<QuestionEvidence>('questionEvidence') },
+  async getRecent(limit = 100): Promise<QuestionEvidence[]> {
+    const all = await this.getAll()
+    return all.sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit)
+  },
 }
