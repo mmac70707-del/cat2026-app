@@ -6,7 +6,8 @@ import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
 import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { playSuccessSound } from '@/services/audioService'
-import { BlockCard } from './BlockCard'\nimport { ExecutionIntelligenceCard } from './ExecutionIntelligenceCard'
+import { BlockCard } from './BlockCard'
+import { ExecutionIntelligenceCard } from './ExecutionIntelligenceCard'
 import { useToast } from '@/components/Toast'
 
 const SEQUENCE_STRIP = [
