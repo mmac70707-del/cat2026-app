@@ -109,18 +109,18 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       <LearningIntelligenceCard onNavigate={onNavigate} />
 
       {/* 8-Block Sequence Strip */}
-      <div style={{ padding: '12px 16px 0', overflowX: 'auto' }}>
-        <div style={{ display: 'flex', gap: 6, paddingBottom: 4 }}>
+      <div className="today-sequence" style={{ padding: '12px 16px 0', overflowX: 'auto' }}>
+        <div className="today-sequence-strip" style={{ display: 'flex', gap: 6, paddingBottom: 4 }}>
           {SEQUENCE_STRIP.map(s => (
             <div
               key={s.id}
               onClick={() => handleSequenceClick(s.id)}
-              style={{
+              className="today-sequence-item" style={{
                 background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8,
                 padding: '6px 8px', minWidth: 62, textAlign: 'center', cursor: 'pointer', flexShrink: 0
               }}
             >
-              <div style={{ fontSize: 9, fontWeight: 800, color: s.col, fontFamily: 'monospace' }}>{s.seq}</div>
+              <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--ui-accent)', fontFamily: 'monospace' }}>{s.seq}</div>
               <div style={{ fontSize: 11, fontWeight: 900, color: 'var(--ql-text)' }}>{s.label}</div>
             </div>
           ))}
@@ -128,7 +128,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       </div>
 
       {/* Today's 3 Core Targets Card */}
-      <div style={{ padding: '12px 16px 0' }}>
+      <div className="today-core-targets" style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--ql-surface)', border: '1px solid var(--ql-accent)', borderRadius: 10, padding: 14 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--ql-accent-strong)', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' }}>
             🎯 TODAY'S 3 CORE TARGETS (DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44)
@@ -148,7 +148,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       </div>
 
       {/* 44-Day First-Pass Day & Progress Bar */}
-      <div style={{ padding: '12px 16px 0' }}>
+      <div className="today-first-pass" style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <div>
@@ -176,7 +176,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       </div>
 
       {/* Block cards */}
-      <div style={{ padding: '10px 16px 0' }}>
+      <div className="today-block-list" style={{ padding: '10px 16px 0' }}>
         {tasks.map(task => (
           <div id={`block_${task.blockId}`} key={task.id}>
             <BlockCard
@@ -192,7 +192,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       </div>
 
       {/* DONE Logger Card */}
-      <div style={{ padding: '0 16px 16px' }}>
+      <div className="today-done" style={{ padding: '0 16px 16px' }}>
         <div className="done-card-wrap">
           <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>📊 Daily Update — DONE format</div>
           <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 8 }}>
