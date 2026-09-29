@@ -2228,3 +2228,26 @@ html[data-theme="light"] .jarvis-lock-v5__voice-banner{
     transition:none !important;
   }
 }
+
+
+/* Today Command Center — execution-first hierarchy */
+.today-command-center{
+  margin:12px 16px 0;
+  padding:14px;
+  border:1px solid var(--ql-border);
+  border-radius:12px;
+  background:var(--ql-surface);
+}
+.today-command-kicker{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--ql-accent-strong);margin-bottom:10px}
+.today-command-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:14px;align-items:stretch}
+.today-command-main{min-width:0}
+.today-command-state{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--ql-muted);margin-bottom:3px}
+.today-command-title{font-size:22px;font-weight:850;letter-spacing:-.03em;color:var(--ql-text);line-height:1.05}
+.today-command-detail{font-size:12px;line-height:1.45;color:var(--ql-sub);margin-top:6px;max-width:720px}
+.today-command-side{display:grid;grid-template-columns:1fr;gap:6px}
+.today-command-side div{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border:1px solid var(--ql-border);border-radius:8px;background:var(--ql-surface-2)}
+.today-command-side span{font-size:9px;font-weight:800;color:var(--ql-muted);letter-spacing:.06em}
+.today-command-side strong{font-size:12px;color:var(--ql-text)}
+.today-command-mission{margin-top:10px;padding-top:9px;border-top:1px solid var(--ql-border);font-size:11px;font-weight:700;color:var(--ql-sub)}
+.today-command-meta{margin-top:3px;font-size:10px;color:var(--ql-muted)}
+@media(max-width:700px){.today-command-grid{grid-template-columns:1fr}.today-command-side{grid-template-columns:repeat(3,1fr)}.today-command-side div{display:block}.today-command-side strong{display:block;margin-top:2px}.today-command-title{font-size:20px}}
