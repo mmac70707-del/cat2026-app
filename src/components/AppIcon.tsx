@@ -68,6 +68,7 @@ export function AppIcon({
   name,
   size = 20,
   strokeWidth = 1.8,
+  className,
   ...props
 }: { name: AppIconName; size?: number; strokeWidth?: number } & Omit<SVGProps<SVGSVGElement>, 'name'>) {
   return (
@@ -82,6 +83,8 @@ export function AppIcon({
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
+      vectorEffect="non-scaling-stroke"
+      className={['app-icon', className].filter(Boolean).join(' ')}
       {...props}
     >
       {PATHS[name]}
