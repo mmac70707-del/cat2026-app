@@ -35,6 +35,28 @@
   --header-h:56px;
 }
 
+/* ── Stitch Design System Live Theme Switching Overrides ── */
+[data-theme="glacier"] {
+  --gold: #38BDF8;
+  --gold2: #60A5FA;
+  --blue: #2563EB;
+  --border: #1E3A8A;
+}
+
+[data-theme="athenaeum"] {
+  --gold: #FBBF24;
+  --gold2: #F59E0B;
+  --blue: #D97706;
+  --border: #78350F;
+}
+
+[data-theme="crimson"] {
+  --gold: #EF4444;
+  --gold2: #F87171;
+  --blue: #7C3AED;
+  --border: #991B1B;
+}
+
 *, *::before, *::after {
   margin: 0; padding: 0;
   box-sizing: border-box;

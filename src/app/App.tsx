@@ -37,6 +37,7 @@ import { SettingsPage }         from '@/features/settings/SettingsPage'
 
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
+import { SettingsRepository } from '@/repositories/index'
 import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
@@ -63,12 +64,16 @@ export function App() {
   const navIdxRef   = useRef(0)
   const reminderIdx = useRef(0)
 
-  // ── Boot: open DB + seed mastery ────────────────
+  // ── Boot: open DB + seed mastery + apply theme ──
   useEffect(() => {
     async function boot() {
       try {
         await openDB()
         await MasteryRepository.init()
+        const savedTheme = await SettingsRepository.get('stitchTheme', 'apex')
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme as string)
+        }
       } catch (err) {
         console.error('[CAT2026] Boot error:', err)
       } finally {
