@@ -1318,3 +1318,77 @@ html[data-theme="dark"] .jarvis-theme .jarvis-panel{
   border-color:rgba(199,170,106,.20) !important;
 }
 .jarvis-lock-v5__auth-glyph svg{stroke-width:1.8}
+
+
+/* Ordered command sections */
+.jarvis-theme .jarvis-library-groups{
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+.jarvis-theme .jarvis-library-group{
+  padding-top:4px;
+}
+.jarvis-theme .jarvis-library-group + .jarvis-library-group{
+  border-top:1px solid var(--ql-border);
+  padding-top:20px;
+}
+.jarvis-theme .jarvis-library-group-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 2px 10px;
+}
+.jarvis-theme .jarvis-library-group-head > div{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.jarvis-theme .jarvis-library-group-head b{
+  color:var(--ql-text);
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.14em;
+}
+.jarvis-theme .jarvis-library-group-head small{
+  color:var(--ql-muted);
+  font-size:7px;
+  font-weight:700;
+  letter-spacing:.09em;
+}
+.jarvis-theme .jarvis-library-group-head > span{
+  color:var(--ql-accent-strong);
+  font:800 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.08em;
+}
+.jarvis-theme .jarvis-library-group--personal{
+  padding:16px 12px 14px;
+  border:1px solid rgba(199,170,106,.22) !important;
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(199,170,106,.07),rgba(199,170,106,.025));
+}
+.jarvis-theme .jarvis-library-group--personal .jarvis-library-group-head b{
+  color:var(--ql-accent-strong);
+}
+.jarvis-theme .jarvis-library-group--personal .jarvis-library-tile{
+  background:color-mix(in srgb,var(--ql-surface) 90%,var(--ql-accent) 10%) !important;
+}
+.jarvis-theme .jarvis-library-group--personal .jarvis-hub-icon{
+  background:rgba(199,170,106,.10) !important;
+  border-color:rgba(199,170,106,.25) !important;
+  color:var(--ql-accent-strong) !important;
+}
+.jarvis-theme .jarvis-library-group--personal .jarvis-library-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+@media (max-width:700px){
+  .jarvis-theme .jarvis-library-group--personal .jarvis-library-grid{
+    grid-template-columns:1fr;
+  }
+}
+@media (min-width:701px){
+  .jarvis-theme .jarvis-library-group--personal .jarvis-library-tile{
+    min-height:128px;
+  }
+}
