@@ -34,6 +34,7 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
   const nextTask = tasks.find(t => t.status === 'TODO')
 
   const pendingRepair = errors.filter(e => e.repairStatus === 'PENDING')
+  const pendingRepairCount = pendingRepair.length
   const pendingRetest = errors.filter(e => e.repairStatus === 'DONE' && e.retestStatus === 'PENDING')
   const pendingC1 = pendingRepair.filter(e => e.errorType === 'C1').length
 
