@@ -3725,3 +3725,240 @@ html[data-theme="light"] .jarvis-theme .jarvis-library-group--personal{
     transition:none!important;
   }
 }
+
+
+
+/* ============================================================
+   JARVIS LOCK SCREEN — FINAL RESTORE / V6 COMPOSITION
+   Full viewport • complete portrait • stable mobile/desktop
+   Shared gate is now the single security layer for every route.
+   ============================================================ */
+html,body,#root{
+  min-height:100%;
+}
+body:has(.jarvis-lock-v5){
+  overflow:hidden!important;
+}
+.jarvis-lock-v5{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  min-width:100vw!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+  z-index:2147483000!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  background:
+    radial-gradient(circle at 50% 11%,rgba(199,170,107,.075),transparent 32%),
+    var(--ui-bg)!important;
+  isolation:isolate!important;
+}
+.jarvis-lock-v5__shell{
+  width:min(1160px,calc(100% - 32px))!important;
+  min-height:100%!important;
+  margin:0 auto!important;
+  padding:12px 0 calc(18px + env(safe-area-inset-bottom))!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.jarvis-lock-v5__topbar{
+  flex:0 0 auto!important;
+  min-height:40px!important;
+}
+.jarvis-lock-v5__hero{
+  flex:0 0 auto!important;
+  grid-template-columns:minmax(310px,.86fr) minmax(0,1.14fr)!important;
+  gap:24px!important;
+  padding:22px 0 16px!important;
+  align-items:stretch!important;
+}
+.jarvis-lock-v5__identity{
+  min-width:0!important;
+  align-items:center!important;
+  gap:17px!important;
+}
+.jarvis-lock-v5__portrait-frame{
+  position:relative!important;
+  width:112px!important;
+  height:142px!important;
+  flex:0 0 112px!important;
+  padding:6px!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  background:var(--ui-bg)!important;
+  border:1px solid var(--ui-border-strong)!important;
+  box-shadow:
+    0 0 0 1px rgba(199,170,107,.05),
+    inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+.jarvis-lock-v5__portrait-frame img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:var(--ui-bg)!important;
+  filter:saturate(.78) contrast(1.04)!important;
+}
+.jarvis-lock-v5__portrait-ring{
+  inset:9px!important;
+  pointer-events:none!important;
+}
+.jarvis-lock-v5__portrait-tag{
+  right:5px!important;
+  bottom:5px!important;
+}
+.jarvis-lock-v5__identity-copy{
+  min-width:0!important;
+}
+.jarvis-lock-v5__identity-copy h1{
+  margin:7px 0 8px!important;
+  font-size:clamp(22px,2.55vw,34px)!important;
+  line-height:1!important;
+}
+.jarvis-lock-v5__identity-copy p{
+  max-width:410px!important;
+  font-size:11px!important;
+  line-height:1.55!important;
+}
+.jarvis-lock-v5__quote-zone{
+  min-height:100%!important;
+  box-sizing:border-box!important;
+  padding:16px 17px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.jarvis-lock-v5__quote{
+  margin:18px 0 12px!important;
+  font-size:clamp(14px,1.55vw,18px)!important;
+}
+.jarvis-lock-v5__micro-quotes{
+  max-height:none!important;
+  overflow:visible!important;
+}
+.jarvis-lock-v5__auth-rail,
+.jarvis-lock-v5__console{
+  flex:0 0 auto!important;
+  box-sizing:border-box!important;
+}
+.jarvis-lock-v5__auth-rail{
+  padding:10px!important;
+}
+.jarvis-lock-v5__auth-grid{
+  gap:8px!important;
+}
+.jarvis-lock-v5__auth-card{
+  min-height:60px!important;
+}
+.jarvis-lock-v5__console{
+  margin-top:8px!important;
+  padding:12px!important;
+}
+.jarvis-lock-v5__footer{
+  flex:0 0 auto!important;
+  margin-top:auto!important;
+}
+
+@media(max-height:760px) and (min-width:761px){
+  .jarvis-lock-v5__shell{padding-top:9px!important}
+  .jarvis-lock-v5__hero{padding:15px 0 11px!important;gap:18px!important}
+  .jarvis-lock-v5__portrait-frame{
+    width:96px!important;height:122px!important;flex-basis:96px!important;
+  }
+  .jarvis-lock-v5__quote-zone{padding:12px 14px!important}
+  .jarvis-lock-v5__quote{margin:14px 0 9px!important}
+  .jarvis-lock-v5__micro-quotes{max-height:28px!important;overflow:hidden!important}
+  .jarvis-lock-v5__auth-card{min-height:52px!important}
+  .jarvis-lock-v5__console{padding:9px!important}
+  .jarvis-lock-v5__input-wrap{min-height:37px!important}
+  .jarvis-lock-v5__unlock{min-height:35px!important}
+}
+
+@media(max-width:760px){
+  .jarvis-lock-v5{
+    min-height:100dvh!important;
+  }
+  .jarvis-lock-v5__shell{
+    width:min(560px,calc(100% - 18px))!important;
+    padding-top:8px!important;
+  }
+  .jarvis-lock-v5__topbar{
+    min-height:36px!important;
+  }
+  .jarvis-lock-v5__hero{
+    grid-template-columns:1fr!important;
+    gap:11px!important;
+    padding:16px 0 10px!important;
+  }
+  .jarvis-lock-v5__identity{
+    align-items:center!important;
+    gap:13px!important;
+  }
+  .jarvis-lock-v5__portrait-frame{
+    width:84px!important;
+    height:112px!important;
+    flex-basis:84px!important;
+    padding:5px!important;
+  }
+  .jarvis-lock-v5__portrait-ring{inset:8px!important}
+  .jarvis-lock-v5__identity-copy h1{
+    margin:5px 0 6px!important;
+    font-size:clamp(21px,7vw,29px)!important;
+  }
+  .jarvis-lock-v5__identity-copy p{
+    font-size:9px!important;
+    line-height:1.5!important;
+  }
+  .jarvis-lock-v5__quote-zone{
+    min-height:0!important;
+    padding:13px!important;
+  }
+  .jarvis-lock-v5__quote{
+    margin:16px 0 10px!important;
+    font-size:14px!important;
+  }
+  .jarvis-lock-v5__micro-quotes{
+    max-height:38px!important;
+    overflow:hidden!important;
+  }
+  .jarvis-lock-v5__auth-grid{
+    grid-template-columns:1fr!important;
+  }
+  .jarvis-lock-v5__auth-card{
+    min-height:56px!important;
+  }
+}
+
+@media(max-width:380px){
+  .jarvis-lock-v5__shell{width:calc(100% - 14px)!important}
+  .jarvis-lock-v5__brand small,
+  .jarvis-lock-v5__status{display:none!important}
+  .jarvis-lock-v5__hero{padding-top:11px!important}
+  .jarvis-lock-v5__portrait-frame{
+    width:74px!important;height:98px!important;flex-basis:74px!important;
+  }
+  .jarvis-lock-v5__identity-copy h1{font-size:20px!important}
+  .jarvis-lock-v5__identity-copy p{font-size:8px!important}
+  .jarvis-lock-v5__quote-zone{padding:11px!important}
+  .jarvis-lock-v5__micro-quotes{display:none!important}
+  .jarvis-lock-v5__auth-card{grid-template-columns:30px minmax(0,1fr) auto!important;gap:7px!important}
+  .jarvis-lock-v5__auth-glyph{width:27px!important;height:27px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .jarvis-lock-v5__scan,
+  .jarvis-lock-v5__orb,
+  .jarvis-lock-v5__wave i{
+    animation:none!important;
+  }
+}
