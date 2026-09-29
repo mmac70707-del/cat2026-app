@@ -103,7 +103,7 @@ export function ThemeSwitcher() {
         <div className="theme-switcher-popover" role="menu" aria-label="Theme options">
           <div className="theme-switcher-head">
             <div>
-              <div className="theme-switcher-kicker">APEX DISPLAY</div>
+              <div className="theme-switcher-kicker">APPEARANCE</div>
               <div className="theme-switcher-title">Appearance</div>
             </div>
             <div className="theme-switcher-live">{resolved.toUpperCase()} LIVE</div>
@@ -111,8 +111,8 @@ export function ThemeSwitcher() {
 
           <div className="theme-switcher-options">
             {([
-              ['dark', 'Dark', 'Deep Graphite', 'moon'],
-              ['light', 'Light', 'Warm Ivory', 'sun'],
+              ['dark', 'Dark', 'Graphite', 'moon'],
+              ['light', 'Light', 'Ivory', 'sun'],
               ['system', 'System', 'Follow device', 'monitor'],
             ] as const).map(([value, label, sub, icon]) => (
               <button
