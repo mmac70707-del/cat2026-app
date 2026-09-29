@@ -3962,3 +3962,54 @@ body:has(.jarvis-lock-v5){
     animation:none!important;
   }
 }
+
+
+
+/* ============================================================
+   GLOBAL LEGACY INLINE COLOR NORMALIZER
+   Prevent old hard-coded demo colors from escaping the shared
+   JARVIS material system on secondary pages and nested cards.
+   ============================================================ */
+.jarvis-theme [style*="#161D2E"],
+.jarvis-theme [style*="#0D1B2A"],
+.jarvis-theme [style*="#0B1325"],
+.jarvis-theme [style*="#050B0E"],
+.jarvis-theme [style*="#0A0F1E"],
+.jarvis-theme [style*="#071014"],
+.jarvis-theme [style*="#080E1E"]{
+  background:var(--ui-surface)!important;
+}
+.jarvis-theme [style*="#1F2937"],
+.jarvis-theme [style*="#111827"],
+.jarvis-theme [style*="#0F172A"],
+.jarvis-theme [style*="#1E293B"],
+.jarvis-theme [style*="#0D181C"],
+.jarvis-theme [style*="#0B1519"]{
+  background:var(--ui-surface-2)!important;
+}
+.jarvis-theme [style*="#2D3748"],
+.jarvis-theme [style*="#374151"],
+.jarvis-theme [style*="#1E293B"]{
+  border-color:var(--ui-border)!important;
+}
+.jarvis-theme [style*="#F5A623"],
+.jarvis-theme [style*="#00F0FF"],
+.jarvis-theme [style*="#38BDF8"],
+.jarvis-theme [style*="#9AEFF2"],
+.jarvis-theme [style*="#55F4FF"]{
+  border-color:var(--ui-accent)!important;
+}
+.jarvis-theme [style*="rgba(0,245,255"],
+.jarvis-theme [style*="rgba(85,244,255"],
+.jarvis-theme [style*="rgba(57,255,136"],
+.jarvis-theme [style*="rgba(101,246,160"]{
+  border-color:var(--ui-border)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme [style*="linear-gradient(135deg,#1A56DB"],
+.jarvis-theme [style*="linear-gradient(135deg, #1A56DB"],
+.jarvis-theme [style*="linear-gradient(135deg,#0B6B72"],
+.jarvis-theme [style*="linear-gradient(135deg, #0B6B72"]{
+  background:var(--ui-accent)!important;
+  box-shadow:none!important;
+}
