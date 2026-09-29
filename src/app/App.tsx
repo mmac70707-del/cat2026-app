@@ -206,7 +206,7 @@ export function App() {
 
           <div className="content-area">
             {/* MAIN PAGES */}
-            {activePage === 'today'   && <TodayPage />}
+            {activePage === 'today'   && <TodayPage onNavigate={p => setActivePage(p as ActivePage)} />}
             {activePage === 'week'    && <WeekPage />}
             {activePage === 'mastery' && <MasteryPage />}
             {activePage === 'phases'  && <PhasesPage />}
