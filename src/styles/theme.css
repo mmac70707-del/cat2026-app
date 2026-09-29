@@ -4013,3 +4013,538 @@ body:has(.jarvis-lock-v5){
   background:var(--ui-accent)!important;
   box-shadow:none!important;
 }
+
+
+
+/* ============================================================
+   ASHISH SIGNATURE UI — FINAL VISUAL UNIFICATION
+   Source image: /images/ashish_billboard.webp
+   Dashboard + lock screen share one material language.
+   ============================================================ */
+html[data-theme="dark"]{
+  --ui-bg:#121411;
+  --ui-surface:#191c18;
+  --ui-surface-2:#22261f;
+  --ui-surface-3:#2b3028;
+  --ui-border:#343930;
+  --ui-border-strong:#4a5045;
+  --ui-text:#f3f0e8;
+  --ui-sub:#c9c8bf;
+  --ui-muted:#91958b;
+  --ui-accent:#c7aa6b;
+  --ui-accent-strong:#e0c78d;
+  --ui-accent-soft:rgba(199,170,107,.12);
+  --ui-positive:#8eb39a;
+  --ui-danger:#d28b82;
+}
+html[data-theme="light"]{
+  --ui-bg:#f4f1ea;
+  --ui-surface:#fffdf8;
+  --ui-surface-2:#eee9df;
+  --ui-surface-3:#e5dfd4;
+  --ui-border:#d3cec3;
+  --ui-border-strong:#b8b1a4;
+  --ui-text:#22231f;
+  --ui-sub:#55584f;
+  --ui-muted:#74786f;
+  --ui-accent:#947545;
+  --ui-accent-strong:#7e6135;
+  --ui-accent-soft:rgba(148,117,69,.11);
+  --ui-positive:#66866d;
+  --ui-danger:#a65f58;
+}
+
+html,body,#root,
+body.jarvis-theme{
+  font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+body.jarvis-theme{
+  background:var(--ui-bg)!important;
+  color:var(--ui-text)!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body.jarvis-theme h1,
+body.jarvis-theme h2,
+body.jarvis-theme h3,
+body.jarvis-theme h4,
+body.jarvis-theme .app-title,
+body.jarvis-theme .app-header-title,
+body.jarvis-theme .page-title,
+body.jarvis-theme .section-title,
+body.jarvis-theme .card-title,
+body.jarvis-theme .jarvis-panel-title,
+body.jarvis-theme .dash-root .header-brand,
+body.jarvis-theme .dash-root .today-title,
+body.jarvis-theme .dash-root .sec-title{
+  font-family:"Space Grotesk","Inter",system-ui,sans-serif!important;
+  letter-spacing:-.018em;
+}
+body.jarvis-theme button,
+body.jarvis-theme input,
+body.jarvis-theme textarea,
+body.jarvis-theme select{
+  font-family:"Inter",system-ui,sans-serif!important;
+}
+body.jarvis-theme code,
+body.jarvis-theme pre,
+body.jarvis-theme .mono,
+body.jarvis-theme .eyebrow,
+body.jarvis-theme [class*="kicker"],
+body.jarvis-theme [class*="label"]{
+  font-family:"JetBrains Mono","SFMono-Regular",Consolas,monospace!important;
+}
+.app-icon{
+  display:block!important;
+  flex:0 0 auto!important;
+  width:1em;
+  height:1em;
+  overflow:visible;
+  vertical-align:middle;
+}
+button .app-icon,
+a .app-icon{
+  width:18px!important;
+  height:18px!important;
+}
+.nav-item .app-icon,
+.bottom-nav-item .app-icon,
+.command-tile .app-icon{
+  width:20px!important;
+  height:20px!important;
+}
+.icon-box,
+.stat-icon-wrap,
+.tile-icon,
+.command-icon,
+.nav-icon,
+.action-icon{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+  color:var(--ui-accent-strong)!important;
+}
+
+/* ---------- common app shell ---------- */
+body.jarvis-theme .app-shell,
+body.jarvis-theme .content-area,
+body.jarvis-theme .section-pad{
+  background:var(--ui-bg)!important;
+}
+body.jarvis-theme .app-header,
+body.jarvis-theme .bottom-nav{
+  background:rgba(25,28,24,.96)!important;
+  border-color:var(--ui-border)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.14)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+}
+html[data-theme="light"] body.jarvis-theme .app-header,
+html[data-theme="light"] body.jarvis-theme .bottom-nav{
+  background:rgba(255,253,248,.96)!important;
+  box-shadow:0 10px 30px rgba(35,31,24,.06)!important;
+}
+body.jarvis-theme .app-title{
+  color:var(--ui-text)!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+}
+body.jarvis-theme .app-subtitle,
+body.jarvis-theme .countdown-label{
+  color:var(--ui-muted)!important;
+}
+body.jarvis-theme .countdown-days{
+  color:var(--ui-accent-strong)!important;
+  text-shadow:none!important;
+}
+body.jarvis-theme .card,
+body.jarvis-theme .card-sm,
+body.jarvis-theme .block-card,
+body.jarvis-theme .jarvis-panel,
+body.jarvis-theme .mission-os-section,
+body.jarvis-theme .mission-os-recommendation{
+  background:var(--ui-surface)!important;
+  border:1px solid var(--ui-border)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.10)!important;
+  border-radius:12px!important;
+}
+html[data-theme="light"] body.jarvis-theme .card,
+html[data-theme="light"] body.jarvis-theme .card-sm,
+html[data-theme="light"] body.jarvis-theme .block-card,
+html[data-theme="light"] body.jarvis-theme .jarvis-panel{
+  box-shadow:0 8px 24px rgba(40,35,27,.06)!important;
+}
+body.jarvis-theme .card:hover,
+body.jarvis-theme .card-sm:hover,
+body.jarvis-theme .block-card:hover{
+  border-color:var(--ui-border-strong)!important;
+  transform:none!important;
+}
+body.jarvis-theme .btn-primary,
+body.jarvis-theme .action-button{
+  background:var(--ui-accent)!important;
+  color:#1d1a13!important;
+  border:1px solid var(--ui-accent)!important;
+  box-shadow:none!important;
+}
+body.jarvis-theme .btn-secondary,
+body.jarvis-theme .btn-ghost,
+body.jarvis-theme .ghost-button{
+  background:var(--ui-surface-2)!important;
+  color:var(--ui-text)!important;
+  border-color:var(--ui-border)!important;
+  box-shadow:none!important;
+}
+body.jarvis-theme input,
+body.jarvis-theme textarea,
+body.jarvis-theme select,
+body.jarvis-theme .form-input{
+  background:var(--ui-surface-2)!important;
+  color:var(--ui-text)!important;
+  border:1px solid var(--ui-border)!important;
+  box-shadow:none!important;
+}
+body.jarvis-theme input:focus,
+body.jarvis-theme textarea:focus,
+body.jarvis-theme select:focus{
+  border-color:var(--ui-accent)!important;
+  outline:none!important;
+  box-shadow:0 0 0 3px var(--ui-accent-soft)!important;
+}
+
+/* ---------- lock screen: Ashish billboard as cinematic background ---------- */
+.jarvis-lock-v5{
+  color:var(--ui-text)!important;
+  background:#121411!important;
+}
+.jarvis-lock-v5__backdrop{
+  position:absolute!important;
+  inset:0!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(180deg,rgba(10,11,9,.22) 0%,rgba(18,20,17,.55) 45%,rgba(12,13,11,.93) 100%),
+    linear-gradient(90deg,rgba(18,20,17,.78) 0%,rgba(18,20,17,.22) 48%,rgba(18,20,17,.78) 100%),
+    url("/images/ashish_billboard.webp") center 30% / cover no-repeat!important;
+  opacity:1!important;
+  filter:saturate(.82) contrast(1.04)!important;
+  transform:scale(1.015)!important;
+}
+.jarvis-lock-v5__backdrop::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background:
+    radial-gradient(circle at 50% 23%,rgba(224,199,141,.14),transparent 30%),
+    radial-gradient(circle at 50% 48%,transparent 25%,rgba(0,0,0,.36) 100%)!important;
+}
+.jarvis-lock-v5__backdrop::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(180deg,rgba(8,9,8,.12),rgba(8,9,8,.52))!important;
+}
+.jarvis-lock-v5__grid{
+  opacity:.17!important;
+  background-size:42px 42px!important;
+  background-image:
+    linear-gradient(rgba(224,199,141,.065) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(224,199,141,.065) 1px,transparent 1px)!important;
+}
+.jarvis-lock-v5__scan{
+  background:linear-gradient(90deg,transparent,rgba(224,199,141,.72),transparent)!important;
+  opacity:.32!important;
+}
+.jarvis-lock-v5__shell{
+  position:relative!important;
+  z-index:3!important;
+}
+.jarvis-lock-v5__topbar{
+  border-color:rgba(224,199,141,.28)!important;
+}
+.jarvis-lock-v5__brand,
+.jarvis-lock-v5__status{
+  color:var(--ui-text)!important;
+}
+.jarvis-lock-v5__brand small,
+.jarvis-lock-v5__status{
+  color:var(--ui-muted)!important;
+}
+.jarvis-lock-v5__orb,
+.jarvis-lock-v5__dot{
+  background:var(--ui-accent)!important;
+  box-shadow:0 0 18px rgba(199,170,107,.32)!important;
+}
+.jarvis-lock-v5__portrait-frame{
+  background:rgba(18,20,17,.78)!important;
+  border-color:var(--ui-accent)!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.05)!important;
+}
+.jarvis-lock-v5__portrait-frame img{
+  object-fit:contain!important;
+  background:#121411!important;
+  filter:saturate(.9) contrast(1.03)!important;
+}
+.jarvis-lock-v5__portrait-ring{
+  border-color:rgba(224,199,141,.58)!important;
+}
+.jarvis-lock-v5__portrait-tag{
+  background:var(--ui-accent)!important;
+  color:#1c1913!important;
+}
+.jarvis-lock-v5__eyebrow,
+.jarvis-lock-v5__quote-label,
+.jarvis-lock-v5__auth-kicker{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-lock-v5__identity-copy h1{
+  color:#fffdf7!important;
+  text-shadow:0 2px 20px rgba(0,0,0,.34)!important;
+}
+.jarvis-lock-v5__identity-copy p,
+.jarvis-lock-v5__auth-note{
+  color:#d0cec5!important;
+}
+.jarvis-lock-v5__quote-zone,
+.jarvis-lock-v5__auth-rail,
+.jarvis-lock-v5__console{
+  background:rgba(25,28,24,.88)!important;
+  border-color:rgba(224,199,141,.24)!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.24)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+}
+.jarvis-lock-v5__quote{
+  color:#f5f1e8!important;
+}
+.jarvis-lock-v5__quote strong{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-lock-v5__quote em{
+  color:#cbc9bf!important;
+}
+.jarvis-lock-v5__signals,
+.jarvis-lock-v5__micro-quotes{
+  color:#aeb0a8!important;
+}
+.jarvis-lock-v5__signals i{
+  background:var(--ui-accent)!important;
+}
+.jarvis-lock-v5__micro-quotes span{
+  border-color:var(--ui-border)!important;
+  background:rgba(255,255,255,.035)!important;
+}
+.jarvis-lock-v5__auth-card{
+  background:rgba(34,38,31,.88)!important;
+  border-color:var(--ui-border)!important;
+  color:var(--ui-text)!important;
+}
+.jarvis-lock-v5__auth-card:hover{
+  border-color:var(--ui-accent)!important;
+  background:rgba(43,48,40,.94)!important;
+}
+.jarvis-lock-v5__auth-card.is-verified{
+  border-color:var(--ui-accent)!important;
+  background:var(--ui-accent-soft)!important;
+}
+.jarvis-lock-v5__auth-glyph{
+  color:var(--ui-accent-strong)!important;
+  border-color:var(--ui-border-strong)!important;
+}
+.jarvis-lock-v5__auth-copy strong{
+  color:var(--ui-text)!important;
+}
+.jarvis-lock-v5__auth-copy small,
+.jarvis-lock-v5__auth-action{
+  color:var(--ui-muted)!important;
+}
+.jarvis-lock-v5__auth-action{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-lock-v5__voice-banner{
+  background:rgba(25,28,24,.9)!important;
+  border-color:var(--ui-border)!important;
+  color:var(--ui-text)!important;
+}
+.jarvis-lock-v5__input-wrap{
+  background:rgba(34,38,31,.94)!important;
+  border-color:var(--ui-border-strong)!important;
+}
+.jarvis-lock-v5__input-wrap input{
+  color:#fffdf7!important;
+  background:transparent!important;
+}
+.jarvis-lock-v5__unlock{
+  background:var(--ui-accent)!important;
+  color:#1c1913!important;
+  border-color:var(--ui-accent)!important;
+}
+.jarvis-lock-v5__footer{
+  color:#9ea096!important;
+}
+
+/* ---------- master dashboard: same visual DNA, photo as quiet watermark ---------- */
+.jarvis-theme .dash-root{
+  position:relative!important;
+  isolation:isolate!important;
+  --bg:var(--ui-bg)!important;
+  --bg2:var(--ui-surface)!important;
+  --bg3:var(--ui-surface-2)!important;
+  --card:var(--ui-surface)!important;
+  --border:var(--ui-border)!important;
+  --text:var(--ui-text)!important;
+  --muted:var(--ui-muted)!important;
+  --gold:var(--ui-accent)!important;
+  --mono:"JetBrains Mono",monospace!important;
+  background:var(--ui-bg)!important;
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-1!important;
+  background:
+    linear-gradient(180deg,rgba(18,20,17,.94),rgba(18,20,17,.985)),
+    url("/images/ashish_billboard.webp") center 12% / cover no-repeat!important;
+  opacity:.22!important;
+  filter:saturate(.75) blur(2px)!important;
+}
+html[data-theme="light"] .jarvis-theme .dash-root::before{
+  background:
+    linear-gradient(180deg,rgba(244,241,234,.94),rgba(244,241,234,.985)),
+    url("/images/ashish_billboard.webp") center 12% / cover no-repeat!important;
+  opacity:.16!important;
+}
+.jarvis-theme .dash-root > *{
+  position:relative!important;
+  z-index:1!important;
+}
+.jarvis-theme .dash-root .header,
+.jarvis-theme .dash-root .mission-bar,
+.jarvis-theme .dash-root .live-time-bar,
+.jarvis-theme .dash-root .daily-motivation-card,
+.jarvis-theme .dash-root .live-schedule-panel,
+.jarvis-theme .dash-root .stat-card,
+.jarvis-theme .dash-root .card{
+  background:rgba(25,28,24,.93)!important;
+  border-color:var(--ui-border)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.12)!important;
+}
+html[data-theme="light"] .jarvis-theme .dash-root .header,
+html[data-theme="light"] .jarvis-theme .dash-root .mission-bar,
+html[data-theme="light"] .jarvis-theme .dash-root .live-time-bar,
+html[data-theme="light"] .jarvis-theme .dash-root .daily-motivation-card,
+html[data-theme="light"] .jarvis-theme .dash-root .live-schedule-panel,
+html[data-theme="light"] .jarvis-theme .dash-root .stat-card,
+html[data-theme="light"] .jarvis-theme .dash-root .card{
+  background:rgba(255,253,248,.95)!important;
+}
+.jarvis-theme .dash-root .header-brand,
+.jarvis-theme .dash-root .mission-text,
+.jarvis-theme .dash-root .today-title,
+.jarvis-theme .dash-root .mantra-text{
+  color:var(--ui-accent-strong)!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+  text-shadow:none!important;
+}
+.jarvis-theme .dash-root .header-sub,
+.jarvis-theme .dash-root .countdown-label,
+.jarvis-theme .dash-root .sec-title,
+.jarvis-theme .dash-root .stat-label,
+.jarvis-theme .dash-root .block-details,
+.jarvis-theme .dash-root .meta-time,
+.jarvis-theme .dash-root .day-name,
+.jarvis-theme .dash-root .day-topic,
+.jarvis-theme .dash-root .mission-quote{
+  color:var(--ui-muted)!important;
+}
+.jarvis-theme .dash-root .stat-num,
+.jarvis-theme .dash-root .meta-target,
+.jarvis-theme .dash-root .priority-rank,
+.jarvis-theme .dash-root .error-count{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .stat-card.qa .stat-num,
+.jarvis-theme .dash-root .stat-card.dilr .stat-num,
+.jarvis-theme .dash-root .stat-card.varc .stat-num,
+.jarvis-theme .dash-root .stat-card.test .stat-num,
+.jarvis-theme .dash-root .stat-card.ana .stat-num,
+.jarvis-theme .dash-root .stat-card.rev .stat-num,
+.jarvis-theme .dash-root .stat-card.rep .stat-num,
+.jarvis-theme .dash-root .stat-card.rts .stat-num{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .block-section,
+.jarvis-theme .dash-root .qa-text,
+.jarvis-theme .dash-root .dilr-text,
+.jarvis-theme .dash-root .varc-text,
+.jarvis-theme .dash-root .test-text,
+.jarvis-theme .dash-root .ana-text,
+.jarvis-theme .dash-root .rev-text,
+.jarvis-theme .dash-root .rep-text,
+.jarvis-theme .dash-root .rts-text{
+  color:var(--ui-accent-strong)!important;
+}
+.jarvis-theme .dash-root .pill-green,
+.jarvis-theme .dash-root .pill-blue,
+.jarvis-theme .dash-root .pill-purple,
+.jarvis-theme .dash-root .pill-gold,
+.jarvis-theme .dash-root .pill-red,
+.jarvis-theme .dash-root .pill-orange{
+  background:var(--ui-accent-soft)!important;
+  color:var(--ui-accent-strong)!important;
+  border:1px solid var(--ui-border)!important;
+}
+.jarvis-theme .dash-root .block-item,
+.jarvis-theme .dash-root .priority-item,
+.jarvis-theme .dash-root .day-card,
+.jarvis-theme .dash-root .error-card,
+.jarvis-theme .dash-root .date-display,
+.jarvis-theme .dash-root .score-input{
+  background:var(--ui-surface-2)!important;
+  border-color:var(--ui-border)!important;
+  color:var(--ui-text)!important;
+}
+.jarvis-theme .dash-root .day-card.today,
+.jarvis-theme .dash-root .flow-active{
+  background:var(--ui-accent-soft)!important;
+  border-color:var(--ui-accent)!important;
+}
+.jarvis-theme .dash-root .score-btn{
+  background:var(--ui-accent)!important;
+  color:#1c1913!important;
+}
+.jarvis-theme .dash-root .stat-card::before{
+  background:var(--ui-accent)!important;
+}
+.jarvis-theme .dash-root svg,
+body.jarvis-theme .app-header svg,
+body.jarvis-theme .bottom-nav svg{
+  color:currentColor;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* ---------- responsive cleanup ---------- */
+@media(max-width:760px){
+  .jarvis-lock-v5__backdrop{
+    background-position:center top!important;
+  }
+  .jarvis-lock-v5__shell{
+    width:calc(100% - 16px)!important;
+  }
+  .jarvis-lock-v5__quote-zone,
+  .jarvis-lock-v5__auth-rail,
+  .jarvis-lock-v5__console{
+    background:rgba(25,28,24,.91)!important;
+  }
+  .jarvis-theme .dash-root::before{
+    background-position:center top!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *{
+    scroll-behavior:auto!important;
+  }
+}
