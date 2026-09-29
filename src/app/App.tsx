@@ -17,6 +17,7 @@ import { ApexProSuite }         from '@/features/apexpro/ApexProSuite'
 import { OpenJarvisTerminal }   from '@/features/openjarvis/OpenJarvisTerminal'
 import { VoiceJarvisModal }     from '@/features/voice/VoiceJarvisModal'
 import { JarvisStartupHUD }     from '@/features/jarvis/JarvisStartupHUD'
+import { AdvancedJarvisConsole } from '@/features/jarvis/AdvancedJarvisConsole'
 import { RoadmapPage }          from '@/features/roadmap/RoadmapPage'
 import { CatMockExamPage }      from '@/features/mockengine/CatMockExamPage'
 import { AdaptiveLearningPage } from '@/features/adaptive/AdaptiveLearningPage'
@@ -50,7 +51,7 @@ import { initPwaInstall } from '@/services/pwaInstall'
 import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'jarvis' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
+export type SubPage    = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -212,31 +213,32 @@ export function App() {
             {activePage === 'more'    && <MorePage onNavigate={p => setActivePage(p as ActivePage)} />}
 
             {/* SUB PAGES */}
-            {activePage === 'jarvis'       && <JarvisCommandCenter  onBack={() => setActivePage('more')} />}
-            {activePage === 'mission'      && <MissionPage          onBack={() => setActivePage('more')} />}
-            {activePage === 'vision'       && <VisionPage           onBack={() => setActivePage('more')} />}
-            {activePage === 'mindset'      && <MindsetPage          onBack={() => setActivePage('more')} />}
-            {activePage === 'apexpro'      && <ApexProSuite         onBack={() => setActivePage('more')} />}
-            {activePage === 'openjarvis'   && <OpenJarvisTerminal   onBack={() => setActivePage('more')} />}
-            {activePage === 'roadmap'      && <RoadmapPage          onBack={() => setActivePage('more')} />}
-            {activePage === 'catmock'      && <CatMockExamPage      onBack={() => setActivePage('more')} />}
-            {activePage === 'adaptive'     && <AdaptiveLearningPage onBack={() => setActivePage('more')} />}
-            {activePage === 'flashcards'   && <FormulaDeckPage      onBack={() => setActivePage('more')} />}
-            {activePage === 'achievements'  && <AchievementsPage     onBack={() => setActivePage('more')} />}
-            {activePage === 'dailycapsule' && <DailyCapsulePage     onBack={() => setActivePage('more')} />}
-            {activePage === 'qbank'        && <QuestionBankPage     onBack={() => setActivePage('more')} />}
-            {activePage === 'livesessions' && <LiveSessionsPage     onBack={() => setActivePage('more')} />}
-            {activePage === 'drills'       && <SpeedDrillsPage      onBack={() => setActivePage('more')} />}
-            {activePage === 'research'     && <DeepResearchPage     onBack={() => setActivePage('more')} />}
-            {activePage === 'errors'       && <ErrorsPage           onBack={() => setActivePage('more')} />}
-            {activePage === 'repair'       && <RepairPage           onBack={() => setActivePage('more')} />}
-            {activePage === 'retest'       && <RetestPage           onBack={() => setActivePage('more')} />}
-            {activePage === 'mockana'      && <MocksPage            onBack={() => setActivePage('more')} />}
-            {activePage === 'schedule'     && <SchedulePage         onBack={() => setActivePage('more')} />}
-            {activePage === 'syllabus'     && <SyllabusPage         onBack={() => setActivePage('more')} />}
-            {activePage === 'security'     && <SecuritySentinelPage onBack={() => setActivePage('more')} />}
-            {activePage === 'missionos'    && <MissionOSPage        onBack={() => setActivePage('more')} />}
-            {activePage === 'settings'     && <SettingsPage         onBack={() => setActivePage('more')} />}
+            {activePage === 'jarvis'        && <JarvisCommandCenter   onBack={() => setActivePage('more')} />}
+            {activePage === 'jarvisconsole' && <AdvancedJarvisConsole onBack={() => setActivePage('more')} />}
+            {activePage === 'mission'       && <MissionPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'vision'        && <VisionPage            onBack={() => setActivePage('more')} />}
+            {activePage === 'mindset'       && <MindsetPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'apexpro'       && <ApexProSuite          onBack={() => setActivePage('more')} />}
+            {activePage === 'openjarvis'    && <OpenJarvisTerminal    onBack={() => setActivePage('more')} />}
+            {activePage === 'roadmap'       && <RoadmapPage           onBack={() => setActivePage('more')} />}
+            {activePage === 'catmock'       && <CatMockExamPage       onBack={() => setActivePage('more')} />}
+            {activePage === 'adaptive'      && <AdaptiveLearningPage  onBack={() => setActivePage('more')} />}
+            {activePage === 'flashcards'    && <FormulaDeckPage       onBack={() => setActivePage('more')} />}
+            {activePage === 'achievements'  && <AchievementsPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'dailycapsule'  && <DailyCapsulePage      onBack={() => setActivePage('more')} />}
+            {activePage === 'qbank'         && <QuestionBankPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'livesessions'  && <LiveSessionsPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'drills'        && <SpeedDrillsPage       onBack={() => setActivePage('more')} />}
+            {activePage === 'research'      && <DeepResearchPage      onBack={() => setActivePage('more')} />}
+            {activePage === 'errors'        && <ErrorsPage            onBack={() => setActivePage('more')} />}
+            {activePage === 'repair'        && <RepairPage            onBack={() => setActivePage('more')} />}
+            {activePage === 'retest'        && <RetestPage            onBack={() => setActivePage('more')} />}
+            {activePage === 'mockana'       && <MocksPage             onBack={() => setActivePage('more')} />}
+            {activePage === 'schedule'      && <SchedulePage          onBack={() => setActivePage('more')} />}
+            {activePage === 'syllabus'      && <SyllabusPage          onBack={() => setActivePage('more')} />}
+            {activePage === 'security'      && <SecuritySentinelPage  onBack={() => setActivePage('more')} />}
+            {activePage === 'missionos'     && <MissionOSPage         onBack={() => setActivePage('more')} />}
+            {activePage === 'settings'      && <SettingsPage          onBack={() => setActivePage('more')} />}
           </div>
 
           <VoiceJarvisModal
