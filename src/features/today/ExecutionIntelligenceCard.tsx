@@ -36,6 +36,7 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
   const pendingRepair = errors.filter(e => e.repairStatus === 'PENDING')
   const pendingRepairCount = pendingRepair.length
   const pendingRetest = errors.filter(e => e.repairStatus === 'DONE' && e.retestStatus === 'PENDING')
+  const pendingRetestCount = pendingRetest.length
   const pendingC1 = pendingRepair.filter(e => e.errorType === 'C1').length
 
   const latestScore = scores[0] ?? null
@@ -52,7 +53,7 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
 
   const mode: EngineMode = pendingC1 > 0 || (latestScore !== null && latestScore.accuracyPct < 60)
     ? 'PROTECT'
-    : pendingRetest > 0
+    : pendingRetestCount > 0
       ? 'PRECISION'
       : 'BUILD'
 
@@ -77,11 +78,11 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
         page: 'errors',
       }
     }
-    if (pendingRetest > 0) {
+    if (pendingRetestCount > 0) {
       return {
         eyebrow: 'VERIFY MASTERY',
         title: 'Retest repaired weakness',
-        detail: `${pendingRetest} repaired item${pendingRetest > 1 ? 's' : ''} still need evidence.`,
+        detail: `${pendingRetest} repaired item${pendingRetestCount > 1 ? 's' : ''} still need evidence.`,
         action: 'OPEN RETEST',
         icon: 'retest' as const,
         page: 'retest',
@@ -105,7 +106,7 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
       icon: 'checkCircle' as const,
       page: 'today',
     }
-  }, [activeTask, nextTask, pendingC1, pendingRetest])
+  }, [activeTask, nextTask, pendingC1, pendingRetestCount])
 
   const todayDone = tasks.filter(t => t.status === 'DONE').length
   const todayPct = tasks.length ? Math.round((todayDone / tasks.length) * 100) : 0
