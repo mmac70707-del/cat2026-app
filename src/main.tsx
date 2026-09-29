@@ -27,7 +27,7 @@ try {
   document.documentElement.dataset.theme = resolved
   document.documentElement.style.colorScheme = resolved
   const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-  if (meta) meta.content = resolved === 'light' ? '#F5F7FA' : '#0A0F14'
+  if (meta) meta.content = resolved === 'light' ? '#F4F1EA' : '#121411'
 } catch {
   document.documentElement.dataset.theme = 'dark'
 }
