@@ -2597,3 +2597,38 @@ html[data-theme="light"]{color-scheme:light}
     animation:none!important;transition:none!important;scroll-behavior:auto!important;
   }
 }
+
+
+/* JARVIS LOCK SCREEN — ROBOTIC COMMAND DECK */
+.jarvis-lock-v5{position:fixed!important;inset:0!important;z-index:9999!important;overflow:auto!important;background:var(--ui-bg)!important;color:var(--ui-text)!important;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace!important}
+.jarvis-lock-v5__backdrop{position:fixed!important;inset:0!important;pointer-events:none!important;background:linear-gradient(90deg,transparent 49.8%,rgba(199,170,107,.035) 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,rgba(199,170,107,.025) 50%,transparent 50.2%)!important;background-size:72px 72px!important}
+.jarvis-lock-v5__grid{position:fixed!important;inset:0!important;pointer-events:none!important;opacity:.35!important;background:radial-gradient(circle at 50% 34%,transparent 0 118px,rgba(199,170,107,.07) 119px,transparent 121px),radial-gradient(circle at 50% 34%,transparent 0 184px,rgba(199,170,107,.045) 185px,transparent 187px)!important}
+.jarvis-lock-v5__scan{position:fixed!important;left:0!important;right:0!important;top:18%!important;height:1px!important;background:linear-gradient(90deg,transparent,rgba(199,170,107,.22),transparent)!important;pointer-events:none!important;animation:jarvisLockScan 7s linear infinite!important}
+@keyframes jarvisLockScan{0%{transform:translateY(-10vh);opacity:0}12%{opacity:.65}82%{opacity:.35}100%{transform:translateY(70vh);opacity:0}}
+.jarvis-lock-v5__shell{position:relative!important;width:min(1180px,calc(100% - 32px))!important;min-height:100%!important;margin:auto!important;padding:18px 0 20px!important}
+.jarvis-lock-v5__topbar{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:42px!important;border-bottom:1px solid var(--ui-border)!important;color:var(--ui-muted)!important;letter-spacing:.12em!important;font-size:10px!important}
+.jarvis-lock-v5__brand{display:flex!important;align-items:center!important;gap:9px!important;color:var(--ui-text)!important;font-weight:900!important;letter-spacing:.16em!important}
+.jarvis-lock-v5__brand small{color:var(--ui-muted)!important;font-size:8px!important;border-left:1px solid var(--ui-border)!important;padding-left:9px!important}
+.jarvis-lock-v5__orb{width:10px!important;height:10px!important;border:1px solid var(--ui-accent)!important;border-radius:50%!important;box-shadow:0 0 0 3px var(--ui-accent-soft)!important;animation:jarvisOrb 2.8s ease-in-out infinite!important}
+@keyframes jarvisOrb{50%{box-shadow:0 0 0 5px var(--ui-accent-soft)}}
+.jarvis-lock-v5__status{display:flex!important;align-items:center!important;gap:7px!important;color:var(--ui-accent-strong)!important}
+.jarvis-lock-v5__dot{width:6px!important;height:6px!important;border-radius:50%!important;background:var(--ui-accent)!important;box-shadow:0 0 0 3px var(--ui-accent-soft)!important}
+.jarvis-lock-v5__hero{display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important;gap:28px!important;align-items:center!important;padding:34px 0 26px!important}
+.jarvis-lock-v5__identity{display:flex!important;align-items:center!important;gap:20px!important}
+.jarvis-lock-v5__portrait-frame{position:relative!important;width:118px!important;height:118px!important;flex:0 0 118px!important;border:1px solid var(--ui-border-strong)!important;background:var(--ui-surface)!important;padding:5px!important;overflow:hidden!important}
+.jarvis-lock-v5__portrait-frame img{width:100%!important;height:100%!important;object-fit:cover!important;filter:saturate(.72) contrast(1.04)!important}
+.jarvis-lock-v5__portrait-ring{position:absolute!important;inset:11px!important;border:1px solid rgba(199,170,107,.38)!important;pointer-events:none!important}
+.jarvis-lock-v5__portrait-tag{position:absolute!important;right:5px!important;bottom:5px!important;padding:2px 4px!important;background:var(--ui-bg)!important;border:1px solid var(--ui-border)!important;color:var(--ui-accent-strong)!important;font-size:8px!important}
+.jarvis-lock-v5__identity-copy{min-width:0!important}
+.jarvis-lock-v5__eyebrow,.jarvis-lock-v5__quote-label,.jarvis-lock-v5__auth-kicker,.jarvis-lock-v5__auth-note{font-size:9px!important;letter-spacing:.14em!important;font-weight:800!important;color:var(--ui-accent-strong)!important}
+.jarvis-lock-v5__identity-copy h1{margin:7px 0!important;color:var(--ui-text)!important;font-size:clamp(24px,3vw,42px)!important;line-height:.98!important;letter-spacing:-.045em!important;font-family:ui-sans-serif,system-ui,sans-serif!important;font-weight:850!important}
+.jarvis-lock-v5__identity-copy p{max-width:470px!important;margin:0!important;color:var(--ui-sub)!important;font:12px/1.55 ui-sans-serif,system-ui,sans-serif!important}
+.jarvis-lock-v5__quote-zone{position:relative!important;min-height:190px!important;padding:18px!important;border:1px solid var(--ui-border)!important;background:var(--ui-surface)!important;overflow:hidden!important}
+.jarvis-lock-v5__quote-zone::before{content:"CORE DIRECTIVE // ACTIVE";position:absolute!important;top:9px!important;right:11px!important;font:700 7px ui-monospace,monospace!important;letter-spacing:.12em!important;color:var(--ui-muted)!important}
+.jarvis-lock-v5__quote-zone::after{content:"";position:absolute!important;left:0!important;top:0!important;width:2px!important;height:100%!important;background:var(--ui-accent)!important;opacity:.75!important}
+.jarvis-lock-v5__quote{display:flex!important;flex-direction:column!important;gap:3px!important;margin:18px 0 13px!important;font:700 clamp(14px,1.7vw,19px)/1.25 ui-monospace,monospace!important}
+.jarvis-lock-v5__quote span{color:var(--ui-sub)!important}.jarvis-lock-v5__quote strong{color:var(--ui-text)!important}.jarvis-lock-v5__quote em{color:var(--ui-accent-strong)!important;font-style:normal!important}
+.jarvis-lock-v5__signals{display:flex!important;align-items:center!important;gap:7px!important;color:var(--ui-muted)!important;font-size:7px!important;letter-spacing:.12em!important}
+.jarvis-lock-v5__signals i{width:3px!important;height:3px!important;border-radius:50%!important;background:var(--ui-accent)!important}
+.jarvis-lock-v5__micro-quotes{display:flex!important;flex-wrap:wrap!important;gap:5px!important;margin-top:13px!important}
+.jarvis-lock-v5__micro-quotes span{padding:4px 6px!important;border:1px solid var(--ui-border)!important;color:var(--ui-muted)!important;font-size:7px!important;letter-spacing:.08em!important}
