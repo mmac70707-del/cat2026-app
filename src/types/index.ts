@@ -199,3 +199,20 @@ export interface CalendarYear {
   yearNum: number;
   months: CalendarMonth[];
 }
+
+// ── Question DNA / Confidence evidence ─────────────────
+export type ConfidenceBand = 25 | 50 | 75 | 90;
+export type PaceState = 'FAST_ACCURATE' | 'FAST_INACCURATE' | 'SLOW_ACCURATE' | 'SLOW_INACCURATE';
+export interface QuestionEvidence {
+  id: string;
+  date: string;
+  subject: 'QA' | 'DILR' | 'VARC';
+  topicId: string | null;
+  difficulty: 'FOUNDATION' | 'BASIC' | 'MEDIUM' | 'CAT' | 'ADVANCED';
+  timeSec: number;
+  correct: boolean;
+  confidence: ConfidenceBand;
+  errorType: ErrorType | null;
+  hintUsed: boolean;
+  source: 'PRACTICE' | 'MOCK' | 'RETEST';
+}
