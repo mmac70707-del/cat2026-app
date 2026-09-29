@@ -82,7 +82,7 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
       return {
         eyebrow: 'VERIFY MASTERY',
         title: 'Retest repaired weakness',
-        detail: `${pendingRetest} repaired item${pendingRetestCount > 1 ? 's' : ''} still need evidence.`,
+        detail: `${pendingRetestCount} repaired item${pendingRetestCount > 1 ? 's' : ''} still need evidence.`,
         action: 'OPEN RETEST',
         icon: 'retest' as const,
         page: 'retest',
