@@ -59,7 +59,7 @@ export const SettingsRepository = {
 
 // ── Reset all stores (Settings page) ─────────────────
 export async function resetAllData(): Promise<void> {
-  const dbStores = ['tasks', 'errors', 'masteryTopics', 'mocks', 'dailyScores', 'settings', 'formulaReviews', 'roadmap44', 'dilrSets', 'varcLogs', 'artifacts', 'plans', 'weeklySummaries', 'auditEvents', 'missionRuns', 'secureVault']
+  const dbStores = ['tasks', 'errors', 'masteryTopics', 'mocks', 'dailyScores', 'settings', 'formulaReviews', 'roadmap44', 'dilrSets', 'varcLogs', 'artifacts', 'plans', 'weeklySummaries', 'auditEvents', 'missionRuns', 'questionEvidence', 'secureVault']
   for (const store of dbStores) {
     await dbClear(store)
   }
