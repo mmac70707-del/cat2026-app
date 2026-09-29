@@ -55,6 +55,6 @@ export function LearningIntelligenceCard({ onNavigate }: Props) {
       <div className='learning-mastery-map'><div className='learning-panel-label'>MASTERY MAP</div>{subjectStats.map(s => <button key={s.subject} className='learning-subject-row' onClick={() => onNavigate?.('mastery')}><span className='learning-subject-name'>{s.subject}</span><span className='learning-subject-track'><i style={{ width: (s.total ? Math.round((s.mastered / s.total) * 100) : 0) + '%' }} /></span><b>{s.mastered}/{s.total || '—'}</b></button>)}</div>
       <div className='learning-leaks'><div className='learning-panel-label'>TOP LEAKS</div>{leaks.length ? leaks.map(([topic, count]) => <button key={topic} className='learning-leak-row' onClick={() => onNavigate?.('errors')}><span><AppIcon name='errors' size={14} />{topic}</span><b>{count}</b></button>) : <div className='learning-empty'>No pending leak pattern. Keep building evidence.</div>}</div>
     </div>
-    <div className='learning-intelligence-footer'><span><AppIcon name='shield' size={14} /> Mastery is earned by repeated evidence, not time spent.</span><button onClick={() => onNavigate?.('mastery')}>OPEN MASTERY <AppIcon name='arrowRight' size={14} /></button></div>
+    <div className='learning-intelligence-footer'><span><AppIcon name='security' size={14} /> Mastery is earned by repeated evidence, not time spent.</span><button onClick={() => onNavigate?.('mastery')}>OPEN MASTERY <AppIcon name='arrowRight' size={14} /></button></div>
   </section>
 }
