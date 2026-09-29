@@ -11,16 +11,26 @@ import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
+import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
-const SEQUENCE_STRIP = [
-  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: 'LIVE', col: '#16A34A', bg: 'rgba(22,163,74,0.15)' },
-  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic', tag: 'LIVE', col: '#2563EB', bg: 'rgba(37,99,235,0.15)' },
-  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC', tag: 'LIVE', col: '#7C3AED', bg: 'rgba(124,58,237,0.15)' },
-  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional / Mock', tag: 'LIVE', col: '#D97706', bg: 'rgba(217,119,6,0.15)' },
-  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log', tag: 'LIVE', col: '#DC2626', bg: 'rgba(220,38,38,0.15)' },
-  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Recall + Connect', tag: 'LIVE', col: '#8B5CF6', bg: 'rgba(139,92,246,0.15)' },
-  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Weakness Fix', tag: 'LIVE', col: '#DB2777', bg: 'rgba(219,39,119,0.15)' },
-  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm Mastery', tag: 'LIVE', col: '#0E9F9F', bg: 'rgba(14,159,159,0.15)' },
+const SEQUENCE_STRIP: Array<{
+  seq: string
+  id: string
+  label: string
+  sub: string
+  tag: string
+  col: string
+  bg: string
+  icon: AppIconName
+}> = [
+  { seq: '01', id: 'QA',       label: 'QA',       sub: 'Quantitative', tag: 'LIVE', col: '#16A34A', bg: 'rgba(22,163,74,0.15)', icon: 'target' },
+  { seq: '02', id: 'DILR',     label: 'DILR',     sub: 'Data + Logic', tag: 'LIVE', col: '#2563EB', bg: 'rgba(37,99,235,0.15)', icon: 'layers' },
+  { seq: '03', id: 'VARC',     label: 'VARC',     sub: 'Verbal + RC', tag: 'LIVE', col: '#7C3AED', bg: 'rgba(124,58,237,0.15)', icon: 'book' },
+  { seq: '04', id: 'TEST',     label: 'TEST',     sub: 'Sectional / Mock', tag: 'LIVE', col: '#D97706', bg: 'rgba(217,119,6,0.15)', icon: 'mock' },
+  { seq: '05', id: 'ANALYSIS', label: 'ANALYSIS', sub: 'Error Log', tag: 'LIVE', col: '#DC2626', bg: 'rgba(220,38,38,0.15)', icon: 'errors' },
+  { seq: '06', id: 'REVISION', label: 'REVISION', sub: 'Recall + Connect', tag: 'LIVE', col: '#8B5CF6', bg: 'rgba(139,92,246,0.15)', icon: 'clock' },
+  { seq: '07', id: 'REPAIR',   label: 'REPAIR',   sub: 'Weakness Fix', tag: 'LIVE', col: '#DB2777', bg: 'rgba(219,39,119,0.15)', icon: 'repair' },
+  { seq: '08', id: 'RETEST',   label: 'RETEST',   sub: 'Confirm Mastery', tag: 'LIVE', col: '#0E9F9F', bg: 'rgba(14,159,159,0.15)', icon: 'retest' },
 ]
 
 const DAYS_ARR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
@@ -327,7 +337,7 @@ export function DashboardPage() {
         const line = DAILY_LINES[seed % DAILY_LINES.length]
         return (
           <div className="daily-motivation-card">
-            <div className="daily-motivation-kicker">🔥 TODAY'S LINE</div>
+            <div className="daily-motivation-kicker"><AppIcon name="zap" size={11} /> TODAY'S LINE</div>
             <div className="daily-motivation-quote">“{line.quote}”</div>
             <div className="daily-motivation-action"><span>NEXT ACTION</span>{line.action}</div>
           </div>
@@ -336,7 +346,7 @@ export function DashboardPage() {
 
       {/* ── MISSION BAR ── */}
       <div className="mission-bar">
-        <div className="mission-text">🎯 MISSION: {phase.mission}</div>
+        <div className="mission-text"><AppIcon name="target" size={12} /> MISSION: {phase.mission}</div>
         <div className="date-display">{realDayName}, {realDateStr}</div>
         <div className="mission-quote">"Discipline Today Builds the Freedom Tomorrow"</div>
       </div>
@@ -346,6 +356,16 @@ export function DashboardPage() {
 
         <DailyControlCard />
         <LinkedInDailyCard />
+
+        {/* SIGNATURE COMMAND RULES */}
+        <div className="command-rules-rail" aria-label="Signature execution rules">
+          <div className="command-rules-label"><AppIcon name="radar" size={12} /> COMMAND RULES</div>
+          <div className="command-rule"><span>DISCIPLINE</span><b>&gt;</b><strong>MOOD</strong></div>
+          <div className="command-rule"><span>CONSISTENCY</span><b>&gt;</b><strong>INTENSITY</strong></div>
+          <div className="command-rule"><span>DISCIPLINE</span><b>&gt;</b><strong>MOOD</strong></div>
+          <div className="command-rule"><span>CONSISTENCY</span><b>&gt;</b><strong>INTENSITY</strong></div>
+          <div className="command-rule"><span>DISTRACTION</span><b>&lt;</b><strong>DISCIPLINE</strong></div>
+        </div>
 
         {/* DAILY 8-BLOCK SEQUENCE JETPACK GRID */}
         <div className="stats-row">
@@ -364,6 +384,7 @@ export function DashboardPage() {
                   <span className="stat-num">{s.seq}</span>
                   <span className={'stat-live-tag ' + (s.id === currentBlockId ? 'now' : '')}>{s.id === currentBlockId ? 'NOW' : s.tag}</span>
                 </div>
+                <div className="stat-icon-wrap" aria-hidden="true"><AppIcon name={s.icon} size={15} /></div>
                 <div className="stat-seq">{s.label}</div>
                 <div className="stat-label">{s.sub}</div>
               </div>
@@ -377,7 +398,7 @@ export function DashboardPage() {
           {/* TODAY'S EXACT PLAN */}
           <div>
             <div className="today-header">
-              <div className="today-title">📅 {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44</div>
+              <div className="today-title"><AppIcon name="today" size={14} /> {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44</div>
               <div className="today-sub">Today's Topic: <strong style={{ color: 'var(--gold)' }}>{roadmapItem.chapter}</strong> &nbsp;|&nbsp; Week {getWeekNumber()}</div>
             </div>
 
@@ -447,7 +468,7 @@ export function DashboardPage() {
 
             {/* WEEK CALENDAR */}
             <div className="card">
-              <div className="card-title">📅 Week {getWeekNumber()} — Real Master Schedule</div>
+              <div className="card-title"><AppIcon name="week" size={13} /> Week {getWeekNumber()} — Real Master Schedule</div>
               <div className="week-grid">
                 {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((dName, dIdx) => {
                   const curDate = realWeekDates[dIdx]
@@ -557,7 +578,7 @@ export function DashboardPage() {
 
             {/* ERROR LOG */}
             <div className="card">
-              <div className="card-title">🔴 Error Log System — C1 to C5</div>
+              <div className="card-title"><AppIcon name="errors" size={13} /> Error Log System — C1 to C5</div>
               <div className="error-types">
                 <div className="error-card c1" onClick={() => handleLogErrorCard('C1')}>
                   <div className="error-code">C1</div>
