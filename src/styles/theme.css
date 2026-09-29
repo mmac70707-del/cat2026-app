@@ -1654,3 +1654,257 @@ html[data-theme="dark"] .jarvis-theme .jarvis-panel{
   width:34px !important;
   height:34px !important;
 }
+
+
+/* ============================================================
+   SIMPLE THEME — FINAL CLEAN PASS
+   ============================================================ */
+/* One quiet system: neutral surfaces, one accent, no glass, no neon, no decorative gradients. */
+:root{
+  --simple-dark-bg:#111311;
+  --simple-dark-surface:#181b18;
+  --simple-dark-surface-2:#20241f;
+  --simple-dark-border:#2d322d;
+  --simple-dark-text:#f2f0e8;
+  --simple-dark-sub:#c3c2ba;
+  --simple-dark-muted:#8d9088;
+  --simple-dark-accent:#c7aa6a;
+
+  --simple-light-bg:#f5f3ed;
+  --simple-light-surface:#ffffff;
+  --simple-light-surface-2:#ece9e1;
+  --simple-light-border:#d7d4cb;
+  --simple-light-text:#1d1f1d;
+  --simple-light-sub:#555852;
+  --simple-light-muted:#777a73;
+  --simple-light-accent:#907344;
+}
+
+/* Root surfaces */
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root{
+  background:var(--simple-dark-bg) !important;
+  color:var(--simple-dark-text) !important;
+}
+html[data-theme="light"] body,
+html[data-theme="light"] #root{
+  background:var(--simple-light-bg) !important;
+  color:var(--simple-light-text) !important;
+}
+
+/* App shell */
+html[data-theme="dark"] .jarvis-theme{
+  --ql-bg:var(--simple-dark-bg) !important;
+  --ql-surface:var(--simple-dark-surface) !important;
+  --ql-surface-2:var(--simple-dark-surface-2) !important;
+  --ql-text:var(--simple-dark-text) !important;
+  --ql-sub:var(--simple-dark-sub) !important;
+  --ql-muted:var(--simple-dark-muted) !important;
+  --ql-border:rgba(242,240,232,.13) !important;
+  --ql-accent:var(--simple-dark-accent) !important;
+  --ql-accent-strong:#d6bc83 !important;
+  background:var(--simple-dark-bg) !important;
+}
+html[data-theme="light"] .jarvis-theme{
+  --ql-bg:var(--simple-light-bg) !important;
+  --ql-surface:var(--simple-light-surface) !important;
+  --ql-surface-2:var(--simple-light-surface-2) !important;
+  --ql-text:var(--simple-light-text) !important;
+  --ql-sub:var(--simple-light-sub) !important;
+  --ql-muted:var(--simple-light-muted) !important;
+  --ql-border:rgba(29,31,29,.13) !important;
+  --ql-accent:var(--simple-light-accent) !important;
+  --ql-accent-strong:#9d7d48 !important;
+  background:var(--simple-light-bg) !important;
+}
+
+/* Strip away visual noise */
+.jarvis-theme,
+.jarvis-theme *{
+  text-shadow:none !important;
+}
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .jarvis-panel,
+.jarvis-theme .jarvis-library-tile,
+.jarvis-theme .jarvis-hub-tile,
+.jarvis-theme .jarvis-feature-card,
+.jarvis-theme .jarvis-now-card,
+.jarvis-theme .jarvis-library-hero{
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Cards and inputs */
+html[data-theme="dark"] .jarvis-theme .card,
+html[data-theme="dark"] .jarvis-theme .card-sm,
+html[data-theme="dark"] .jarvis-theme .block-card,
+html[data-theme="dark"] .jarvis-theme .jarvis-panel,
+html[data-theme="dark"] .jarvis-theme .jarvis-library-tile,
+html[data-theme="dark"] .jarvis-theme .jarvis-hub-tile,
+html[data-theme="dark"] .jarvis-theme .jarvis-feature-card{
+  background:var(--simple-dark-surface) !important;
+  border-color:var(--simple-dark-border) !important;
+}
+html[data-theme="light"] .jarvis-theme .card,
+html[data-theme="light"] .jarvis-theme .card-sm,
+html[data-theme="light"] .jarvis-theme .block-card,
+html[data-theme="light"] .jarvis-theme .jarvis-panel,
+html[data-theme="light"] .jarvis-theme .jarvis-library-tile,
+html[data-theme="light"] .jarvis-theme .jarvis-hub-tile,
+html[data-theme="light"] .jarvis-theme .jarvis-feature-card{
+  background:var(--simple-light-surface) !important;
+  border-color:var(--simple-light-border) !important;
+}
+html[data-theme="dark"] .jarvis-theme input,
+html[data-theme="dark"] .jarvis-theme textarea,
+html[data-theme="dark"] .jarvis-theme select,
+html[data-theme="dark"] .jarvis-theme .form-input{
+  background:#141714 !important;
+  border-color:#343934 !important;
+  color:var(--simple-dark-text) !important;
+}
+html[data-theme="light"] .jarvis-theme input,
+html[data-theme="light"] .jarvis-theme textarea,
+html[data-theme="light"] .jarvis-theme select,
+html[data-theme="light"] .jarvis-theme .form-input{
+  background:#fff !important;
+  border-color:#cfcfc7 !important;
+  color:var(--simple-light-text) !important;
+}
+
+/* Header / bottom nav */
+html[data-theme="dark"] .jarvis-theme .app-header,
+html[data-theme="dark"] .jarvis-theme .bottom-nav{
+  background:var(--simple-dark-surface) !important;
+  border-color:var(--simple-dark-border) !important;
+}
+html[data-theme="light"] .jarvis-theme .app-header,
+html[data-theme="light"] .jarvis-theme .bottom-nav{
+  background:rgba(255,255,255,.96) !important;
+  border-color:var(--simple-light-border) !important;
+}
+
+/* Typography */
+.jarvis-theme .app-title,
+.jarvis-theme .card-title,
+.jarvis-theme h1,
+.jarvis-theme h2,
+.jarvis-theme h3{
+  letter-spacing:-.02em !important;
+}
+html[data-theme="dark"] .jarvis-theme h1,
+html[data-theme="dark"] .jarvis-theme h2,
+html[data-theme="dark"] .jarvis-theme h3,
+html[data-theme="dark"] .jarvis-theme .card-title{
+  color:var(--simple-dark-text) !important;
+}
+html[data-theme="light"] .jarvis-theme h1,
+html[data-theme="light"] .jarvis-theme h2,
+html[data-theme="light"] .jarvis-theme h3,
+html[data-theme="light"] .jarvis-theme .card-title{
+  color:var(--simple-light-text) !important;
+}
+
+/* Single accent language */
+.jarvis-theme .countdown-days,
+.jarvis-theme .app-week,
+.jarvis-theme .jarvis-feature-card strong,
+.jarvis-theme .jarvis-library-group-head > span,
+.jarvis-theme .jarvis-library-group--personal .jarvis-library-group-head b{
+  color:var(--ql-accent-strong) !important;
+}
+.jarvis-theme .bottom-nav .nav-btn.active{
+  color:var(--ql-accent-strong) !important;
+  background:color-mix(in srgb,var(--ql-accent) 10%,transparent) !important;
+  border-color:color-mix(in srgb,var(--ql-accent) 24%,transparent) !important;
+}
+.jarvis-theme .btn-primary,
+.jarvis-theme .action-button,
+.jarvis-theme .score-btn{
+  background:var(--ql-accent) !important;
+  border-color:var(--ql-accent) !important;
+  color:#17150f !important;
+  box-shadow:none !important;
+}
+
+/* Library tiles: simple icon, title, hint */
+.jarvis-theme .jarvis-library-tile,
+.jarvis-theme .jarvis-hub-tile{
+  min-height:84px !important;
+  aspect-ratio:auto !important;
+  grid-template-rows:auto auto !important;
+}
+.jarvis-theme .jarvis-hub-icon{
+  width:34px !important;
+  height:34px !important;
+  border-radius:9px !important;
+  background:transparent !important;
+  border-color:var(--ql-border) !important;
+  color:var(--ql-accent-strong) !important;
+}
+
+/* Personal OS: distinguish by border, not a big filled panel */
+.jarvis-theme .jarvis-library-group--personal{
+  background:transparent !important;
+  border:1px solid color-mix(in srgb,var(--ql-accent) 28%,var(--ql-border)) !important;
+  border-radius:12px !important;
+}
+
+/* Remove old inline navy / blue / purple / orange blocks in Today where safe */
+.jarvis-theme [style*="#161D2E"],
+.jarvis-theme [style*="#0D1B2A"],
+.jarvis-theme [style*="#1A2E45"]{
+  background:var(--ql-surface) !important;
+}
+.jarvis-theme [style*="#161D2E"]{
+  border-color:color-mix(in srgb,var(--ql-accent) 60%,var(--ql-border)) !important;
+}
+.jarvis-theme [style*="#FFFFFF"]{
+  color:var(--ql-text) !important;
+}
+
+/* Progress remains visible but restrained */
+.jarvis-theme .progress-wrap{
+  background:var(--ql-surface-2) !important;
+  border:1px solid var(--ql-border) !important;
+}
+.jarvis-theme .progress-fill{
+  background:var(--ql-accent) !important;
+}
+
+/* Theme switcher becomes a plain control */
+.theme-switcher-trigger{
+  background:var(--ql-surface) !important;
+  border-color:var(--ql-border) !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+.theme-switcher-trigger-icon,
+.theme-switcher-option-icon{
+  background:transparent !important;
+  color:var(--ql-accent-strong) !important;
+}
+.theme-switcher-popover{
+  background:var(--ql-surface) !important;
+  border-color:var(--ql-border) !important;
+  box-shadow:0 18px 40px rgba(0,0,0,.16) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Mobile: keep it compact, never cramped */
+@media (max-width:700px){
+  .jarvis-theme .section-pad{padding:10px !important}
+  .jarvis-theme .app-header{padding:8px 12px !important}
+  .jarvis-theme .card,
+  .jarvis-theme .card-sm,
+  .jarvis-theme .block-card,
+  .jarvis-theme .jarvis-panel{padding:11px !important}
+  .jarvis-theme .jarvis-library-tile,
+  .jarvis-theme .jarvis-hub-tile{min-height:78px !important}
+  .jarvis-theme .jarvis-hub-icon{width:32px !important;height:32px !important}
+}
