@@ -28,9 +28,9 @@ function applyTheme(mode: ThemeMode) {
 }
 
 function iconFor(mode: ThemeMode, resolved: 'dark' | 'light') {
-  if (mode === 'light' || resolved === 'light') return <span className="theme-icon-sun" aria-hidden="true">☼</span>
-  if (mode === 'dark') return <span className="theme-icon-moon" aria-hidden="true">◐</span>
-  return <span className="theme-icon-system" aria-hidden="true">▣</span>
+  if (mode === 'light' || resolved === 'light') return <AppIcon name="sun" size={16} strokeWidth={1.9} />
+  if (mode === 'dark') return <AppIcon name="moon" size={16} strokeWidth={1.9} />
+  return <AppIcon name="monitor" size={16} strokeWidth={1.9} />
 }
 
 export function ThemeSwitcher() {
@@ -111,9 +111,9 @@ export function ThemeSwitcher() {
 
           <div className="theme-switcher-options">
             {([
-              ['dark', 'Dark', 'Obsidian Slate', '◐'],
-              ['light', 'Light', 'Paper Clarity', '☼'],
-              ['system', 'System', 'Follow device', '▣'],
+              ['dark', 'Dark', 'Deep Graphite', 'moon'],
+              ['light', 'Light', 'Warm Ivory', 'sun'],
+              ['system', 'System', 'Follow device', 'monitor'],
             ] as const).map(([value, label, sub, icon]) => (
               <button
                 key={value}
@@ -123,7 +123,7 @@ export function ThemeSwitcher() {
                 className={`theme-switcher-option ${mode === value ? 'is-active' : ''}`}
                 onClick={() => choose(value)}
               >
-                <span className="theme-switcher-option-icon" aria-hidden="true">{icon}</span>
+                <span className="theme-switcher-option-icon" aria-hidden="true"><AppIcon name={icon} size={17} strokeWidth={1.8} /></span>
                 <span className="theme-switcher-option-copy">
                   <strong>{label}</strong>
                   <small>{sub}</small>
