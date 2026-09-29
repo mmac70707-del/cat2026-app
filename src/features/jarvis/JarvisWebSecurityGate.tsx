@@ -393,8 +393,10 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
             <div className="jarvis-lock-v5__micro-quotes" aria-label="Personal directives">
               <span>DISCIPLINE &gt; MOOD</span>
               <span>CONSISTENCY &gt; INTENSITY</span>
-              <span>INTENSITY &lt; CONSISTENCY</span>
-              <span>FOCUS &gt; DISTRACTION</span>
+              <span>DISCIPLINE &gt; MOOD</span>
+              <span>CONSISTENCY &gt; INTENSITY</span>
+              <span>DISTRACTION &lt; DISCIPLINE</span>
+              <span>FOCUS &gt; NOISE</span>
               <span>BECOME THE MAN YOU PROMISED</span>
             </div>
           </div>
