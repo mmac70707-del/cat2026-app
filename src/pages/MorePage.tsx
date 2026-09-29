@@ -150,14 +150,44 @@ export function MorePage({ onNavigate }: Props) {
         <span>{query ? `SEARCH: “${query}”` : 'LOCAL • FAST • NO DISTRACTION'}</span>
       </div>
 
-      <div className="jarvis-hub-grid jarvis-library-grid">
-        {filteredTiles.map(t => (
-          <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? ' featured' : ''}`} onClick={() => onNavigate(t.id)}>
-            <div className="jarvis-hub-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></div>
-            <div className="jarvis-hub-tile-label">{t.label}</div>
-            <div className="jarvis-library-tile-hint">{t.hint}</div>
-          </button>
-        ))}
+      <div className="jarvis-library-groups">
+        {category === "ALL" ? (
+          (["EXECUTE", "LEARN", "REVIEW", "PERSONAL", "SYSTEM"] as const).map(group => {
+            const items = filteredTiles.filter(t => t.category === group)
+            if (!items.length) return null
+            const heading = group === "PERSONAL" ? "PERSONAL OS" : group
+            const sub = group === "PERSONAL" ? "VISION → MISSION → MINDSET PROTOCOL" :
+              group === "EXECUTE" ? "TODAY ACTION LAYER" :
+              group === "LEARN" ? "BUILD THE SKILL" :
+              group === "REVIEW" ? "MEASURE → REPAIR → RETEST" : "SUPPORTING SYSTEMS"
+            return (
+              <section key={group} className={`jarvis-library-group jarvis-library-group--${group.toLowerCase()}`}>
+                <div className="jarvis-library-group-head"><div><b>{heading}</b><small>{sub}</small></div><span>{String(items.length).padStart(2, "0")}</span></div>
+                <div className="jarvis-hub-grid jarvis-library-grid">
+                  {items.map(t => (
+                    <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? " featured" : ""}`} onClick={() => onNavigate(t.id)}>
+                      <div className="jarvis-hub-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></div>
+                      <div className="jarvis-hub-tile-label">{t.label}</div>
+                      <div className="jarvis-library-tile-hint">{t.hint}</div>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )
+          })
+        ) : (
+          <section className={`jarvis-library-group jarvis-library-group--${category.toLowerCase()}`}>
+            <div className="jarvis-hub-grid jarvis-library-grid">
+              {filteredTiles.map(t => (
+                <button key={t.id} className={`jarvis-hub-tile jarvis-library-tile${t.featured ? " featured" : ""}`} onClick={() => onNavigate(t.id)}>
+                  <div className="jarvis-hub-icon" aria-hidden="true"><AppIcon name={t.icon} size={22} /></div>
+                  <div className="jarvis-hub-tile-label">{t.label}</div>
+                  <div className="jarvis-library-tile-hint">{t.hint}</div>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       {filteredTiles.length === 0 && (
