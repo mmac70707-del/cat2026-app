@@ -2898,3 +2898,191 @@ html[data-theme="light"]{color-scheme:light}
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
 }
+
+
+/* ============================================================
+   JARVIS LOCK SCREEN — SIGNATURE COMMAND DECK
+   Advanced, premium, robotic; controlled rather than cyberpunk.
+   ============================================================ */
+.jarvis-lock-v5{
+  isolation:isolate!important;
+  background:
+    radial-gradient(circle at 50% 18%,rgba(199,170,107,.07),transparent 34%),
+    var(--ui-bg)!important;
+}
+.jarvis-lock-v5__backdrop{
+  opacity:.55!important;
+  background:
+    linear-gradient(90deg,transparent 49.7%,rgba(199,170,107,.045) 50%,transparent 50.3%),
+    linear-gradient(0deg,transparent 49.7%,rgba(199,170,107,.032) 50%,transparent 50.3%)!important;
+  background-size:84px 84px!important;
+}
+.jarvis-lock-v5__grid{
+  opacity:.48!important;
+  background:
+    radial-gradient(circle at 50% 31%,transparent 0 116px,rgba(199,170,107,.11) 117px,transparent 119px),
+    radial-gradient(circle at 50% 31%,transparent 0 176px,rgba(199,170,107,.055) 177px,transparent 179px),
+    radial-gradient(circle at 50% 31%,transparent 0 248px,rgba(199,170,107,.035) 249px,transparent 251px)!important;
+}
+.jarvis-lock-v5__shell{
+  width:min(1240px,calc(100% - 40px))!important;
+  padding:14px 0 18px!important;
+}
+.jarvis-lock-v5__topbar{
+  min-height:38px!important;
+  border-bottom-color:var(--ui-border-strong)!important;
+}
+.jarvis-lock-v5__brand{
+  font-size:11px!important;
+}
+.jarvis-lock-v5__status{
+  font-size:8px!important;
+}
+.jarvis-lock-v5__hero{
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;
+  gap:22px!important;
+  padding:22px 0 16px!important;
+}
+.jarvis-lock-v5__identity{
+  gap:15px!important;
+}
+.jarvis-lock-v5__portrait-frame{
+  width:96px!important;
+  height:96px!important;
+  flex-basis:96px!important;
+  border-color:var(--ui-border-strong)!important;
+  box-shadow:0 0 0 1px rgba(199,170,107,.06),inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+.jarvis-lock-v5__portrait-ring{
+  inset:9px!important;
+  border-color:rgba(199,170,107,.30)!important;
+}
+.jarvis-lock-v5__identity-copy h1{
+  font-size:clamp(22px,2.7vw,36px)!important;
+  letter-spacing:-.055em!important;
+}
+.jarvis-lock-v5__identity-copy p{
+  font-size:11px!important;
+  max-width:390px!important;
+}
+.jarvis-lock-v5__quote-zone{
+  min-height:172px!important;
+  padding:15px 16px!important;
+  background:rgba(25,28,24,.86)!important;
+  border-color:var(--ui-border-strong)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)!important;
+}
+.jarvis-lock-v5__quote{
+  margin:16px 0 10px!important;
+  font-size:clamp(13px,1.55vw,18px)!important;
+}
+.jarvis-lock-v5__micro-quotes{
+  max-height:34px!important;
+  overflow:hidden!important;
+}
+.jarvis-lock-v5__auth-rail{
+  padding:10px!important;
+  border-color:var(--ui-border-strong)!important;
+  background:rgba(25,28,24,.72)!important;
+}
+.jarvis-lock-v5__auth-heading{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  margin-bottom:7px!important;
+}
+.jarvis-lock-v5__auth-grid{
+  gap:7px!important;
+}
+.jarvis-lock-v5__auth-card{
+  min-height:58px!important;
+  padding:7px 9px!important;
+  border-radius:8px!important;
+}
+.jarvis-lock-v5__auth-glyph{
+  width:29px!important;
+  height:29px!important;
+  font-size:15px!important;
+}
+.jarvis-lock-v5__auth-copy strong{
+  font-size:9px!important;
+}
+.jarvis-lock-v5__auth-copy small{
+  font-size:9px!important;
+}
+.jarvis-lock-v5__voice-banner{
+  margin-top:7px!important;
+  padding:6px 8px!important;
+  font-size:7px!important;
+}
+.jarvis-lock-v5__console{
+  margin-top:8px!important;
+  padding:11px!important;
+  border-color:var(--ui-border-strong)!important;
+  background:rgba(25,28,24,.82)!important;
+}
+.jarvis-lock-v5__console-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+}
+.jarvis-lock-v5__console-head strong{
+  display:block!important;
+  margin-top:3px!important;
+  color:var(--ui-text)!important;
+  font-size:9px!important;
+}
+.jarvis-lock-v5__hint{
+  margin:5px 0!important;
+  color:var(--ui-muted)!important;
+  font-size:8px!important;
+}
+.jarvis-lock-v5__input-wrap{
+  min-height:39px!important;
+  margin-top:5px!important;
+}
+.jarvis-lock-v5__unlock{
+  min-height:37px!important;
+  margin-top:7px!important;
+}
+.jarvis-lock-v5__message{
+  min-height:15px!important;
+  font-size:8px!important;
+}
+.jarvis-lock-v5__telemetry{
+  padding-top:6px!important;
+}
+.jarvis-lock-v5__footer{
+  min-height:22px!important;
+  padding-top:7px!important;
+  font-size:7px!important;
+  letter-spacing:.09em!important;
+  color:var(--ui-muted)!important;
+}
+@media(max-height:760px) and (min-width:761px){
+  .jarvis-lock-v5__hero{padding:13px 0 10px!important}
+  .jarvis-lock-v5__portrait-frame{width:78px!important;height:78px!important;flex-basis:78px!important}
+  .jarvis-lock-v5__quote-zone{min-height:140px!important}
+  .jarvis-lock-v5__auth-card{min-height:50px!important}
+  .jarvis-lock-v5__console{padding:8px!important}
+}
+@media(max-width:760px){
+  .jarvis-lock-v5__shell{width:min(calc(100% - 18px),560px)!important;padding-top:9px!important}
+  .jarvis-lock-v5__hero{gap:12px!important;padding:17px 0 11px!important}
+  .jarvis-lock-v5__identity{align-items:flex-start!important}
+  .jarvis-lock-v5__portrait-frame{width:68px!important;height:68px!important;flex-basis:68px!important}
+  .jarvis-lock-v5__identity-copy h1{font-size:22px!important}
+  .jarvis-lock-v5__identity-copy p{font-size:9px!important}
+  .jarvis-lock-v5__quote-zone{min-height:150px!important}
+  .jarvis-lock-v5__quote{font-size:14px!important}
+  .jarvis-lock-v5__signals{font-size:6px!important}
+  .jarvis-lock-v5__auth-heading{align-items:flex-start!important;gap:6px!important}
+  .jarvis-lock-v5__auth-note{font-size:6px!important;text-align:right!important}
+}
+@media(max-width:380px){
+  .jarvis-lock-v5__brand small,
+  .jarvis-lock-v5__status{display:none!important}
+  .jarvis-lock-v5__hero{padding-top:12px!important}
+  .jarvis-lock-v5__quote-zone{min-height:142px!important;padding:12px!important}
+  .jarvis-lock-v5__micro-quotes{display:none!important}
+}
