@@ -65,7 +65,7 @@ const FOCUS_REMINDERS = [
 ]
 
 export function App() {
-  const [activePage, setActivePage]             = useState<ActivePage>('today')
+  const [activePage, setActivePage]             = useState<ActivePage>('dashboard')
   const [loading, setLoading]                   = useState(true)
   const [showVoiceJarvis, setShowVoiceJarvis]   = useState(false)
   const [showJarvisHud, setShowJarvisHud]       = useState(false)
