@@ -2632,3 +2632,28 @@ html[data-theme="light"]{color-scheme:light}
 .jarvis-lock-v5__signals i{width:3px!important;height:3px!important;border-radius:50%!important;background:var(--ui-accent)!important}
 .jarvis-lock-v5__micro-quotes{display:flex!important;flex-wrap:wrap!important;gap:5px!important;margin-top:13px!important}
 .jarvis-lock-v5__micro-quotes span{padding:4px 6px!important;border:1px solid var(--ui-border)!important;color:var(--ui-muted)!important;font-size:7px!important;letter-spacing:.08em!important}
+
+
+/* Lock auth deck */
+.jarvis-lock-v5__auth-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important}
+.jarvis-lock-v5__auth-card{display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;min-height:64px!important;padding:9px 10px!important;text-align:left!important;background:var(--ui-bg)!important;color:var(--ui-text)!important;border:1px solid var(--ui-border)!important}
+.jarvis-lock-v5__auth-card:hover,.jarvis-lock-v5__auth-card.is-verified,.jarvis-lock-v5__auth-card.is-speaking{border-color:var(--ui-accent)!important;background:var(--ui-surface-2)!important}
+.jarvis-lock-v5__auth-glyph{display:grid!important;place-items:center!important;width:32px!important;height:32px!important;border:1px solid var(--ui-border)!important;color:var(--ui-accent-strong)!important;font-size:18px!important}
+.jarvis-lock-v5__auth-copy strong{display:block!important;color:var(--ui-text)!important;font:800 10px/1.2 ui-monospace,monospace!important}
+.jarvis-lock-v5__auth-copy small{display:block!important;margin-top:4px!important;color:var(--ui-muted)!important;font:10px/1.35 ui-sans-serif,system-ui,sans-serif!important}
+.jarvis-lock-v5__auth-action{color:var(--ui-accent-strong)!important;font:800 8px ui-monospace,monospace!important}
+.jarvis-lock-v5__voice-banner{display:flex!important;align-items:center!important;gap:8px!important;margin-top:9px!important;padding:8px 10px!important;border:1px solid var(--ui-border)!important;background:var(--ui-bg)!important;color:var(--ui-muted)!important;font:8px/1.35 ui-monospace,monospace!important}
+.jarvis-lock-v5__voice-dot{width:6px!important;height:6px!important;border-radius:50%!important;background:var(--ui-border-strong)!important}
+.jarvis-lock-v5__voice-banner.is-active .jarvis-lock-v5__voice-dot{background:var(--ui-accent)!important;box-shadow:0 0 0 4px var(--ui-accent-soft)!important}
+.jarvis-lock-v5__wave{display:flex!important;gap:2px!important;margin-left:auto!important}
+.jarvis-lock-v5__wave i{width:2px!important;height:8px!important;background:var(--ui-border-strong)!important}
+.jarvis-lock-v5__voice-banner.is-active .jarvis-lock-v5__wave i{background:var(--ui-accent)!important;animation:jarvisWave .75s ease-in-out infinite alternate!important}
+@keyframes jarvisWave{to{height:15px}}
+.jarvis-lock-v5__console{margin-top:12px!important;padding:16px!important;background:var(--ui-surface)!important;border:1px solid var(--ui-border)!important}
+.jarvis-lock-v5__shield{padding:5px 7px!important;border:1px solid var(--ui-border)!important;color:var(--ui-accent-strong)!important;font:800 8px ui-monospace,monospace!important}
+.jarvis-lock-v5__input-wrap{display:grid!important;grid-template-columns:54px minmax(0,1fr) 40px!important;align-items:center!important;gap:8px!important;min-height:44px!important;margin-top:7px!important;padding:0 10px!important;background:var(--ui-bg)!important;border:1px solid var(--ui-border)!important}
+.jarvis-lock-v5__input-wrap input{width:100%!important;border:0!important;outline:0!important;background:transparent!important;color:var(--ui-text)!important;font:700 17px ui-monospace,monospace!important;letter-spacing:.32em!important}
+.jarvis-lock-v5__telemetry{display:flex!important;flex-wrap:wrap!important;gap:6px!important;padding-top:9px!important;border-top:1px solid var(--ui-border)!important;color:var(--ui-muted)!important;font:7px ui-monospace,monospace!important;letter-spacing:.1em!important}
+.jarvis-lock-v5__telemetry i{width:3px!important;height:3px!important;border-radius:50%!important;background:var(--ui-accent)!important}
+@media(max-width:760px){.jarvis-lock-v5__auth-grid{grid-template-columns:1fr!important}.jarvis-lock-v5__shell{width:min(100% - 20px,560px)!important}.jarvis-lock-v5__hero{grid-template-columns:1fr!important}.jarvis-lock-v5__portrait-frame{width:82px!important;height:82px!important;flex-basis:82px!important}}
+@media(prefers-reduced-motion:reduce){.jarvis-lock-v5__scan,.jarvis-lock-v5__orb,.jarvis-lock-v5__wave i{animation:none!important}}
