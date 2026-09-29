@@ -3436,3 +3436,292 @@ html[data-theme="light"] .jarvis-theme .done-card-wrap{
 @media(prefers-reduced-motion:reduce){
   .legacy-dashboard-exit button{transition:none}
 }
+
+
+/* ============================================================
+   DESIGN SYSTEM 2.0 — LOCK-SCREEN QUALITY, APP-WIDE
+   Calm command-console language across every page.
+   ============================================================ */
+
+.jarvis-theme{
+  --os-radius:13px;
+  --os-radius-sm:9px;
+  --os-gap:10px;
+  --os-accent:var(--ui-accent);
+  --os-accent-strong:var(--ui-accent-strong);
+  --os-line:var(--ui-border);
+  --os-panel:var(--ui-surface);
+  --os-panel-2:var(--ui-surface-2);
+  --os-ink:var(--ui-text);
+  --os-sub:var(--ui-sub);
+  --os-muted:var(--ui-muted);
+}
+
+/* All non-dashboard pages: same measured width as the lock-screen shell. */
+.jarvis-theme .section-pad{
+  width:min(1180px,calc(100% - 28px))!important;
+  margin:0 auto!important;
+  padding:14px 0 108px!important;
+}
+.jarvis-theme .content-area{
+  min-height:100vh;
+}
+
+/* Quiet command-console section marker. */
+.jarvis-theme .section-pad > .card:first-child,
+.jarvis-theme .section-pad > .phase-card:first-child,
+.jarvis-theme .section-pad > .jarvis-page:first-child{
+  position:relative;
+}
+.jarvis-theme .section-pad > .card:first-child::before,
+.jarvis-theme .section-pad > .phase-card:first-child::before{
+  content:"CAT 2026 // ACTIVE MODULE";
+  position:absolute;
+  top:10px;
+  right:12px;
+  color:var(--os-muted);
+  font:700 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.13em;
+  pointer-events:none;
+}
+
+/* Every surface gets the lock-screen material language. */
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .phase-card,
+.jarvis-theme .jarvis-panel,
+.jarvis-theme .mission-os-section,
+.jarvis-theme .mission-os-recommendation,
+.jarvis-theme .dashboard-screen-card{
+  position:relative;
+  overflow:hidden;
+  background:var(--os-panel)!important;
+  color:var(--os-ink)!important;
+  border:1px solid var(--os-line)!important;
+  border-radius:var(--os-radius)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.jarvis-theme .card::after,
+.jarvis-theme .card-sm::after,
+.jarvis-theme .block-card::after,
+.jarvis-theme .phase-card::after,
+.jarvis-theme .jarvis-panel::after{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--os-accent) 25%,transparent),transparent);
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* Headings feel like product UI, not old dashboard markup. */
+.jarvis-theme .card-title,
+.jarvis-theme .jarvis-panel-title{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:24px;
+  color:var(--os-ink)!important;
+  font-weight:850!important;
+  letter-spacing:-.02em!important;
+}
+.jarvis-theme .card-title::after,
+.jarvis-theme .jarvis-panel-title::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--os-line);
+}
+
+/* Buttons and inputs use one control family. */
+.jarvis-theme button,
+.jarvis-theme .btn-primary,
+.jarvis-theme .action-button,
+.jarvis-theme input,
+.jarvis-theme textarea,
+.jarvis-theme select{
+  font-family:inherit;
+}
+.jarvis-theme button:not(.nav-btn):not(.header-utility),
+.jarvis-theme .btn-primary,
+.jarvis-theme .action-button{
+  border-radius:10px!important;
+}
+.jarvis-theme button:not(.nav-btn):not(.header-utility):focus-visible,
+.jarvis-theme input:focus-visible,
+.jarvis-theme textarea:focus-visible,
+.jarvis-theme select:focus-visible{
+  outline:2px solid var(--os-accent)!important;
+  outline-offset:2px!important;
+}
+
+/* Status chips: restrained, readable, no candy colors. */
+.jarvis-theme .pill,
+.jarvis-theme .status-badge,
+.jarvis-theme .lv-badge,
+.jarvis-theme .mastery-badge{
+  background:var(--os-panel-2)!important;
+  color:var(--os-sub)!important;
+  border:1px solid var(--os-line)!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+
+/* Week view / schedule grids. */
+.jarvis-theme .grid2,
+.jarvis-theme .grid3,
+.jarvis-theme .week-grid{
+  gap:9px!important;
+}
+.jarvis-theme .grid2 > *,
+.jarvis-theme .grid3 > *,
+.jarvis-theme .week-grid > *,
+.jarvis-theme .phase-subj-box,
+.jarvis-theme .priority-item,
+.jarvis-theme .day-card{
+  border-color:var(--os-line)!important;
+  background:var(--os-panel-2)!important;
+  color:var(--os-ink)!important;
+  border-radius:var(--os-radius-sm)!important;
+}
+.jarvis-theme .day-card.today,
+.jarvis-theme .current{
+  border-color:var(--os-accent)!important;
+  background:var(--ui-accent-soft)!important;
+}
+
+/* Progress / gauges. */
+.jarvis-theme .progress-bar,
+.jarvis-theme .progress-wrap,
+.jarvis-theme .mastery-bar-wrap{
+  background:var(--os-panel-2)!important;
+  border:1px solid var(--os-line)!important;
+}
+.jarvis-theme .progress-fill,
+.jarvis-theme .mastery-bar{
+  background:var(--os-accent)!important;
+  box-shadow:none!important;
+}
+
+/* Error / repair / retest: diagnostic console feel, but still quiet. */
+.jarvis-theme .error-card,
+.jarvis-theme .repair-card,
+.jarvis-theme .retest-card,
+.jarvis-theme .diagnostic-card,
+.jarvis-theme .question-card{
+  background:var(--os-panel-2)!important;
+  border:1px solid var(--os-line)!important;
+  border-radius:var(--os-radius-sm)!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .error-card:hover,
+.jarvis-theme .repair-card:hover,
+.jarvis-theme .retest-card:hover,
+.jarvis-theme .question-card:hover{
+  border-color:var(--os-accent)!important;
+  background:color-mix(in srgb,var(--os-panel-2) 92%,var(--os-accent) 8%)!important;
+}
+
+/* JARVIS/mission/vision pages: stronger top identity without oversized cards. */
+.jarvis-theme .jarvis-page,
+.jarvis-theme .jarvis-topbar{
+  border-radius:var(--os-radius)!important;
+}
+.jarvis-theme .jarvis-kicker,
+.jarvis-theme .mission-kicker,
+.jarvis-theme .vision-kicker,
+.jarvis-theme .jarvis-library-kicker{
+  color:var(--os-accent-strong)!important;
+  font:800 8px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  letter-spacing:.14em!important;
+}
+
+/* Personal OS becomes premium rather than a differently-themed island. */
+.jarvis-theme .jarvis-library-group--personal{
+  background:var(--ui-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--os-accent) 32%,var(--os-line))!important;
+}
+.jarvis-theme .jarvis-library-group--personal .jarvis-hub-icon{
+  color:var(--os-accent-strong)!important;
+  border-color:color-mix(in srgb,var(--os-accent) 30%,var(--os-line))!important;
+}
+
+/* Consistent icon containers everywhere that already use AppIcon. */
+.jarvis-theme .jarvis-hub-icon,
+.jarvis-theme .jarvis-feature-icon,
+.jarvis-theme .nav-icon,
+.jarvis-theme .header-utility,
+.jarvis-theme .theme-switcher-trigger-icon{
+  color:var(--os-accent-strong)!important;
+  border-color:var(--os-line)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.jarvis-theme .jarvis-hub-icon svg,
+.jarvis-theme .jarvis-feature-icon svg,
+.jarvis-theme .nav-icon svg,
+.jarvis-theme .header-utility svg{
+  stroke-width:1.75!important;
+}
+
+/* Better typography across dense data. */
+.jarvis-theme .muted,
+.jarvis-theme .helper,
+.jarvis-theme .subtle,
+.jarvis-theme small{
+  color:var(--os-muted);
+}
+.jarvis-theme strong{
+  color:var(--os-ink);
+}
+.jarvis-theme code,
+.jarvis-theme pre,
+.jarvis-theme .mono{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+}
+
+/* Light mode keeps the same hierarchy, with paper + ink instead of white/blue. */
+html[data-theme="light"] .jarvis-theme{
+  --os-panel:#fffefa;
+  --os-panel-2:#eeeae1;
+}
+html[data-theme="light"] .jarvis-theme .card::after,
+html[data-theme="light"] .jarvis-theme .card-sm::after,
+html[data-theme="light"] .jarvis-theme .block-card::after,
+html[data-theme="light"] .jarvis-theme .phase-card::after{
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--os-accent) 22%,transparent),transparent);
+}
+html[data-theme="light"] .jarvis-theme .jarvis-library-group--personal{
+  background:rgba(148,117,69,.07)!important;
+}
+
+/* Responsive: the same shell, just denser on phones. */
+@media(max-width:700px){
+  .jarvis-theme .section-pad{
+    width:calc(100% - 20px)!important;
+    padding:11px 0 98px!important;
+  }
+  .jarvis-theme .card,
+  .jarvis-theme .card-sm,
+  .jarvis-theme .block-card,
+  .jarvis-theme .phase-card{
+    border-radius:11px!important;
+  }
+  .jarvis-theme .card-title{
+    font-size:11px!important;
+  }
+}
+
+/* Motion remains subtle; the lock screen owns the dramatic motion. */
+@media(prefers-reduced-motion:reduce){
+  .jarvis-theme .card,
+  .jarvis-theme .card-sm,
+  .jarvis-theme .block-card,
+  .jarvis-theme .phase-card{
+    transition:none!important;
+  }
+}
