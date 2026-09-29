@@ -175,7 +175,7 @@ export function ExecutionIntelligenceCard({ tasks, onNavigate }: Props) {
           <div className="execution-signal-row">
             <div><b>{avgAccuracy ?? '—'}%</b><span>AVG ACC</span></div>
             <div><b>{avgStudy !== null ? avgStudy.toFixed(1) : '—'}h</b><span>AVG STUDY</span></div>
-            <div><b>{pendingRepair}</b><span>REPAIR</span></div>
+            <div><b>{pendingRepairCount}</b><span>REPAIR</span></div>
           </div>
           <div className="execution-gate">
             <span className="execution-gate-dot" />
