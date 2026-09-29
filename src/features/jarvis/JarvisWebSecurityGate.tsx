@@ -326,7 +326,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
         if (!unlockPhrase) return
 
-        rec.stop()
+        voiceRecognizerRef.current?.stop()
         voiceRecognizerRef.current = null
         setVoiceListening(false)
         setMessage('Voice command accepted. Now confirm your identity with the real device biometric.')
@@ -340,7 +340,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       () => {
         voiceRecognizerRef.current = null
         setVoiceListening(false)
-        }
+      }
     )
 
     if (!rec) {
