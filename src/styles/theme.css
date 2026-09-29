@@ -662,3 +662,407 @@ html[data-theme="light"] .theme-switcher-foot {
 @media (prefers-reduced-motion: reduce) {
   .theme-switcher-trigger { transition: none !important; }
 }
+
+
+/* ============================================================
+   CAT 2026 — QUIET LUXURY COMMAND OS
+   Final visual layer: graphite editorial, no neon, no glow-heavy UI.
+   Hierarchy first; materials and borders are intentionally restrained.
+   ============================================================ */
+
+:root{
+  --ql-ink:#171817;
+  --ql-paper:#f4f1ea;
+  --ql-paper-2:#ebe7de;
+  --ql-stone:#716f68;
+  --ql-line:rgba(34,35,32,.13);
+  --ql-dark:#151716;
+  --ql-dark-2:#1c1e1c;
+  --ql-dark-3:#242723;
+  --ql-white:#f3f0e8;
+  --ql-muted:#a8a69e;
+  --ql-accent:#a18a57;
+  --ql-accent-strong:#c2a96d;
+  --ql-success:#7ca58a;
+  --ql-danger:#bd817a;
+  --ql-radius:12px;
+  --ql-ease:cubic-bezier(.22,.61,.36,1);
+}
+
+html,body,#root{min-height:100%}
+html{background:var(--ql-dark);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body.jarvis-theme{
+  background:var(--ql-dark) !important;
+  color:var(--ql-white) !important;
+  letter-spacing:-.005em;
+}
+body.jarvis-theme *{box-sizing:border-box}
+body.jarvis-theme ::selection{background:rgba(194,169,109,.25);color:inherit}
+
+html[data-theme="dark"] body.jarvis-theme,
+html[data-theme="dark"] .jarvis-theme{
+  --ql-bg:var(--ql-dark);
+  --ql-surface:var(--ql-dark-2);
+  --ql-surface-2:var(--ql-dark-3);
+  --ql-text:var(--ql-white);
+  --ql-sub:#c2c0b8;
+  --ql-muted:var(--ql-muted);
+  --ql-border:rgba(243,240,232,.12);
+  background:var(--ql-bg) !important;
+  color:var(--ql-text) !important;
+}
+
+html[data-theme="light"] body.jarvis-theme,
+html[data-theme="light"] .jarvis-theme{
+  --ql-bg:var(--ql-paper);
+  --ql-surface:#fbfaf6;
+  --ql-surface-2:var(--ql-paper-2);
+  --ql-text:var(--ql-ink);
+  --ql-sub:#4f504a;
+  --ql-muted:#77766f;
+  --ql-border:rgba(34,35,32,.13);
+  background:var(--ql-bg) !important;
+  color:var(--ql-text) !important;
+}
+
+/* App shell: remove the old "dashboard wall of cards" feeling. */
+.jarvis-theme .app-header{
+  background:color-mix(in srgb,var(--ql-bg) 92%,transparent) !important;
+  border-bottom:1px solid var(--ql-border) !important;
+  box-shadow:none !important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.jarvis-theme .bottom-nav{
+  background:color-mix(in srgb,var(--ql-bg) 94%,transparent) !important;
+  border-top:1px solid var(--ql-border) !important;
+  box-shadow:none !important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.jarvis-theme .card,
+.jarvis-theme .card-sm,
+.jarvis-theme .block-card,
+.jarvis-theme .jarvis-panel{
+  background:var(--ql-surface) !important;
+  border:1px solid var(--ql-border) !important;
+  border-radius:var(--ql-radius) !important;
+  box-shadow:0 8px 28px rgba(0,0,0,.08) !important;
+}
+html[data-theme="light"] .jarvis-theme .card,
+html[data-theme="light"] .jarvis-theme .card-sm,
+html[data-theme="light"] .jarvis-theme .block-card,
+html[data-theme="light"] .jarvis-theme .jarvis-panel{
+  box-shadow:0 8px 24px rgba(28,29,26,.055) !important;
+}
+.jarvis-theme .card:hover,
+.jarvis-theme .card-sm:hover,
+.jarvis-theme .block-card:hover{
+  transform:translateY(-1px);
+  transition:transform .18s var(--ql-ease),border-color .18s var(--ql-ease);
+  border-color:color-mix(in srgb,var(--ql-accent) 42%,var(--ql-border)) !important;
+}
+
+/* Typography: editorial contrast without decorative gradients. */
+.jarvis-theme .app-title,
+.jarvis-theme .header-brand{
+  color:var(--ql-text) !important;
+  background:none !important;
+  -webkit-text-fill-color:initial !important;
+}
+.jarvis-theme .app-subtitle,
+.jarvis-theme .countdown-label,
+.jarvis-theme .header-sub,
+.jarvis-theme .sec-title{
+  color:var(--ql-muted) !important;
+}
+.jarvis-theme h1,
+.jarvis-theme h2,
+.jarvis-theme h3,
+.jarvis-theme .card-title,
+.jarvis-theme .block-title{
+  color:var(--ql-text) !important;
+  letter-spacing:-.025em;
+}
+
+/* Inputs and controls: tactile, quiet, obvious focus. */
+.jarvis-theme input,
+.jarvis-theme textarea,
+.jarvis-theme select,
+.jarvis-theme .form-input,
+.jarvis-theme .score-input{
+  background:var(--ql-surface-2) !important;
+  color:var(--ql-text) !important;
+  border:1px solid var(--ql-border) !important;
+  border-radius:10px !important;
+  box-shadow:none !important;
+}
+.jarvis-theme input:focus,
+.jarvis-theme textarea:focus,
+.jarvis-theme select:focus{
+  outline:none !important;
+  border-color:var(--ql-accent) !important;
+  box-shadow:0 0 0 3px rgba(161,138,87,.14) !important;
+}
+.jarvis-theme .btn-primary,
+.jarvis-theme .action-button,
+.jarvis-theme .score-btn{
+  background:var(--ql-accent) !important;
+  color:#17150f !important;
+  border:1px solid var(--ql-accent-strong) !important;
+  box-shadow:none !important;
+  border-radius:10px !important;
+  font-weight:800;
+}
+.jarvis-theme .btn-primary:hover,
+.jarvis-theme .action-button:hover,
+.jarvis-theme .score-btn:hover{
+  background:var(--ql-accent-strong) !important;
+  transform:translateY(-1px);
+}
+
+/* Dashboard surfaces. */
+.jarvis-theme .dash-root{
+  background:var(--ql-bg) !important;
+  color:var(--ql-text) !important;
+}
+.jarvis-theme .dash-root .header{
+  background:var(--ql-bg) !important;
+  border-bottom:1px solid var(--ql-border) !important;
+  box-shadow:none !important;
+}
+.jarvis-theme .dash-root .stat-card,
+.jarvis-theme .dash-root .card{
+  background:var(--ql-surface) !important;
+  border-color:var(--ql-border) !important;
+  box-shadow:0 8px 28px rgba(0,0,0,.07) !important;
+}
+.jarvis-theme .dash-root .block-item,
+.jarvis-theme .dash-root .day-card,
+.jarvis-theme .dash-root .priority-item,
+.jarvis-theme .dash-root .date-display,
+.jarvis-theme .dash-root .score-input{
+  background:var(--ql-surface-2) !important;
+  border-color:var(--ql-border) !important;
+  color:var(--ql-text) !important;
+}
+.jarvis-theme .dash-root .today-header,
+.jarvis-theme .dash-root .mantra-bar{
+  background:var(--ql-surface) !important;
+  border-color:var(--ql-border) !important;
+}
+.jarvis-theme .dash-root .mission-bar,
+.jarvis-theme .dash-root .live-time-bar{
+  background:transparent !important;
+  border-color:var(--ql-border) !important;
+}
+
+/* Theme control becomes a discreet preference control, not a floating neon widget. */
+.theme-switcher{
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif !important;
+}
+.theme-switcher-trigger{
+  min-height:34px !important;
+  padding:6px 9px !important;
+  border-radius:9px !important;
+  border:1px solid var(--ql-border) !important;
+  background:color-mix(in srgb,var(--ql-surface) 92%,transparent) !important;
+  color:var(--ql-text) !important;
+  box-shadow:0 6px 18px rgba(0,0,0,.10) !important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.theme-switcher-trigger:hover{
+  border-color:rgba(161,138,87,.5) !important;
+  transform:none !important;
+}
+.theme-switcher-trigger-icon{
+  background:rgba(161,138,87,.11) !important;
+  color:var(--ql-accent-strong) !important;
+}
+.theme-switcher-trigger-label{
+  color:var(--ql-text) !important;
+  font-size:8px !important;
+}
+.theme-switcher-popover{
+  border-radius:12px !important;
+  border-color:var(--ql-border) !important;
+  background:var(--ql-surface) !important;
+  box-shadow:0 22px 60px rgba(0,0,0,.24) !important;
+}
+.theme-switcher-head{border-bottom-color:var(--ql-border) !important}
+.theme-switcher-kicker{color:var(--ql-accent-strong) !important}
+.theme-switcher-title{color:var(--ql-text) !important}
+.theme-switcher-live{
+  color:var(--ql-accent-strong) !important;
+  border-color:rgba(161,138,87,.24) !important;
+  background:rgba(161,138,87,.08) !important;
+}
+.theme-switcher-option{color:var(--ql-text) !important}
+.theme-switcher-option:hover,
+.theme-switcher-option.is-active{
+  background:rgba(161,138,87,.08) !important;
+  border-color:rgba(161,138,87,.22) !important;
+}
+.theme-switcher-option-icon{
+  background:rgba(161,138,87,.09) !important;
+  color:var(--ql-accent-strong) !important;
+}
+.theme-switcher-option-copy small,
+.theme-switcher-foot{color:var(--ql-muted) !important}
+.theme-switcher-option-check{color:var(--ql-success) !important}
+
+/* JARVIS lock screen: premium security console, not sci-fi neon. */
+.jarvis-lock-v5{
+  --lock-bg:var(--ql-dark);
+  --lock-surface:rgba(28,30,28,.94);
+  --lock-border:rgba(243,240,232,.12);
+  --lock-text:#f3f0e8;
+  --lock-muted:#a8a69e;
+  --lock-accent:#c2a96d;
+  background:var(--lock-bg) !important;
+  color:var(--lock-text) !important;
+}
+html[data-theme="light"] .jarvis-lock-v5{
+  --lock-bg:var(--ql-paper);
+  --lock-surface:rgba(251,250,246,.96);
+  --lock-border:rgba(34,35,32,.13);
+  --lock-text:var(--ql-ink);
+  --lock-muted:#77766f;
+  --lock-accent:#8b713c;
+}
+.jarvis-lock-v5__backdrop{
+  background:
+    radial-gradient(900px 420px at 78% 8%,rgba(161,138,87,.10),transparent 60%),
+    linear-gradient(135deg,var(--lock-bg),var(--lock-bg)) !important;
+  filter:none !important;
+}
+.jarvis-lock-v5__grid,
+.jarvis-lock-v5__scan{opacity:.025 !important}
+.jarvis-lock-v5__shell{max-width:1180px !important}
+.jarvis-lock-v5__topbar{
+  border-bottom:1px solid var(--lock-border) !important;
+  background:transparent !important;
+}
+.jarvis-lock-v5__brand{color:var(--lock-text) !important}
+.jarvis-lock-v5__brand small,
+.jarvis-lock-v5__status,
+.jarvis-lock-v5__eyebrow,
+.jarvis-lock-v5__quote-label,
+.jarvis-lock-v5__auth-note,
+.jarvis-lock-v5__hint,
+.jarvis-lock-v5__telemetry,
+.jarvis-lock-v5__footer{
+  color:var(--lock-muted) !important;
+}
+.jarvis-lock-v5__orb{
+  background:var(--lock-accent) !important;
+  box-shadow:none !important;
+}
+.jarvis-lock-v5__dot{background:var(--ql-success) !important;box-shadow:none !important}
+.jarvis-lock-v5__identity h1,
+.jarvis-lock-v5__quote,
+.jarvis-lock-v5__quote strong,
+.jarvis-lock-v5__quote em{color:var(--lock-text) !important}
+.jarvis-lock-v5__identity p{color:var(--lock-muted) !important}
+.jarvis-lock-v5__portrait-frame{
+  border-color:var(--lock-border) !important;
+  box-shadow:0 18px 50px rgba(0,0,0,.18) !important;
+}
+.jarvis-lock-v5__portrait-ring{border-color:rgba(194,169,109,.35) !important}
+.jarvis-lock-v5__signals i{background:var(--lock-accent) !important}
+.jarvis-lock-v5__micro-quotes span{
+  color:var(--lock-muted) !important;
+  border-color:var(--lock-border) !important;
+  background:transparent !important;
+}
+.jarvis-lock-v5__auth-rail,
+.jarvis-lock-v5__console{
+  background:var(--lock-surface) !important;
+  border:1px solid var(--lock-border) !important;
+  box-shadow:0 20px 55px rgba(0,0,0,.14) !important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.jarvis-lock-v5__auth-card{
+  background:transparent !important;
+  border-color:var(--lock-border) !important;
+  color:var(--lock-text) !important;
+  box-shadow:none !important;
+}
+.jarvis-lock-v5__auth-card:hover,
+.jarvis-lock-v5__auth-card.is-speaking{
+  border-color:rgba(194,169,109,.42) !important;
+  box-shadow:none !important;
+}
+.jarvis-lock-v5__auth-glyph{
+  background:rgba(194,169,109,.08) !important;
+  border-color:rgba(194,169,109,.18) !important;
+  color:var(--lock-accent) !important;
+}
+.jarvis-lock-v5__auth-copy strong{color:var(--lock-text) !important}
+.jarvis-lock-v5__auth-copy small{color:var(--lock-muted) !important}
+.jarvis-lock-v5__auth-action{color:var(--ql-success) !important}
+.jarvis-lock-v5__voice-banner{
+  background:transparent !important;
+  border-color:var(--lock-border) !important;
+  color:var(--lock-muted) !important;
+}
+.jarvis-lock-v5__voice-banner strong{color:var(--lock-accent) !important}
+.jarvis-lock-v5__voice-dot{background:var(--lock-muted) !important;box-shadow:none !important}
+.jarvis-lock-v5__voice-banner.is-active .jarvis-lock-v5__voice-dot{
+  background:var(--ql-success) !important;
+  box-shadow:0 0 0 3px rgba(124,165,138,.10) !important;
+}
+.jarvis-lock-v5__voice-banner.is-active .jarvis-lock-v5__wave i{
+  background:var(--ql-success) !important;
+}
+.jarvis-lock-v5__console-head strong{color:var(--lock-text) !important}
+.jarvis-lock-v5__shield{
+  color:var(--ql-success) !important;
+  border-color:rgba(124,165,138,.25) !important;
+  background:rgba(124,165,138,.07) !important;
+}
+.jarvis-lock-v5__input-wrap{
+  background:transparent !important;
+  border-color:var(--lock-border) !important;
+}
+.jarvis-lock-v5__input-wrap:focus-within{
+  border-color:var(--lock-accent) !important;
+  box-shadow:0 0 0 3px rgba(194,169,109,.10) !important;
+}
+.jarvis-lock-v5__input-wrap input{
+  background:transparent !important;
+  color:var(--lock-text) !important;
+}
+.jarvis-lock-v5__unlock{
+  background:var(--lock-accent) !important;
+  color:#18150e !important;
+  border-color:var(--lock-accent) !important;
+  box-shadow:none !important;
+}
+.jarvis-lock-v5__message{color:var(--lock-muted) !important}
+html[data-theme="light"] .jarvis-lock-v5__backdrop{
+  background:
+    radial-gradient(900px 420px at 78% 8%,rgba(139,113,60,.10),transparent 60%),
+    var(--ql-paper) !important;
+}
+html[data-theme="light"] .jarvis-lock-v5__shell{
+  color:var(--ql-ink) !important;
+}
+html[data-theme="light"] .jarvis-lock-v5__auth-rail,
+html[data-theme="light"] .jarvis-lock-v5__console{
+  box-shadow:0 20px 55px rgba(28,29,26,.08) !important;
+}
+
+/* Accessibility + motion discipline. */
+.jarvis-theme button,
+.jarvis-theme a,
+.theme-switcher button{
+  transition:transform .18s var(--ql-ease),border-color .18s var(--ql-ease),background-color .18s var(--ql-ease),color .18s var(--ql-ease);
+}
+@media (prefers-reduced-motion:reduce){
+  .jarvis-theme *,
+  .jarvis-theme *::before,
+  .jarvis-theme *::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
