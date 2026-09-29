@@ -8,6 +8,7 @@ import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { playSuccessSound } from '@/services/audioService'
 import { BlockCard } from './BlockCard'
 import { ExecutionIntelligenceCard } from './ExecutionIntelligenceCard'
+import { LearningIntelligenceCard } from './LearningIntelligenceCard'
 import { useToast } from '@/components/Toast'
 
 const SEQUENCE_STRIP = [
@@ -105,6 +106,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       </div>
 
       <ExecutionIntelligenceCard tasks={tasks} onNavigate={onNavigate} />
+      <LearningIntelligenceCard onNavigate={onNavigate} />
 
       {/* 8-Block Sequence Strip */}
       <div style={{ padding: '12px 16px 0', overflowX: 'auto' }}>
