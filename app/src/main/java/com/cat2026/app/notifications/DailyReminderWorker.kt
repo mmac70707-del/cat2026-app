@@ -38,6 +38,7 @@ object ReminderSchedule {
     const val CHANNEL_ID = "cat2026_daily_reminders"
     const val MORNING_WORK_NAME = "cat2026_morning_mission"
     const val EVENING_WORK_NAME = "cat2026_evening_error_log"
+    private val APP_ZONE: ZoneId = ZoneId.of("Asia/Kolkata")
 
     val CAT_EXAM_DATE: LocalDate = LocalDate.of(2026, 11, 29)
 
@@ -57,15 +58,17 @@ object ReminderSchedule {
     }
 
     fun scheduleMorning(context: Context) {
+        val delay = nextDelayMillis(5, 0) ?: return
         val request = OneTimeWorkRequestBuilder<MorningMissionWorker>()
-            .setInitialDelay(initialDelayMillisFor(5, 0), TimeUnit.MILLISECONDS)
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .build()
         WorkManager.getInstance(context).enqueueUniqueWork(MORNING_WORK_NAME, ExistingWorkPolicy.REPLACE, request)
     }
 
     fun scheduleEvening(context: Context) {
+        val delay = nextDelayMillis(21, 0) ?: return
         val request = OneTimeWorkRequestBuilder<EveningErrorLogWorker>()
-            .setInitialDelay(initialDelayMillisFor(21, 0), TimeUnit.MILLISECONDS)
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .build()
         WorkManager.getInstance(context).enqueueUniqueWork(EVENING_WORK_NAME, ExistingWorkPolicy.REPLACE, request)
     }
@@ -76,8 +79,19 @@ object ReminderSchedule {
     }
 
     fun daysLeft(): Long {
-        val today = LocalDate.now(ZoneId.systemDefault())
+        val today = LocalDate.now(APP_ZONE)
         return (CAT_EXAM_DATE.toEpochDay() - today.toEpochDay()).coerceAtLeast(0)
+    }
+
+    fun nextDelayMillis(hour: Int, minute: Int): Long? {
+        val now = java.time.LocalDateTime.now(APP_ZONE)
+        if (now.toLocalDate().isAfter(CAT_EXAM_DATE)) return null
+
+        var target = now.withHour(hour).withMinute(minute).withSecond(0).withNano(0)
+        if (target.isBefore(now)) target = target.plusDays(1)
+        if (target.toLocalDate().isAfter(CAT_EXAM_DATE)) return null
+
+        return java.time.Duration.between(now, target).toMillis().coerceAtLeast(0L)
     }
 }
 
@@ -129,13 +143,5 @@ private fun showNotification(context: Context, id: Int, title: String, text: Str
         .build()
 
     manager.notify(id, notification)
-}
-
-/** Computes the initial delay (ms) so the first run lands close to [hour]:[minute] today or tomorrow. */
-fun initialDelayMillisFor(hour: Int, minute: Int): Long {
-    val now = java.time.LocalDateTime.now()
-    var target = now.withHour(hour).withMinute(minute).withSecond(0).withNano(0)
-    if (target.isBefore(now)) target = target.plusDays(1)
-    return java.time.Duration.between(now, target).toMillis()
 }
 
