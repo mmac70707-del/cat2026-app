@@ -98,6 +98,16 @@ export function App() {
     boot()
   }, [])
 
+  // ── Dashboard quick-command bridge ─────────────
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const page = (event as CustomEvent<{ page?: string }>).detail?.page
+      if (page && typeof page === 'string') setActivePage(page as ActivePage)
+    }
+    window.addEventListener('jarvis:navigate', handler)
+    return () => window.removeEventListener('jarvis:navigate', handler)
+  }, [])
+
   // ── Android hardware back button ────────────────
   const activePageRef = useRef(activePage)
   useEffect(() => { activePageRef.current = activePage }, [activePage])
