@@ -12,6 +12,12 @@ function getSystemMode(): 'dark' | 'light' {
     : 'dark'
 }
 
+function notifyUiPreferenceChange(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('cat2026:ui-preferences-changed'))
+  }
+}
+
 export function getThemeMode(): ThemeMode {
   try {
     const value = localStorage.getItem(THEME_MODE_KEY)
@@ -42,6 +48,7 @@ export function applyThemeMode(mode: ThemeMode): void {
   root.dataset.themeMode = resolved
   root.style.colorScheme = resolved
   try { localStorage.setItem(THEME_MODE_KEY, mode) } catch {}
+  notifyUiPreferenceChange()
 
   const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
   if (meta) meta.content = resolved === 'light' ? '#F4F1EA' : '#121411'
@@ -50,16 +57,19 @@ export function applyThemeMode(mode: ThemeMode): void {
 export function applyTextSize(size: TextSize): void {
   document.documentElement.dataset.textSize = size
   try { localStorage.setItem(TEXT_SIZE_KEY, size) } catch {}
+  notifyUiPreferenceChange()
 }
 
 export function applyStitchTheme(themeId: string): void {
   document.documentElement.dataset.stitchTheme = themeId
   try { localStorage.setItem(STITCH_THEME_KEY, themeId) } catch {}
+  notifyUiPreferenceChange()
 }
 
 export function applyFocusMode(enabled: boolean): void {
   document.documentElement.dataset.focusMode = enabled ? 'on' : 'off'
   try { localStorage.setItem(FOCUS_MODE_KEY, enabled ? 'on' : 'off') } catch {}
+  notifyUiPreferenceChange()
 }
 
 export function syncUiPreferences(): void {
