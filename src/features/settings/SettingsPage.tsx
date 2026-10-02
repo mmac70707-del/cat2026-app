@@ -92,7 +92,7 @@ export function SettingsPage({ onBack }: Props) {
       await SettingsRepository.set('notifications', true)
       setNotifications(true)
       enableWebNotificationScheduler()
-      toast('App alerts ON — CAT blocks will notify while this app is running')
+      toast('App alerts ON — two daily reminders will run while this app is open')
     } else {
       await SettingsRepository.set('notifications', false)
       setNotifications(false)
@@ -244,7 +244,7 @@ export function SettingsPage({ onBack }: Props) {
           <div>
             <div style={{ fontSize: 13, fontWeight: 600 }}>Daily Reminders</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>
-              {isNative() ? 'Native reminders — permission-controlled Android alerts' : isWebNotificationSupported() ? 'Web/PWA alerts — CAT block notifications while app is running' : 'Notifications are not supported in this browser'}
+              {isNative() ? 'Native reminders — permission-controlled Android alerts' : isWebNotificationSupported() ? 'Web/PWA alerts — two daily app reminders while app is open' : 'Notifications are not supported in this browser'}
             </div>
           </div>
           <div className={`toggle ${notifications ? 'on' : ''}`} onClick={toggleNotifications}>
@@ -257,7 +257,7 @@ export function SettingsPage({ onBack }: Props) {
               🔔 Send Test App Notification
             </button>
             <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 6, lineHeight: 1.5 }}>
-              Browser/PWA alerts work while the app is running. For alerts when the app is fully closed, keep the existing Outlook Calendar reminders enabled.
+              Browser/PWA alerts work while the app is open. For closed-app alerts, use the Android native app or the existing Outlook Calendar reminders.
             </div>
           </div>
         )}
