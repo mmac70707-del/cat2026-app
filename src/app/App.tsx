@@ -41,7 +41,7 @@ import { MissionOSPage }        from '@/features/missionos/MissionOSPage'
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
 import { SettingsRepository } from '@/repositories/index'
-import { registerBackButtonHandler, registerAppStateHandler } from '@/services/native'
+import { registerBackButtonHandler, registerAppStateHandler, isNative } from '@/services/native'
 import { enableWebNotificationScheduler } from '@/services/webNotifications'
 import { JarvisWebSecurityGate } from '@/features/jarvis/JarvisWebSecurityGate'
 import { JarvisCommandCenter } from '@/features/jarvis/JarvisCommandCenter'
@@ -83,7 +83,10 @@ export function App() {
         await MasteryRepository.init()
         installGlobalErrorAudit()
         initPwaInstall()
-        enableWebNotificationScheduler()
+        if (!isNative()) {
+          const notificationsEnabled = await SettingsRepository.get('notifications', false)
+          if (notificationsEnabled) enableWebNotificationScheduler()
+        }
 
         const savedTheme = await SettingsRepository.get('stitchTheme', 'apex')
         if (savedTheme) {
