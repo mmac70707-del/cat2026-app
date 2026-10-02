@@ -171,74 +171,84 @@ function getRealWeekDates(now: Date = new Date()) {
 
 function WinterArcCard() {
   const todayKey = getKolkataDateKey()
-  const winterStart = '2026-10-02'
   const catEnd = '2026-11-29'
-  const postCatStart = '2026-11-30'
-  const phase = todayKey <= catEnd ? 'PHASE 1 • CAT-FIRST EXECUTION' : 'PHASE 2 • RECOVERY + BUILD'
-  const mission = todayKey <= catEnd
-    ? 'Winter Arc supports CAT. It never competes with CAT.'
-    : 'CAT is complete. Expand the operating system carefully.'
-  const pillars = todayKey <= catEnd
+  const isCatPhase = todayKey <= catEnd
+
+  const pillars = isCatPhase
     ? [
-        ['🎯','CAT 2026','Study • Mock • Analysis • Repair'],
+        ['🎯','CAT 2026','Main mission — Study → Test → Analyse → Repair'],
+        ['🧠','LEARN','Understand → Recall → Practice → Feedback'],
         ['😴','RECOVERY','Sleep • Food • Recovery'],
         ['🏋️','BODY','Gym • Movement • Maintenance'],
         ['📱','DIGITAL','Phone is a tool, not the default'],
-        ['🧼','PRESENTATION','Grooming • Posture • Clothes'],
         ['💼','LINKEDIN','3 min/day • ~3 meaningful posts/week'],
       ]
     : [
         ['🎯','NEXT LEVEL','Build the post-CAT foundation'],
         ['🏋️','BODY','Progressive training + recovery'],
         ['🧠','MIND','Reading • reflection • learning'],
-        ['💼','PROFESSIONAL','Communication • LinkedIn • networking'],
+        ['💼','PROFESSIONAL','Communication • networking'],
         ['💻','TECH','Projects • AI • systems'],
         ['🚀','FOUNDER','Business learning + long-term direction'],
       ]
+
   return (
-    <section style={{
-      marginTop: 14, borderRadius: 18, overflow: 'hidden',
-      border: '1px solid rgba(99,246,255,.20)',
-      background: 'linear-gradient(145deg, rgba(9,18,29,.98), rgba(15,23,42,.96))',
-      boxShadow: '0 14px 38px rgba(0,0,0,.20)'
-    }}>
-      <div style={{padding:'16px 18px', borderBottom:'1px solid rgba(255,255,255,.07)', background:'linear-gradient(90deg,rgba(99,246,255,.08),rgba(245,166,35,.06))'}}>
-        <div style={{fontSize:10,letterSpacing:1.8,fontWeight:900,color:'#63F6FF'}}>WINTER ARC // PERSONAL OPERATING SYSTEM</div>
-        <div style={{fontSize:20,fontWeight:950,color:'#fff',marginTop:5}}>Become the man you promised yourself.</div>
-        <div style={{fontSize:11,color:'#94A3B8',marginTop:5}}>{phase} • {mission}</div>
+    <section className="winter-arc-card" aria-label="Winter Arc operating system">
+      <div className="winter-arc-head">
+        <div className="winter-arc-kicker">WINTER ARC • CLEAR OPERATING SYSTEM</div>
+        <div className="winter-arc-title">{isCatPhase ? 'CAT-FIRST EXECUTION' : 'POST-CAT BUILD'}</div>
+        <div className="winter-arc-sub">
+          {isCatPhase
+            ? 'Abhi sirf ek main mission: CAT 2026. Baaki sab support systems hain.'
+            : 'CAT complete. Ab body, mind, professional skill, tech aur founder systems expand honge.'}
+        </div>
       </div>
-      <div style={{padding:'14px 18px'}}>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:8}}>
-          {pillars.map(([icon,title,sub]) => (
-            <div key={title} style={{padding:'11px',borderRadius:12,border:'1px solid rgba(255,255,255,.07)',background:'rgba(255,255,255,.025)'}}>
-              <div style={{fontSize:18}}>{icon}</div>
-              <div style={{fontSize:10,fontWeight:900,color:'#E5E7EB',marginTop:5,letterSpacing:.7}}>{title}</div>
-              <div style={{fontSize:10,color:'#94A3B8',lineHeight:1.45,marginTop:3}}>{sub}</div>
+
+      <div className="winter-arc-grid">
+        {pillars.map(([icon, title, sub]) => (
+          <div key={title} className="winter-arc-pillar">
+            <div className="winter-arc-icon">{icon}</div>
+            <div className="winter-arc-pillar-title">{title}</div>
+            <div className="winter-arc-pillar-sub">{sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {isCatPhase && (
+        <>
+          <div className="winter-arc-now">
+            <div className="winter-arc-now-label">🟨 RIGHT APPROACH TO LEARNING</div>
+            <div className="winter-arc-now-title">Don't just read. Retrieve → solve → check → repair → retest.</div>
+            <div className="winter-arc-now-sub">
+              Research on retrieval-based learning consistently supports testing yourself and using feedback rather than relying only on rereading. Spacing practice over time also supports retention.
             </div>
-          ))}
-        </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:8,marginTop:10}}>
-          <div style={{padding:11,borderRadius:12,border:'1px solid rgba(34,197,94,.18)',background:'rgba(34,197,94,.045)'}}>
-            <div style={{fontSize:10,fontWeight:900,color:'#86EFAC'}}>🟢 GREEN DAY</div>
-            <div style={{fontSize:10,color:'#CBD5E1',marginTop:4,lineHeight:1.5}}>CAT completed • sleep protected • body maintained.</div>
           </div>
-          <div style={{padding:11,borderRadius:12,border:'1px solid rgba(245,166,35,.18)',background:'rgba(245,166,35,.045)'}}>
-            <div style={{fontSize:10,fontWeight:900,color:'#FCD34D'}}>🟡 YELLOW DAY</div>
-            <div style={{fontSize:10,color:'#CBD5E1',marginTop:4,lineHeight:1.5}}>Partial execution → resume at the next block. No guilt debt.</div>
+
+          <div className="winter-arc-three">
+            <div className="winter-arc-state green">
+              <b>🟢 GREEN</b>
+              <span>Planned CAT work complete → continue normally.</span>
+            </div>
+            <div className="winter-arc-state yellow">
+              <b>🟡 YELLOW</b>
+              <span>Partial day → resume at the next block. No guilt debt.</span>
+            </div>
+            <div className="winter-arc-state red">
+              <b>🔴 RED</b>
+              <span>Minimum viable CAT + recovery → restart tomorrow.</span>
+            </div>
           </div>
-          <div style={{padding:11,borderRadius:12,border:'1px solid rgba(239,68,68,.18)',background:'rgba(239,68,68,.045)'}}>
-            <div style={{fontSize:10,fontWeight:900,color:'#FCA5A5'}}>🔴 RED DAY</div>
-            <div style={{fontSize:10,color:'#CBD5E1',marginTop:4,lineHeight:1.5}}>Minimum viable CAT + recovery → restart tomorrow. Never compensate with an extreme day.</div>
+
+          <div className="winter-arc-rule">
+            <strong>LOCKED:</strong> Oct 2 → Nov 29 = CAT-first. No random new planner. No extreme dieting, overtraining or fake 5 AM hustle.
           </div>
-        </div>
-        <div style={{marginTop:10,padding:'11px 12px',borderRadius:12,border:'1px solid rgba(99,246,255,.13)',background:'rgba(99,246,255,.035)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
-          <strong style={{color:'#63F6FF'}}>LOCKED RULE:</strong> Oct 2 → Nov 29 = CAT-first. Sleep, gym, digital discipline, grooming and LinkedIn support the mission. Nov 30 onward = recovery + deeper 2027 build. No extreme dieting, overtraining or fake 5 AM hustle.
-        </div>
-      </div>
+        </>
+      )}
+
+      <div className="winter-arc-mantra">Become the man you promised yourself — one correctly executed day at a time.</div>
     </section>
   )
 }
-
 export function DashboardPage() {
   const phase = usePhase()
   const daysLeft = getDaysLeft()
