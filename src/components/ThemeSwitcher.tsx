@@ -61,6 +61,20 @@ export function ThemeSwitcher() {
   }, [focusMode])
 
   useEffect(() => {
+    const syncFromAnotherSurface = () => {
+      const nextMode = getThemeMode()
+      const nextSize = getTextSize()
+      const nextFocus = isFocusMode()
+      setMode(nextMode)
+      setResolved(nextMode === 'system' ? getSystemMode() : nextMode)
+      setTextSize(nextSize)
+      setFocusMode(nextFocus)
+    }
+    window.addEventListener('cat2026:ui-preferences-changed', syncFromAnotherSurface)
+    return () => window.removeEventListener('cat2026:ui-preferences-changed', syncFromAnotherSurface)
+  }, [])
+
+  useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
       if (!ref.current?.contains(event.target as Node)) setOpen(false)
     }
