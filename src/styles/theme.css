@@ -1,3 +1,62 @@
+/* ── Shared UI tokens ─────────────────────────────────────
+   Theme mode and accent theme are intentionally separate.
+   This prevents Dark/Light mode from being overwritten by the
+   optional Stitch accent selection.
+*/
+:root{
+  --ui-bg:#0f120f;
+  --ui-surface:#191c18;
+  --ui-surface-2:#20231e;
+  --ui-surface-3:#292d26;
+  --ui-border:rgba(199,170,107,.16);
+  --ui-border-strong:rgba(199,170,107,.30);
+  --ui-text:#f4f2ea;
+  --ui-muted:#a4a095;
+  --ui-accent:#c7aa6b;
+  --ui-accent-strong:#e4cb91;
+  --ui-accent-soft:rgba(199,170,107,.11);
+  --ui-positive:#8eae96;
+}
+html[data-theme-mode="light"]{
+  --ui-bg:#f4f1ea;
+  --ui-surface:#fffdf8;
+  --ui-surface-2:#f1ede3;
+  --ui-surface-3:#e7e1d6;
+  --ui-border:rgba(74,79,69,.15);
+  --ui-border-strong:rgba(74,79,69,.25);
+  --ui-text:#1d211d;
+  --ui-muted:#61685f;
+  --ui-accent:#92702d;
+  --ui-accent-strong:#76581f;
+  --ui-accent-soft:rgba(146,112,45,.10);
+  --ui-positive:#47745a;
+}
+html[data-stitch-theme="apex"]{--ui-accent:#c7aa6b;--ui-accent-strong:#e4cb91;--ui-accent-soft:rgba(199,170,107,.11)}
+html[data-stitch-theme="glacier"]{--ui-accent:#38bdf8;--ui-accent-strong:#7dd3fc;--ui-accent-soft:rgba(56,189,248,.11)}
+html[data-stitch-theme="athenaeum"]{--ui-accent:#d4a94e;--ui-accent-strong:#f2cf7b;--ui-accent-soft:rgba(212,169,78,.11)}
+html[data-stitch-theme="crimson"]{--ui-accent:#ef5b67;--ui-accent-strong:#ff8a93;--ui-accent-soft:rgba(239,91,103,.11)}
+
+html[data-theme-mode="light"][data-stitch-theme="glacier"]{--ui-accent:#0284c7;--ui-accent-strong:#0369a1;--ui-accent-soft:rgba(2,132,199,.10)}
+html[data-theme-mode="light"][data-stitch-theme="athenaeum"]{--ui-accent:#a26c11;--ui-accent-strong:#7c4f0c;--ui-accent-soft:rgba(162,108,17,.10)}
+html[data-theme-mode="light"][data-stitch-theme="crimson"]{--ui-accent:#c73b49;--ui-accent-strong:#a52f3b;--ui-accent-soft:rgba(199,59,73,.10)}
+
+html[data-text-size="large"]{--ui-text-scale:1.08}
+html[data-text-size="xlarge"]{--ui-text-scale:1.16}
+html:not([data-text-size]){--ui-text-scale:1}
+html[data-text-size="large"] #root,
+html[data-text-size="xlarge"] #root{zoom:var(--ui-text-scale)}
+html[data-text-size="large"] .theme-switcher-option-copy small,
+html[data-text-size="xlarge"] .theme-switcher-option-copy small{line-height:1.45}
+
+html[data-focus-mode="on"] body::before{opacity:.25}
+html[data-focus-mode="on"] .dash-root::before{opacity:.20!important}
+html[data-focus-mode="on"] .dash-root .mission-quote,
+html[data-focus-mode="on"] .dash-root .command-rules-rail,
+html[data-focus-mode="on"] .dash-root .jarvis-quick-command-dock{display:none!important}
+html[data-focus-mode="on"] .dash-root .winter-arc-card{display:none!important}
+html[data-focus-mode="on"] .dash-root .main{max-width:920px!important}
+html[data-focus-mode="on"] .dash-root .today-header{border-color:var(--ui-accent)!important}
+
 /* CAT 2026 — Premium Feature Theme */
 :root {
   color-scheme: dark;
@@ -31,7 +90,7 @@
   --ring: rgba(96, 165, 250, 0.5);
 }
 
-html[data-theme="light"] {
+html[data-theme-mode="light"] {
   color-scheme: light;
 
   --bg: #f5f7fb;
@@ -63,9 +122,9 @@ html[data-theme="light"] {
   --ring: rgba(37, 99, 235, 0.24);
 }
 
-html[data-theme="dark"],
-html[data-theme="dark"] body,
-html[data-theme="dark"] #root,
+html[data-theme-mode="dark"],
+html[data-theme-mode="dark"] body,
+html[data-theme-mode="dark"] #root,
 .jarvis-theme {
   background:
     radial-gradient(1200px 420px at 50% -160px, rgba(94, 234, 212, 0.08), transparent 62%),
@@ -74,8 +133,8 @@ html[data-theme="dark"] #root,
   color: var(--text);
 }
 
-html[data-theme="light"] body,
-html[data-theme="light"] #root {
+html[data-theme-mode="light"] body,
+html[data-theme-mode="light"] #root {
   background:
     radial-gradient(1100px 380px at 50% -140px, rgba(14,165,233,0.08), transparent 60%),
     linear-gradient(180deg, #f8fafc 0%, #f4f7fb 40%, #eef3f9 100%);
@@ -145,18 +204,18 @@ button {
   backdrop-filter: blur(10px);
 }
 
-html[data-theme="light"] .app-shell,
-html[data-theme="light"] .content-area,
-html[data-theme="light"] .card,
-html[data-theme="light"] .block-card,
-html[data-theme="light"] .jarvis-panel,
-html[data-theme="light"] .month-panel,
-html[data-theme="light"] .task-card,
-html[data-theme="light"] .stat-card,
-html[data-theme="light"] .priority-item,
-html[data-theme="light"] .panel,
-html[data-theme="light"] .surface,
-html[data-theme="light"] .glass-card {
+html[data-theme-mode="light"] .app-shell,
+html[data-theme-mode="light"] .content-area,
+html[data-theme-mode="light"] .card,
+html[data-theme-mode="light"] .block-card,
+html[data-theme-mode="light"] .jarvis-panel,
+html[data-theme-mode="light"] .month-panel,
+html[data-theme-mode="light"] .task-card,
+html[data-theme-mode="light"] .stat-card,
+html[data-theme-mode="light"] .priority-item,
+html[data-theme-mode="light"] .panel,
+html[data-theme-mode="light"] .surface,
+html[data-theme-mode="light"] .glass-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,250,252,0.96));
   border-color: var(--line);
   box-shadow: 0 10px 26px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
@@ -249,14 +308,14 @@ p, div, span, li {
 }
 
 /* Keep the app premium even when the theme toggles */
-html[data-theme="dark"] .glass-card,
-html[data-theme="dark"] .card,
-html[data-theme="dark"] .panel {
+html[data-theme-mode="dark"] .glass-card,
+html[data-theme-mode="dark"] .card,
+html[data-theme-mode="dark"] .panel {
   background: linear-gradient(180deg, rgba(17, 24, 32, 0.88), rgba(12, 18, 24, 0.96));
 }
 
-html[data-theme="light"] .glass-card,
-html[data-theme="light"] .card,
-html[data-theme="light"] .panel {
+html[data-theme-mode="light"] .glass-card,
+html[data-theme-mode="light"] .card,
+html[data-theme-mode="light"] .panel {
   background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,250,252,0.98));
 }
