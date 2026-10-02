@@ -356,6 +356,48 @@ export function DashboardPage() {
 
         <DailyControlCard />
         <LinkedInDailyCard />
+        <div
+          className="card"
+          style={{
+            marginTop: 14,
+            border: '1px solid rgba(99,246,255,.22)',
+            background: 'linear-gradient(135deg, rgba(8,20,28,.96), rgba(12,16,24,.96))',
+            boxShadow: '0 12px 34px rgba(0,0,0,.18)',
+          }}
+          aria-label="Quick Command Dock"
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div>
+              <div style={{ fontSize: 10, letterSpacing: 1.6, color: '#63F6FF', fontWeight: 900 }}>JARVIS // QUICK COMMAND DOCK</div>
+              <div style={{ fontSize: 15, fontWeight: 900, marginTop: 3 }}>Best tools. One tap. Zero hunting.</div>
+            </div>
+            <div style={{ fontSize: 9, color: 'var(--muted)', border: '1px solid var(--border)', borderRadius: 999, padding: '5px 8px' }}>CAT FIRST</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))', gap: 8 }}>
+            {[
+              ['missionos', 'compass', 'NEXT MISSION', 'Adaptive next action'],
+              ['jarvisconsole', 'zap', 'JARVIS', 'Command center'],
+              ['qbank', 'library', 'QUESTION VAULT', 'Practice now'],
+              ['errors', 'alert', 'ERROR LOG', 'C1–C5 repair'],
+              ['catmock', 'trophy', 'MOCK ENGINE', 'Timed CAT'],
+              ['settings', 'settings', 'APP CONTROL', 'Notifications + data'],
+            ].map(([page, icon, label, hint]) => (
+              <button
+                key={page}
+                onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail: { page } }))}
+                style={{
+                  textAlign: 'left', padding: '11px 10px', borderRadius: 10,
+                  border: '1px solid rgba(148,163,184,.16)', background: 'rgba(255,255,255,.025)',
+                  color: 'var(--text)', cursor: 'pointer', minHeight: 70,
+                }}
+              >
+                <div style={{ color: '#63F6FF', marginBottom: 7 }}><AppIcon name={icon as AppIconName} size={18} /></div>
+                <div style={{ fontSize: 10, fontWeight: 900 }}>{label}</div>
+                <div style={{ fontSize: 9, color: 'var(--muted)', marginTop: 3 }}>{hint}</div>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* SIGNATURE COMMAND RULES */}
         <div className="command-rules-rail" aria-label="Signature execution rules">
