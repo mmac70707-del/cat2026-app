@@ -400,7 +400,7 @@ class MainActivity : FragmentActivity() {
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).orEmpty()
                 val heard = matches.joinToString(" ").lowercase(Locale.US)
                     .replace(Regex("[^a-z0-9 ]"), " ")
-                    .replace(Regex("\s+"), " ")
+                    .replace(Regex("\\s+"), " ")
                     .trim()
 
                 stopNativeVoiceRecognition("")
