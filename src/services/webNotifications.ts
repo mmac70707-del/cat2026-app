@@ -1,7 +1,8 @@
 import { SCHEDULE_ITEMS, APP_TIMEZONE } from '@/data/config'
 import { getKolkataDateParts } from '@/services/calendarEngine'
 
-const SENT_KEY = 'cat2026_notification_sent_v1'
+const SENT_KEY = 'cat2026_notification_sent_v2'
+const CAT_EXAM_DATE_KEY = '2026-11-29'
 let nextTimer: number | null = null
 let schedulerStarted = false
 
@@ -64,13 +65,13 @@ function notifyItem(dateKey: string, item: typeof SCHEDULE_ITEMS[number]): void 
   const key = `${dateKey}|${item.block}`
   if (wasSent(key)) return
 
-  markSent(key)
   try {
     new Notification(`CAT 2026 • ${item.icon} ${item.block}`, {
       body: `${item.time} • ${item.detail}`,
       tag: `cat2026-${key}`,
       requireInteraction: false,
     })
+    markSent(key)
   } catch (err) {
     console.warn('[CAT2026] Web notification failed:', err)
   }
@@ -94,14 +95,19 @@ function scheduleNext(): void {
   const parts = getKolkataDateParts(new Date())
   let next: { ts: number; dateKey: string; item: typeof SCHEDULE_ITEMS[number] } | null = null
 
+  if (parts.year > 2026 || (parts.year === 2026 && (parts.month > 11 || (parts.month === 11 && parts.date > 29)))) return
+
   for (let dayOffset = 0; dayOffset <= 1; dayOffset++) {
     const day = addDays(parts.year, parts.month, parts.date, dayOffset)
     const dateKey = `${day.year}-${String(day.month).padStart(2, '0')}-${String(day.date).padStart(2, '0')}`
 
+    const allowedBlocks = new Set(['Morning Reset', 'Test Analysis + Error Log'])
     for (const item of SCHEDULE_ITEMS) {
+      if (!allowedBlocks.has(item.block)) continue
       const start = parseStartTime(item.time)
       if (!start) continue
 
+      if (dateKey > CAT_EXAM_DATE_KEY) continue
       const ts = indiaDateToTimestamp(day.year, day.month, day.date, start.hour, start.minute)
       if (ts <= now + 1000) continue
 
