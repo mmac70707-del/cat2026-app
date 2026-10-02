@@ -31,6 +31,7 @@ import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebMessageCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
+import com.cat2026.app.notifications.ReminderSchedule
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import java.util.concurrent.Executor
@@ -442,6 +443,7 @@ class MainActivity : FragmentActivity() {
 
     private fun loadAppAfterUnlock() {
         if (!nativeUnlocked) return
+        triggerNotificationSetup()
         webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
         webView.postDelayed({
             webView.evaluateJavascript(
@@ -519,7 +521,20 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun triggerNotificationSetup() {}
+    private fun triggerNotificationSetup() {
+        if (!nativeUnlocked) return
+        ReminderSchedule.createChannel(this)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        ) {
+            ReminderSchedule.scheduleMorning(this)
+            ReminderSchedule.scheduleEvening(this)
+        }
+    }
+
+    private fun disableNotificationSetup() {
+        ReminderSchedule.cancel(this)
+    }
 
     private fun handleBridgeMessage(payload: String, replyProxy: androidx.webkit.JavaScriptReplyProxy) {
         try {
@@ -538,7 +553,10 @@ class MainActivity : FragmentActivity() {
                     response.put("ok", nativeUnlocked)
                 }
                 "setNotificationsEnabled" -> {
-                    if (nativeUnlocked && args.optBoolean("enabled", false)) triggerNotificationSetup()
+                    if (nativeUnlocked) {
+                        if (args.optBoolean("enabled", false)) triggerNotificationSetup()
+                        else disableNotificationSetup()
+                    }
                     response.put("ok", nativeUnlocked)
                 }
                 "authenticateBiometric" -> {
