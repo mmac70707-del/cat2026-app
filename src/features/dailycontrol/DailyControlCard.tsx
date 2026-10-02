@@ -54,7 +54,7 @@ export function DailyControlCard() {
   const { tasks, loading, done, pct } = useTodayTasks()
   const [tick, setTick] = useState(0)
   const [previewOffset, setPreviewOffset] = useState(0)
-  const [errorCounts, setErrorCounts] = useState<Record<string, number>>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
+  const [errorCounts, setErrorCounts] = useState<Record<'C1'|'C2'|'C3'|'C4'|'C5', number>>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
 
   useEffect(() => {
     const refresh = () => setTick(v => v + 1)
