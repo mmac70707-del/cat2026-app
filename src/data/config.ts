@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.0.5'
-export const LAST_UPDATED = '24 SEP 2026 • IST DAILY ROLLOVER FIX'
+export const APP_VERSION = '1.0.6'
+export const LAST_UPDATED = '02 OCT 2026 • NOTIFICATION + WINTER ARC HARDENING'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -18,7 +18,9 @@ export const APP_UPDATE_INFO = {
     '3 Core Targets Card (QA, DILR, VARC) on Today & 1:1 Dashboard',
     'Stitch H612 Apex Protocol Design System & Glow Effects',
     'Mindset & Anti-Laziness Protocol Module',
-    'Asia/Kolkata-safe daily/week rollover and date display'
+    'Asia/Kolkata-safe daily/week rollover and date display',
+    'Hardened web/native notification scheduling and post-CAT cutoff',
+    'Clean Winter Arc command layer with CAT-first execution states'
   ]
 }
 
