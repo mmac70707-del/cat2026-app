@@ -48,6 +48,7 @@ import { JarvisCommandCenter } from '@/features/jarvis/JarvisCommandCenter'
 import { JarvisCommandPalette } from '@/features/jarvis/JarvisCommandPalette'
 import { AppErrorBoundary } from '@/components/AppErrorBoundary'
 import { initPwaInstall } from '@/services/pwaInstall'
+import { applyStitchTheme } from '@/services/uiPreferences'
 import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
@@ -88,10 +89,8 @@ export function App() {
           if (notificationsEnabled) enableWebNotificationScheduler()
         }
 
-        const savedTheme = await SettingsRepository.get('stitchTheme', 'apex')
-        if (savedTheme) {
-          document.documentElement.setAttribute('data-theme', savedTheme as string)
-        }
+        const savedAccent = await SettingsRepository.get('stitchTheme', 'apex')
+        applyStitchTheme(savedAccent as string || 'apex')
       } catch (err) {
         console.error('[CAT2026] Boot error:', err)
       } finally {
