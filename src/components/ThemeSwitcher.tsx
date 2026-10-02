@@ -1,30 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AppIcon } from '@/components/AppIcon'
-
-type ThemeMode = 'dark' | 'light' | 'system'
-
-const STORAGE_KEY = 'cat2026_theme_mode'
+import {
+  type ThemeMode,
+  type TextSize,
+  getThemeMode,
+  getTextSize,
+  isFocusMode,
+  applyThemeMode,
+  applyTextSize,
+  applyFocusMode,
+} from '@/services/uiPreferences'
 
 function getSystemMode(): 'dark' | 'light' {
   return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
-}
-
-function getSavedMode(): ThemeMode {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved === 'dark' || saved === 'light' || saved === 'system') return saved
-  } catch {}
-  return 'dark'
-}
-
-function applyTheme(mode: ThemeMode) {
-  const resolved = mode === 'system' ? getSystemMode() : mode
-  const root = document.documentElement
-  root.dataset.theme = resolved
-  root.style.colorScheme = resolved
-
-  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-  if (meta) meta.content = resolved === 'light' ? '#F4F1EA' : '#121411'
 }
 
 function iconFor(mode: ThemeMode, resolved: 'dark' | 'light') {
@@ -34,11 +22,13 @@ function iconFor(mode: ThemeMode, resolved: 'dark' | 'light') {
 }
 
 export function ThemeSwitcher() {
-  const [mode, setMode] = useState<ThemeMode>(() => getSavedMode())
+  const [mode, setMode] = useState<ThemeMode>(() => getThemeMode())
   const [resolved, setResolved] = useState<'dark' | 'light'>(() => {
-    const saved = getSavedMode()
+    const saved = getThemeMode()
     return saved === 'system' ? getSystemMode() : saved
   })
+  const [textSize, setTextSize] = useState<TextSize>(() => getTextSize())
+  const [focusMode, setFocusMode] = useState(() => isFocusMode())
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -48,21 +38,27 @@ export function ThemeSwitcher() {
   }, [mode])
 
   useEffect(() => {
-    applyTheme(mode)
+    applyThemeMode(mode)
     setResolved(mode === 'system' ? getSystemMode() : mode)
-
-    try { localStorage.setItem(STORAGE_KEY, mode) } catch {}
 
     if (mode !== 'system' || !window.matchMedia) return
     const media = window.matchMedia('(prefers-color-scheme: light)')
     const onChange = () => {
       const next = getSystemMode()
       setResolved(next)
-      applyTheme('system')
+      applyThemeMode('system')
     }
     media.addEventListener?.('change', onChange)
     return () => media.removeEventListener?.('change', onChange)
   }, [mode])
+
+  useEffect(() => {
+    applyTextSize(textSize)
+  }, [textSize])
+
+  useEffect(() => {
+    applyFocusMode(focusMode)
+  }, [focusMode])
 
   useEffect(() => {
     const onPointerDown = (event: MouseEvent) => {
@@ -79,36 +75,33 @@ export function ThemeSwitcher() {
     }
   }, [])
 
-  function choose(next: ThemeMode) {
-    setMode(next)
-    setOpen(false)
-  }
-
   return (
     <div className="theme-switcher" ref={ref}>
       <button
         type="button"
         className="theme-switcher-trigger"
-        aria-label={`Theme: ${currentLabel}`}
+        aria-label={`Appearance: ${currentLabel}${focusMode ? ' • Focus Mode ON' : ''}`}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen(value => !value)}
       >
         <span className="theme-switcher-trigger-icon">{iconFor(mode, resolved)}</span>
         <span className="theme-switcher-trigger-label">{currentLabel}</span>
+        {focusMode && <span className="theme-switcher-focus-dot" aria-label="Focus Mode on" />}
         <span className="theme-switcher-chevron" aria-hidden="true">{open ? '⌃' : '⌄'}</span>
       </button>
 
       {open && (
-        <div className="theme-switcher-popover" role="menu" aria-label="Theme options">
+        <div className="theme-switcher-popover" role="menu" aria-label="Appearance and reading controls">
           <div className="theme-switcher-head">
             <div>
               <div className="theme-switcher-kicker">APPEARANCE</div>
-              <div className="theme-switcher-title">Appearance</div>
+              <div className="theme-switcher-title">Display controls</div>
             </div>
             <div className="theme-switcher-live">{resolved.toUpperCase()} LIVE</div>
           </div>
 
+          <div className="theme-switcher-section-title">MODE</div>
           <div className="theme-switcher-options">
             {([
               ['dark', 'Dark', 'Graphite', 'moon'],
@@ -121,7 +114,7 @@ export function ThemeSwitcher() {
                 role="menuitemradio"
                 aria-checked={mode === value}
                 className={`theme-switcher-option ${mode === value ? 'is-active' : ''}`}
-                onClick={() => choose(value)}
+                onClick={() => setMode(value)}
               >
                 <span className="theme-switcher-option-icon" aria-hidden="true"><AppIcon name={icon} size={17} strokeWidth={1.8} /></span>
                 <span className="theme-switcher-option-copy">
@@ -132,6 +125,41 @@ export function ThemeSwitcher() {
               </button>
             ))}
           </div>
+
+          <div className="theme-switcher-section-title">TEXT SIZE</div>
+          <div className="theme-switcher-size-row" role="group" aria-label="Text size">
+            {([
+              ['normal', 'A', 'Normal'],
+              ['large', 'A+', 'Large'],
+              ['xlarge', 'A++', 'XL'],
+            ] as const).map(([value, glyph, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={`theme-switcher-size ${textSize === value ? 'is-active' : ''}`}
+                aria-pressed={textSize === value}
+                onClick={() => setTextSize(value)}
+              >
+                <strong>{glyph}</strong>
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className={`theme-switcher-focus ${focusMode ? 'is-active' : ''}`}
+            role="menuitemcheckbox"
+            aria-checked={focusMode}
+            onClick={() => setFocusMode(value => !value)}
+          >
+            <span className="theme-switcher-focus-icon"><AppIcon name="target" size={16} /></span>
+            <span className="theme-switcher-option-copy">
+              <strong>{focusMode ? 'Focus Mode ON' : 'Focus Mode'}</strong>
+              <small>Reduce visual noise and keep CAT execution front-and-centre.</small>
+            </span>
+            <span className="theme-switcher-option-check" aria-hidden="true">{focusMode ? '✓' : ''}</span>
+          </button>
 
           <div className="theme-switcher-foot">
             <AppIcon name="check" size={12} />
