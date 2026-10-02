@@ -6,6 +6,7 @@ import { registerSW } from 'virtual:pwa-register'
 import './styles/globals.css'
 import './styles/theme.css'
 import { ThemeSwitcher } from './components/ThemeSwitcher'
+import { syncUiPreferences } from './services/uiPreferences'
 
 // Real production service worker — replaces the previous Blob-based
 // one. Only meaningful for the web/laptop install path; on the
@@ -19,17 +20,11 @@ registerSW({ immediate: true })
 document.body.classList.add('jarvis-theme')
 
 try {
-  const saved = localStorage.getItem('cat2026_theme_mode')
-  const mode = saved === 'light' || saved === 'system' || saved === 'dark' ? saved : 'dark'
-  const resolved = mode === 'system'
-    ? (window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-    : mode
-  document.documentElement.dataset.theme = resolved
-  document.documentElement.style.colorScheme = resolved
-  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-  if (meta) meta.content = resolved === 'light' ? '#F4F1EA' : '#121411'
+  syncUiPreferences()
 } catch {
-  document.documentElement.dataset.theme = 'dark'
+  document.documentElement.dataset.themeMode = 'dark'
+  document.documentElement.dataset.textSize = 'normal'
+  document.documentElement.dataset.focusMode = 'off'
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
