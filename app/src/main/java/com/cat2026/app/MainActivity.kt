@@ -443,7 +443,8 @@ class MainActivity : FragmentActivity() {
 
     private fun loadAppAfterUnlock() {
         if (!nativeUnlocked) return
-        triggerNotificationSetup()
+        // Notification workers are intentionally controlled by Settings.
+        // Do not silently re-enable them just because JARVIS was unlocked.
         webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
         webView.postDelayed({
             webView.evaluateJavascript(
