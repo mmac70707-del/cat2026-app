@@ -67,15 +67,22 @@ export function DailyControlCard() {
 
   const today = useMemo(() => todayIndia(), [tick])
   const phaseId = getPhaseForDateKey(today.key)
-  const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase
+  const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase ?? {
+    id: phaseId,
+    name: phaseId,
+    purpose: 'Daily execution focus',
+    startDate: today.key,
+    endDate: today.key,
+  }
   const dayNum = getFirstPassDayNum(today.key)
-  const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum)
+  const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum) ?? ROADMAP_44[0]
   const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
   const dailyTarget = getPercentylDailyTarget(today.key)
   const completed = tasks.filter(t => t.status === 'DONE').length
-  const current = tasks.find(t => t.status !== 'DONE')
+  const current = tasks.find(t => t.status !== 'DONE') ?? null
   const currentTaskLine = current ? `${current.blockId} — ${current.title}` : 'All 8 CAT blocks complete'
   const remaining = Math.max(0, tasks.length - completed - (current ? 1 : 0))
+  const progressWidth = Number.isFinite(pct) ? pct : 0
 
   if (loading) return null
 
@@ -87,7 +94,6 @@ export function DailyControlCard() {
         <div style={{ marginTop:5, fontSize:11, color:'#94A3B8' }}>LOCKED SYSTEM • DO THE NEXT RIGHT THING • INDIA DATE AUTO-SYNC</div>
       </div>
 
-      {/* SAFE ADDITIVE EXECUTION STRIP — preserves every existing daily section */}
       <div style={{ margin:'0 18px 12px', padding:12, borderRadius:12, background:'linear-gradient(135deg,rgba(37,99,235,.10),rgba(245,166,35,.07))', border:'1px solid rgba(96,165,250,.22)' }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:10, flexWrap:'wrap' }}>
           <div>
@@ -102,15 +108,16 @@ export function DailyControlCard() {
         </div>
         <div style={{ marginTop:10, display:'grid', gridTemplateColumns:'1fr auto', alignItems:'center', gap:10 }}>
           <div style={{ height:7, background:'rgba(255,255,255,.08)', borderRadius:99, overflow:'hidden' }}>
-            <div style={{ width:(pct + '%'), height:'100%', background:'linear-gradient(90deg,#2563EB,#60A5FA,#F5A623)', borderRadius:99, transition:'width .3s ease' }} />
+            <div style={{ width:`${progressWidth}%`, height:'100%', background:'linear-gradient(90deg,#2563EB,#60A5FA,#F5A623)', borderRadius:99, transition:'width .3s ease' }} />
           </div>
-          <div style={{ color:'#FFF', fontSize:11, fontWeight:900, fontFamily:'monospace' }}>{done}/8 • {pct}%</div>
+          <div style={{ color:'#FFF', fontSize:11, fontWeight:900, fontFamily:'monospace' }}>{done}/8 • {progressWidth}%</div>
         </div>
         <div style={{ marginTop:6, display:'flex', justifyContent:'space-between', gap:8, fontSize:9, color:'#94A3B8' }}>
           <span>All existing daily blocks stay intact.</span>
           <span style={{ color:'#86EFAC', fontWeight:800 }}>TODAY → EXECUTE</span>
         </div>
       </div>
+
       <div style={{ padding:'14px 18px', display:'grid', gap:12 }}>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))', gap:10 }}>
           <div style={{ padding:12, borderRadius:10, background:'rgba(34,197,94,.08)', border:'1px solid rgba(34,197,94,.2)' }}>
@@ -142,7 +149,7 @@ export function DailyControlCard() {
           <div style={{ display:'flex', flexWrap:'wrap', gap:7, marginTop:8 }}>
             {['QA','DILR','VARC','TEST','ANALYSIS','REVISION','REPAIR','RETEST'].map(x => {
               const isDone = tasks.find(t => t.blockId === x)?.status === 'DONE'
-              return <span key={x} style={{ padding:'6px 9px', borderRadius:8, fontSize:10, fontWeight:900, background:isDone?'rgba(34,197,94,.14)':'rgba(148,163,184,.08)', border:isDone?'1px solid rgba(34,197,94,.35)':'1px solid rgba(255,255,255,.08)', color:isDone?'#86EFAC':'#CBD5E1' }}>{x}</span>
+              return <span key={x} style={{ padding:'6px 9px', borderRadius:8, fontSize:10, fontWeight:900, background:isDone ? 'rgba(34,197,94,.14)' : 'rgba(148,163,184,.08)', border:isDone ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(255,255,255,.08)', color:isDone ? '#86EFAC' : '#CBD5E1' }}>{x}</span>
             })}
           </div>
         </div>
@@ -186,7 +193,7 @@ export function DailyControlCard() {
         </div>
 
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', paddingTop:3 }}>
-          <span style={{fontSize:10,color:'#94A3B8'}}>Today: {done}/8 CAT blocks • {pct}% complete</span>
+          <span style={{fontSize:10,color:'#94A3B8'}}>Today: {done}/8 CAT blocks • {progressWidth}% complete</span>
           <span style={{fontSize:10,color:'#86EFAC',fontWeight:900}}>CHECK → RESET → NEXT ACTION</span>
         </div>
       </div>
