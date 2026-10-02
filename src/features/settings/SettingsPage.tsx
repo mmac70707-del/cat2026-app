@@ -13,6 +13,7 @@ import { todayKey } from '@/services/domain'
 import { downloadScheduleICS } from '@/services/calendarExport'
 import { isNative, requestNotificationPermission, setNotificationsEnabled } from '@/services/native'
 import { enableWebNotificationScheduler, disableWebNotificationScheduler, isWebNotificationSupported, requestWebNotificationPermission, getWebNotificationPermission, sendWebNotificationTest } from '@/services/webNotifications'
+import { type TextSize, type ThemeMode, getTextSize, getThemeMode, isFocusMode, applyTextSize, applyThemeMode, applyFocusMode, applyStitchTheme } from '@/services/uiPreferences'
 
 interface Props { onBack: () => void }
 
@@ -29,6 +30,9 @@ export function SettingsPage({ onBack }: Props) {
   const [sound,         setSound]         = useState(true)
   const [notifications, setNotifications] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState('apex')
+  const [textSize, setTextSize] = useState<TextSize>(() => getTextSize())
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => getThemeMode())
+  const [focusMode, setFocusMode] = useState(() => isFocusMode())
   const backupInputRef = useRef<HTMLInputElement>(null)
   const { show: toast } = useToast()
 
@@ -61,7 +65,8 @@ export function SettingsPage({ onBack }: Props) {
   async function handleSelectTheme(themeId: string) {
     setSelectedTheme(themeId)
     await SettingsRepository.set('stitchTheme', themeId)
-    toast(`Stitch Theme updated to ${themeId.toUpperCase()} ✓`)
+    applyStitchTheme(themeId)
+    toast(`Accent color updated to ${themeId.toUpperCase()} ✓`)
   }
 
   async function toggleNotifications() {
@@ -237,6 +242,55 @@ export function SettingsPage({ onBack }: Props) {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="card appearance-settings-card">
+        <div className="card-title">◐ Appearance &amp; Readability</div>
+        <div className="appearance-setting">
+          <div>
+            <div className="appearance-label">Theme mode</div>
+            <div className="appearance-sub">Dark, Light, or follow your device.</div>
+          </div>
+          <div className="appearance-segment" role="group" aria-label="Theme mode">
+            {([
+              ['dark', 'Dark'],
+              ['light', 'Light'],
+              ['system', 'System'],
+            ] as const).map(([value, label]) => (
+              <button key={value} type="button" className={`appearance-segment-btn ${themeMode === value ? 'is-active' : ''}`} aria-pressed={themeMode === value}
+                onClick={() => { setThemeMode(value); applyThemeMode(value) }}>{label}</button>
+            ))}
+          </div>
+        </div>
+        <div className="appearance-setting">
+          <div>
+            <div className="appearance-label">Text size</div>
+            <div className="appearance-sub">Larger text improves readability without changing your CAT data.</div>
+          </div>
+          <div className="appearance-size-row" role="group" aria-label="Text size">
+            {([
+              ['normal', 'A', 'Normal'],
+              ['large', 'A+', 'Large'],
+              ['xlarge', 'A++', 'XL'],
+            ] as const).map(([value, glyph, label]) => (
+              <button key={value} type="button" className={`appearance-size-btn ${textSize === value ? 'is-active' : ''}`} aria-pressed={textSize === value}
+                onClick={() => { setTextSize(value); applyTextSize(value) }}>
+                <strong>{glyph}</strong><span>{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="appearance-setting appearance-setting--focus">
+          <div>
+            <div className="appearance-label">Focus Mode</div>
+            <div className="appearance-sub">Reduce visual noise and put CAT execution first.</div>
+          </div>
+          <button type="button" className={`appearance-toggle ${focusMode ? 'is-active' : ''}`} aria-pressed={focusMode}
+            onClick={() => { const next = !focusMode; setFocusMode(next); applyFocusMode(next) }}>
+            {focusMode ? 'ON' : 'OFF'}
+          </button>
+        </div>
+        <div className="appearance-note">Your display choices are saved on this device.</div>
       </div>
 
       <div className="card">
