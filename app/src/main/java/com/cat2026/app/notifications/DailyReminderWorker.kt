@@ -10,6 +10,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.cat2026.app.MainActivity
 import java.time.LocalDate
 import java.time.ZoneId
@@ -53,6 +56,25 @@ object ReminderSchedule {
         manager.createNotificationChannel(channel)
     }
 
+    fun scheduleMorning(context: Context) {
+        val request = OneTimeWorkRequestBuilder<MorningMissionWorker>()
+            .setInitialDelay(initialDelayMillisFor(5, 0), TimeUnit.MILLISECONDS)
+            .build()
+        WorkManager.getInstance(context).enqueueUniqueWork(MORNING_WORK_NAME, ExistingWorkPolicy.REPLACE, request)
+    }
+
+    fun scheduleEvening(context: Context) {
+        val request = OneTimeWorkRequestBuilder<EveningErrorLogWorker>()
+            .setInitialDelay(initialDelayMillisFor(21, 0), TimeUnit.MILLISECONDS)
+            .build()
+        WorkManager.getInstance(context).enqueueUniqueWork(EVENING_WORK_NAME, ExistingWorkPolicy.REPLACE, request)
+    }
+
+    fun cancel(context: Context) {
+        WorkManager.getInstance(context).cancelUniqueWork(MORNING_WORK_NAME)
+        WorkManager.getInstance(context).cancelUniqueWork(EVENING_WORK_NAME)
+    }
+
     fun daysLeft(): Long {
         val today = LocalDate.now(ZoneId.systemDefault())
         return (CAT_EXAM_DATE.toEpochDay() - today.toEpochDay()).coerceAtLeast(0)
@@ -67,6 +89,7 @@ class MorningMissionWorker(ctx: Context, params: WorkerParameters) : CoroutineWo
             title = "CAT 2026 — ${ReminderSchedule.daysLeft()} days left",
             text = "Today's mission is ready. Open the app to see your #1 priority.",
         )
+        ReminderSchedule.scheduleMorning(applicationContext)
         return Result.success()
     }
 }
@@ -79,6 +102,7 @@ class EveningErrorLogWorker(ctx: Context, params: WorkerParameters) : CoroutineW
             title = "Error Log + Analysis time",
             text = "Classify today's mistakes before you close the day. Repair > Reattempt.",
         )
+        ReminderSchedule.scheduleEvening(applicationContext)
         return Result.success()
     }
 }
@@ -114,3 +138,4 @@ fun initialDelayMillisFor(hour: Int, minute: Int): Long {
     if (target.isBefore(now)) target = target.plusDays(1)
     return java.time.Duration.between(now, target).toMillis()
 }
+
