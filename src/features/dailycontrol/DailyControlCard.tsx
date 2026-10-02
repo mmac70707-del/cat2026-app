@@ -71,7 +71,7 @@ export function DailyControlCard() {
   const today = useMemo(() => todayIndia(), [tick])
 
   useEffect(() => {
-    const loadErrors = () => ErrorRepository.getTypeCounts().then(setErrorCounts).catch(() => undefined)
+    const loadErrors = () => ErrorRepository.getTypeCounts().then(counts => setErrorCounts({ C1: counts.C1, C2: counts.C2, C3: counts.C3, C4: counts.C4, C5: counts.C5 })).catch(() => undefined)
     loadErrors()
     const id = window.setInterval(loadErrors, 30000)
     window.addEventListener('focus', loadErrors)
