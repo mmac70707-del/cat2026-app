@@ -83,7 +83,7 @@ html, body, #root {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(rgba(2, 4, 8, 0.60), rgba(2, 4, 8, 0.82)), url('/images/app_background_billboard.png');
+  background-image: linear-gradient(rgba(2, 4, 8, 0.60), rgba(2, 4, 8, 0.82)), url('/images/ashish_billboard.webp');
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
