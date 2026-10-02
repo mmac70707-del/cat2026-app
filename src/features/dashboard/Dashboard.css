@@ -1715,3 +1715,19 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   .jarvis-theme .dash-root .daily-motivation-card,
   .jarvis-theme .dash-root .live-schedule-panel{margin-inline:12px!important}
 }
+
+/* Winter Arc — clean, readable command layer */
+.winter-arc-card{margin-top:14px;border:1px solid var(--ui-border-strong,#334155);border-radius:16px;overflow:hidden;background:var(--ui-surface-1,#0f172a);box-shadow:none}
+.winter-arc-head{padding:16px 18px;border-bottom:1px solid var(--ui-border,#263244);background:var(--ui-surface-2,#111827)}
+.winter-arc-kicker{font-size:10px;letter-spacing:1.5px;font-weight:900;color:var(--ui-accent-strong,#93c5fd)}
+.winter-arc-title{font-size:20px;line-height:1.2;font-weight:900;color:var(--ui-text,#f8fafc);margin-top:5px}
+.winter-arc-sub{font-size:11px;line-height:1.5;color:var(--ui-muted,#94a3b8);margin-top:5px}
+.winter-arc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:14px 18px 8px}
+.winter-arc-pillar{padding:11px;border:1px solid var(--ui-border,#263244);border-radius:12px;background:var(--ui-surface-2,#111827)}
+.winter-arc-icon{font-size:18px}.winter-arc-pillar-title{font-size:10px;font-weight:900;letter-spacing:.6px;color:var(--ui-text,#f8fafc);margin-top:5px}.winter-arc-pillar-sub{font-size:10px;line-height:1.45;color:var(--ui-muted,#94a3b8);margin-top:3px}
+.winter-arc-now{margin:8px 18px;padding:12px;border:1px solid var(--ui-border,#263244);border-radius:12px;background:var(--ui-surface-2,#111827)}
+.winter-arc-now-label{font-size:10px;font-weight:900;letter-spacing:.8px;color:var(--ui-accent-strong,#93c5fd)}.winter-arc-now-title{font-size:13px;font-weight:800;color:var(--ui-text,#f8fafc);margin-top:5px}.winter-arc-now-sub{font-size:10px;line-height:1.55;color:var(--ui-muted,#94a3b8);margin-top:4px}
+.winter-arc-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px 18px}.winter-arc-state{padding:10px;border:1px solid var(--ui-border,#263244);border-radius:11px;background:var(--ui-surface-2,#111827);display:flex;flex-direction:column;gap:4px}.winter-arc-state b{font-size:10px}.winter-arc-state span{font-size:10px;line-height:1.45;color:var(--ui-muted,#94a3b8)}.winter-arc-state.green b{color:#86efac}.winter-arc-state.yellow b{color:#fcd34d}.winter-arc-state.red b{color:#fca5a5}
+.winter-arc-rule{margin:8px 18px 0;padding:11px 12px;border:1px solid var(--ui-border,#263244);border-radius:11px;font-size:10px;line-height:1.55;color:var(--ui-muted,#94a3b8);background:var(--ui-surface-2,#111827)}.winter-arc-rule strong{color:var(--ui-accent-strong,#93c5fd)}
+.winter-arc-mantra{padding:14px 18px;text-align:center;font-size:10px;font-weight:800;letter-spacing:.4px;color:var(--ui-muted,#94a3b8)}
+@media(max-width:760px){.winter-arc-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding-inline:12px}.winter-arc-now,.winter-arc-three,.winter-arc-rule{margin-left:12px;margin-right:12px}.winter-arc-three{grid-template-columns:1fr}.winter-arc-head{padding:14px 12px}}
