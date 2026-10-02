@@ -100,6 +100,12 @@ export function DailyControlCard() {
     }
   }, [today, previewOffset])
 
+  const phaseId = getPhaseForDateKey(today.key)
+  const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase
+  const dayNum = getFirstPassDayNum(today.key)
+  const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum)
+  const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
+  const dailyTarget = getPercentylDailyTarget(today.key)
   const phaseForPreview = CONFIG_PHASES.find(p => p.id === preview.phaseId) ?? phase
   const phaseProgress = (() => {
     const start = new Date(phaseForPreview.start + 'T00:00:00Z').getTime()
@@ -111,12 +117,6 @@ export function DailyControlCard() {
   })()
   const firstPassProgress = Math.max(0, Math.min(100, Math.round((dayNum / 44) * 100)))
   const totalLoggedErrors = Object.values(errorCounts).reduce((sum, n) => sum + n, 0)
-  const phaseId = getPhaseForDateKey(today.key)
-  const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase
-  const dayNum = getFirstPassDayNum(today.key)
-  const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum)
-  const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
-  const dailyTarget = getPercentylDailyTarget(today.key)
   const completed = tasks.filter(t => t.status === 'DONE').length
   const current = tasks.find(t => t.status !== 'DONE')
   const currentTaskLine = current ? `${current.blockId} — ${current.title}` : 'All 8 CAT blocks complete'
