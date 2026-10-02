@@ -80,7 +80,7 @@ export function DailyControlCard() {
   if (loading) return null
 
   return (
-    <section style={{ margin:'0 0 18px', border:'1px solid rgba(245,166,35,.55)', borderRadius:16, overflow:'hidden', background:'linear-gradient(180deg,#111827,#0B1220)', boxShadow:'0 12px 30px rgba(0,0,0,.28)' }}>
+    <section style={{ margin:'0 0 18px', border:'1px solid rgba(245,166,35,.55)', borderRadius:16, overflow:'hidden', background:'linear-gradient(180deg,#111827,#0B1220)', boxShadow:'0 12px 30px rgba(15,23,42,.55)' }}>
       <div style={{ padding:'16px 18px', background:'linear-gradient(90deg,rgba(245,166,35,.14),rgba(37,99,235,.08))', borderBottom:'1px solid rgba(255,255,255,.08)' }}>
         <div style={{ fontSize:11, letterSpacing:1.4, fontWeight:900, color:'#F5A623' }}>BEST VERSION — DAILY CONTROL CARD</div>
         <div style={{ marginTop:5, fontSize:20, fontWeight:950, color:'#FFF' }}>{today.date} {today.month} {today.year} — {today.day}</div>
@@ -97,7 +97,7 @@ export function DailyControlCard() {
           <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'flex-end' }}>
             <span style={{ padding:'5px 8px', borderRadius:8, background:'rgba(34,197,94,.12)', border:'1px solid rgba(34,197,94,.24)', color:'#86EFAC', fontSize:9, fontWeight:900 }}>AUTO INDIA DATE</span>
             <span style={{ padding:'5px 8px', borderRadius:8, background:'rgba(245,166,35,.12)', border:'1px solid rgba(245,166,35,.24)', color:'#FCD34D', fontSize:9, fontWeight:900 }}>{phaseId}</span>
-            <span style={{ padding:'5px 8px', borderRadius:8, background:'rgba(124,58,237,.12)', border:'1px solid rgba(124,58,237,.24)', color:'#C4B5FD', fontSize:9, fontWeight:900 }}>DAY {dayNum || '—'}/44</span>
+            <span style={{ padding:'5px 8px', borderRadius:8, background:'rgba(124,58,237,.12)', border:'1px solid rgba(124,58,237,.24)', color:'#C4B5FD', fontSize:9, fontWeight:900 }}>DAY {dayNum}/44</span>
           </div>
         </div>
         <div style={{ marginTop:10, display:'grid', gridTemplateColumns:'1fr auto', alignItems:'center', gap:10 }}>
@@ -128,7 +128,7 @@ export function DailyControlCard() {
 
         <div style={{ padding:12, borderRadius:10, background:'#0F172A', border:'1px solid rgba(255,255,255,.07)' }}>
           <div style={{ fontSize:10, color:'#F5A623', fontWeight:900, letterSpacing:.8 }}>MORNING GATE — START CLEAN</div>
-          <div style={{ marginTop:5, color:'#E5E7EB', fontSize:12, lineHeight:1.65 }}>Wake/reset → water → gentle humming → gentle jaw mobility → gentle voice warm-up → comfortable neck mobility → phone away.</div>
+          <div style={{ marginTop:5, color:'#E5E7EB', fontSize:12, lineHeight:1.65 }}>Wake/reset → water → gentle humming → gentle jaw mobility → gentle voice warm-up → comfortable neck tension release.</div>
           <div style={{ marginTop:5, color:'#86EFAC', fontSize:11, fontWeight:800 }}>Today is a new execution day.</div>
         </div>
 
@@ -142,15 +142,15 @@ export function DailyControlCard() {
           <div style={{ display:'flex', flexWrap:'wrap', gap:7, marginTop:8 }}>
             {['QA','DILR','VARC','TEST','ANALYSIS','REVISION','REPAIR','RETEST'].map(x => {
               const isDone = tasks.find(t => t.blockId === x)?.status === 'DONE'
-              return <span key={x} style={{ padding:'6px 9px', borderRadius:8, fontSize:10, fontWeight:900, background:isDone?'rgba(34,197,94,.14)':'rgba(148,163,184,.08)', border:isDone?'1px solid rgba(34,197,94,.35)':'1px solid rgba(148,163,184,.15)', color:isDone?'#86EFAC':'#CBD5E1' }}>{isDone?'✓ ':''}{x}</span>
+              return <span key={x} style={{ padding:'6px 9px', borderRadius:8, fontSize:10, fontWeight:900, background:isDone?'rgba(34,197,94,.14)':'rgba(148,163,184,.08)', border:isDone?'1px solid rgba(34,197,94,.35)':'1px solid rgba(255,255,255,.08)', color:isDone?'#86EFAC':'#CBD5E1' }}>{x}</span>
             })}
           </div>
         </div>
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
-          <div style={{ textAlign:'center', padding:9, borderRadius:9, background:'rgba(34,197,94,.08)' }}><div style={{fontSize:9,color:'#86EFAC',fontWeight:900}}>🟢 COMPLETED</div><div style={{fontSize:18,color:'#FFF',fontWeight:950}}>{completed}</div></div>
-          <div style={{ textAlign:'center', padding:9, borderRadius:9, background:'rgba(245,166,35,.08)' }}><div style={{fontSize:9,color:'#FCD34D',fontWeight:900}}>🟨 CURRENT</div><div style={{fontSize:11,color:'#FFF',fontWeight:800,marginTop:4}}>{current?.blockId ?? '—'}</div></div>
-          <div style={{ textAlign:'center', padding:9, borderRadius:9, background:'rgba(148,163,184,.06)' }}><div style={{fontSize:9,color:'#CBD5E1',fontWeight:900}}>⬜ REMAINING</div><div style={{fontSize:18,color:'#FFF',fontWeight:950}}>{remaining}</div></div>
+          <div style={{ textAlign:'center', padding:9, borderRadius:9, background:'rgba(34,197,94,.08)' }}><div style={{fontSize:9,color:'#86EFAC',fontWeight:900}}>🟢 COMPLETED</div><div style={{marginTop:6,color:'#FFF',fontWeight:900,fontSize:18}}>{completed}</div></div>
+          <div style={{ textAlign:'center', padding:9, borderRadius:9, background:'rgba(245,166,35,.08)' }}><div style={{fontSize:9,color:'#FCD34D',fontWeight:900}}>🟨 CURRENT</div><div style={{marginTop:6,color:'#FFF',fontWeight:900,fontSize:18}}>{current ? 1 : 0}</div></div>
+          <div style={{ textAlign:'center', padding:9, borderRadius:9, background:'rgba(148,163,184,.06)' }}><div style={{fontSize:9,color:'#CBD5E1',fontWeight:900}}>⬜ REMAINING</div><div style={{marginTop:6,color:'#FFF',fontWeight:900,fontSize:18}}>{remaining}</div></div>
         </div>
 
         <div>
@@ -167,12 +167,12 @@ export function DailyControlCard() {
 
         <div style={{ padding:12, borderRadius:10, border:'1px solid rgba(168,85,247,.2)', background:'rgba(168,85,247,.06)' }}>
           <div style={{ fontSize:10, color:'#C4B5FD', fontWeight:900 }}>INNER STATE + CHARACTER</div>
-          <div style={{ marginTop:5, color:'#E5E7EB', fontSize:11, lineHeight:1.6 }}>Gratitude → grounded positive action → faith + effort. Honesty → courage → respect → family → helpfulness → keeping promises.</div>
+          <div style={{ marginTop:5, color:'#E5E7EB', fontSize:11, lineHeight:1.6 }}>Gratitude → grounded positive action → faith + effort. Honesty → courage → respect → family → help others.</div>
         </div>
 
         <div style={{ padding:12, borderRadius:10, border:'1px solid rgba(239,68,68,.18)', background:'rgba(239,68,68,.05)' }}>
           <div style={{ fontSize:10, color:'#FCA5A5', fontWeight:900 }}>DIGITAL SLIP RECOVERY GATE</div>
-          <div style={{ marginTop:5, color:'#E5E7EB', fontSize:11, lineHeight:1.6 }}>Mistake ≠ verdict. Notice → stop → 3 calm breaths → “The lost time is gone; the next moment is mine” → one tiny useful action → begin. No guilt loop, punishment, panic, or catch-up marathon.</div>
+          <div style={{ marginTop:5, color:'#E5E7EB', fontSize:11, lineHeight:1.6 }}>Mistake ≠ verdict. Notice → stop → 3 calm breaths → “The lost time is gone; the next moment is mine.”</div>
         </div>
 
         <div style={{ padding:12, borderRadius:10, border:'1px solid rgba(245,166,35,.18)', background:'rgba(245,166,35,.05)' }}>
@@ -182,7 +182,7 @@ export function DailyControlCard() {
         </div>
 
         <div style={{ padding:'10px 12px', borderRadius:9, background:'rgba(255,255,255,.035)', color:'#CBD5E1', fontSize:11, lineHeight:1.6 }}>
-          <strong style={{color:'#FFF'}}>Rule:</strong> Basic → Advanced → Practice → Review → Connection → Next. If weak: repair → retest. Revision = 30-sec recap → 2-min revision → connection → preview.
+          <strong style={{color:'#FFF'}}>Rule:</strong> Basic → Advanced → Practice → Review → Connection → Next. If weak: repair → retest. Revision = 30-sec recap → 2-min revision → 1-min connection.
         </div>
 
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', paddingTop:3 }}>
