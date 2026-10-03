@@ -241,31 +241,25 @@ class MainActivity : FragmentActivity() {
 
     private fun showJarvisSecurityGate() {
         val hasPin = hasJarvisPin()
-
         val titleText = if (hasPin) "WELCOME BACK, ASHISH" else "INITIAL JARVIS SETUP"
-        val subtitleText = if (hasPin) {
-            "Enter your 6-digit JARVIS PIN, use real Face / Fingerprint, or use Voice → Biometric."
+        val messageText = if (hasPin) {
+            "JARVIS is locked. Verify with Face / Fingerprint or your 6-digit PIN."
         } else {
-            "Create your private 6-digit JARVIS PIN for this device. Voice is only a trigger; identity is still verified by the device."
+            "Create your private 6-digit JARVIS PIN. Face / Fingerprint will be available after device biometrics are set up."
         }
         val buttonText = if (hasPin) "UNLOCK JARVIS" else "CREATE SECURE PIN"
-        val messageText = if (hasPin) {
-            "JARVIS is locked. Verify your identity to continue."
-        } else {
-            "Create a 6-digit PIN, confirm it once, then JARVIS will unlock."
-        }
         val confirmHtml = if (!hasPin) {
-            """<input id="confirm" class="confirm" inputmode="numeric" maxlength="6" type="password" autocomplete="off" placeholder="CONFIRM PIN">"""
+            """<input id="confirm" class="pin confirm" inputmode="numeric" maxlength="6" type="password" autocomplete="off" placeholder="CONFIRM PIN">"""
         } else {
             ""
         }
         val confirmCheck = if (!hasPin) {
-            """const confirmPin=document.getElementById('confirm').value;if(pin!==confirmPin){setMsg('PINs do not match. Re-enter both.');return}"""
+            """const confirmPin=document.getElementById('confirm').value;if(pin!==confirmPin){setMsg('PINs do not match. Re-enter both.');return;}"""
         } else {
             ""
         }
         val submitLogic = if (!hasPin) {
-            """request("setPin",{pin}).then(r=>{if(r.ok){setMsg("PIN saved securely. Opening JARVIS...")}else{setMsg("PIN could not be saved. Try again.")}})"""
+            """request("setPin",{pin}).then(r=>{setMsg(r.ok?"PIN saved securely. Opening JARVIS...":"PIN could not be saved. Try again.")})"""
         } else {
             """request("verifyPin",{pin}).then(r=>{if(r.ok){setMsg("Identity verified. Opening JARVIS...")}else{document.getElementById("pin").value="";setMsg(r.locked?"Security cooldown active. Try again shortly.":"Incorrect PIN. Try again.")}})"""
         }
@@ -277,44 +271,69 @@ class MainActivity : FragmentActivity() {
           <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
           <style>
             *{box-sizing:border-box}
-            body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 15%,#0D3135 0,#071519 44%,#020607 100%);color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center}
-            .gate{width:min(430px,92vw);padding:30px 22px 24px;border:1px solid rgba(99,246,255,.30);border-radius:24px;background:rgba(8,15,27,.94);box-shadow:0 0 50px rgba(99,246,255,.10),inset 0 0 28px rgba(255,255,255,.02);text-align:center}
-            .orb{width:92px;height:92px;margin:0 auto 16px;border-radius:50%;border:2px solid #63F6FF;box-shadow:0 0 30px rgba(99,246,255,.28),inset 0 0 24px rgba(99,246,255,.09);display:grid;place-items:center}
-            .ring{width:62px;height:62px;border-radius:50%;border:1px solid rgba(147,197,253,.55);display:grid;place-items:center;color:#93C5FD;font-size:18px}
-            h1{font-size:22px;letter-spacing:1px;margin:10px 0 6px;color:#63F6FF}
-            .sub{font-size:12px;color:#A5B4C7;line-height:1.5;margin:0 auto 18px;max-width:345px}
-            .status{font-size:10px;letter-spacing:1.6px;color:#6EE7B7;margin-bottom:12px}
-            input{width:100%;padding:15px;border-radius:12px;border:1px solid #34445A;background:#0F1A2B;color:#fff;text-align:center;font-size:23px;letter-spacing:9px;outline:none}
-            .confirm{margin-top:10px}
-            button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:12px;font-weight:900;cursor:pointer}
-            .primary{background:linear-gradient(100deg,#63F6FF,#75F6B0);color:#031113;box-shadow:0 10px 28px rgba(99,246,255,.12)}
-            .bio{background:#071A1E;color:#E7FEFF;border:1px solid rgba(99,246,255,.24)}
-            .voice{background:#0B1518;color:#B6F9DD;border:1px solid rgba(117,246,176,.24);font-size:12px}
-            .msg{min-height:34px;margin-top:10px;font-size:12px;color:#CBD5E1;line-height:1.45}
-            .footer{margin-top:14px;font-size:10px;color:#64748B}
+            :root{--cyan:#63F6FF;--green:#75F6B0;--text:#F6FBFC;--muted:#93A7AA;--line:rgba(99,246,255,.18)}
+            body{margin:0;min-height:100vh;background:linear-gradient(160deg,#091719 0%,#04090A 48%,#020405 100%);color:var(--text);font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:12px}
+            .gate{width:min(430px,100%);padding:14px;border:1px solid rgba(99,246,255,.28);border-radius:22px;background:linear-gradient(155deg,rgba(10,20,23,.97),rgba(3,8,9,.98));box-shadow:0 22px 60px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.04)}
+            .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font:800 8px/1 ui-monospace,monospace;letter-spacing:.14em;color:#8DA4A7}
+            .brand{display:flex;gap:7px;align-items:center;color:#EEF9FA}.orb{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px rgba(99,246,255,.7)}
+            .hero{display:grid;grid-template-columns:112px minmax(0,1fr);gap:13px;align-items:stretch;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.018)}
+            .photo{width:112px;height:148px;border-radius:12px;overflow:hidden;border:1px solid rgba(99,246,255,.28);background:#081114}
+            .photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 42%;filter:saturate(.92) contrast(1.02)}
+            .hero-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
+            .eyebrow{font:900 7px/1.2 ui-monospace,monospace;letter-spacing:.14em;color:var(--cyan)}
+            h1{font-size:20px;line-height:1.03;margin:6px 0 5px;color:#F7FFFF;letter-spacing:-.03em}
+            .quote{font-size:11px;line-height:1.48;color:#B8C9CB;margin:0}.quote strong{display:block;color:#F7FFFF}.quote em{display:block;color:var(--cyan);font-style:normal;font-weight:800;margin-top:3px}
+            .sub{font-size:9px;line-height:1.4;color:var(--muted);margin:7px 0 0}
+            .directive{margin-top:10px;padding:8px 10px;border:1px solid rgba(117,246,176,.18);border-radius:11px;background:rgba(117,246,176,.035);font:800 7px/1.35 ui-monospace,monospace;letter-spacing:.08em;color:#99B6A5}
+            .security{margin-top:9px;padding:11px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.014)}
+            .label{font:900 7px/1.2 ui-monospace,monospace;letter-spacing:.14em;color:var(--cyan)}
+            .status{font-size:11px;font-weight:800;color:#E9F3F4;margin-top:4px}
+            .hint{font-size:9px;line-height:1.35;color:var(--muted);margin:5px 0 9px}
+            input{width:100%;height:45px;padding:9px 12px;border-radius:11px;border:1px solid rgba(99,246,255,.22);background:#081114;color:#fff;text-align:center;font-size:20px;letter-spacing:8px;outline:none}
+            input:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(99,246,255,.08)}
+            .confirm{margin-top:7px}
+            button{width:100%;min-height:43px;padding:10px;border-radius:11px;font-weight:900;cursor:pointer}
+            .primary{margin-top:8px;border:1px solid var(--cyan);background:var(--cyan);color:#031012}
+            .bio{margin-top:8px;border:1px solid rgba(99,246,255,.22);background:#07161A;color:#E7FEFF}
+            .device{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+            .device button{margin:0;background:#071215;color:#AFC5C7;border:1px solid rgba(255,255,255,.08);font-size:9px}
+            .device button:active,.bio:active,.primary:active{transform:translateY(1px)}
+            .msg{min-height:28px;margin-top:7px;font-size:9px;line-height:1.4;color:#B9C9CB;text-align:center}
+            .footer{margin-top:8px;text-align:center;font:700 7px/1.25 ui-monospace,monospace;color:#5E7275;letter-spacing:.08em}
+            @media(max-width:360px){.gate{padding:10px}.hero{grid-template-columns:94px minmax(0,1fr);gap:10px;padding:8px}.photo{width:94px;height:132px}h1{font-size:17px}.quote{font-size:10px}.sub{font-size:8px}.device button{font-size:8px}}
           </style>
         </head>
         <body>
           <main class="gate">
-            <div class="orb"><div class="ring">◉</div></div>
-            <div class="status">JARVIS SECURITY LAYER • LOCAL DEVICE</div>
-            <h1>${titleText}</h1>
-            <p class="sub">${subtitleText}</p>
-
-            <input id="pin" inputmode="numeric" maxlength="6" type="password" autocomplete="off" placeholder="••••••">
-            ${confirmHtml}
-
-            <button class="primary" onclick="submitPin()">${buttonText}</button>
-            <button class="bio" onclick="bio()">◉ USE FACE / FINGERPRINT</button>
-            <button class="voice" onclick="voice()">◌ SAY “HEY JARVIS, UNLOCK”</button>
-
-            <div id="msg" class="msg">${messageText}</div>
-            <div class="footer">CAT 2026 • JARVIS Personal Command System</div>
+            <div class="top"><div class="brand"><span class="orb"></span>JARVIS <span>PRIVATE CORE</span></div><div>LOCAL • LOCKED</div></div>
+            <section class="hero">
+              <div class="photo"><img src="https://appassets.androidforward.site/assets/public/images/ashish_lock_portrait.jpg" alt="Ashish"></div>
+              <div class="hero-copy">
+                <div class="eyebrow">EXECUTION PROTOCOL</div>
+                <h1>${titleText}</h1>
+                <p class="quote"><strong>DREAM. PLAN. EXECUTE.</strong><em>The work becomes the story.</em></p>
+                <p class="sub">CAT 2026 is the mission. JARVIS only opens after identity verification.</p>
+              </div>
+            </section>
+            <section class="security">
+              <div class="label">SECURITY CORE</div>
+              <div class="status">${if (hasPin) "VERIFY IDENTITY" else "INITIALISE PRIVATE CORE"}</div>
+              <div class="hint">${messageText}</div>
+              <input id="pin" class="pin" inputmode="numeric" maxlength="6" type="password" autocomplete="off" placeholder="••••••">
+              ${confirmHtml}
+              <button class="primary" onclick="submitPin()">${buttonText}</button>
+              <button class="bio" onclick="bio()">◉ USE FACE / FINGERPRINT</button>
+              <div class="device">
+                <button onclick="voice()">◌ VOICE TRIGGER</button>
+                <button onclick="settings()">⚙ BIOMETRIC SETTINGS</button>
+              </div>
+              <div id="msg" class="msg">${messageText}</div>
+              <div class="directive">SHOW UP • DO THE HARD THING • MOVE FORWARD</div>
+              <div class="footer">CAT 2026 • JARVIS PERSONAL COMMAND SYSTEM</div>
+            </section>
           </main>
-
           <script>
-            const pending=new Map();
-            let seq=0;
+            const pending=new Map();let seq=0;
             function request(action,args={}){return new Promise(resolve=>{const id=String(++seq);pending.set(id,resolve);AndroidNativeHost.postMessage(JSON.stringify({id,action,args}))})}
             AndroidNativeHost.onmessage=function(event){try{const r=JSON.parse(event.data);const resolve=pending.get(r.id);if(resolve){pending.delete(r.id);resolve(r)}}catch(_){}}
             function setMsg(t){document.getElementById('msg').textContent=t}
@@ -324,8 +343,9 @@ class MainActivity : FragmentActivity() {
               ${confirmCheck}
               ${submitLogic}
             }
-            function bio(){setMsg('Waiting for real biometric verification...');request('authenticateBiometric')}
+            function bio(){setMsg('Opening the real Android biometric prompt…');request('authenticateBiometric')}
             function voice(){setMsg('Listening for “Hey Jarvis, unlock”…');request('startVoiceUnlock')}
+            function settings(){request('openBiometricSettings')}
           </script>
         </body>
         </html>
