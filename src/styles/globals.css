@@ -633,3 +633,132 @@ html[data-focus-mode="on"] .dash-root .today-header{box-shadow:0 0 0 1px var(--u
   .appearance-setting{align-items:flex-start!important;flex-direction:column!important;gap:8px!important}
   .appearance-segment,.appearance-size-row{width:100%!important;justify-content:flex-start!important}
 }
+
+
+/* ============================================================
+   JARVIS LOCK v6 // FINAL MOBILE LAYOUT
+   Photo stays left, quote stays right. No collapse / stacking.
+   ============================================================ */
+.jarvis-lock-v5{
+  min-height:100dvh!important;
+  display:block!important;
+}
+.jarvis-lock-v5__shell{
+  width:min(980px,100%)!important;
+  margin:0 auto!important;
+  min-height:calc(100dvh - 28px)!important;
+  justify-content:center!important;
+}
+.jarvis-lock-v5__hero{
+  grid-template-columns:minmax(108px,0.34fr) minmax(0,0.66fr)!important;
+  gap:10px!important;
+  align-items:stretch!important;
+}
+.jarvis-lock-v5__identity{
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:9px!important;
+  padding:10px!important;
+}
+.jarvis-lock-v5__portrait-frame{
+  flex:0 0 auto!important;
+  width:100%!important;
+  height:146px!important;
+  aspect-ratio:3/4!important;
+}
+.jarvis-lock-v5__identity-copy{
+  min-width:0!important;
+  text-align:left!important;
+}
+.jarvis-lock-v5__identity-copy h1{
+  font-size:16px!important;
+  margin:5px 0 2px!important;
+}
+.jarvis-lock-v5__identity-copy p{
+  font-size:7px!important;
+  line-height:1.25!important;
+}
+.jarvis-lock-v5__quote-zone{
+  min-width:0!important;
+  padding:11px!important;
+}
+.jarvis-lock-v5__quote{
+  min-width:0!important;
+  margin:8px 0 9px!important;
+}
+.jarvis-lock-v5__quote span{
+  font-size:12px!important;
+}
+.jarvis-lock-v5__quote strong{
+  font-size:clamp(22px,4.4vw,40px)!important;
+  line-height:.97!important;
+}
+.jarvis-lock-v5__quote em{
+  font-size:9px!important;
+  line-height:1.2!important;
+}
+.jarvis-lock-v5__quote-author{
+  margin:0 0 9px!important;
+  color:#9fb2b4!important;
+  font:800 6.5px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  letter-spacing:.06em!important;
+}
+.jarvis-lock-v5__signals{
+  flex-wrap:wrap!important;
+  line-height:1.25!important;
+}
+.jarvis-lock-v5__auth-grid{
+  grid-template-columns:1fr 1fr!important;
+}
+.jarvis-lock-v5__console{
+  padding:11px!important;
+}
+@media(max-width:760px){
+  .jarvis-lock-v5{padding:8px!important}
+  .jarvis-lock-v5__shell{
+    min-height:calc(100dvh - 16px)!important;
+    gap:8px!important;
+    justify-content:flex-start!important;
+  }
+  .jarvis-lock-v5__hero{
+    grid-template-columns:108px minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+  .jarvis-lock-v5__identity{
+    padding:8px!important;
+    gap:8px!important;
+  }
+  .jarvis-lock-v5__portrait-frame{
+    width:100%!important;
+    height:138px!important;
+  }
+  .jarvis-lock-v5__identity-copy p{display:block!important}
+  .jarvis-lock-v5__quote-zone{
+    padding:9px!important;
+  }
+  .jarvis-lock-v5__quote strong{
+    font-size:24px!important;
+  }
+  .jarvis-lock-v5__auth-rail,.jarvis-lock-v5__console{
+    padding:9px!important;
+  }
+}
+@media(max-width:360px){
+  .jarvis-lock-v5{padding:6px!important}
+  .jarvis-lock-v5__shell{gap:6px!important}
+  .jarvis-lock-v5__hero{
+    grid-template-columns:94px minmax(0,1fr)!important;
+    gap:7px!important;
+  }
+  .jarvis-lock-v5__identity{padding:7px!important}
+  .jarvis-lock-v5__portrait-frame{height:118px!important}
+  .jarvis-lock-v5__identity-copy h1{font-size:14px!important}
+  .jarvis-lock-v5__identity-copy p{font-size:6.5px!important}
+  .jarvis-lock-v5__quote-zone{padding:8px!important}
+  .jarvis-lock-v5__quote span{font-size:10px!important}
+  .jarvis-lock-v5__quote strong{font-size:21px!important}
+  .jarvis-lock-v5__quote em{font-size:8px!important}
+  .jarvis-lock-v5__quote-author{font-size:5.8px!important}
+  .jarvis-lock-v5__auth-grid{grid-template-columns:1fr!important}
+}
