@@ -273,37 +273,12 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       setTimeout(() => setBiometricState('idle'), 900)
       return
     }
-    if (!window.PublicKeyCredential || !navigator.credentials) {
-      setMessage('Device biometric is not available here. Use your secure 6-digit PIN.')
-      return
-    }
-
-    setBiometricState('scanning')
-    setMessage('JARVIS is requesting device verification. Your device may use fingerprint or face.')
-
-    try {
-      const challenge = crypto.getRandomValues(new Uint8Array(32))
-      await navigator.credentials.get({
-        publicKey: {
-          challenge,
-          rpId: window.location.hostname,
-          userVerification: 'required',
-          timeout: 45000,
-          allowCredentials: [],
-        }
-      })
-      setBiometricState('verified')
-      setMessage('Platform verification completed. Enter your private PIN to open the encrypted web vault.')
-      await recordAudit('jarvis_device_verification_completed', 'WebAuthn user-verification ceremony completed; PIN remains the web vault unlock authority')
-    } catch (error) {
-      setBiometricState('idle')
-      const name = error instanceof DOMException ? error.name : ''
-      if (name === 'NotAllowedError' || name === 'AbortError') {
-        setMessage('Device verification was cancelled or timed out. Your PIN is still ready.')
-      } else {
-        setMessage('No compatible fingerprint / face / passkey response. Use your secure 6-digit PIN.')
-      }
-    }
+    // Browser WebAuthn credentials are intentionally not invoked here.
+    // They are commonly presented by Android as a "passkey" flow and require
+    // credential registration. The real Android app has a native BiometricPrompt
+    // for Face / Fingerprint; the browser gate uses the secure 6-digit PIN.
+    setMessage('Browser lock uses the secure 6-digit PIN. Install the Android app for the real Face / Fingerprint system prompt.')
+    setBiometricState('idle')
   }
 
   function startVoiceUnlock() {
@@ -418,8 +393,8 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
             >
               <span className="jarvis-lock-v5__auth-glyph jarvis-lock-v5__auth-glyph--biometric" aria-hidden="true">◉</span>
               <span className="jarvis-lock-v5__auth-copy">
-                <strong>{biometricState === 'scanning' ? 'VERIFYING DEVICE' : biometricState === 'verified' ? 'DEVICE VERIFIED' : 'PASSKEY / FACE / FINGER'}</strong>
-                <small>Real platform verification • face, fingerprint, or passkey</small>
+                <strong>{biometricState === 'scanning' ? 'VERIFYING DEVICE' : biometricState === 'verified' ? 'DEVICE VERIFIED' : 'FACE / FINGERPRINT'}</strong>
+                <small>Real biometric prompt is available in the Android app; browser fallback stays PIN-only.</small>
               </span>
               <span className="jarvis-lock-v5__auth-action">{biometricState === 'scanning' ? '•••' : biometricState === 'verified' ? '✓' : 'SCAN'}</span>
             </button>
