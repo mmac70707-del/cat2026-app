@@ -268,7 +268,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
     if (isNative()) {
       setBiometricState('scanning')
-      setMessage('JARVIS is opening the real Android biometric prompt. Use your registered face, fingerprint, or device credential.')
+      setMessage('JARVIS is opening the real Android biometric prompt. Use your registered Face / Fingerprint or device credential.')
       authenticateBiometric()
       setTimeout(() => setBiometricState('idle'), 900)
       return
@@ -310,7 +310,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       (error) => {
         voiceRecognizerRef.current = null
         setVoiceListening(false)
-          setMessage('Voice trigger unavailable: ' + error + '. Use Passkey / Face / Fingerprint or PIN.')
+          setMessage('Voice trigger unavailable: ' + error + '. Use Face / Fingerprint or your secure PIN.')
       },
       () => {
         voiceRecognizerRef.current = null
@@ -319,7 +319,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     )
 
     if (!rec) {
-      setMessage('Speech recognition is not supported here. Use Passkey / Face / Fingerprint or PIN.')
+      setMessage('Speech recognition is not supported here. Use Face / Fingerprint or your secure PIN.')
       return
     }
 
@@ -389,7 +389,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
               className={`jarvis-lock-v5__auth-card ${biometricState === 'verified' ? 'is-verified' : ''}`}
               onClick={startDeviceBiometric}
               disabled={lockedMs > 0 || biometricState === 'scanning'}
-              aria-label="Use passkey, fingerprint, or face device verification"
+              aria-label="Use Face / Fingerprint device verification"
             >
               <span className="jarvis-lock-v5__auth-glyph jarvis-lock-v5__auth-glyph--biometric" aria-hidden="true">◉</span>
               <span className="jarvis-lock-v5__auth-copy">
