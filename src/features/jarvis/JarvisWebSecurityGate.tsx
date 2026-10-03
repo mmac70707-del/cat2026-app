@@ -329,6 +329,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     rec.start()
   }
 
+
   if (unlocked) return <>{children}</>
 
   return (
@@ -336,81 +337,81 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
       <div className="jarvis-lock-v5__backdrop" aria-hidden="true" />
       <div className="jarvis-lock-v5__grid" aria-hidden="true" />
       <div className="jarvis-lock-v5__scan" aria-hidden="true" />
+
       <section className="jarvis-lock-v5__shell">
         <header className="jarvis-lock-v5__topbar">
-          <div className="jarvis-lock-v5__brand"><span className="jarvis-lock-v5__orb" /><span>JARVIS</span><small>PRIVATE CORE</small></div>
+          <div className="jarvis-lock-v5__brand">
+            <span className="jarvis-lock-v5__orb" />
+            <span>JARVIS</span>
+            <small>PRIVATE CORE</small>
+          </div>
           <div className="jarvis-lock-v5__status"><span className="jarvis-lock-v5__dot" /> LOCAL / LOCKED</div>
         </header>
 
         <section className="jarvis-lock-v5__hero">
-          <div className="jarvis-lock-v5__identity">
+          <article className="jarvis-lock-v5__identity">
             <div className="jarvis-lock-v5__portrait-frame">
               <img src="/images/ashish_lock_portrait.jpg" alt="Ashish" />
               <span className="jarvis-lock-v5__portrait-ring" />
               <span className="jarvis-lock-v5__portrait-tag">01</span>
             </div>
             <div className="jarvis-lock-v5__identity-copy">
-              <span className="jarvis-lock-v5__eyebrow">EXECUTION PROTOCOL</span>
-              <h1>WELCOME BACK, ASHISH</h1>
-              <p>One secure gate between you and today&apos;s execution system.</p>
+              <span className="jarvis-lock-v5__eyebrow">PERSONAL COMMAND CORE</span>
+              <h1>ASHISH</h1>
+              <p>CAT 2026 • EXECUTION SYSTEM</p>
             </div>
-          </div>
-          <div className="jarvis-lock-v5__quote-zone">
-            <span className="jarvis-lock-v5__quote-label">DAILY DIRECTIVE / {String(directiveIndex + 1).padStart(2, '0')} OF {String(directives.length).padStart(2, '0')}</span>
-            <blockquote className="jarvis-lock-v5__quote" key={directiveIndex}>
-              <span>{directives[directiveIndex][0]}</span>
-              <strong>{directives[directiveIndex][1]}</strong>
-              <em>{directives[directiveIndex][2]}</em>
+          </article>
+
+          <article className="jarvis-lock-v5__quote-zone">
+            <span className="jarvis-lock-v5__quote-label">WELCOME BACK, ASHISH</span>
+            <blockquote className="jarvis-lock-v5__quote">
+              <span>THE MAGIC</span>
+              <strong>YOU ARE LOOKING FOR</strong>
+              <em>IS IN THE WORK YOU ARE AVOIDING.</em>
             </blockquote>
+            <div className="jarvis-lock-v5__quote-author">EXECUTE THE NEXT BLOCK. NO RANDOM MOVES.</div>
             <div className="jarvis-lock-v5__signals">
               <span>SHOW UP</span><i /><span>DO THE HARD THING</span><i /><span>MOVE FORWARD</span>
             </div>
-            <div className="jarvis-lock-v5__micro-quotes" aria-label="Personal directives">
-              <span>DISCIPLINE &gt; MOOD</span>
-              <span>CONSISTENCY &gt; INTENSITY</span>
-              <span>DISCIPLINE &gt; MOOD</span>
-              <span>CONSISTENCY &gt; INTENSITY</span>
-              <span>DISTRACTION &lt; DISCIPLINE</span>
-              <span>FOCUS &gt; NOISE</span>
-              <span>BECOME THE MAN YOU PROMISED</span>
-            </div>
-          </div>
+          </article>
         </section>
 
-        <section className="jarvis-lock-v5__auth-rail" aria-label="Quick JARVIS authentication">
+        <section className="jarvis-lock-v5__auth-rail" aria-label="JARVIS quick authentication">
           <div className="jarvis-lock-v5__auth-heading">
-            <span className="jarvis-lock-v5__auth-kicker">JARVIS QUICK AUTH</span>
-            <span className="jarvis-lock-v5__auth-note">PLATFORM AUTH • PIN PROTECTED</span>
+            <div>
+              <span className="jarvis-lock-v5__auth-kicker">QUICK AUTHENTICATION</span>
+              <strong className="jarvis-lock-v5__auth-title">CHOOSE YOUR DEVICE METHOD</strong>
+            </div>
+            <span className="jarvis-lock-v5__auth-note">ANDROID BIOMETRIC / PIN</span>
           </div>
 
           <div className="jarvis-lock-v5__auth-grid">
             <button
               type="button"
-              className={`jarvis-lock-v5__auth-card ${biometricState === 'verified' ? 'is-verified' : ''}`}
+              className={`jarvis-lock-v5__auth-card ${biometricState === 'scanning' ? 'is-speaking' : ''}`}
               onClick={startDeviceBiometric}
               disabled={lockedMs > 0 || biometricState === 'scanning'}
-              aria-label="Use Face / Fingerprint device verification"
             >
               <span className="jarvis-lock-v5__auth-glyph jarvis-lock-v5__auth-glyph--biometric" aria-hidden="true">◉</span>
               <span className="jarvis-lock-v5__auth-copy">
-                <strong>{biometricState === 'scanning' ? 'VERIFYING DEVICE' : biometricState === 'verified' ? 'DEVICE VERIFIED' : 'FACE / FINGERPRINT'}</strong>
-                <small>Real biometric prompt is available in the Android app; browser fallback stays PIN-only.</small>
+                <strong>{isNative() ? 'FACE / FINGERPRINT' : 'ANDROID FACE / FINGERPRINT'}</strong>
+                <small>{isNative() ? 'Open the real Android system biometric prompt.' : 'Available in the Android app. Browser stays PIN-only.'}</small>
               </span>
-              <span className="jarvis-lock-v5__auth-action">{biometricState === 'scanning' ? '•••' : biometricState === 'verified' ? '✓' : 'SCAN'}</span>
+              <span className="jarvis-lock-v5__auth-action">SCAN</span>
             </button>
 
             <button
               type="button"
               className={`jarvis-lock-v5__auth-card ${voiceListening ? 'is-speaking' : ''}`}
               onClick={startVoiceUnlock}
-              aria-label="Use voice to trigger biometric verification"
+              disabled={lockedMs > 0}
             >
               <span className="jarvis-lock-v5__auth-glyph jarvis-lock-v5__auth-glyph--voice" aria-hidden="true">◌</span>
               <span className="jarvis-lock-v5__auth-copy">
-                <strong>{voiceListening ? 'VOICE → VERIFY' : 'VOICE UNLOCK TRIGGER'}</strong>
-                <small>Say “Hey Jarvis, unlock” → real biometric check</small>
+                <strong>{voiceListening ? 'LISTENING…' : 'VOICE TRIGGER'}</strong>
+                <small>“Hey Jarvis, unlock” → biometric verification</small>
               </span>
-              <span className="jarvis-lock-v5__auth-action">{voiceListening ? 'LISTENING' : 'START'}</span>
+              <span className="jarvis-lock-v5__auth-action">{voiceListening ? 'STOP' : 'START'}</span>
             </button>
           </div>
 
@@ -423,29 +424,44 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
 
         <section className="jarvis-lock-v5__console">
           <div className="jarvis-lock-v5__console-head">
-            <div><span>SECURITY CORE</span><strong>{configured ? 'AUTHENTICATE TO CONTINUE' : 'INITIALISE PRIVATE CORE'}</strong></div>
-            <div className="jarvis-lock-v5__shield">SECURE</div>
+            <div>
+              <span>SECURITY CORE</span>
+              <strong>{configured ? 'ENTER 6-DIGIT JARVIS PIN' : 'CREATE YOUR 6-DIGIT JARVIS PIN'}</strong>
+            </div>
+            <div className="jarvis-lock-v5__shield">PBKDF2 • LOCAL</div>
           </div>
-          <p className="jarvis-lock-v5__hint">{configured ? 'Enter your private 6-digit PIN to unlock JARVIS.' : 'Create a private 6-digit PIN for this browser.'}</p>
+
+          <p className="jarvis-lock-v5__hint">
+            {configured ? 'Your PIN is only a fallback for the secure local vault.' : 'Create the PIN once. It stays on this device.'}
+          </p>
+
           <div className="jarvis-lock-v5__input-wrap">
             <span>PIN</span>
             <input value={pin} onChange={e=>setPin(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} autoFocus placeholder="••••••" disabled={lockedMs>0} aria-label="JARVIS six digit PIN" />
             <span className="jarvis-lock-v5__pin-count">{pin.length}/6</span>
           </div>
-          {!configured && <div className="jarvis-lock-v5__input-wrap jarvis-lock-v5__input-wrap--confirm">
-            <span>CONFIRM</span>
-            <input value={confirm} onChange={e=>setConfirm(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} placeholder="••••••" disabled={lockedMs>0} aria-label="Confirm JARVIS six digit PIN" />
-          </div>}
+
+          {!configured && (
+            <div className="jarvis-lock-v5__input-wrap jarvis-lock-v5__input-wrap--confirm">
+              <span>CONFIRM</span>
+              <input value={confirm} onChange={e=>setConfirm(e.target.value.replace(/\D/g,'').slice(0,6))} inputMode="numeric" autoComplete="off" type="password" maxLength={6} placeholder="••••••" disabled={lockedMs>0} aria-label="Confirm JARVIS six digit PIN" />
+            </div>
+          )}
+
           <button className="jarvis-lock-v5__unlock" onClick={submit} disabled={lockedMs>0}>
             <span>{lockedMs>0 ? `LOCKED ${lockedSeconds}s` : configured ? 'UNLOCK JARVIS' : 'CREATE SECURE PIN'}</span><b>↗</b>
           </button>
+
           <div className="jarvis-lock-v5__message" role="status">{message}</div>
           <div className="jarvis-lock-v5__telemetry">
-            <span>PBKDF2</span><i /><span>SALTED</span><i /><span>AUTO-LOCK 30M</span><i /><span>LOCAL VAULT</span><i /><span>READY</span>
+            <span>AUTO-LOCK 30M</span><i /><span>LOCAL VAULT</span><i /><span>BIOMETRIC READY</span>
           </div>
         </section>
 
-        <footer className="jarvis-lock-v5__footer"><span>CAT 2026 / PERSONAL INTELLIGENCE OS</span><span>DEFENSE IN DEPTH</span></footer>
+        <footer className="jarvis-lock-v5__footer">
+          <span>CAT 2026 / PERSONAL INTELLIGENCE OS</span>
+          <span>DEFENSE IN DEPTH</span>
+        </footer>
       </section>
     </main>
   )
