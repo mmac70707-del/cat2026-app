@@ -87,10 +87,8 @@ class MainActivity : FragmentActivity() {
         biometricExecutor = ContextCompat.getMainExecutor(this)
 
         val assetLoader = WebViewAssetLoader.Builder()
-            // The Android bundle mirrors the web dist under app/src/main/assets.
-            // /assets/ serves JS/CSS; / serves images, icons, favicon and manifest.
+            .setDomain("appassets.androidplatform.net")
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
-            .addPathHandler("/", WebViewAssetLoader.AssetsPathHandler(this))
             .build()
 
         webView = WebView(this).apply {
