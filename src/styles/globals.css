@@ -452,21 +452,21 @@ html, body, #root {
   .jarvis-lock-v5__shell{min-height:calc(100dvh - 20px)!important;gap:9px!important;justify-content:flex-start!important;padding-top:3px!important}
   .jarvis-lock-v5__topbar{padding:4px 2px!important}
   .jarvis-lock-v5__brand small{display:none!important}
-  .jarvis-lock-v5__hero{grid-template-columns:1fr!important;gap:8px!important}
+  .jarvis-lock-v5__hero{grid-template-columns:minmax(78px,92px) minmax(0,1fr)!important;gap:9px!important}
   .jarvis-lock-v5__identity{padding:11px!important;border-radius:15px!important}
-  .jarvis-lock-v5__portrait-frame{flex-basis:64px!important;width:64px!important;height:80px!important;border-radius:11px!important}
+  .jarvis-lock-v5__portrait-frame{flex-basis:auto!important;width:100%!important;height:105px!important;border-radius:11px!important}
   .jarvis-lock-v5__portrait-ring{inset:5px!important;border-radius:8px!important}
-  .jarvis-lock-v5__identity-copy h1{font-size:18px!important;margin:5px 0 4px!important}
-  .jarvis-lock-v5__identity-copy p{font-size:9px!important}
-  .jarvis-lock-v5__quote-zone{padding:12px 13px!important;border-radius:15px!important}
+  .jarvis-lock-v5__identity-copy h1{font-size:17px!important;margin:5px 0 4px!important}
+  .jarvis-lock-v5__identity-copy p{font-size:8.5px!important}
+  .jarvis-lock-v5__quote-zone{padding:10px 11px!important;border-radius:15px!important}
   .jarvis-lock-v5__quote{margin:7px 0 8px!important}
   .jarvis-lock-v5__quote span{font-size:13px!important}
-  .jarvis-lock-v5__quote strong{font-size:29px!important;line-height:.92!important}
-  .jarvis-lock-v5__quote em{font-size:10px!important}
-  .jarvis-lock-v5__signals{font-size:6px!important;gap:5px!important}
+  .jarvis-lock-v5__quote strong{font-size:25px!important;line-height:.95!important}
+  .jarvis-lock-v5__quote em{font-size:9px!important}
+  .jarvis-lock-v5__signals{font-size:5.5px!important;gap:4px!important}
   .jarvis-lock-v5__micro-quotes{margin-top:8px!important}
   .jarvis-lock-v5__micro-quotes span{font-size:6px!important;padding:5px 7px!important}
-  .jarvis-lock-v5__auth-rail,.jarvis-lock-v5__console{padding:11px!important;border-radius:15px!important}
+  .jarvis-lock-v5__auth-rail,.jarvis-lock-v5__console{padding:10px!important;border-radius:15px!important}
   .jarvis-lock-v5__auth-grid{grid-template-columns:1fr!important}
   .jarvis-lock-v5__auth-card{padding:9px!important}
   .jarvis-lock-v5__auth-copy strong{font-size:8px!important}
@@ -481,9 +481,11 @@ html, body, #root {
   .jarvis-lock-v5__shell{gap:7px!important}
   .jarvis-lock-v5__identity-copy p{display:none!important}
   .jarvis-lock-v5__quote-zone{padding:10px!important}
-  .jarvis-lock-v5__quote strong{font-size:25px!important}
+  .jarvis-lock-v5__quote strong{font-size:23px!important}
   .jarvis-lock-v5__signals span:nth-child(5),.jarvis-lock-v5__signals i:nth-child(4){display:none!important}
   .jarvis-lock-v5__micro-quotes{display:none!important}
+  .jarvis-lock-v5__hero{grid-template-columns:76px minmax(0,1fr)!important}
+  .jarvis-lock-v5__portrait-frame{height:94px!important}
   .jarvis-lock-v5__auth-card{min-height:50px!important}
 }
 @media(prefers-reduced-motion:reduce){
