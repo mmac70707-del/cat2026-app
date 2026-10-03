@@ -144,7 +144,7 @@ class MainActivity : FragmentActivity() {
 
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/")) {
+                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/public/")) {
                         view.postDelayed({
                             view.evaluateJavascript(
                                 "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
@@ -530,7 +530,7 @@ class MainActivity : FragmentActivity() {
         if (!nativeUnlocked) return
         // Notification workers are intentionally controlled by Settings.
         // Do not silently re-enable them just because JARVIS was unlocked.
-        webView.loadUrl("https://appassets.androidplatform.net/assets/index.html")
+        webView.loadUrl("https://appassets.androidplatform.net/assets/public/index.html")
         checkNotificationPermission()
     }
 
