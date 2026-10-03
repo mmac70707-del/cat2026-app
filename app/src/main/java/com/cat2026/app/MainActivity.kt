@@ -99,6 +99,18 @@ class MainActivity : FragmentActivity() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
                     assetLoader.shouldInterceptRequest(request.url)
 
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    if (nativeUnlocked && url.startsWith("https://appassets.androidforward.site/assets/public/")) {
+                        view.postDelayed({
+                            view.evaluateJavascript(
+                                "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
+                                null
+                            )
+                        }, 250)
+                    }
+                }
+
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     if (!request.isForMainFrame) return false
                     val url = request.url.toString()
@@ -466,12 +478,6 @@ class MainActivity : FragmentActivity() {
         // Notification workers are intentionally controlled by Settings.
         // Do not silently re-enable them just because JARVIS was unlocked.
         webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
-        webView.postDelayed({
-            webView.evaluateJavascript(
-                "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
-                null
-            )
-        }, 300)
     }
 
     private fun biometricAuthenticators(): Int {
