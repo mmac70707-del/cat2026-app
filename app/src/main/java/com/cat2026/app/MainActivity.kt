@@ -474,22 +474,54 @@ class MainActivity : FragmentActivity() {
         }, 300)
     }
 
-    private fun authenticateBiometricInternal() {
-        val manager = BiometricManager.from(this)
-        val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    private fun biometricAuthenticators(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             BiometricManager.Authenticators.BIOMETRIC_WEAK or
                 BiometricManager.Authenticators.DEVICE_CREDENTIAL
         } else {
+            // Android 10 and below do not support BIOMETRIC_* + DEVICE_CREDENTIAL
+            // combinations in BiometricPrompt. Use the biometric sensor directly.
             BiometricManager.Authenticators.BIOMETRIC_WEAK
         }
+    }
 
-        if (manager.canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_SUCCESS) {
-            runOnUiThread {
-                webView.evaluateJavascript(
-                    "document.getElementById('msg')&&(document.getElementById('msg').textContent='Biometric unlock is unavailable. Use the JARVIS PIN.')",
-                    null
-                )
+    private fun biometricAvailabilityMessage(code: Int): String {
+        return when (code) {
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED ->
+                "No Face / Fingerprint is enrolled for apps. Tap BIOMETRIC SETTINGS and add one first."
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
+                "This device is not exposing a biometric sensor to apps. Use the secure JARVIS PIN."
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
+                "Biometric hardware is temporarily unavailable. Unlock the phone normally and try again."
+            BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED ->
+                "Android requires a security update before this biometric method can be used."
+            BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED ->
+                "This Android version cannot use the requested biometric mode. Use the JARVIS PIN."
+            else ->
+                "Biometric unlock is unavailable right now. Use the JARVIS PIN or open BIOMETRIC SETTINGS."
+        }
+    }
+
+    private fun openBiometricSettings() {
+        try {
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Intent(Settings.ACTION_BIOMETRIC_ENROLL)
+            } else {
+                Intent(Settings.ACTION_SECURITY_SETTINGS)
             }
+            startActivity(intent)
+        } catch (_: Exception) {
+            try { startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS)) } catch (_: Exception) {}
+        }
+    }
+
+    private fun authenticateBiometricInternal() {
+        val manager = BiometricManager.from(this)
+        val authenticators = biometricAuthenticators()
+        val availability = manager.canAuthenticate(authenticators)
+
+        if (availability != BiometricManager.BIOMETRIC_SUCCESS) {
+            updateGateMessage(biometricAvailabilityMessage(availability))
             return
         }
 
@@ -501,29 +533,45 @@ class MainActivity : FragmentActivity() {
                     super.onAuthenticationSucceeded(result)
                     nativeUnlocked = true
                     clearNativeFailures()
+                    updateGateMessage("Biometric verified. Opening JARVIS…")
                     loadAppAfterUnlock()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    updateGateMessage("Biometric not recognised. Try again or use the 6-digit JARVIS PIN.")
                 }
 
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    runOnUiThread {
-                        webView.evaluateJavascript(
-                            "document.getElementById('msg')&&(document.getElementById('msg').textContent='Biometric cancelled. You can still use the PIN.')",
-                            null
-                        )
+                    val detail = when (errorCode) {
+                        BiometricPrompt.ERROR_NEGATIVE_BUTTON,
+                        BiometricPrompt.ERROR_USER_CANCELED,
+                        BiometricPrompt.ERROR_CANCELED ->
+                            "Biometric cancelled. Your PIN is still available."
+                        BiometricPrompt.ERROR_LOCKOUT,
+                        BiometricPrompt.ERROR_LOCKOUT_PERMANENT ->
+                            "Too many biometric attempts. Unlock the phone normally, then try again."
+                        else ->
+                            "Biometric error: $errString. Use the JARVIS PIN if needed."
                     }
+                    updateGateMessage(detail)
                 }
             }
         )
 
-        val info = BiometricPrompt.PromptInfo.Builder()
+        val builder = BiometricPrompt.PromptInfo.Builder()
             .setTitle("JARVIS Secure Unlock")
-            .setSubtitle("Verify your identity")
-            .setDescription("Use supported face/fingerprint or your Android device credential.")
+            .setSubtitle("Face / Fingerprint")
+            .setDescription(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                    "Use your enrolled biometric. Android screen-lock credential is also available as a fallback."
+                else
+                    "Use your enrolled fingerprint or supported face biometric."
+            )
             .setAllowedAuthenticators(authenticators)
-            .build()
 
-        prompt.authenticate(info)
+        prompt.authenticate(builder.build())
     }
 
     private fun checkNotificationPermission() {
@@ -583,6 +631,12 @@ class MainActivity : FragmentActivity() {
                 "authenticateBiometric" -> {
                     runOnUiThread { authenticateBiometricInternal() }
                     response.put("ok", true).put("started", true)
+                }
+                "openBiometricSettings" -> {
+                    if (nativeUnlocked || webView.url?.startsWith("https://appassets.androidforward.site/") == true) {
+                        runOnUiThread { openBiometricSettings() }
+                    }
+                    response.put("ok", true)
                 }
                 "startVoiceUnlock" -> {
                     runOnUiThread { startNativeVoiceUnlock() }
