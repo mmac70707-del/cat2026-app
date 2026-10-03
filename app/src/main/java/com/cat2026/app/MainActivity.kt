@@ -101,7 +101,7 @@ class MainActivity : FragmentActivity() {
 
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    if (nativeUnlocked && url.startsWith("https://appassets.androidforward.site/assets/public/")) {
+                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/public/")) {
                         view.postDelayed({
                             view.evaluateJavascript(
                                 "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
@@ -114,7 +114,7 @@ class MainActivity : FragmentActivity() {
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     if (!request.isForMainFrame) return false
                     val url = request.url.toString()
-                    val trusted = url.startsWith("https://appassets.androidforward.site/")
+                    val trusted = url.startsWith("https://appassets.androidplatform.net/")
                     val debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0 && url.startsWith("http://localhost")
 
                     return if (trusted || debug) {
@@ -132,9 +132,9 @@ class MainActivity : FragmentActivity() {
             WebViewCompat.addWebMessageListener(
                 this,
                 "AndroidNativeHost",
-                setOf("https://appassets.androidforward.site"),
+                setOf("https://appassets.androidplatform.net"),
                 WebViewCompat.WebMessageListener { _, message, sourceOrigin, isMainFrame, replyProxy ->
-                    if (!isMainFrame || sourceOrigin.toString() != "https://appassets.androidforward.site") return@WebMessageListener
+                    if (!isMainFrame || sourceOrigin.toString() != "https://appassets.androidplatform.net") return@WebMessageListener
                     if (message.type != WebMessageCompat.TYPE_STRING) return@WebMessageListener
                     handleBridgeMessage(message.data ?: return@WebMessageListener, replyProxy)
                 }
@@ -145,7 +145,7 @@ class MainActivity : FragmentActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (webView.url?.startsWith("https://appassets.androidforward.site/assets/public/") == true) {
+                if (webView.url?.startsWith("https://appassets.androidplatform.net/assets/public/") == true) {
                     webView.evaluateJavascript("window.dispatchEvent(new Event('android:backbutton'))", null)
                 } else {
                     finishAndRemoveTask()
@@ -319,7 +319,7 @@ class MainActivity : FragmentActivity() {
           <main class="gate">
             <div class="top"><div class="brand"><span class="orb"></span>JARVIS <span>PRIVATE CORE</span></div><div>LOCAL • LOCKED</div></div>
             <section class="hero">
-              <div class="photo"><img src="https://appassets.androidforward.site/assets/public/images/ashish_lock_portrait.jpg" alt="Ashish"></div>
+              <div class="photo"><img src="https://appassets.androidplatform.net/assets/public/images/ashish_lock_portrait.jpg" alt="Ashish"></div>
               <div class="hero-copy">
                 <div class="eyebrow">EXECUTION PROTOCOL</div>
                 <h1>${titleText}</h1>
@@ -364,7 +364,7 @@ class MainActivity : FragmentActivity() {
         """.trimIndent()
 
         webView.loadDataWithBaseURL(
-            "https://appassets.androidforward.site/",
+            "https://appassets.androidplatform.net/",
             page,
             "text/html",
             "UTF-8",
@@ -477,7 +477,7 @@ class MainActivity : FragmentActivity() {
         if (!nativeUnlocked) return
         // Notification workers are intentionally controlled by Settings.
         // Do not silently re-enable them just because JARVIS was unlocked.
-        webView.loadUrl("https://appassets.androidforward.site/assets/public/index.html")
+        webView.loadUrl("https://appassets.androidplatform.net/assets/public/index.html")
     }
 
     private fun biometricAuthenticators(): Int {
@@ -639,7 +639,7 @@ class MainActivity : FragmentActivity() {
                     response.put("ok", true).put("started", true)
                 }
                 "openBiometricSettings" -> {
-                    if (nativeUnlocked || webView.url?.startsWith("https://appassets.androidforward.site/") == true) {
+                    if (nativeUnlocked || webView.url?.startsWith("https://appassets.androidplatform.net/") == true) {
                         runOnUiThread { openBiometricSettings() }
                     }
                     response.put("ok", true)
