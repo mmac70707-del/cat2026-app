@@ -52,10 +52,22 @@ class MainActivity : FragmentActivity() {
     private var voiceListening = false
     private val prefs by lazy { getSharedPreferences("jarvis_security", MODE_PRIVATE) }
 
+    private companion object {
+        const val NATIVE_NOTIFICATIONS_ENABLED = "notifications_enabled"
+        const val NOTIFICATION_PERMISSION_EVENT = "cat2026:native-notification-permission"
+    }
+
     private val requestNotificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) triggerNotificationSetup()
+        if (isGranted) {
+            prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, true).apply()
+            triggerNotificationSetup()
+        } else {
+            prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
+            ReminderSchedule.cancel(this)
+        }
+        emitNotificationPermissionState(isGranted)
     }
 
     private val requestRecordAudioPermissionLauncher = registerForActivityResult(
@@ -185,7 +197,6 @@ class MainActivity : FragmentActivity() {
         })
 
         showJarvisSecurityGate()
-        checkNotificationPermission()
     }
 
     private fun hasJarvisPin(): Boolean =
@@ -280,6 +291,17 @@ class MainActivity : FragmentActivity() {
 
         if (valid) clearNativeFailures() else recordNativeFailure()
         return valid
+    }
+
+    private fun emitNotificationPermissionState(granted: Boolean) {
+        if (!::webView.isInitialized) return
+        val detail = if (granted) "true" else "false"
+        webView.post {
+            webView.evaluateJavascript(
+                "window.dispatchEvent(new CustomEvent('" + NOTIFICATION_PERMISSION_EVENT + "', {detail:{granted:" + detail + "}}))",
+                null
+            )
+        }
     }
 
     private fun showJarvisSecurityGate() {
@@ -509,6 +531,7 @@ class MainActivity : FragmentActivity() {
         // Notification workers are intentionally controlled by Settings.
         // Do not silently re-enable them just because JARVIS was unlocked.
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html")
+        checkNotificationPermission()
     }
 
     private fun biometricAuthenticators(): Int {
@@ -613,6 +636,7 @@ class MainActivity : FragmentActivity() {
 
     private fun checkNotificationPermission() {
         if (!nativeUnlocked) return
+        if (!prefs.getBoolean(NATIVE_NOTIFICATIONS_ENABLED, false)) return
 
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
@@ -621,24 +645,53 @@ class MainActivity : FragmentActivity() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            triggerNotificationSetup()
+            emitNotificationPermissionState(false)
+            return
         }
+
+        triggerNotificationSetup()
+    }
+
+    private fun requestNativeNotifications() {
+        if (!nativeUnlocked) return
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return
+            }
+        }
+
+        prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, true).apply()
+        triggerNotificationSetup()
+        emitNotificationPermissionState(true)
     }
 
     private fun triggerNotificationSetup() {
         if (!nativeUnlocked) return
         ReminderSchedule.createChannel(this)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
+        if (
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             ReminderSchedule.scheduleMorning(this)
             ReminderSchedule.scheduleEvening(this)
+        } else {
+            emitNotificationPermissionState(false)
         }
     }
 
     private fun disableNotificationSetup() {
+        prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
         ReminderSchedule.cancel(this)
     }
 
@@ -653,15 +706,18 @@ class MainActivity : FragmentActivity() {
             when (action) {
                 "exitApp" -> { finishAndRemoveTask(); response.put("ok", true) }
                 "requestNotificationPermission" -> {
-                    if (nativeUnlocked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        runOnUiThread { requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+                    if (nativeUnlocked) {
+                        runOnUiThread { requestNativeNotifications() }
                     }
                     response.put("ok", nativeUnlocked)
                 }
                 "setNotificationsEnabled" -> {
                     if (nativeUnlocked) {
-                        if (args.optBoolean("enabled", false)) triggerNotificationSetup()
-                        else disableNotificationSetup()
+                        if (args.optBoolean("enabled", false)) {
+                            runOnUiThread { requestNativeNotifications() }
+                        } else {
+                            disableNotificationSetup()
+                        }
                     }
                     response.put("ok", nativeUnlocked)
                 }
