@@ -7,13 +7,16 @@ import './styles/globals.css'
 import './styles/theme.css'
 import { ThemeSwitcher } from './components/ThemeSwitcher'
 import { syncUiPreferences } from './services/uiPreferences'
+import { isNative } from './services/native'
 
 // Real production service worker — replaces the previous Blob-based
 // one. Only meaningful for the web/laptop install path; on the
 // Android native build this module still loads harmlessly (it just
 // registers a service worker the native WebView never needs, since
 // assets are served straight from the APK).
-registerSW({ immediate: true })
+if (!isNative()) {
+  registerSW({ immediate: true })
+}
 
 // JARVIS remains the app skin; appearance is now controlled separately by the
 // persistent Light / Dark / System display preference.
