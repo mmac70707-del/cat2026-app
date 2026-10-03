@@ -92,12 +92,40 @@ class MainActivity : FragmentActivity() {
             settings.allowUniversalAccessFromFileURLs = false
             settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             settings.safeBrowsingEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
             settings.setSupportMultipleWindows(false)
             webChromeClient = WebChromeClient()
 
             webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
                     assetLoader.shouldInterceptRequest(request.url)
+
+                override fun onReceivedError(
+                    view: WebView,
+                    request: WebResourceRequest,
+                    error: android.webkit.WebResourceError
+                ) {
+                    super.onReceivedError(view, request, error)
+                    if (request.isForMainFrame) {
+                        view.post {
+                            view.loadDataWithBaseURL(
+                                "https://appassets.androidplatform.net/",
+                                """
+                                <html><body style="margin:0;background:#03070A;color:#EAFBFC;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center">
+                                  <div>
+                                    <div style="font-size:11px;letter-spacing:.16em;color:#63F6FF;font-weight:800">JARVIS / LOCAL CORE</div>
+                                    <h2 style="font-size:22px;margin:10px 0 6px">App content could not load</h2>
+                                    <p style="font-size:13px;line-height:1.5;color:#9BAEB1">The local CAT 2026 engine failed to load. Restart the app after installing the latest build.</p>
+                                  </div>
+                                </body></html>
+                                """.trimIndent(),
+                                "text/html",
+                                "UTF-8",
+                                null
+                            )
+                        }
+                    }
+                }
 
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
