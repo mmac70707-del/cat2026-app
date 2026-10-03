@@ -14,6 +14,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.cat2026.app.MainActivity
+import com.cat2026.app.R
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
@@ -133,7 +134,7 @@ private fun showNotification(context: Context, id: Int, title: String, text: Str
     )
 
     val notification = NotificationCompat.Builder(context, ReminderSchedule.CHANNEL_ID)
-        .setSmallIcon(android.R.drawable.ic_dialog_info) // TODO: swap for a real app icon drawable once one is added to res/drawable
+        .setSmallIcon(R.drawable.ic_stat_cat)
         .setContentTitle(title)
         .setContentText(text)
         .setStyle(NotificationCompat.BigTextStyle().bigText(text))
