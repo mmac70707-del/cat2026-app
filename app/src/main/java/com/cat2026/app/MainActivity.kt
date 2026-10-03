@@ -89,6 +89,7 @@ class MainActivity : FragmentActivity() {
         val assetLoader = WebViewAssetLoader.Builder()
             .setDomain("appassets.androidplatform.net")
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+            .addPathHandler("/", WebViewAssetLoader.AssetsPathHandler(this))
             .build()
 
         webView = WebView(this).apply {
@@ -106,6 +107,7 @@ class MainActivity : FragmentActivity() {
             settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
             settings.safeBrowsingEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
+            setBackgroundColor("#03070A".toColorInt())
             settings.setSupportMultipleWindows(false)
             webChromeClient = WebChromeClient()
 
@@ -142,7 +144,7 @@ class MainActivity : FragmentActivity() {
 
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/public/")) {
+                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/")) {
                         view.postDelayed({
                             view.evaluateJavascript(
                                 "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
@@ -186,7 +188,7 @@ class MainActivity : FragmentActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (webView.url?.startsWith("https://appassets.androidplatform.net/assets/public/") == true) {
+                if (webView.url?.startsWith("https://appassets.androidplatform.net/assets/") == true) {
                     webView.evaluateJavascript("window.dispatchEvent(new Event('android:backbutton'))", null)
                 } else {
                     finishAndRemoveTask()
@@ -370,7 +372,7 @@ class MainActivity : FragmentActivity() {
           <main class="gate">
             <div class="top"><div class="brand"><span class="orb"></span>JARVIS <span>PRIVATE CORE</span></div><div>LOCAL • LOCKED</div></div>
             <section class="hero">
-              <div class="photo"><img src="https://appassets.androidplatform.net/assets/public/images/ashish_lock_portrait.jpg" alt="Ashish"></div>
+              <div class="photo"><img src="https://appassets.androidplatform.net/assets/images/ashish_lock_portrait.jpg" alt="Ashish"></div>
               <div class="hero-copy">
                 <div class="eyebrow">EXECUTION PROTOCOL</div>
                 <h1>${titleText}</h1>
@@ -528,7 +530,7 @@ class MainActivity : FragmentActivity() {
         if (!nativeUnlocked) return
         // Notification workers are intentionally controlled by Settings.
         // Do not silently re-enable them just because JARVIS was unlocked.
-        webView.loadUrl("https://appassets.androidplatform.net/assets/public/index.html")
+        webView.loadUrl("https://appassets.androidplatform.net/assets/index.html")
         checkNotificationPermission()
     }
 
