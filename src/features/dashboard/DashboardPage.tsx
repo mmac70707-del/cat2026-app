@@ -647,7 +647,7 @@ export function DashboardPage() {
             const won = dimensionWins[basic.id]
             const isCurrent = !finalWin && index === nextDimensionIndex
             const bodyRemaining = bodyLearningRemaining.length
-            let action = basic.mentor
+            let action: string = basic.mentor
             if (basic.id === 'MIND') {
               action = mentalWin ? 'CAT blocks complete — Mind win earned.' : nextTask ? 'NEXT: ' + nextTask.blockId + ' — ' + nextTask.title : basic.mentor
             } else if (basic.id === 'BODY') {
