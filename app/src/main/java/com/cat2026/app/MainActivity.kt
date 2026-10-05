@@ -392,9 +392,9 @@ import android.security.keystore.KeyProperties
             .gate{width:min(430px,100%);padding:14px;border:1px solid rgba(99,246,255,.28);border-radius:22px;background:linear-gradient(155deg,rgba(10,20,23,.97),rgba(3,8,9,.98));box-shadow:0 22px 60px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.04)}
             .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font:800 8px/1 ui-monospace,monospace;letter-spacing:.14em;color:#8DA4A7}
             .brand{display:flex;gap:7px;align-items:center;color:#EEF9FA}.orb{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px rgba(99,246,255,.7)}
-            .hero{display:grid;grid-template-columns:112px minmax(0,1fr);gap:13px;align-items:stretch;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.018)}
-            .photo{width:112px;height:148px;border-radius:12px;overflow:hidden;border:1px solid rgba(99,246,255,.28);background:#081114}
-            .photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 42%;filter:saturate(.92) contrast(1.02)}
+            .hero{display:grid;grid-template-columns:132px minmax(0,1fr);gap:14px;align-items:stretch;padding:11px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.018)}
+            .photo{width:132px;height:168px;border-radius:13px;overflow:hidden;border:1px solid rgba(99,246,255,.34);background:#081114;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+            .photo img{width:100%;height:100%;display:block;object-fit:contain;object-position:center center;background:#081114;filter:saturate(.96) contrast(1.03)}
             .hero-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
             .eyebrow{font:900 7px/1.2 ui-monospace,monospace;letter-spacing:.14em;color:var(--cyan)}
             h1{font-size:20px;line-height:1.03;margin:6px 0 5px;color:#F7FFFF;letter-spacing:-.03em}
@@ -852,3 +852,5 @@ import android.security.keystore.KeyProperties
         } catch (_: Exception) { false }
     }
 }
+            @media(max-width:420px){.shell{padding:9px}.hero{grid-template-columns:112px minmax(0,1fr);gap:9px;padding:9px}.photo{width:112px;height:150px}.hero-copy h1{font-size:18px}.quote{font-size:10px}.security{padding:10px}}
+            @media(max-width:360px){.hero{grid-template-columns:104px minmax(0,1fr);gap:8px}.photo{width:104px;height:140px}.hero-copy h1{font-size:17px}.quote{font-size:9.5px}}
