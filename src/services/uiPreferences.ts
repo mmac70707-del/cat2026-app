@@ -36,9 +36,12 @@ export function getTextSize(): TextSize {
 
 export function isFocusMode(): boolean {
   try {
-    return localStorage.getItem(FOCUS_MODE_KEY) === 'on'
+    const saved = localStorage.getItem(FOCUS_MODE_KEY)
+    // Focus is the default operating state for CAT-first execution.
+    // An explicit user choice of "off" is always respected.
+    return saved !== 'off'
   } catch {
-    return false
+    return true
   }
 }
 
