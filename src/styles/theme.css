@@ -319,3 +319,360 @@ html[data-theme-mode="light"] .card,
 html[data-theme-mode="light"] .panel {
   background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,250,252,0.98));
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   FOCUS MODE 2.0 — execution-only dashboard
+   Focus Mode is intentionally ruthless: show only what helps
+   Ashish execute the current CAT action.
+   ═══════════════════════════════════════════════════════════ */
+
+html[data-focus-mode="on"] .dash-root > *:not(.master-command-rail):not(.live-time-bar):not(.focus-mode-cockpit){
+  display:none!important;
+}
+
+/* Keep the master rail, but strip non-execution metrics/checklists while focused. */
+html[data-focus-mode="on"] .dash-root .master-command-sub{
+  display:none!important;
+}
+html[data-focus-mode="on"] .dash-root .master-command-metrics > div:nth-child(n+4){
+  display:none!important;
+}
+html[data-focus-mode="on"] .dash-root .master-command-metrics{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+html[data-focus-mode="on"] .dash-root .master-checklist,
+html[data-focus-mode="on"] .dash-root .master-command-footer{
+  display:none!important;
+}
+html[data-focus-mode="on"] .dash-root .master-command-top{
+  grid-template-columns:minmax(0,1fr) auto!important;
+}
+html[data-focus-mode="on"] .dash-root .master-command-title{
+  font-size:18px!important;
+}
+html[data-focus-mode="on"] .dash-root .master-countdown{
+  min-width:245px!important;
+}
+
+/* Focus cockpit */
+.jarvis-theme .dash-root .focus-mode-cockpit{
+  margin:14px auto 0;
+  max-width:980px;
+  padding:14px;
+  border:1px solid rgba(199,170,107,.32);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(22,28,26,.98),rgba(14,19,18,.99));
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+.jarvis-theme .dash-root .focus-mode-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.jarvis-theme .dash-root .focus-mode-kicker{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#D9C98F;
+  font:900 8px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:1.1px;
+}
+.jarvis-theme .dash-root .focus-mode-title{
+  margin-top:5px;
+  color:#F1EFE8;
+  font-size:18px;
+  line-height:1.25;
+  font-weight:950;
+  letter-spacing:.1px;
+}
+.jarvis-theme .dash-root .focus-mode-sub{
+  margin-top:4px;
+  color:#9BA8A2;
+  font-size:9px;
+  line-height:1.4;
+}
+.jarvis-theme .dash-root .focus-mode-exit{
+  min-height:44px;
+  padding:9px 12px;
+  flex:none;
+  border:1px solid rgba(199,170,107,.35);
+  border-radius:9px;
+  background:rgba(255,255,255,.025);
+  color:#CFC7AE;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.6px;
+  cursor:pointer;
+}
+.jarvis-theme .dash-root .focus-mode-exit:hover,
+.jarvis-theme .dash-root .focus-mode-exit:focus-visible{
+  background:rgba(199,170,107,.10);
+  outline:2px solid rgba(199,170,107,.22);
+  outline-offset:2px;
+}
+
+.jarvis-theme .dash-root .focus-mode-status-grid{
+  display:grid;
+  grid-template-columns:1.35fr 1fr;
+  gap:8px;
+  margin-top:11px;
+}
+.jarvis-theme .dash-root .focus-mode-now,
+.jarvis-theme .dash-root .focus-mode-next{
+  min-width:0;
+  padding:11px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:11px;
+  background:rgba(255,255,255,.018);
+}
+.jarvis-theme .dash-root .focus-mode-now{
+  border-color:rgba(199,170,107,.28);
+  background:linear-gradient(135deg,rgba(199,170,107,.09),rgba(255,255,255,.018));
+}
+.jarvis-theme .dash-root .focus-mode-status-grid span,
+.jarvis-theme .dash-root .focus-mode-queue-head > div > span{
+  display:block;
+  color:#8D9992;
+  font:900 7px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.8px;
+}
+.jarvis-theme .dash-root .focus-mode-status-grid strong{
+  display:block;
+  margin-top:4px;
+  color:#F1EFE8;
+  font-size:15px;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+.jarvis-theme .dash-root .focus-mode-status-grid small{
+  display:block;
+  margin-top:4px;
+  color:#AAB4AF;
+  font-size:8.5px;
+}
+.jarvis-theme .dash-root .focus-mode-status-grid p{
+  margin:6px 0 0;
+  color:#83918B;
+  font-size:8px;
+  line-height:1.45;
+}
+
+.jarvis-theme .dash-root .focus-mode-progress{
+  margin-top:9px;
+  padding:10px 11px;
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:10px;
+  background:rgba(255,255,255,.014);
+}
+.jarvis-theme .dash-root .focus-mode-progress-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#8D9992;
+  font:900 7px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.7px;
+}
+.jarvis-theme .dash-root .focus-mode-progress-top b{color:#D9E2DE}
+.jarvis-theme .dash-root .focus-mode-progress-track{
+  height:7px;
+  margin-top:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.07);
+  overflow:hidden;
+}
+.jarvis-theme .dash-root .focus-mode-progress-track span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#8EAE96,#D9C98F);
+  transition:width .3s ease;
+}
+
+.jarvis-theme .dash-root .focus-mode-queue{
+  margin-top:9px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:11px;
+  overflow:hidden;
+  background:rgba(255,255,255,.012);
+}
+.jarvis-theme .dash-root .focus-mode-queue-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 11px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.jarvis-theme .dash-root .focus-mode-queue-head > div{
+  min-width:0;
+}
+.jarvis-theme .dash-root .focus-mode-queue-head > div > b{
+  display:block;
+  margin-top:4px;
+  color:#E5EAE7;
+  font-size:10px;
+  line-height:1.35;
+}
+.jarvis-theme .dash-root .focus-mode-timer{
+  min-width:100px;
+  min-height:44px;
+  padding:9px 10px;
+  border:1px solid rgba(142,174,150,.28);
+  border-radius:8px;
+  background:rgba(142,174,150,.08);
+  color:#A8C7B0;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.45px;
+  cursor:pointer;
+  flex:none;
+}
+.jarvis-theme .dash-root .focus-mode-timer:hover,
+.jarvis-theme .dash-root .focus-mode-timer:focus-visible{
+  background:rgba(142,174,150,.14);
+  outline:2px solid rgba(142,174,150,.18);
+  outline-offset:2px;
+}
+.jarvis-theme .dash-root .focus-mode-task-list{
+  display:grid;
+}
+.jarvis-theme .dash-root .focus-mode-task{
+  display:grid;
+  grid-template-columns:28px 28px minmax(0,1fr) auto;
+  align-items:center;
+  gap:8px;
+  min-height:54px;
+  padding:8px 10px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.jarvis-theme .dash-root .focus-mode-task:last-child{border-bottom:0}
+.jarvis-theme .dash-root .focus-mode-task.now{
+  background:rgba(199,170,107,.065);
+  box-shadow:inset 3px 0 0 #C7AA6B;
+}
+.jarvis-theme .dash-root .focus-mode-task.done{
+  opacity:.64;
+}
+.jarvis-theme .dash-root .focus-mode-task-check{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border:1px solid #566662;
+  border-radius:7px;
+  background:transparent;
+  color:#06100D;
+  font:950 13px/1 sans-serif;
+  cursor:pointer;
+}
+.jarvis-theme .dash-root .focus-mode-task-check.checked{
+  background:#8FE9BE;
+  border-color:#8FE9BE;
+}
+.jarvis-theme .dash-root .focus-mode-task-num{
+  color:#6F7C76;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.jarvis-theme .dash-root .focus-mode-task-copy{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+.jarvis-theme .dash-root .focus-mode-task-copy b{
+  color:#E7ECE9;
+  font-size:10px;
+  line-height:1.3;
+  overflow-wrap:anywhere;
+}
+.jarvis-theme .dash-root .focus-mode-task-copy small{
+  color:#7F8C86;
+  font-size:8px;
+  line-height:1.35;
+  overflow-wrap:anywhere;
+}
+.jarvis-theme .dash-root .focus-mode-task-state{
+  min-width:60px;
+  padding:5px 6px;
+  border-radius:999px;
+  text-align:center;
+  color:#7F8C86;
+  background:rgba(255,255,255,.03);
+  font:900 6.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.4px;
+}
+.jarvis-theme .dash-root .focus-mode-task-state.now{color:#E9D595;background:rgba(199,170,107,.10)}
+.jarvis-theme .dash-root .focus-mode-task-state.done{color:#8FE9BE;background:rgba(142,174,150,.08)}
+.jarvis-theme .dash-root .focus-mode-rule{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:9px;
+  padding:8px 10px;
+  border-left:2px solid #C7AA6B;
+  border-radius:0 8px 8px 0;
+  background:rgba(199,170,107,.045);
+  color:#8D9992;
+  font-size:8px;
+  line-height:1.4;
+}
+
+html[data-focus-mode="on"] .timer-fab{
+  z-index:120!important;
+}
+html[data-focus-mode="on"] .timer-btn{
+  width:50px!important;
+  height:50px!important;
+  border-radius:14px!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+}
+html[data-focus-mode="on"] .timer-display{
+  min-width:88px!important;
+  font-size:15px!important;
+}
+
+@media(max-width:700px){
+  html[data-focus-mode="on"] .dash-root .master-command-top{
+    grid-template-columns:1fr!important;
+  }
+  html[data-focus-mode="on"] .dash-root .master-countdown{
+    min-width:0!important;
+  }
+  html[data-focus-mode="on"] .dash-root .master-command-metrics{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .jarvis-theme .dash-root .focus-mode-head{
+    flex-direction:column;
+  }
+  .jarvis-theme .dash-root .focus-mode-exit{
+    width:100%;
+  }
+  .jarvis-theme .dash-root .focus-mode-status-grid{
+    grid-template-columns:1fr;
+  }
+  .jarvis-theme .dash-root .focus-mode-task{
+    grid-template-columns:28px 22px minmax(0,1fr);
+  }
+  .jarvis-theme .dash-root .focus-mode-task-state{
+    grid-column:3;
+    justify-self:start;
+  }
+  .jarvis-theme .dash-root .focus-mode-queue-head{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .jarvis-theme .dash-root .focus-mode-timer{
+    width:100%;
+  }
+}
+@media(max-width:380px){
+  html[data-focus-mode="on"] .dash-root .master-command-metrics{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .jarvis-theme .dash-root .focus-mode-cockpit{
+    margin-top:10px;
+    padding:10px;
+  }
+  .jarvis-theme .dash-root .focus-mode-title{
+    font-size:16px;
+  }
+}
