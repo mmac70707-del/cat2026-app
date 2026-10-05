@@ -11,6 +11,9 @@ import android.provider.Settings
 import android.provider.AlarmClock
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.Gravity
+import android.widget.FrameLayout
+import android.widget.TextView
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -46,6 +49,7 @@ import android.security.keystore.KeyProperties
 class MainActivity : FragmentActivity() {
 
     private lateinit var webView: WebView
+    private lateinit var bootStatus: TextView
     private lateinit var biometricExecutor: Executor
     private var nativeUnlocked = false
     private var speechRecognizer: SpeechRecognizer? = null
@@ -118,6 +122,12 @@ class MainActivity : FragmentActivity() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
                     assetLoader.shouldInterceptRequest(request.url)
 
+                override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    bootStatus.text = "JARVIS LOCAL CORE\nLOADING…"
+                    bootStatus.visibility = android.view.View.VISIBLE
+                }
+
                 override fun onReceivedError(
                     view: WebView,
                     request: WebResourceRequest,
@@ -125,6 +135,8 @@ class MainActivity : FragmentActivity() {
                 ) {
                     super.onReceivedError(view, request, error)
                     if (request.isForMainFrame) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nLOAD ERROR\n${error.description}"
+                        bootStatus.visibility = android.view.View.VISIBLE
                         view.post {
                             view.loadDataWithBaseURL(
                                 "https://appassets.androidplatform.net/",
@@ -147,6 +159,7 @@ class MainActivity : FragmentActivity() {
 
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
+                    bootStatus.visibility = android.view.View.GONE
                     if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/")) {
                         view.postDelayed({
                             view.evaluateJavascript(
@@ -155,6 +168,28 @@ class MainActivity : FragmentActivity() {
                             )
                         }, 250)
                     }
+                }
+
+                override fun onRenderProcessGone(view: WebView, detail: android.webkit.RenderProcessGoneDetail): Boolean {
+                    bootStatus.text = "JARVIS LOCAL CORE\nRENDERER RECOVERY…"
+                    bootStatus.visibility = android.view.View.VISIBLE
+                    view.postDelayed({
+                        try {
+                            view.destroy()
+                            recreate()
+                        } catch (_: Exception) {
+                            bootStatus.text = "JARVIS LOCAL CORE\nPLEASE RESTART THE APP"
+                        }
+                    }, 250)
+                    return true
+                }
+
+                override fun onConsoleMessage(consoleMessage: android.webkit.ConsoleMessage): Boolean {
+                    if (consoleMessage.messageLevel() == android.webkit.ConsoleMessage.MessageLevel.ERROR) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nJAVASCRIPT ERROR\n${consoleMessage.message()}"
+                        bootStatus.visibility = android.view.View.VISIBLE
+                    }
+                    return true
                 }
 
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -187,7 +222,31 @@ class MainActivity : FragmentActivity() {
             )
         }
 
-        setContentView(webView)
+        bootStatus = TextView(this).apply {
+            text = "JARVIS LOCAL CORE\nINITIALISING…"
+            setTextColor("#EAFBFC".toColorInt())
+            textSize = 14f
+            gravity = Gravity.CENTER
+            setPadding(32, 24, 32, 24)
+            setBackgroundColor("#03070A".toColorInt())
+            alpha = 0.98f
+        }
+
+        val root = FrameLayout(this).apply {
+            setBackgroundColor("#03070A".toColorInt())
+            addView(webView, FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ))
+            addView(bootStatus, FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ).apply {
+                gravity = Gravity.CENTER
+            })
+        }
+
+        setContentView(root)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
