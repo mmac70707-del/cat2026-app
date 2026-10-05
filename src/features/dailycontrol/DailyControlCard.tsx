@@ -147,6 +147,82 @@ function HairHealthCard() {
   )
 }
 
+
+function RealLifeEngine() {
+  const KEY = 'cat2026_real_life_v1'
+  type State = { energy?: 'LOW'|'NORMAL'|'HIGH'; wins?: Record<string, number>; week?: Record<string, { planned:number; done:number }> }
+  const [state, setState] = useState<State>(() => {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} }
+  })
+  const today = todayIndia()
+  const dayKey = today.key
+  const hour = new Date().getHours()
+  const phase = hour < 12 ? 'MORNING' : hour < 17 ? 'STUDY' : hour < 21 ? 'GYM / EVENING' : 'NIGHT'
+  const save = (next: State) => {
+    setState(next)
+    try { localStorage.setItem(KEY, JSON.stringify(next)) } catch {}
+  }
+  const energy = state.energy || 'NORMAL'
+  const energyText = energy === 'LOW' ? 'Protect the essentials. Do one deep CAT block, then recover.' : energy === 'HIGH' ? 'Use the extra energy for one repair/retest block — not random extra work.' : 'Stay with the locked sequence. Depth beats volume.'
+  const setEnergy = (e: State['energy']) => save({ ...state, energy: e })
+  const wins = state.wins?.[dayKey] || 0
+  const addWin = () => save({ ...state, wins: { ...(state.wins || {}), [dayKey]: Math.min(3, wins + 1) } })
+  const weekKey = dayKey.slice(0, 7)
+  const week = state.week?.[weekKey] || { planned: 0, done: 0 }
+  const addPlanned = () => save({ ...state, week: { ...(state.week || {}), [weekKey]: { ...week, planned: week.planned + 1 } } })
+  const addDone = () => save({ ...state, week: { ...(state.week || {}), [weekKey]: { ...week, done: week.done + 1 } } })
+  return (
+    <section aria-label="Real Life Engine" style={{marginTop:16,borderRadius:16,overflow:'hidden',border:'1px solid rgba(96,165,250,.22)',background:'linear-gradient(145deg,#0b1220,#111827)',boxShadow:'0 12px 34px rgba(0,0,0,.24)'}}>
+      <div style={{padding:'14px 16px',borderBottom:'1px solid rgba(255,255,255,.06)',background:'linear-gradient(90deg,rgba(59,130,246,.10),rgba(34,197,94,.06))'}}>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'#93C5FD'}}>REAL-LIFE ENGINE • LOW FRICTION</div>
+        <div style={{fontSize:19,fontWeight:950,color:'#FFF',marginTop:4}}>Today → Next → Done</div>
+        <div style={{fontSize:9,color:'#94A3B8',marginTop:4}}>Real progress, not a perfect-day scoreboard. CAT stays the priority.</div>
+      </div>
+      <div style={{padding:14,display:'grid',gap:10}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:8}}>
+          <div style={{padding:11,borderRadius:10,background:'rgba(59,130,246,.07)',border:'1px solid rgba(59,130,246,.18)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#93C5FD'}}>NOW • {phase}</div>
+            <div style={{fontSize:11,color:'#FFF',fontWeight:800,marginTop:5}}>Finish the current CAT block before opening anything new.</div>
+          </div>
+          <div style={{padding:11,borderRadius:10,background:'rgba(34,197,94,.07)',border:'1px solid rgba(34,197,94,.18)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#86EFAC'}}>NEXT</div>
+            <div style={{fontSize:11,color:'#FFF',fontWeight:800,marginTop:5}}>Repair the weakest verified error → retest → move on.</div>
+          </div>
+          <div style={{padding:11,borderRadius:10,background:'rgba(148,163,184,.06)',border:'1px solid rgba(148,163,184,.16)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>IF MISSED</div>
+            <div style={{fontSize:11,color:'#FFF',fontWeight:800,marginTop:5}}>No guilt. Shrink the task to the next 20–30 minute useful action.</div>
+          </div>
+        </div>
+        <div style={{padding:11,borderRadius:10,border:'1px solid rgba(245,166,35,.18)',background:'rgba(245,166,35,.045)'}}>
+          <div style={{fontSize:9,fontWeight:900,color:'#FCD34D'}}>ENERGY CHECK</div>
+          <div style={{display:'flex',gap:7,flexWrap:'wrap',marginTop:7}}>
+            {(['LOW','NORMAL','HIGH'] as const).map(e => <button key={e} onClick={()=>setEnergy(e)} style={{padding:'7px 10px',borderRadius:8,cursor:'pointer',fontSize:9,fontWeight:900,border:energy===e?'1px solid rgba(252,211,77,.55)':'1px solid rgba(255,255,255,.08)',background:energy===e?'rgba(252,211,77,.10)':'rgba(255,255,255,.025)',color:energy===e?'#FCD34D':'#CBD5E1'}}>{energy===e?'✓ ':''}{e}</button>)}
+          </div>
+          <div style={{fontSize:9,color:'#CBD5E1',marginTop:7,lineHeight:1.45}}>{energyText}</div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+          <div style={{padding:11,borderRadius:10,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>TODAY'S 3 WINS</div>
+            <div style={{fontSize:20,fontWeight:950,color:'#FFF',marginTop:4}}>{wins}/3</div>
+            <button onClick={addWin} disabled={wins>=3} style={{marginTop:6,padding:'6px 9px',borderRadius:7,border:'1px solid rgba(34,197,94,.25)',background:'rgba(34,197,94,.07)',color:'#86EFAC',fontSize:8,fontWeight:900,cursor:'pointer'}}>MARK ONE WIN</button>
+          </div>
+          <div style={{padding:11,borderRadius:10,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>WEEKLY REALITY</div>
+            <div style={{fontSize:11,fontWeight:900,color:'#FFF',marginTop:6}}>{week.done} done / {week.planned} planned</div>
+            <div style={{display:'flex',gap:5,marginTop:6}}>
+              <button onClick={addPlanned} style={{padding:'5px 7px',borderRadius:7,border:'1px solid rgba(148,163,184,.2)',background:'transparent',color:'#CBD5E1',fontSize:8,fontWeight:900}}>+ PLAN</button>
+              <button onClick={addDone} style={{padding:'5px 7px',borderRadius:7,border:'1px solid rgba(34,197,94,.25)',background:'transparent',color:'#86EFAC',fontSize:8,fontWeight:900}}>+ DONE</button>
+            </div>
+          </div>
+        </div>
+        <div style={{padding:10,borderRadius:9,background:'rgba(59,130,246,.045)',border:'1px solid rgba(59,130,246,.12)',fontSize:9,color:'#CBD5E1',lineHeight:1.5}}>
+          <strong style={{color:'#93C5FD'}}>REALITY STATUS:</strong> {wins>=3 ? 'On Track' : wins>0 ? 'Moving' : week.done<week.planned && week.planned>0 ? 'Needs Repair' : 'Ready'} • The goal is the next correct action, not 100% perfection.
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function DailyControlCard() {
   // Live daily engine: date/weekday is derived from Asia/Kolkata and refreshed while the app is open.
   const phase = usePhase()
@@ -627,6 +703,7 @@ export function DailyControlCard() {
       </div>
 
       <HairHealthCard />
+      <RealLifeEngine />
 
       {/* BOTTOM FOOTER */}
       <div style={{
