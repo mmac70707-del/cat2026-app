@@ -147,29 +147,43 @@ function getBusinessLessonNumberForDate(key: string) {
   return count
 }
 
-function getTodaySchedule() {
+function getTodaySchedule(completedDates: string[]) {
   const today = getKolkataDateKey()
   const dayOfWeek = dateFromKey(today).getUTCDay()
-  const lessonNumber = getBusinessLessonNumberForDate(today)
+
+  // The curriculum is completion-gated: a lesson never advances just because the
+  // calendar changed. If Day 2 is not marked done, tomorrow still shows Day 2.
+  const completed = new Set(completedDates)
+  let nextLesson = 1
+  for (let day = 1; day <= LESSONS.length; day += 1) {
+    const scheduledKey = (() => {
+      const cursor = dateFromKey('2026-10-05')
+      let seen = 0
+      while (seen < day) {
+        if (cursor.getUTCDay() !== 0) seen += 1
+        if (seen === day) return cursor.toISOString().slice(0, 10)
+        cursor.setUTCDate(cursor.getUTCDate() + 1)
+      }
+      return ''
+    })()
+    if (!completed.has(scheduledKey)) {
+      nextLesson = day
+      break
+    }
+    nextLesson = Math.min(day + 1, LESSONS.length)
+  }
 
   if (dayOfWeek === 0) {
     const reviewed: Lesson[] = []
-    const cursor = dateFromKey(today)
-    while (reviewed.length < 6) {
-      cursor.setUTCDate(cursor.getUTCDate() - 1)
-      if (cursor.getUTCDay() !== 0) {
-        const key = cursor.toISOString().slice(0, 10)
-        const number = getBusinessLessonNumberForDate(key)
-        const lesson = LESSONS[number - 1]
-        if (lesson) reviewed.unshift(lesson)
-      }
-      if (cursor < dateFromKey('2026-10-05')) break
+    for (let day = Math.max(1, nextLesson - 6); day < nextLesson; day += 1) {
+      const item = LESSONS[day - 1]
+      if (item) reviewed.push(item)
     }
-    return { type: 'revision' as const, lessons: reviewed, lessonNumber }
+    return { type: 'revision' as const, lessons: reviewed, lessonNumber: nextLesson }
   }
 
-  const lesson = LESSONS[Math.min(lessonNumber - 1, LESSONS.length - 1)]
-  return { type: 'lesson' as const, lesson, lessonNumber }
+  const lesson = LESSONS[Math.min(nextLesson - 1, LESSONS.length - 1)]
+  return { type: 'lesson' as const, lesson, lessonNumber: nextLesson }
 }
 
 
@@ -210,9 +224,6 @@ function buildStreak(dates: string[]): StreakState {
   return { completedDates, current, best }
 }
 export function BRMPage({ onBack }: { onBack?: () => void }) {
-  const schedule = getTodaySchedule()
-  const lesson = schedule.type === 'lesson' ? schedule.lesson : schedule.lessons[schedule.lessons.length - 1]
-  const progress = lesson ? ((lesson.day - 1) / (LESSONS.length - 1)) * 100 : 0
   const today = getKolkataDateKey()
   const [streak, setStreak] = useState<StreakState>({ completedDates: [], current: 0, best: 0 })
 
@@ -227,6 +238,9 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
     }
   }, [])
 
+  const schedule = getTodaySchedule(streak.completedDates)
+  const lesson = schedule.type === 'lesson' ? schedule.lesson : schedule.lessons[schedule.lessons.length - 1]
+  const progress = lesson ? ((lesson.day - 1) / (LESSONS.length - 1)) * 100 : 0
   const isDoneToday = streak.completedDates.includes(today)
 
   const markDone = () => {
@@ -331,7 +345,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
         )}
 
         <button onClick={markDone} disabled={isDoneToday} style={{ marginTop: 18, width: '100%', border: isDoneToday ? '1px solid rgba(34,197,94,.32)' : '1px solid rgba(99,246,255,.34)', background: isDoneToday ? 'rgba(34,197,94,.10)' : 'rgba(99,246,255,.08)', color: isDoneToday ? '#86EFAC' : '#A5F3FC', borderRadius: 13, padding: '12px 14px', cursor: isDoneToday ? 'default' : 'pointer', fontWeight: 950, letterSpacing: .8 }}>
-          {isDoneToday ? `✅ TODAY COMPLETE • CURRENT STREAK ${streak.current}` : 'MARK TODAY DONE → BUILD THE STREAK'}
+          {isDoneToday ? `✅ TODAY COMPLETE • CURRENT STREAK ${streak.current}` : 'MARK TODAY DONE → UNLOCK NEXT LESSON'}
         </button>
       </section>
 
@@ -348,8 +362,10 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
 
       <div style={{ marginTop: 14, textAlign: 'center', fontSize: 11, color: '#64748B' }}>
         {schedule.type === 'revision'
-          ? 'SUNDAY REVISION → NEXT MONDAY = NEXT LOCKED LESSON'
-          : `DAY ${lesson?.day} → NEXT LOCKED LESSON TOMORROW`} • CAT FIRST 🔒
+          ? 'SUNDAY REVISION → COMPLETE THE PENDING LESSON → NEXT LESSON UNLOCKS'
+          : isDoneToday
+            ? `DAY ${lesson?.day} COMPLETE → NEXT LESSON UNLOCKED`
+            : `DAY ${lesson?.day} LOCKED → MARK DONE TO UNLOCK NEXT LESSON`} • CAT FIRST 🔒
       </div>
 
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ marginTop: 12, width: '100%', border: '1px solid rgba(99,246,255,.22)', background: 'rgba(99,246,255,.05)', color: '#A5F3FC', borderRadius: 12, padding: '10px 12px', cursor: 'pointer' }}>
