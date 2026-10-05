@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { getKolkataDateParts } from '@/services/calendarEngine'
 
 type Lesson = [string,string,string,string,string,string,string,string,string,string]
+type BusinessLens = { lens:string; role:string; move:string; question:string; visual:string }
 
 const LESSONS: Lesson[] = [
   ['Observe → Hypothesis → Test','Good decisions start with an observation, a possible explanation, and a small test.','Science lab: an idea is not a fact until tested.','A shop notices smaller packs are requested and tests a lower-price pack for a week.','Test assumptions before scaling effort.','What is the smallest test for an idea I have?','From Science to Business','A business idea is still a hypothesis until reality tests it.','I’m learning to connect scientific thinking with business: observe, form a hypothesis, test, learn, improve.','What assumption should be tested before a product is fully built?'],
@@ -35,7 +36,15 @@ const LESSONS: Lesson[] = [
   ['Founder Learning Loop','Founders repeatedly move through observation, decision, action, measurement and learning.','A pilot keeps adjusting its route after checking the map.','A product team learns from customers, changes the product, measures again and repeats.','The loop compounds learning.','What did the last action teach me?','Founder Learning Notes','The long-term advantage may come from learning faster, not simply working harder.','I’m learning to see entrepreneurship as a repeated learning loop rather than one giant idea.','What learning loop can I start with a real project?'],
 ]
 
-const ANCHOR = '2026-09-26'
+const BUSINESS_LENSES: BusinessLens[] = [
+  { lens:'CEO LENS', role:'Vision + allocation', move:'Turn a broad goal into one clear priority, then decide what NOT to fund, build or chase.', question:'If I had one quarter and limited people, what would I stop doing?', visual:'CEO desk: one north-star metric, three priorities, three crossed-out distractions.' },
+  { lens:'PRODUCT MANAGER LENS', role:'Customer + product', move:'Start from the user problem, define the smallest useful outcome, then measure behaviour instead of opinions.', question:'What user behaviour would prove this feature is actually useful?', visual:'Product board: USER → PROBLEM → HYPOTHESIS → MVP → METRIC.' },
+  { lens:'FOUNDER LENS', role:'Speed + learning', move:'Make the smallest credible bet, get reality feedback quickly, and use the result to change the next decision.', question:'What can I test in 7 days instead of debating for 7 weeks?', visual:'Founder loop: ASSUMPTION → TEST → SIGNAL → DECISION → NEXT BET.' },
+  { lens:'STRATEGY LENS', role:'Advantage + trade-offs', move:'Choose where to win and accept the trade-offs that make the position credible.', question:'What will we deliberately be worse at so we can be much better at one thing?', visual:'Strategy map: CUSTOMER → CHOICE → TRADE-OFF → ADVANTAGE.' },
+  { lens:'AI + TECHNOLOGY LENS', role:'Leverage + systems', move:'Use technology where it changes the economics or speed of a real workflow—not merely because it is impressive.', question:'Which bottleneck becomes cheaper, faster or better if technology is applied?', visual:'Workflow: HUMAN BOTTLENECK → AI ASSIST → HUMAN JUDGMENT → OUTCOME.' },
+  { lens:'GROWTH LENS', role:'Distribution + retention', move:'Separate acquisition from retention and find the stage where the system loses the most value.', question:'Where is the biggest leak: discovery, activation, conversion or retention?', visual:'Funnel: REACH → ACTIVATE → CONVERT → RETAIN → REFER.' },
+  { lens:'CAPITAL LENS', role:'Economics + runway', move:'Ask what one customer/unit contributes, what growth costs, and which assumption can break the model.', question:'If volume doubles, which cost or constraint becomes the problem?', visual:'Simple model: PRICE − DIRECT COST → CONTRIBUTION → SCALE CONSTRAINT.' },
+]\n\nconst ANCHOR = '2026-09-26'
 
 function dateKeyIndia() {
   const p = getKolkataDateParts(new Date())
@@ -95,9 +104,9 @@ export function LinkedInDailyCard() {
 
   return <section style={{margin:'0 0 18px',border:'1px solid rgba(59,130,246,.35)',borderRadius:16,overflow:'hidden',background:'linear-gradient(180deg,#0F172A,#0B1220)',boxShadow:'0 10px 28px rgba(0,0,0,.22)'}}>
     <div style={{padding:'15px 18px',background:'linear-gradient(90deg,rgba(37,99,235,.14),rgba(124,58,237,.08))',borderBottom:'1px solid rgba(255,255,255,.07)'}}>
-      <div style={{fontSize:11,letterSpacing:1.3,fontWeight:900,color:'#93C5FD'}}>LINKEDIN — DAILY 3-MINUTE CARD</div>
+      <div style={{fontSize:11,letterSpacing:1.3,fontWeight:900,color:'#93C5FD'}}>BUSINESS + LINKEDIN — DAILY 3-MINUTE CARD</div>
       <div style={{marginTop:5,fontSize:19,fontWeight:950,color:'#FFF'}}>{today.p.date} {today.p.month} {today.p.year} — {today.p.dayOfWeek===0?'SUNDAY':['','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'][today.p.dayOfWeek]}</div>
-      <div style={{marginTop:4,fontSize:10,color:'#94A3B8'}}>CAT-FIRST • MAX 3 MIN • SECONDARY COMPOUNDING HABIT • {action}</div>
+      <div style={{marginTop:4,fontSize:10,color:'#94A3B8'}}>CAT-FIRST • MAX 3 MIN • BUSINESS THINKING • {action}</div>
     </div>
     <div style={{padding:'13px 18px',display:'grid',gap:10}}>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:9}}>
@@ -111,6 +120,16 @@ export function LinkedInDailyCard() {
           <div style={{marginTop:4,color:'#FFF',fontSize:11,lineHeight:1.55}}>{lesson.analogy}</div>
           <div style={{marginTop:6,color:'#CBD5E1',fontSize:10}}>Real example: {lesson.example}</div>
         </div>
+      </div>
+      <div style={{padding:12,borderRadius:11,background:'linear-gradient(135deg,rgba(14,116,144,.12),rgba(30,41,59,.72))',border:'1px solid rgba(103,232,249,.18)'}}>
+        <div style={{display:'flex',justifyContent:'space-between',gap:8,alignItems:'center',flexWrap:'wrap'}}>
+          <div style={{fontSize:9,color:'#67E8F9',fontWeight:900}}>BUSINESS SIMULATION • {businessLens.lens}</div>
+          <div style={{fontSize:9,color:'#94A3B8'}}>ROLE: {businessLens.role}</div>
+        </div>
+        <div style={{marginTop:6,color:'#FFF',fontSize:11,fontWeight:850,lineHeight:1.5}}>{businessLens.move}</div>
+        <div style={{marginTop:7,padding:8,borderRadius:8,background:'rgba(2,6,23,.55)',color:'#CFFAFE',fontSize:10,lineHeight:1.55}}><strong style={{color:'#67E8F9'}}>CEO / PM / FOUNDER QUESTION:</strong> {businessLens.question}</div>
+        <div style={{marginTop:8,fontSize:9,color:'#A5F3FC',fontWeight:900}}>VISUALIZE THE BUSINESS</div>
+        <div style={{marginTop:4,color:'#CBD5E1',fontSize:10,lineHeight:1.5}}>{businessLens.visual}</div>
       </div>
       <div style={{padding:11,borderRadius:10,background:'#111827',border:'1px solid rgba(255,255,255,.07)'}}>
         <div style={{fontSize:9,color:'#FCD34D',fontWeight:900}}>TAKEAWAY</div>
@@ -138,6 +157,9 @@ export function LinkedInDailyCard() {
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(245,166,35,.16)',background:'rgba(245,166,35,.04)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
         <strong style={{color:'#FCD34D'}}>MBA/PDPI:</strong> structured thinking + communication. &nbsp; <strong style={{color:'#FCD34D'}}>7-year founder:</strong> repeated business observation + decision practice.
+      </div>
+      <div style={{padding:10,borderRadius:9,border:'1px solid rgba(34,211,238,.16)',background:'rgba(34,211,238,.035)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
+        <strong style={{color:'#67E8F9'}}>LEADER LENS:</strong> Study the decision pattern, not the celebrity. Use public examples associated with leaders such as Sundar Pichai or Elon Musk as prompts for strategic thinking; do not copy their identity, claim private knowledge, or invent outcomes.
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(255,255,255,.07)',background:'rgba(255,255,255,.025)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
         <strong style={{color:'#FFF'}}>Truth gate:</strong> publish only genuine learning. Never claim an experience, result, project, credential, or expertise that was not actually completed.
