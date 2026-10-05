@@ -241,8 +241,8 @@ const SIN_CONTROL_STORAGE = 'cat2026.bestme.sins.v1'
 
 const SEVEN_SINS_CONTROL = [
   { id:'PRIDE' as BestMeSinId, number:'01', sin:'PRIDE', virtue:'HUMILITY', icon:'👑', signal:'Need to prove I am better/right.', step:'Listen → check evidence → admit what you do not know → correct without ego.' },
-  { id:'GREED' as BestMeSinId, number:'02', sin:'GREED', virtue:'GENEROSITY', icon:'💰', signal:'More, more, more—even when enough is enough.', step:'Pause → ask “need or want?” → choose enough → share/help where practical.' },
-  { id:'LUST' as BestMeSinId, number:'03', sin:'LUST', virtue:'RESPECT', icon:'🔥', signal:'Impulse starts controlling attention or behaviour.', step:'Notice → remove the trigger → redirect attention → treat people as whole human beings.' },
+  { id:'GREED' as BestMeSinId, number:'02', sin:'GREED', virtue:'CHARITY', icon:'💰', signal:'More, more, more—even when enough is enough.', step:'Pause → ask “need or want?” → choose enough → share/help where practical.' },
+  { id:'LUST' as BestMeSinId, number:'03', sin:'LUST', virtue:'CHASTITY', icon:'🔥', signal:'Impulse starts controlling attention or behaviour.', step:'Notice → remove the trigger → redirect attention → protect attention → treat people with dignity, not as objects.' },
   { id:'ENVY' as BestMeSinId, number:'04', sin:'ENVY', virtue:'GRATITUDE', icon:'👀', signal:'Someone else’s success makes my progress feel smaller.', step:'Notice comparison → name one thing to learn → name one thing to be grateful for → return to my path.' },
   { id:'GLUTTONY' as BestMeSinId, number:'05', sin:'GLUTTONY', virtue:'TEMPERANCE', icon:'🍽️', signal:'Consumption keeps going after the real need is met.', step:'Pause → check hunger/need → choose a reasonable amount → stop deliberately.' },
   { id:'WRATH' as BestMeSinId, number:'06', sin:'WRATH', virtue:'PATIENCE', icon:'⚡', signal:'Anger wants an immediate reaction.', step:'Stop → 3 slow breaths → delay the reply → respond to the problem, not the heat.' },
