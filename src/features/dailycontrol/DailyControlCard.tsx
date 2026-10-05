@@ -224,6 +224,86 @@ function HairFoodCard() {
 }
 
 
+function ConfidenceSocialReset() {
+  const KEY = 'cat2026_confidence_reset_v1'
+  type State = { used?: Record<string, boolean>; socialWins?: Record<string, number> }
+  const [state, setState] = useState<State>(() => {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} }
+  })
+  const today = todayIndia()
+  const dayKey = today.key
+  const used = !!state.used?.[dayKey]
+  const wins = state.socialWins?.[dayKey] || 0
+  const save = (next: State) => {
+    setState(next)
+    try { localStorage.setItem(KEY, JSON.stringify(next)) } catch {}
+  }
+  const reset = () => save({ ...state, used: { ...(state.used || {}), [dayKey]: !used } })
+  const socialWin = () => save({ ...state, socialWins: { ...(state.socialWins || {}), [dayKey]: Math.min(3, wins + 1) } })
+
+  return (
+    <section aria-label="Confidence and Social Reset" style={{marginTop:16,borderRadius:16,overflow:'hidden',border:'1px solid rgba(236,72,153,.22)',background:'linear-gradient(145deg,#17101a,#111827)',boxShadow:'0 12px 34px rgba(0,0,0,.22)'}}>
+      <div style={{padding:'14px 16px',borderBottom:'1px solid rgba(255,255,255,.06)',background:'linear-gradient(90deg,rgba(236,72,153,.10),rgba(124,58,237,.08))'}}>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'#F9A8D4'}}>BEST VERSION • CONFIDENCE & SOCIAL RESET</div>
+        <div style={{fontSize:19,fontWeight:950,color:'#FFF',marginTop:4}}>Build yourself. Connect naturally. Don't chase validation.</div>
+        <div style={{fontSize:9,color:'#94A3B8',marginTop:4}}>Being single is a situation, not your identity. Attraction is normal; respect and self-control come first.</div>
+      </div>
+
+      <div style={{padding:14,display:'grid',gap:10}}>
+        <div style={{padding:12,borderRadius:11,border:'1px solid rgba(245,166,35,.18)',background:'rgba(245,166,35,.045)'}}>
+          <div style={{fontSize:9,fontWeight:900,color:'#FCD34D'}}>⚡ WHEN YOU FEEL ALONE</div>
+          <div style={{fontSize:12,fontWeight:900,color:'#FFF',lineHeight:1.55,marginTop:6}}>“I don't need a relationship to prove my worth. Today I can build my mind, body, skills and character.”</div>
+        </div>
+
+        <div style={{padding:12,borderRadius:11,border:'1px solid rgba(236,72,153,.16)',background:'rgba(236,72,153,.045)'}}>
+          <div style={{fontSize:9,fontWeight:900,color:'#F9A8D4'}}>👀 WHEN YOU SEE SOMEONE YOU FIND ATTRACTIVE</div>
+          <div style={{fontSize:11,color:'#E5E7EB',lineHeight:1.55,marginTop:6}}>“She is beautiful. That's okay. I can notice attraction without losing focus or needing anything from her.”</div>
+        </div>
+
+        <div style={{padding:12,borderRadius:11,border:'1px solid rgba(34,197,94,.16)',background:'rgba(34,197,94,.045)'}}>
+          <div style={{fontSize:9,fontWeight:900,color:'#86EFAC'}}>🤝 SOCIAL CONFIDENCE</div>
+          <div style={{fontSize:10,color:'#E5E7EB',lineHeight:1.6,marginTop:6}}><strong style={{color:'#FFF'}}>See → relax → natural smile → “Hi” → ask something simple → listen → respect the response → move on.</strong><br/>No staring. No pressure. No chasing. No trying to collect people as achievements.</div>
+        </div>
+
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:8}}>
+          <div style={{padding:11,borderRadius:10,background:'rgba(59,130,246,.06)',border:'1px solid rgba(59,130,246,.14)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#93C5FD'}}>HAIR / GROOMING</div>
+            <div style={{fontSize:10,color:'#CBD5E1',lineHeight:1.5,marginTop:5}}>Care for your hair and appearance, but don't make them your identity.</div>
+          </div>
+          <div style={{padding:11,borderRadius:10,background:'rgba(124,58,237,.06)',border:'1px solid rgba(124,58,237,.14)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#C4B5FD'}}>CONFIDENCE</div>
+            <div style={{fontSize:10,color:'#CBD5E1',lineHeight:1.5,marginTop:5}}>“I can feel nervous and still act calmly.”</div>
+          </div>
+          <div style={{padding:11,borderRadius:10,background:'rgba(34,197,94,.06)',border:'1px solid rgba(34,197,94,.14)'}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#86EFAC'}}>REAL WIN</div>
+            <div style={{fontSize:10,color:'#CBD5E1',lineHeight:1.5,marginTop:5}}>A genuine conversation, kind interaction, or choosing your priorities over validation.</div>
+          </div>
+        </div>
+
+        <div style={{padding:12,borderRadius:11,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
+          <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>🌅 BEST DAILY TIMES</div>
+          <div style={{fontSize:10,color:'#E5E7EB',lineHeight:1.6,marginTop:5}}>
+            <strong style={{color:'#FFF'}}>Morning:</strong> read the confidence line once after your morning reset.<br/>
+            <strong style={{color:'#FFF'}}>Daytime:</strong> use the attraction reset when comparison starts; return to your current task.<br/>
+            <strong style={{color:'#FFF'}}>Evening:</strong> 2-minute grooming + posture check before going out/gym; then focus on your own activity.<br/>
+            <strong style={{color:'#FFF'}}>Night:</strong> ask “Did I become 1% stronger today?” — not “Did anyone like me?”
+          </div>
+        </div>
+
+        <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+          <button onClick={reset} style={{padding:'8px 11px',borderRadius:8,border:'1px solid rgba(249,168,212,.3)',background:used?'rgba(34,197,94,.08)':'rgba(249,168,212,.07)',color:used?'#86EFAC':'#F9A8D4',fontWeight:900,fontSize:9,cursor:'pointer'}}>{used?'✓ RESET USED TODAY':'MARK RESET USED'}</button>
+          <button onClick={socialWin} disabled={wins>=3} style={{padding:'8px 11px',borderRadius:8,border:'1px solid rgba(147,197,253,.25)',background:'rgba(147,197,253,.06)',color:'#93C5FD',fontWeight:900,fontSize:9,cursor:'pointer'}}>SOCIAL WIN {wins}/3</button>
+        </div>
+
+        <div style={{padding:11,borderRadius:10,border:'1px solid rgba(255,255,255,.07)',background:'rgba(255,255,255,.02)',fontSize:9,color:'#94A3B8',lineHeight:1.55}}>
+          <strong style={{color:'#FFF'}}>Core rule:</strong> CAT first → health → grooming → communication → friendships → confidence → relationships. A relationship is something two people choose together; it is never a scorecard for your value.
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
 function RealLifeEngine() {
   const KEY = 'cat2026_real_life_v1'
   type State = { energy?: 'LOW'|'NORMAL'|'HIGH'; wins?: Record<string, number>; week?: Record<string, { planned:number; done:number }> }
@@ -780,6 +860,7 @@ export function DailyControlCard() {
 
       <HairHealthCard />
       <HairFoodCard />
+      <ConfidenceSocialReset />
       <RealLifeEngine />
 
       {/* BOTTOM FOOTER */}
