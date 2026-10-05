@@ -3,7 +3,7 @@ import { useTodayTasks } from '@/hooks/useTasks'
 import { DailyScoreRepository } from '@/repositories/index'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { usePhase } from '@/hooks/usePhase'
-import { getWeekNumber, getDaysLeft } from '@/services/domain'
+import { getWeekNumber, getDaysLeft, getCountdownParts } from '@/services/domain'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { BLOCKS, PHASES, SCHEDULE_ITEMS, WEEK_PLAN_TEMPLATE } from '@/data/config'
@@ -297,6 +297,7 @@ const DAILY_BEST_BASIC_LESSONS: Record<BestMeDimensionId, DailyLesson[]> = {
 type BestMeSinId = 'PRIDE' | 'GREED' | 'LUST' | 'ENVY' | 'GLUTTONY' | 'WRATH' | 'SLOTH'
 
 const SIN_CONTROL_STORAGE = 'cat2026.bestme.sins.v1'
+const EXECUTION_STREAK_STORAGE = 'cat2026.execution.streak.v1'
 
 const SEVEN_SINS_CONTROL = [
   { id:'PRIDE' as BestMeSinId, number:'01', sin:'PRIDE', virtue:'HUMILITY', icon:'👑', signal:'Need to prove I am better/right.', step:'Listen → check evidence → admit what you do not know → correct without ego.' },
@@ -307,6 +308,28 @@ const SEVEN_SINS_CONTROL = [
   { id:'WRATH' as BestMeSinId, number:'06', sin:'WRATH', virtue:'PATIENCE', icon:'⚡', signal:'Anger wants an immediate reaction.', step:'Stop → 3 slow breaths → delay the reply → respond to the problem, not the heat.' },
   { id:'SLOTH' as BestMeSinId, number:'07', sin:'SLOTH', virtue:'DILIGENCE', icon:'🛡️', signal:'I know the right action but keep postponing it.', step:'Make it tiny → start for 5 minutes → finish the planned minimum → build momentum.' },
 ] as const
+
+function getConsecutiveStreak(completedDates: string[], todayKey: string) {
+  const set = new Set(completedDates)
+  let streak = 0
+  const cursor = new Date(todayKey + 'T00:00:00Z')
+  while (set.has(cursor.toISOString().slice(0,10))) {
+    streak++
+    cursor.setUTCDate(cursor.getUTCDate() - 1)
+  }
+  return streak
+}
+
+function recordExecutionDay(dateKey: string, complete: boolean) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(EXECUTION_STREAK_STORAGE) || '{}') as Record<string, boolean>
+    if (complete) raw[dateKey] = true
+    localStorage.setItem(EXECUTION_STREAK_STORAGE, JSON.stringify(raw))
+    return Object.keys(raw)
+  } catch {
+    return []
+  }
+}
 
 function readSinControls(dateKey: string) {
   try {
@@ -508,6 +531,21 @@ export function DashboardPage() {
   const finalWin = bestMeWinCount === BEST_ME_DIMENSIONS.length
   const sinWinCount = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
   const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
+  const coreDayComplete = done === tasks.length && tasks.length > 0 && bestMeWinCount === BEST_ME_DIMENSIONS.length
+  const lessonLearnedCount = Object.values(lessonWins).filter(Boolean).length
+  const executionStreakDates = Object.keys((() => {
+    try { return JSON.parse(localStorage.getItem(EXECUTION_STREAK_STORAGE) || '{}') as Record<string, boolean> } catch { return {} }
+  })())
+  const liveStreak = getConsecutiveStreak(executionStreakDates, dateKey)
+  const executionScore = Math.round(
+    ((done / Math.max(1, tasks.length)) * 60) +
+    ((bestMeWinCount / BEST_ME_DIMENSIONS.length) * 25) +
+    ((sinWinCount / SEVEN_SINS_CONTROL.length) * 10) +
+    ((lessonLearnedCount / DAILY_BEST_BASICS.length) * 5)
+  )
+  const countdown = getCountdownParts()
+ = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
+  const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
   const nextDimensionIndex = BEST_ME_DIMENSIONS.findIndex(dimension => !dimensionWins[dimension.id])
   const nextDimension = nextDimensionIndex >= 0 ? BEST_ME_DIMENSIONS[nextDimensionIndex] : null
   const currentSevenYear = SEVEN_YEAR_ROADMAP[Math.min(6, Math.max(0, kolkataParts.year - 2026))] || SEVEN_YEAR_ROADMAP[0]
@@ -557,6 +595,10 @@ export function DashboardPage() {
     setBestMeManualWins(readBestMeManualWins(dateKey))
     setLessonWins(readBestMeLessonWins(dateKey))
   }, [dateKey])
+
+  useEffect(() => {
+    recordExecutionDay(dateKey, coreDayComplete)
+  }, [dateKey, coreDayComplete])
   useEffect(() => {
     setSinControls(readSinControls(dateKey))
   }, [dateKey])
@@ -620,6 +662,66 @@ export function DashboardPage() {
 
   return (
     <div className="dash-root">
+      {/* ── ALWAYS-VISIBLE CAT COUNTDOWN + MASTER CHECKLIST ── */}
+      <section className="master-command-rail" aria-label="CAT countdown and daily master checklist">
+        <div className="master-command-top">
+          <div>
+            <div className="master-command-kicker">CAT 2026 • MASTER COMMAND</div>
+            <div className="master-command-title">ONE DAY. ONE SEQUENCE. COMPLETE THE LOOP.</div>
+            <div className="master-command-sub">
+              {realDayName}, {realDateStr} • {currentSevenYearLabel}
+              <br />{currentSevenYear.output}
+            </div>
+          </div>
+          <div className="master-countdown">
+            <span>COUNTDOWN TO CAT • 29 NOV 2026</span>
+            <strong>{countdown.days}D <i>{String(countdown.hours).padStart(2,'0')}:{String(countdown.minutes).padStart(2,'0')}:{String(countdown.seconds).padStart(2,'0')}</i></strong>
+          </div>
+        </div>
+
+        <div className="master-command-metrics">
+          <div><span>🔥 EXECUTION STREAK</span><b>{liveStreak} DAY{liveStreak === 1 ? '' : 'S'}</b></div>
+          <div><span>TODAY SCORE</span><b>{executionScore}%</b></div>
+          <div><span>CAT CORE</span><b>{done}/{tasks.length || 8}</b></div>
+          <div><span>BEST ME</span><b>{bestMeWinCount}/7</b></div>
+          <div><span>SELF-MASTERY</span><b>{sinWinCount}/7</b></div>
+          <div><span>LESSONS</span><b>{lessonLearnedCount}/7</b></div>
+        </div>
+
+        <div className="master-checklist">
+          <button type="button" className={'master-check master-check-main ' + (coreDayComplete ? 'done' : '')}
+            onClick={() => document.querySelector('.daily-basics-rail')?.scrollIntoView({behavior:'smooth',block:'start'})}>
+            <span className="master-box">{coreDayComplete ? '✓' : ''}</span>
+            <span><b>01 • CAT-FIRST DAY</b><small>Complete every planned CAT block + all 7 Best Me daily actions.</small></span>
+            <em>{coreDayComplete ? 'STREAK DAY EARNED' : 'IN PROGRESS'}</em>
+          </button>
+          <button type="button" className={'master-check ' + (sinControlComplete ? 'done' : '')}
+            onClick={() => document.querySelector('.sins-control-panel')?.scrollIntoView({behavior:'smooth',block:'center'})}>
+            <span className="master-box">{sinControlComplete ? '✓' : ''}</span>
+            <span><b>02 • SELF-MASTERY BONUS</b><small>Trigger → Pause → Choose Virtue → Act → Win.</small></span>
+            <em>{sinControlComplete ? 'DONE' : sinWinCount + '/7'}</em>
+          </button>
+          <button type="button" className={'master-check ' + (lessonLearnedCount === 7 ? 'done' : '')}
+            onClick={() => document.querySelector('.daily-basics-rail')?.scrollIntoView({behavior:'smooth',block:'center'})}>
+            <span className="master-box">{lessonLearnedCount === 7 ? '✓' : ''}</span>
+            <span><b>03 • LEARN THE 7</b><small>Tap each dimension → learn → apply → recall → mark learned.</small></span>
+            <em>{lessonLearnedCount === 7 ? 'DONE' : lessonLearnedCount + '/7'}</em>
+          </button>
+          <button type="button" className="master-check"
+            onClick={() => document.querySelector('.linkedin-daily-card, [aria-label*="LinkedIn"]')?.scrollIntoView({behavior:'smooth',block:'center'})}>
+            <span className="master-box">+</span>
+            <span><b>04 • LINKEDIN 3-MINUTE BONUS</b><small>Lesson + useful networking/comment. Never before CAT.</small></span>
+            <em>MAX 3 MIN</em>
+          </button>
+        </div>
+
+        <div className="master-command-footer">
+          <span>{coreDayComplete ? '🟢 GREEN DAY' : executionScore >= 70 ? '🟡 KEEP EXECUTING' : '🔵 START THE NEXT BLOCK'}</span>
+          <b>STREAK RULE: CAT CORE + BEST ME = 1 EXECUTION DAY</b>
+          <small>Missed block? Resume from the next task. No guilt debt. No random replanning.</small>
+        </div>
+      </section>
+
       {/* ── LIVE INDIA TIME BAR ── */}
       <div className="live-time-bar">
         <span className="live-time-clock">{liveTimeStr}</span>
