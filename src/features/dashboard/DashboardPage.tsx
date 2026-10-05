@@ -12,6 +12,7 @@ import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
+import { getBodyPlan } from '@/data/body360'
 
 const SEQUENCE_STRIP: Array<{
   seq: string
@@ -285,6 +286,7 @@ export function DashboardPage() {
   const currentBlockId = getCurrentBlockId(currentSlot)
   const liveTimeStr = String(clock.hours).padStart(2, '0') + ':' + String(clock.minutes).padStart(2, '0') + ':' + String(clock.seconds).padStart(2, '0')
   const todayWeekPlan = WEEK_PLAN_TEMPLATE[kolkataParts.dayOfWeek === 0 ? 6 : kolkataParts.dayOfWeek - 1]
+  const todayBodyPlan = getBodyPlan(kolkataParts.dayOfWeek)
   const nextTask = tasks.find(task => task.status !== 'DONE') || null
   const getSequenceState = (id: string) => {
     const task = tasks.find(t => t.blockId === id)
@@ -399,6 +401,13 @@ export function DashboardPage() {
           <div className="live-schedule-kicker">◉ RIGHT NOW • {liveTimeStr} IST</div>
           <div className="live-schedule-title">{currentSlot?.icon || '⏱️'} {currentSlot?.block || 'Buffer / Transition'}</div>
           <div className="live-schedule-detail">{currentSlot?.detail || 'Use this gap for water, movement, setup, or the next planned study block.'}</div>
+          {currentSlot?.block === 'Gym / Movement' && (
+            <div style={{ marginTop: 9, padding: '8px 10px', borderRadius: 10, border: '1px solid rgba(34,197,94,.3)', background: 'rgba(34,197,94,.07)' }}>
+              <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 1, color: '#4ADE80' }}>BODY 360 • AUTO-SYNCED TODAY</div>
+              <div style={{ fontSize: 12, fontWeight: 900, marginTop: 3 }}>{todayBodyPlan.title}</div>
+              <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 2 }}>{todayBodyPlan.focus} • {todayBodyPlan.duration}</div>
+            </div>
+          )}
         </div>
         <div className="live-schedule-next">
           <div className="live-schedule-next-label">NEXT WINDOW</div>
