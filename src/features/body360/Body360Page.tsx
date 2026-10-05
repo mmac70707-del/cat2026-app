@@ -1,0 +1,128 @@
+import { useEffect, useMemo, useState } from 'react'
+import { AppIcon } from '@/components/AppIcon'
+import { BODY360_SEQUENCE, getBodyPlan } from '@/data/body360'
+import { getKolkataDateKey, getKolkataDateParts } from '@/services/calendarEngine'
+
+type StepId = typeof BODY360_SEQUENCE[number]
+const STORAGE = 'cat2026.body360.progress.v1'
+
+function todayName() {
+  const p = getKolkataDateParts(new Date())
+  return { p, key: getKolkataDateKey(new Date()) }
+}
+
+export function Body360Page({ onBack }: { onBack: () => void }) {
+  const { p, key } = todayName()
+  const plan = useMemo(() => getBodyPlan(p.dayOfWeek), [p.dayOfWeek])
+  const [stepDone, setStepDone] = useState<Partial<Record<StepId, boolean>>>(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE) || '{}')
+      return raw[key] || {}
+    } catch { return {} }
+  })
+  const [weekStart, setWeekStart] = useState(key)
+
+  useEffect(() => {
+    if (weekStart !== key) {
+      setWeekStart(key)
+      try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE) || '{}')
+        setStepDone(raw[key] || {})
+      } catch { setStepDone({}) }
+    }
+  }, [key, weekStart])
+
+  useEffect(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE) || '{}')
+      raw[key] = stepDone
+      localStorage.setItem(STORAGE, JSON.stringify(raw))
+    } catch {}
+  }, [key, stepDone])
+
+  const done = BODY360_SEQUENCE.filter(s => stepDone[s]).length
+  const pct = Math.round((done / BODY360_SEQUENCE.length) * 100)
+
+  function toggle(id: StepId) {
+    setStepDone(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  return (
+    <div className="section-pad">
+      <div className="page-header">
+        <button className="back-btn" onClick={onBack}><AppIcon name="back" size={17} /> Back</button>
+        <div>
+          <div className="page-header-title">Body 360</div>
+          <div style={{ fontSize:10,color:'var(--muted)',marginTop:3 }}>AUTO-SYNCED WITH DAILY SCHEDULE • ASIA/KOLKATA</div>
+        </div>
+      </div>
+
+      <section className="card" style={{background:'linear-gradient(135deg,rgba(34,197,94,.11),rgba(14,159,159,.08))',borderColor:'rgba(34,197,94,.3)'}}>
+        <div style={{display:'flex',justifyContent:'space-between',gap:12,flexWrap:'wrap'}}>
+          <div>
+            <div style={{fontSize:10,fontWeight:900,letterSpacing:1.5,color:'#4ADE80'}}>BODY 360 // DAY-SYNC</div>
+            <h1 style={{margin:'7px 0 5px',fontSize:28}}>{plan.title}</h1>
+            <div style={{fontSize:12,color:'var(--muted)'}}>{plan.focus} • {plan.duration}</div>
+            <div style={{fontSize:10,color:'var(--muted)',marginTop:6}}>Today: {key} • Weekday index {p.dayOfWeek}</div>
+          </div>
+          <div style={{minWidth:115,textAlign:'right'}}>
+            <div style={{fontSize:30,fontWeight:900}}>{pct}%</div>
+            <div style={{fontSize:10,color:'var(--muted)'}}>{done}/{BODY360_SEQUENCE.length} gates</div>
+          </div>
+        </div>
+        <div style={{marginTop:12,height:7,borderRadius:99,background:'rgba(255,255,255,.06)',overflow:'hidden'}}>
+          <div style={{width:`${pct}%`,height:'100%',background:'linear-gradient(90deg,#22C55E,#0EA5A4)',borderRadius:99}} />
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🔒 LOCKED DAILY SEQUENCE</div>
+        <div style={{display:'grid',gap:7,marginTop:10}}>
+          {BODY360_SEQUENCE.map((s,i)=>(
+            <button key={s} onClick={()=>toggle(s)} style={{display:'grid',gridTemplateColumns:'34px 1fr 26px',alignItems:'center',gap:9,textAlign:'left',padding:'10px 11px',borderRadius:12,border:'1px solid var(--border)',background:stepDone[s]?'rgba(34,197,94,.08)':'var(--card)',color:'inherit',cursor:'pointer'}}>
+              <span style={{width:27,height:27,borderRadius:9,display:'grid',placeItems:'center',background:stepDone[s]?'rgba(34,197,94,.18)':'rgba(255,255,255,.05)',fontSize:9,fontWeight:900}}>{stepDone[s]?'✓':String(i+1).padStart(2,'0')}</span>
+              <span><b style={{fontSize:11,letterSpacing:.5}}>{s}</b><small style={{display:'block',fontSize:10,color:'var(--muted)',marginTop:2}}>
+                {s==='CONNECT'?'Energy • pain • readiness':s==='REVISION'?'Recall the previous session':s==='RECAP'?'3–5 key facts':s==='MISSION'?'Today’s exact target':s==='THEORY'?'Anatomy + movement logic':s==='VISUALIZATION'?'See the movement before the set':s==='PRACTICAL'?'Demonstrate → practice → work sets':s==='MIND–MUSCLE'?'Feel target muscle without chasing burn':s==='MISTAKES'?'Technique leaks → correction':s==='SCIENCE'?'Evidence → action rule':s==='QUIZ'?'Recall before moving on':s==='HOMEWORK'?'Small recovery/habit action':'One lesson for next time'}
+              </small></span>
+              <span style={{fontSize:12,color:stepDone[s]?'#4ADE80':'var(--muted)'}}>{stepDone[s]?'DONE':'→'}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🏋️ TODAY’S PRACTICAL</div>
+        <div style={{display:'grid',gap:7,marginTop:10}}>
+          {plan.exercises.map((e,i)=><div key={i} style={{padding:'9px 10px',border:'1px solid var(--border)',borderRadius:10,fontSize:11}}>{String(i+1).padStart(2,'0')} • {e}</div>)}
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🧠 VISUALIZATION + MIND–MUSCLE</div>
+        <div style={{marginTop:8,display:'grid',gap:8}}>
+          {[
+            ['SEE','Picture the movement path before lifting.'],
+            ['SET','Stable feet, controlled body, neutral neck.'],
+            ['MOVE','Smooth range of motion; no bouncing or swinging.'],
+            ['FEEL','Notice the target muscle working; skill supports technique, not ego.'],
+          ].map(([a,b])=><div key={a} style={{display:'flex',gap:9,alignItems:'center'}}><span style={{fontSize:9,fontWeight:900,minWidth:40,color:'#60A5FA'}}>{a}</span><span style={{fontSize:11,color:'var(--muted)'}}>{b}</span></div>)}
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>📅 AUTOMATIC WEEKLY ROTATION</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:7,marginTop:9}}>
+          {['MON','TUE','WED','THU','FRI','SAT','SUN'].map((d,i)=>{
+            const x=getBodyPlan(i===6?0:i+1)
+            return <div key={d} style={{padding:9,border:'1px solid var(--border)',borderRadius:10,background:d===plan.dayKey?'rgba(59,130,246,.08)':'var(--card)'}}><b style={{fontSize:10}}>{d}</b><div style={{fontSize:10,color:'var(--muted)',marginTop:3}}>{x.title}</div></div>
+          })}
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🏁 RECOVERY RULE</div>
+        <p style={{fontSize:11,color:'var(--muted)',lineHeight:1.55,margin:'8px 0 0'}}>{plan.recovery}. Sharp/unusual pain, dizziness, chest pain or concerning symptoms = stop the exercise and seek appropriate medical guidance.</p>
+      </section>
+    </div>
+  )
+}
