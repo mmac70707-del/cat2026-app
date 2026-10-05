@@ -772,6 +772,7 @@ export function DailyControlCard() {
       </div>
 
       <HairHealthCard />
+      <HairFoodCard />
       <RealLifeEngine />
 
       {/* BOTTOM FOOTER */}
