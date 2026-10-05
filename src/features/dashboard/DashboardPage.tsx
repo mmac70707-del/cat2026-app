@@ -15,6 +15,7 @@ import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
+import { applyFocusMode } from '@/services/uiPreferences'
 import { BODY360_SEQUENCE, getBodyPlan } from '@/data/body360'
 
 const SEQUENCE_STRIP: Array<{
@@ -809,6 +810,93 @@ export function DashboardPage() {
         <span className="live-time-date">{realDayName} • {realDateStr}</span>
       </div>
 
+
+      {/* ── FOCUS MODE: PRIMARY CAT EXECUTION COCKPIT ── */}
+      <section className="focus-mode-cockpit" aria-label="Focus Mode CAT execution cockpit">
+        <div className="focus-mode-head">
+          <div>
+            <div className="focus-mode-kicker"><AppIcon name="focus" size={13} /> FOCUS MODE • CAT-FIRST</div>
+            <div className="focus-mode-title">ONE THING NOW. FINISH IT. THEN MOVE.</div>
+            <div className="focus-mode-sub">
+              {realDayName}, {realDateStr} • {phase.id} — {phase.name} • CAT Day {dayNum < 10 ? '0' + dayNum : dayNum}/44
+            </div>
+          </div>
+          <button type="button" className="focus-mode-exit" onClick={() => applyFocusMode(false)}>
+            FULL DASHBOARD
+          </button>
+        </div>
+
+        <div className="focus-mode-status-grid">
+          <div className="focus-mode-now">
+            <span>RIGHT NOW</span>
+            <strong>{currentSlot ? currentSlot.block : 'Buffer / Transition'}</strong>
+            <small>{currentSlot?.time || 'Follow the next planned window'}</small>
+            {currentSlot?.detail && <p>{currentSlot.detail}</p>}
+          </div>
+          <div className="focus-mode-next">
+            <span>NEXT CAT ACTION</span>
+            <strong>{nextTask ? nextTask.blockId + ' • ' + nextTask.title : 'ALL CAT TASKS COMPLETE'}</strong>
+            <small>{nextTask ? getBlockTimeLabel(nextTask.blockId) : 'Protect recovery and sleep'}</small>
+          </div>
+        </div>
+
+        <div className="focus-mode-progress">
+          <div className="focus-mode-progress-top">
+            <span>CAT EXECUTION</span>
+            <b>{done}/{tasks.length || 8} BLOCKS • {pct}%</b>
+          </div>
+          <div className="focus-mode-progress-track">
+            <span style={{ width: pct + '%' }} />
+          </div>
+        </div>
+
+        <div className="focus-mode-queue">
+          <div className="focus-mode-queue-head">
+            <div>
+              <span>EXECUTION QUEUE</span>
+              <b>Solve → Test → Analyse → Repair → Retest</b>
+            </div>
+            <button
+              type="button"
+              className="focus-mode-timer"
+              onClick={() => window.dispatchEvent(new Event('jarvis:focus:start'))}
+            >
+              ⏱ START FOCUS
+            </button>
+          </div>
+
+          <div className="focus-mode-task-list">
+            {tasks.map((task, index) => {
+              const isDone = task.status === 'DONE'
+              const isNow = currentTask?.id === task.id || (!currentTask && nextTask?.id === task.id)
+              const state = isDone ? 'DONE' : isNow ? 'NOW' : getBlockLiveState(task.blockId, currentMinutes, task.status)
+              return (
+                <div key={task.id} className={'focus-mode-task ' + (isDone ? 'done' : isNow ? 'now' : '')}>
+                  <button
+                    type="button"
+                    className={'focus-mode-task-check ' + (isDone ? 'checked' : '')}
+                    aria-label={isDone ? 'Mark task not done' : 'Mark task done'}
+                    onClick={() => updateStatus(task.id, task.blockId, isDone ? 'TODO' : 'DONE')}
+                  >
+                    {isDone ? '✓' : ''}
+                  </button>
+                  <span className="focus-mode-task-num">{String(index + 1).padStart(2,'0')}</span>
+                  <div className="focus-mode-task-copy">
+                    <b>{task.blockId} • {task.title}</b>
+                    <small>{task.notes || task.subject}</small>
+                  </div>
+                  <div className={'focus-mode-task-state ' + state.toLowerCase()}>{state}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="focus-mode-rule">
+          <AppIcon name="target" size={13} />
+          <span>Phone down • one block • no random resources • finish the current action before choosing the next.</span>
+        </div>
+      </section>
 
       {/* ── START HERE: DAILY 7 BASICS ── */}
       <section className="daily-basics-rail" aria-label="Daily seven basics mentor sequence">
