@@ -6,7 +6,7 @@ import { usePhase } from '@/hooks/usePhase'
 import { getWeekNumber, getDaysLeft } from '@/services/domain'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
-import { BLOCKS, SCHEDULE_ITEMS, WEEK_PLAN_TEMPLATE } from '@/data/config'
+import { BLOCKS, PHASES, SCHEDULE_ITEMS, WEEK_PLAN_TEMPLATE } from '@/data/config'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
@@ -660,10 +660,10 @@ export function DashboardPage() {
         {/* SIGNATURE COMMAND RULES */}
         <div className="command-rules-rail" aria-label="Signature execution rules">
           <div className="command-rules-label"><AppIcon name="radar" size={12} /> COMMAND RULES</div>
+          <div className="command-rule"><span>CAT FIRST</span><b>&gt;</b><strong>RANDOM TASKS</strong></div>
           <div className="command-rule"><span>DISCIPLINE</span><b>&gt;</b><strong>MOOD</strong></div>
           <div className="command-rule"><span>CONSISTENCY</span><b>&gt;</b><strong>INTENSITY</strong></div>
-          <div className="command-rule"><span>DISCIPLINE</span><b>&gt;</b><strong>MOOD</strong></div>
-          <div className="command-rule"><span>CONSISTENCY</span><b>&gt;</b><strong>INTENSITY</strong></div>
+          <div className="command-rule"><span>REPAIR</span><b>&gt;</b><strong>REPEAT</strong></div>
           <div className="command-rule"><span>DISTRACTION</span><b>&lt;</b><strong>DISCIPLINE</strong></div>
         </div>
 
@@ -917,17 +917,22 @@ export function DashboardPage() {
 
             {/* PHASE TIMELINE */}
             <div className="card">
-              <div className="card-title">MAP Phase Timeline — 86 Days</div>
+              <div className="card-title">CAT 2026 Phase Timeline — Live</div>
               <div className="phase-timeline">
-                <div className="phase-item active">
-                  <div className="phase-name" style={{ color: 'var(--green2)' }}>REBUILD</div>
-                  <div className="phase-dates">Active Phase</div>
-                  <div className="phase-goal">Concept + Accuracy</div>
-                </div>
+                {PHASES.map((p) => {
+                  const active = p.id === phase.id
+                  return (
+                    <div key={p.id} className={'phase-item ' + (active ? 'active' : '')}>
+                      <div className="phase-name" style={{ color: p.color }}>{p.name}</div>
+                      <div className="phase-dates">{p.start} → {p.end}</div>
+                      <div className="phase-goal">{active ? 'ACTIVE • ' + p.purpose : p.purpose}</div>
+                    </div>
+                  )
+                })}
               </div>
               <div style={{ marginTop: 12, background: 'rgba(34,197,94,.06)', border: '1px solid rgba(34,197,94,.2)', borderRadius: 8, padding: '10px 12px' }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--green2)', marginBottom: 4 }}>🔒 MISSION &amp; VISION LOCKED</div>
-                <div style={{ fontSize: 10, color: 'var(--muted)' }}>{phase.purpose}</div>
+                <div style={{ fontSize: 10, color: 'var(--muted)' }}>{phase.mission} • {phase.purpose}</div>
               </div>
             </div>
 
