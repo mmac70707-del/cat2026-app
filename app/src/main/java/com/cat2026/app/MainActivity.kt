@@ -852,5 +852,4 @@ import android.security.keystore.KeyProperties
         } catch (_: Exception) { false }
     }
 }
-            @media(max-width:420px){.shell{padding:9px}.hero{grid-template-columns:112px minmax(0,1fr);gap:9px;padding:9px}.photo{width:112px;height:150px}.hero-copy h1{font-size:18px}.quote{font-size:10px}.security{padding:10px}}
-            @media(max-width:360px){.hero{grid-template-columns:104px minmax(0,1fr);gap:8px}.photo{width:104px;height:140px}.hero-copy h1{font-size:17px}.quote{font-size:9.5px}}
+
