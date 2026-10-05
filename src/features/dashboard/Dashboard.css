@@ -2131,14 +2131,63 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   font-size:9px;
   line-height:1.45;
 }
+.jarvis-theme .dash-root .daily-lesson-loop{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+  margin-top:8px;
+  padding:7px;
+  border:1px solid var(--ui-border,#343930);
+  border-radius:9px;
+  background:var(--ui-surface-2,#22261f);
+}
+.jarvis-theme .dash-root .daily-lesson-loop span{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  color:var(--ui-text,#f1efe8);
+  font:900 7px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.4px;
+}
+.jarvis-theme .dash-root .daily-lesson-loop span b{color:var(--ui-accent-strong,#d9c58f)}
+.jarvis-theme .dash-root .daily-lesson-loop em{
+  margin-left:auto;
+  color:var(--ui-muted,#8e9389);
+  font-style:normal;
+  font-weight:700;
+}
 .jarvis-theme .dash-root .daily-lesson-footer{
   display:flex;
   align-items:center;
-  gap:8px;
+  justify-content:space-between;
+  gap:10px;
   flex-wrap:wrap;
   margin-top:9px;
   padding-top:8px;
   border-top:1px solid var(--ui-border,#343930);
+}
+.jarvis-theme .dash-root .daily-lesson-footer-copy{
+  display:grid;
+  gap:3px;
+  min-width:0;
+}
+.jarvis-theme .dash-root .daily-lesson-done{
+  border:1px solid var(--ui-border-strong,#464c41);
+  border-radius:8px;
+  background:var(--ui-accent-soft,rgba(199,170,107,.11));
+  color:var(--ui-accent-strong,#d9c58f);
+  padding:7px 9px;
+  font:900 6.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.55px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.jarvis-theme .dash-root .daily-lesson-done:hover{transform:translateY(-1px)}
+.jarvis-theme .dash-root .daily-lesson-done.done{
+  border-color:rgba(142,174,150,.42);
+  background:rgba(142,174,150,.10);
+  color:#8eae96;
 }
 .jarvis-theme .dash-root .daily-lesson-footer span{
   color:var(--ui-accent-strong,#d9c58f);
@@ -2152,6 +2201,9 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
 }
 @media(max-width:760px){
   .jarvis-theme .dash-root .daily-lesson-grid{grid-template-columns:1fr}
+  .jarvis-theme .dash-root .daily-lesson-loop{grid-template-columns:1fr}
+  .jarvis-theme .dash-root .daily-lesson-footer{align-items:stretch}
+  .jarvis-theme .dash-root .daily-lesson-done{width:100%}
 }
 
 /* ── DAILY 7 BASICS — MENTOR-LED START RAIL ── */
