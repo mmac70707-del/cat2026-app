@@ -172,6 +172,7 @@ function getRealWeekDates(now: Date = new Date()) {
 
 
 const BESTME_PROGRESS_STORAGE = 'cat2026.bestme.dimensions.v1'
+const BESTME_LESSON_STORAGE = 'cat2026.bestme.lessons.v1'
 const BODY360_PROGRESS_STORAGE = 'cat2026.body360.progress.v1'
 
 const BEST_ME_DIMENSIONS = [
@@ -354,6 +355,15 @@ function readBestMeManualWins(dateKey: string) {
   }
 }
 
+function readBestMeLessonWins(dateKey: string) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(BESTME_LESSON_STORAGE) || '{}')
+    return (raw?.[dateKey] || {}) as Partial<Record<BestMeDimensionId, boolean>>
+  } catch {
+    return {}
+  }
+}
+
 function WinterArcCard() {
   const todayKey = getKolkataDateKey()
   const catEnd = '2026-11-29'
@@ -449,6 +459,7 @@ export function DashboardPage() {
   const [bestMeManualWins, setBestMeManualWins] = useState<Partial<Record<BestMeDimensionId, boolean>>>(() => readBestMeManualWins(getKolkataDateKey()))
   const [body360Done, setBody360Done] = useState(() => readBody360TodayProgress(getKolkataDateKey()))
   const [sinControls, setSinControls] = useState<Partial<Record<BestMeSinId, boolean>>>(() => readSinControls(getKolkataDateKey()))
+  const [lessonWins, setLessonWins] = useState<Partial<Record<BestMeDimensionId, boolean>>>(() => readBestMeLessonWins(getKolkataDateKey()))
   const [activeLessonId, setActiveLessonId] = useState<BestMeDimensionId | null>('MIND')
 
 
@@ -492,6 +503,7 @@ export function DashboardPage() {
     PURPOSE: Boolean(bestMeManualWins.PURPOSE),
   }
   const bestMeWinCount = Object.values(dimensionWins).filter(Boolean).length
+  const lessonLearnedCount = Object.values(lessonWins).filter(Boolean).length
   const finalWin = bestMeWinCount === BEST_ME_DIMENSIONS.length
   const sinWinCount = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
   const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
@@ -519,6 +531,18 @@ export function DashboardPage() {
     } catch {}
   }
 
+  function toggleLessonLearned(id: BestMeDimensionId) {
+    const nextValue = !lessonWins[id]
+    const next = { ...lessonWins, [id]: nextValue }
+    setLessonWins(next)
+    try {
+      const raw = JSON.parse(localStorage.getItem(BESTME_LESSON_STORAGE) || '{}')
+      raw[dateKey] = next
+      localStorage.setItem(BESTME_LESSON_STORAGE, JSON.stringify(raw))
+    } catch {}
+    toast(nextValue ? 'Lesson locked in ✓' : 'Lesson marked open again')
+  }
+
   const getSequenceState = (id: string) => {
     const task = tasks.find(t => t.blockId === id)
     if (task?.status === 'DONE') return 'DONE'
@@ -528,6 +552,7 @@ export function DashboardPage() {
 
   useEffect(() => {
     setBestMeManualWins(readBestMeManualWins(dateKey))
+    setLessonWins(readBestMeLessonWins(dateKey))
   }, [dateKey])
   useEffect(() => {
     setSinControls(readSinControls(dateKey))
@@ -607,7 +632,7 @@ export function DashboardPage() {
             <div className="daily-basics-kicker">◉ START HERE // 7 DAILY BASICS</div>
             <div className="daily-basics-title">Do the next right thing. Let the system guide the rest.</div>
             <div className="daily-basics-sub">
-              Auto-updated every India day: <b>{realDayName}, {realDateStr}</b> • {bestMeWinCount}/7 wins • {sinWinCount}/7 self-control reps
+              Auto-updated every India day: <b>{realDayName}, {realDateStr}</b> • {bestMeWinCount}/7 wins • {lessonLearnedCount}/7 lessons locked • {sinWinCount}/7 self-control reps
             </div>
           </div>
           <div className={'daily-basics-now ' + (finalWin ? 'complete' : '')}>
@@ -685,9 +710,24 @@ export function DashboardPage() {
                 <div><span>DO IT TODAY</span><p>{lesson.practice}</p></div>
                 <div className="daily-lesson-recall"><span>10-SEC RECALL</span><b>{lesson.recall}</b></div>
               </div>
+              <div className="daily-lesson-loop" aria-label="Three minute learning loop">
+                <span><b>01</b> LEARN <em>60s</em></span>
+                <span><b>02</b> APPLY <em>90s</em></span>
+                <span><b>03</b> RECALL <em>30s</em></span>
+              </div>
               <div className="daily-lesson-footer">
-                <span>{lessonIsCurrent ? 'CURRENT STEP' : 'LEARNING IS ALWAYS OPEN'}</span>
-                <b>{lessonMeta.mentor}</b>
+                <div className="daily-lesson-footer-copy">
+                  <span>{lessonWins[activeLessonId] ? 'LESSON LOCKED IN ✓' : lessonIsCurrent ? 'CURRENT STEP' : 'LEARNING IS ALWAYS OPEN'}</span>
+                  <b>{lessonMeta.mentor}</b>
+                </div>
+                <button
+                  type="button"
+                  className={'daily-lesson-done ' + (lessonWins[activeLessonId] ? 'done' : '')}
+                  onClick={() => toggleLessonLearned(activeLessonId)}
+                  aria-pressed={Boolean(lessonWins[activeLessonId])}
+                >
+                  {lessonWins[activeLessonId] ? 'LEARNED TODAY ✓' : 'MARK LESSON LEARNED →'}
+                </button>
               </div>
             </div>
           )
