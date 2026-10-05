@@ -150,14 +150,27 @@ import android.security.keystore.KeyProperties
 
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    if (::bootStatus.isInitialized) bootStatus.visibility = android.view.View.GONE
-                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/")) {
+                    if (url.startsWith("https://appassets.androidplatform.net/assets/")) {
                         view.postDelayed({
                             view.evaluateJavascript(
-                                "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
-                                null
-                            )
-                        }, 250)
+                                "(function(){var r=document.getElementById('root');var ok=!!r && r.children.length>0 && !document.getElementById('native-boot');return JSON.stringify({ok:ok,title:document.title,url:location.href});})()"
+                            ) { result ->
+                                if (::bootStatus.isInitialized) {
+                                    if (result?.contains("\"ok\":true") == true) {
+                                        bootStatus.visibility = android.view.View.GONE
+                                    } else {
+                                        bootStatus.text = "JARVIS LOCAL CORE\\nAPP UI DID NOT START\\nPlease restart once. Diagnostics are active."
+                                        bootStatus.visibility = android.view.View.VISIBLE
+                                    }
+                                }
+                            }
+                            if (nativeUnlocked) {
+                                view.evaluateJavascript(
+                                    "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
+                                    null
+                                )
+                            }
+                        }, 350)
                     }
                 }
 
