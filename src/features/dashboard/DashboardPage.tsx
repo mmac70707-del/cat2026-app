@@ -194,7 +194,7 @@ const BEST_ME_DIMENSIONS = [
   {
     id: 'EMOTIONAL',
     icon: '❤️',
-    title: 'EMOTIONAL',
+    title: 'EMOTION',
     subtitle: 'Calm + self-control',
     rule: 'Notice the feeling. Choose the next correct action.',
     fallback: 'Pause → breathe → name the feeling → return to the plan without guilt.',
