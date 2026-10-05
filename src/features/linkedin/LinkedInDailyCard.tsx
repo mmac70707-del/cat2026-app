@@ -129,6 +129,14 @@ export function LinkedInDailyCard() {
   const businessLens=BUSINESS_LENSES[lensIndex]
   const decisionScenario=DECISION_SCENARIOS[(offset+lensIndex)%DECISION_SCENARIOS.length]
   const leaderCase=LEADER_CASES[(offset+cycleDay-1)%LEADER_CASES.length]
+  const boardroomRoles = [
+    { role:'CEO', focus:'Direction + resource allocation', cue:'What is the one outcome we refuse to lose?' },
+    { role:'PRODUCT', focus:'User problem + product choice', cue:'What user behaviour proves this works?' },
+    { role:'FOUNDER', focus:'Speed + learning', cue:'What is the smallest credible bet we can make now?' },
+    { role:'STRATEGY', focus:'Trade-off + advantage', cue:'What will we deliberately NOT do?' },
+    { role:'AI / TECH', focus:'Leverage + workflow', cue:'Where can technology change the economics?' },
+  ]
+  const boardroom=boardroomRoles[offset%boardroomRoles.length]
   const weekly=cycleDay===7
   const monthly=offset>0 && offset%30===0
   const postDay=!weekly && [1,3,5].includes(today.p.dayOfWeek)
@@ -210,7 +218,18 @@ export function LinkedInDailyCard() {
         </div>
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(34,211,238,.16)',background:'rgba(34,211,238,.035)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
-        <strong style={{color:'#67E8F9'}}>LEADER CASE — {businessLens.lens}:</strong> Study the decision pattern, not the celebrity. Sundar Pichai’s public Google remarks emphasize mission, product usefulness, AI at scale and disciplined resource allocation; Tesla public materials describe first-principles, data-driven manufacturing and cost/quality optimisation. Use these as case-study prompts, not as a claim that one leader has a single secret formula.
+        <strong style={{color:'#67E8F9'}}>LEADER CASE — {businessLens.lens}:</strong> Study the decision pattern, not the celebrity. Study the decision pattern, not the celebrity. Sundar Pichai / Google is used here for product-at-scale, user value and resource-allocation questions; Elon Musk / Tesla is used for first-principles, engineering and constraint questions; product-manager cases teach customer-problem and metric thinking. These are learning lenses—not claims that any leader has one secret formula.
+      </div>
+      <div style={{padding:12,borderRadius:11,border:'1px solid rgba(34,211,238,.18)',background:'linear-gradient(135deg,rgba(8,47,73,.24),rgba(15,23,42,.94))'}}>
+        <div style={{fontSize:9,color:'#67E8F9',fontWeight:900}}>BOARDROOM SNAPSHOT • {boardroom.role}</div>
+        <div style={{marginTop:5,color:'#FFF',fontSize:11,fontWeight:850}}>Role: {boardroom.focus}</div>
+        <div style={{marginTop:5,color:'#CBD5E1',fontSize:10,lineHeight:1.55}}>{boardroom.cue}</div>
+        <div style={{marginTop:9,display:'grid',gridTemplateColumns:'repeat(5,minmax(0,1fr))',gap:4}}>
+          {['CUSTOMER','MONEY','TIME','TEAM','PROOF'].map((v)=><div key={v} style={{padding:'6px 2px',textAlign:'center',borderRadius:7,background:'rgba(34,211,238,.055)',border:'1px solid rgba(103,232,249,.10)',color:'#A5F3FC',fontSize:7.5,fontWeight:900}}>{v}</div>)}
+        </div>
+        <div style={{marginTop:8,padding:8,borderRadius:8,background:'rgba(2,6,23,.62)',color:'#DFFBFF',fontSize:10,lineHeight:1.5}}>
+          <strong style={{color:'#67E8F9'}}>VISUALIZE:</strong> boardroom screen shows one customer problem, one constraint, one choice and one metric. Everything else is parked.
+        </div>
       </div>
       <div style={{padding:12,borderRadius:11,border:'1px solid rgba(245,158,11,.18)',background:'linear-gradient(135deg,rgba(120,53,15,.10),rgba(15,23,42,.92))'}}>
         <div style={{fontSize:9,color:'#FBBF24',fontWeight:900}}>DECISION REPLAY • FEEL THE BUSINESS</div>
@@ -224,7 +243,10 @@ export function LinkedInDailyCard() {
         <strong style={{color:'#FFF'}}>Truth gate:</strong> publish only genuine learning. Never claim an experience, result, project, credential, or expertise that was not actually completed.
       </div>
       {monthly && <div style={{padding:10,borderRadius:9,border:'1px solid rgba(168,85,247,.22)',background:'rgba(168,85,247,.05)',fontSize:10,color:'#E9D5FF',lineHeight:1.55}}><strong>MONTHLY PORTFOLIO COMPOUNDING:</strong> identify only completed, evidence-backed work that can genuinely become a Featured item, CV bullet, portfolio asset or MBA interview story.</div>}
-      <div style={{fontSize:10,color:'#94A3B8',display:'flex',justifyContent:'space-between',gap:8,flexWrap:'wrap'}}><span>Series lesson {offset+1} • Weekly cycle {cycleDay}/7</span><strong style={{color:'#86EFAC'}}>LEARN → NOTE → CONNECT → {weekly||postDay?'POST':'SAVE'}</strong></div>
+      <div style={{padding:'9px 10px',borderRadius:9,border:'1px solid rgba(148,163,184,.10)',background:'rgba(2,6,23,.36)',fontSize:9.5,color:'#94A3B8',lineHeight:1.5}}>
+        <strong style={{color:'#CBD5E1'}}>3-MINUTE BUSINESS MUSCLE:</strong> 60 sec learn → 45 sec visualize the boardroom → 45 sec make your decision → 30 sec write the metric. CAT stays first.
+      </div>
+      <div style={{fontSize:10,color:'#94A3B8',display:'flex',justifyContent:'space-between',gap:8,flexWrap:'wrap'}}><span>Series lesson {offset+1} • Weekly cycle {cycleDay}/7 • Executive lens {businessLens.lens}</span><strong style={{color:'#86EFAC'}}>LEARN → NOTE → CONNECT → {weekly||postDay?'POST':'SAVE'}</strong></div>
     </div>
   </section>
 }
