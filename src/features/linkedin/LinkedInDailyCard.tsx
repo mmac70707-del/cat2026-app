@@ -58,20 +58,23 @@ function daysBetween(a:string,b:string) {
 }
 
 function CardVisual({ title, synthesis=false }:{title:string;synthesis?:boolean}) {
-  return <div style={{borderRadius:12,border:'1px solid rgba(96,165,250,.22)',background:'#0B1220',padding:12,marginTop:10}}>
-    <svg viewBox="0 0 720 150" width="100%" role="img" aria-label={title}>
-      <rect x="1" y="1" width="718" height="148" rx="12" fill="#0F172A" stroke="#334155"/>
-      <text x="28" y="34" fill="#F8FAFC" fontSize="16" fontWeight="800">{synthesis ? 'WEEKLY SYNTHESIS' : 'ASHISH’S LEARNING NETWORK'}</text>
-      <text x="28" y="62" fill="#94A3B8" fontSize="13">{title.length > 72 ? title.slice(0,69)+'…' : title}</text>
-      <g fontFamily="Arial, sans-serif" fontSize="12" fontWeight="700">
-        <rect x="28" y="88" width="135" height="34" rx="8" fill="#172554"/><text x="45" y="110" fill="#BFDBFE">OBSERVE</text>
-        <text x="175" y="110" fill="#64748B" fontSize="18">→</text>
-        <rect x="205" y="88" width="135" height="34" rx="8" fill="#1E293B"/><text x="222" y="110" fill="#E2E8F0">THINK</text>
-        <text x="352" y="110" fill="#64748B" fontSize="18">→</text>
-        <rect x="382" y="88" width="135" height="34" rx="8" fill="#172554"/><text x="399" y="110" fill="#BFDBFE">TEST / APPLY</text>
-        <text x="529" y="110" fill="#64748B" fontSize="18">→</text>
-        <rect x="558" y="88" width="134" height="34" rx="8" fill="#1E293B"/><text x="576" y="110" fill="#E2E8F0">LEARN</text>
+  return <div style={{borderRadius:12,border:'1px solid rgba(103,232,249,.20)',background:'linear-gradient(145deg,#0B1114,#111827)',padding:10,marginTop:10,overflow:'hidden'}}>
+    <svg viewBox="0 0 720 170" width="100%" role="img" aria-label={title}>
+      <defs><linearGradient id="bizFlow" x1="0" x2="1"><stop offset="0%" stopColor="#164E63"/><stop offset="100%" stopColor="#1E293B"/></linearGradient></defs>
+      <rect x="1" y="1" width="718" height="168" rx="12" fill="#0B1114" stroke="#334155"/>
+      <text x="26" y="29" fill="#E2E8F0" fontSize="12" fontWeight="800">{synthesis ? 'WEEKLY BUSINESS MAP' : 'LIVE BUSINESS SIMULATION'}</text>
+      <text x="26" y="51" fill="#94A3B8" fontSize="11">{title.length > 86 ? title.slice(0,83)+'…' : title}</text>
+      <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800">
+        <rect x="24" y="75" width="132" height="38" rx="9" fill="url(#bizFlow)" stroke="#155E75"/><text x="43" y="99" fill="#CFFAFE">CUSTOMER</text>
+        <text x="164" y="100" fill="#64748B" fontSize="18">→</text>
+        <rect x="188" y="75" width="132" height="38" rx="9" fill="#172554" stroke="#334155"/><text x="209" y="99" fill="#DBEAFE">PROBLEM</text>
+        <text x="328" y="100" fill="#64748B" fontSize="18">→</text>
+        <rect x="352" y="75" width="132" height="38" rx="9" fill="url(#bizFlow)" stroke="#155E75"/><text x="371" y="99" fill="#CFFAFE">TEST / MVP</text>
+        <text x="492" y="100" fill="#64748B" fontSize="18">→</text>
+        <rect x="516" y="75" width="178" height="38" rx="9" fill="#1E293B" stroke="#334155"/><text x="536" y="99" fill="#E2E8F0">METRIC → DECISION</text>
       </g>
+      <line x1="90" y1="137" x2="630" y2="137" stroke="#334155"/>
+      <text x="26" y="156" fill="#67E8F9" fontSize="10" fontWeight="700">ASK: “What evidence would make me change my mind?”</text>
     </svg>
   </div>
 }
@@ -89,6 +92,9 @@ export function LinkedInDailyCard() {
   const cycleDay=(offset%7)+1
   const row=LESSONS[offset%LESSONS.length]
   const lesson={concept:row[0],simple:row[1],analogy:row[2],example:row[3],takeaway:row[4],question:row[5],series:row[6],hook:row[7],body:row[8],cta:row[9]}
+  // Rotate the executive lens every day so the lesson feels like a real mini business simulation.
+  // The learner studies the decision pattern, not the celebrity.
+  const businessLens=BUSINESS_LENSES[(offset+cycleDay-1)%BUSINESS_LENSES.length]
   const weekly=cycleDay===7
   const monthly=offset>0 && offset%30===0
   const postDay=!weekly && [1,3,5].includes(today.p.dayOfWeek)
@@ -159,7 +165,7 @@ export function LinkedInDailyCard() {
         <strong style={{color:'#FCD34D'}}>MBA/PDPI:</strong> structured thinking + communication. &nbsp; <strong style={{color:'#FCD34D'}}>7-year founder:</strong> repeated business observation + decision practice.
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(34,211,238,.16)',background:'rgba(34,211,238,.035)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
-        <strong style={{color:'#67E8F9'}}>LEADER LENS:</strong> Study the decision pattern, not the celebrity. Use public examples associated with leaders such as Sundar Pichai or Elon Musk as prompts for strategic thinking; do not copy their identity, claim private knowledge, or invent outcomes.
+        <strong style={{color:'#67E8F9'}}>LEADER CASE — {businessLens.lens}:</strong> Study the decision pattern, not the celebrity. Sundar Pichai’s public Google remarks emphasize mission, product usefulness, AI at scale and disciplined resource allocation; Tesla public materials describe first-principles, data-driven manufacturing and cost/quality optimisation. Use these as case-study prompts, not as a claim that one leader has a single secret formula.
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(255,255,255,.07)',background:'rgba(255,255,255,.025)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
         <strong style={{color:'#FFF'}}>Truth gate:</strong> publish only genuine learning. Never claim an experience, result, project, credential, or expertise that was not actually completed.
