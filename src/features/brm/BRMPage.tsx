@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { AppIcon } from '@/components/AppIcon'
 
 type Lesson = {
@@ -109,6 +110,14 @@ const LESSONS: Lesson[] = [
   }
 ]
 
+
+type StreakState = {
+  completedDates: string[]
+  current: number
+  best: number
+}
+
+const STREAK_KEY = 'brm-streak-v1'
 function getKolkataDateKey() {
   const parts = new Intl.DateTimeFormat('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -129,9 +138,72 @@ function getLessonForToday() {
   return LESSONS[index]
 }
 
+
+function daysBetween(a: string, b: string) {
+  const [ay, am, ad] = a.split('-').map(Number)
+  const [by, bm, bd] = b.split('-').map(Number)
+  const ms = Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)
+  return Math.round(ms / 86400000)
+}
+
+function buildStreak(dates: string[]): StreakState {
+  const completedDates = Array.from(new Set(dates)).sort()
+  if (!completedDates.length) return { completedDates: [], current: 0, best: 0 }
+
+  let best = 1
+  let run = 1
+  for (let i = 1; i < completedDates.length; i += 1) {
+    if (daysBetween(completedDates[i - 1], completedDates[i]) === 1) {
+      run += 1
+      best = Math.max(best, run)
+    } else {
+      run = 1
+    }
+  }
+
+  const today = getKolkataDateKey()
+  let current = 0
+  let cursor = today
+  for (let i = completedDates.length - 1; i >= 0; i -= 1) {
+    if (completedDates[i] === cursor) {
+      current += 1
+      const [y, m, d] = cursor.split('-').map(Number)
+      cursor = new Date(Date.UTC(y, m - 1, d - 1)).toISOString().slice(0, 10)
+    } else if (completedDates[i] < cursor) {
+      break
+    }
+  }
+  return { completedDates, current, best }
+}
 export function BRMPage({ onBack }: { onBack?: () => void }) {
   const lesson = getLessonForToday()
   const progress = ((lesson.day - 1) / (LESSONS.length - 1)) * 100
+  const today = getKolkataDateKey()
+  const [streak, setStreak] = useState<StreakState>({ completedDates: [], current: 0, best: 0 })
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(STREAK_KEY)
+      if (!saved) return
+      const parsed = JSON.parse(saved) as Partial<StreakState>
+      if (Array.isArray(parsed.completedDates)) setStreak(buildStreak(parsed.completedDates))
+    } catch {
+      // Keep the UI usable even when local storage is unavailable.
+    }
+  }, [])
+
+  const isDoneToday = streak.completedDates.includes(today)
+
+  const markDone = () => {
+    if (isDoneToday) return
+    const next = buildStreak([...streak.completedDates, today])
+    setStreak(next)
+    try {
+      window.localStorage.setItem(STREAK_KEY, JSON.stringify(next))
+    } catch {
+      // Streak remains visible for this session.
+    }
+  }
 
   return (
     <div style={{ minHeight: '100%', padding: '18px 16px 110px', maxWidth: 980, margin: '0 auto', color: 'var(--ui-text, #F8FAFC)' }}>
@@ -149,10 +221,17 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
             <div style={{ fontSize: 10, fontWeight: 900, color: '#F5A623', letterSpacing: 1.2 }}>DAY {lesson.day} • READ TODAY</div>
             <div style={{ fontSize: 13, color: '#A5B4FC', marginTop: 5 }}>No PDF hunting • No article hunting • Just read</div>
           </div>
-          <div style={{ minWidth: 120 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#94A3B8', marginBottom: 5 }}><span>CURRICULUM</span><span>{lesson.day}/{LESSONS.length}</span></div>
-            <div style={{ height: 7, borderRadius: 999, background: 'rgba(255,255,255,.08)', overflow: 'hidden' }}>
-              <div style={{ width: `${progress}%`, height: '100%', borderRadius: 999, background: 'linear-gradient(90deg,#22C55E,#63F6FF)' }} />
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginLeft: 'auto' }}>
+            <div style={{ minWidth: 126, padding: '9px 10px', borderRadius: 13, border: '1px solid rgba(245,166,35,.38)', background: 'rgba(245,166,35,.10)', textAlign: 'right', boxShadow: '0 8px 24px rgba(245,166,35,.08)' }}>
+              <div style={{ fontSize: 9, fontWeight: 950, letterSpacing: 1, color: '#FDBA4B' }}>🔥 BEST STREAK</div>
+              <div style={{ marginTop: 2, fontSize: 21, fontWeight: 950, lineHeight: 1 }}>{streak.best} <span style={{ fontSize: 10, color: '#CBD5E1' }}>days</span></div>
+              <div style={{ marginTop: 4, fontSize: 9, color: '#CBD5E1' }}>CURRENT {streak.current}</div>
+            </div>
+            <div style={{ minWidth: 120 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#94A3B8', marginBottom: 5 }}><span>CURRICULUM</span><span>{lesson.day}/{LESSONS.length}</span></div>
+              <div style={{ height: 7, borderRadius: 999, background: 'rgba(255,255,255,.08)', overflow: 'hidden' }}>
+                <div style={{ width: `${progress}%`, height: '100%', borderRadius: 999, background: 'linear-gradient(90deg,#22C55E,#63F6FF)' }} />
+              </div>
             </div>
           </div>
         </div>
@@ -179,6 +258,10 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
             ))}
           </div>
         </div>
+
+        <button onClick={markDone} disabled={isDoneToday} style={{ marginTop: 18, width: '100%', border: isDoneToday ? '1px solid rgba(34,197,94,.32)' : '1px solid rgba(99,246,255,.34)', background: isDoneToday ? 'rgba(34,197,94,.10)' : 'rgba(99,246,255,.08)', color: isDoneToday ? '#86EFAC' : '#A5F3FC', borderRadius: 13, padding: '12px 14px', cursor: isDoneToday ? 'default' : 'pointer', fontWeight: 950, letterSpacing: .8 }}>
+          {isDoneToday ? `✅ TODAY COMPLETE • CURRENT STREAK ${streak.current}` : 'MARK TODAY DONE → BUILD THE STREAK'}
+        </button>
       </section>
 
       <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
