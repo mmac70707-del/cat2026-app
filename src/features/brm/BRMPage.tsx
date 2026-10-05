@@ -197,7 +197,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
       </div>
 
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ marginTop: 12, width: '100%', border: '1px solid rgba(99,246,255,.22)', background: 'rgba(99,246,255,.05)', color: '#A5F3FC', borderRadius: 12, padding: '10px 12px', cursor: 'pointer' }}>
-        <AppIcon name="arrowUp" size={14} /> BACK TO TOP
+        ↑ BACK TO TOP
       </button>
     </div>
   )
