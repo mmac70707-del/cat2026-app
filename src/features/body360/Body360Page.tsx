@@ -130,9 +130,30 @@ export function Body360Page({ onBack }: { onBack: () => void }) {
       </section>
 
       <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🔥 WARM-UP GATE</div>
+        <div style={{display:'grid',gap:7,marginTop:9}}>
+          {plan.warmup.map((w,i)=><div key={i} style={{padding:'9px 10px',border:'1px solid var(--border)',borderRadius:10,fontSize:11}}>{String(i+1).padStart(2,'0')} • {w}</div>)}
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
         <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🏋️ TODAY’S PRACTICAL</div>
         <div style={{display:'grid',gap:7,marginTop:10}}>
           {plan.exercises.map((e,i)=><div key={i} style={{padding:'9px 10px',border:'1px solid var(--border)',borderRadius:10,fontSize:11}}>{String(i+1).padStart(2,'0')} • {e}</div>)}
+        </div>
+        <div style={{marginTop:10,padding:'9px 10px',borderRadius:10,border:'1px solid rgba(96,165,250,.22)',background:'rgba(96,165,250,.05)',fontSize:10,color:'var(--muted)'}}>
+          <b style={{color:'#60A5FA'}}>TRAINING RULE:</b> Most sets stop with ~2–3 clean reps left. No ego lifting. Pain is not a target.
+        </div>
+        <div style={{marginTop:8,padding:'9px 10px',borderRadius:10,border:'1px solid rgba(34,197,94,.22)',background:'rgba(34,197,94,.05)',fontSize:10,color:'var(--muted)'}}>
+          <b style={{color:'#4ADE80'}}>PROGRESSION:</b> {plan.progression}
+        </div>
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>📊 PERFORMANCE LOG</div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:7,marginTop:9}}>
+          {['Load','Reps','RIR','Form','Energy','Pain/comfort'].map(x=><div key={x} style={{padding:'10px',border:'1px solid var(--border)',borderRadius:10,fontSize:10,color:'var(--muted)'}}>{x}<div style={{fontSize:12,color:'var(--text)',marginTop:5}}>Tap after set</div></div>)}
         </div>
       </section>
 
