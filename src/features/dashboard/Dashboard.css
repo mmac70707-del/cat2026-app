@@ -2928,3 +2928,207 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   font-size:7px;
   line-height:1.4;
 }
+
+
+/* ── MASTER COMMAND RAIL — ALWAYS VISIBLE ── */
+.jarvis-theme .dash-root .master-command-rail{
+  position:sticky;
+  top:0;
+  z-index:80;
+  margin:0;
+  padding:12px 18px 10px;
+  border-bottom:1px solid rgba(199,170,107,.24);
+  background:linear-gradient(180deg,rgba(8,11,12,.98),rgba(12,16,15,.96));
+  backdrop-filter:blur(14px);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+.jarvis-theme .dash-root .master-command-top{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+}
+.jarvis-theme .dash-root .master-command-kicker{
+  color:#D9C98F;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:1.5px;
+}
+.jarvis-theme .dash-root .master-command-title{
+  margin-top:4px;
+  color:#F1EFE8;
+  font-size:15px;
+  line-height:1.2;
+  font-weight:950;
+  letter-spacing:.2px;
+}
+.jarvis-theme .dash-root .master-command-sub{
+  margin-top:4px;
+  color:#84918C;
+  font-size:7.5px;
+  line-height:1.4;
+  max-width:850px;
+}
+.jarvis-theme .dash-root .master-command-sub::first-line{color:#AEB8B1}
+.jarvis-theme .dash-root .master-countdown{
+  min-width:210px;
+  padding:8px 11px;
+  border:1px solid rgba(199,170,107,.22);
+  border-radius:11px;
+  background:linear-gradient(145deg,rgba(199,170,107,.08),rgba(255,255,255,.018));
+  text-align:right;
+}
+.jarvis-theme .dash-root .master-countdown span{
+  display:block;
+  color:#8D9992;
+  font:900 6px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.9px;
+}
+.jarvis-theme .dash-root .master-countdown strong{
+  display:block;
+  margin-top:4px;
+  color:#E9D595;
+  font:950 21px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.jarvis-theme .dash-root .master-countdown strong i{
+  color:#F1EFE8;
+  font-style:normal;
+  font-size:12px;
+}
+.jarvis-theme .dash-root .master-command-metrics{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:6px;
+  margin-top:8px;
+}
+.jarvis-theme .dash-root .master-command-metrics > div{
+  min-width:0;
+  padding:6px 7px;
+  border:1px solid rgba(255,255,255,.045);
+  border-radius:8px;
+  background:rgba(255,255,255,.018);
+}
+.jarvis-theme .dash-root .master-command-metrics span{
+  display:block;
+  color:#60716D;
+  font:900 5.5px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.55px;
+}
+.jarvis-theme .dash-root .master-command-metrics b{
+  display:block;
+  margin-top:3px;
+  color:#D9E2DE;
+  font:950 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.jarvis-theme .dash-root .master-checklist{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px;
+  margin-top:7px;
+}
+.jarvis-theme .dash-root .master-check{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+  padding:7px 8px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:9px;
+  background:rgba(255,255,255,.018);
+  color:#E7ECE9;
+  text-align:left;
+  cursor:pointer;
+  transition:border-color .15s ease,background .15s ease,transform .15s ease;
+}
+.jarvis-theme .dash-root .master-check:hover,
+.jarvis-theme .dash-root .master-check:focus-visible{
+  border-color:rgba(199,170,107,.30);
+  background:rgba(199,170,107,.035);
+  transform:translateY(-1px);
+  outline:none;
+}
+.jarvis-theme .dash-root .master-check.done{
+  border-color:rgba(143,233,190,.22);
+  background:rgba(143,233,190,.035);
+}
+.jarvis-theme .dash-root .master-check-main{
+  border-color:rgba(199,170,107,.20);
+}
+.jarvis-theme .dash-root .master-box{
+  width:18px;
+  height:18px;
+  display:grid;
+  place-items:center;
+  border:1px solid #566662;
+  border-radius:5px;
+  color:#06100D;
+  font:950 11px/1 sans-serif;
+  flex:none;
+}
+.jarvis-theme .dash-root .master-check.done .master-box{
+  background:#8FE9BE;
+  border-color:#8FE9BE;
+}
+.jarvis-theme .dash-root .master-check > span:nth-child(2){
+  display:grid;
+  gap:2px;
+  min-width:0;
+}
+.jarvis-theme .dash-root .master-check b{
+  color:#DDE6E2;
+  font:900 6.5px/1.15 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.5px;
+}
+.jarvis-theme .dash-root .master-check small{
+  color:#748581;
+  font-size:6.5px;
+  line-height:1.35;
+}
+.jarvis-theme .dash-root .master-check em{
+  color:#C7AA6B;
+  font:900 5.5px/1.15 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.4px;
+  font-style:normal;
+  white-space:nowrap;
+}
+.jarvis-theme .dash-root .master-check.done em{color:#79D9A7}
+.jarvis-theme .dash-root .master-command-footer{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:7px;
+  padding-top:6px;
+  border-top:1px solid rgba(255,255,255,.04);
+}
+.jarvis-theme .dash-root .master-command-footer span{
+  color:#D9C98F;
+  font:900 6px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.7px;
+}
+.jarvis-theme .dash-root .master-command-footer b{
+  color:#AAB8B3;
+  font-size:6px;
+  letter-spacing:.4px;
+}
+.jarvis-theme .dash-root .master-command-footer small{
+  color:#60716D;
+  font-size:6.5px;
+  line-height:1.25;
+}
+@media(max-width:1000px){
+  .jarvis-theme .dash-root .master-command-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .jarvis-theme .dash-root .master-checklist{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .jarvis-theme .dash-root .master-command-rail{padding:9px 12px 8px}
+  .jarvis-theme .dash-root .master-command-top{grid-template-columns:1fr}
+  .jarvis-theme .dash-root .master-countdown{min-width:0;text-align:left;padding:7px 9px}
+  .jarvis-theme .dash-root .master-countdown strong{font-size:18px}
+  .jarvis-theme .dash-root .master-command-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .jarvis-theme .dash-root .master-checklist{grid-template-columns:1fr}
+  .jarvis-theme .dash-root .master-command-footer{gap:6px}
+}
+@media(max-width:420px){
+  .jarvis-theme .dash-root .master-command-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
