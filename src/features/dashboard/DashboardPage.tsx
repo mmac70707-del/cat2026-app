@@ -384,6 +384,8 @@ export function DashboardPage() {
   const nextTask = tasks.find(task => task.status !== 'DONE') || null
   const mentalPct = tasks.length ? Math.round((done / tasks.length) * 100) : 0
   const physicalPct = Math.round((body360Done / BODY360_SEQUENCE.length) * 100)
+  const mentalWin = mentalWinPlaceholder(done, tasks.length)
+  const physicalWin = physicalWinPlaceholder(body360Done)
   const dimensionWins: Record<BestMeDimensionId, boolean> = {
     MIND: mentalWinPlaceholder(done, tasks.length),
     BODY: physicalWinPlaceholder(body360Done),
