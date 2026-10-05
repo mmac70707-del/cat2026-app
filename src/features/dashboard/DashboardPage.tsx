@@ -12,7 +12,7 @@ import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
 import { LinkedInDailyCard } from '@/features/linkedin/LinkedInDailyCard'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
-import { getBodyPlan } from '@/data/body360'
+import { BODY360_SEQUENCE, getBodyPlan } from '@/data/body360'
 
 const SEQUENCE_STRIP: Array<{
   seq: string
@@ -170,6 +170,26 @@ function getRealWeekDates(now: Date = new Date()) {
 }
 
 
+
+const BESTME_EMOTIONAL_STORAGE = 'cat2026.bestme.emotional.v1'
+const BODY360_PROGRESS_STORAGE = 'cat2026.body360.progress.v1'
+
+function readBody360TodayProgress(dateKey: string) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(BODY360_PROGRESS_STORAGE) || '{}')
+    const today = raw?.[dateKey] || {}
+    return BODY360_SEQUENCE.filter(step => Boolean(today[step])).length
+  } catch {
+    return 0
+  }
+}
+
+function bestMeStateLabel(done: boolean, active: boolean) {
+  if (done) return 'WON'
+  if (active) return 'ACTIVE'
+  return 'NEXT'
+}
+
 function WinterArcCard() {
   const todayKey = getKolkataDateKey()
   const catEnd = '2026-11-29'
@@ -262,6 +282,8 @@ export function DashboardPage() {
   const [feedback, setFeedback] = useState('')
   const [errorCounts, setErrorCounts] = useState<{ [key: string]: number }>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
   const [liveNow, setLiveNow] = useState(() => new Date())
+  const [emotionalWin, setEmotionalWin] = useState(false)
+  const [body360Done, setBody360Done] = useState(() => readBody360TodayProgress(getKolkataDateKey()))
 
   useEffect(() => {
     const tick = () => setLiveNow(new Date())
@@ -288,12 +310,35 @@ export function DashboardPage() {
   const todayWeekPlan = WEEK_PLAN_TEMPLATE[kolkataParts.dayOfWeek === 0 ? 6 : kolkataParts.dayOfWeek - 1]
   const todayBodyPlan = getBodyPlan(kolkataParts.dayOfWeek)
   const nextTask = tasks.find(task => task.status !== 'DONE') || null
+  const mentalPct = tasks.length ? Math.round((done / tasks.length) * 100) : 0
+  const physicalPct = Math.round((body360Done / BODY360_SEQUENCE.length) * 100)
+  const mentalWin = done === tasks.length && tasks.length > 0
+  const physicalWin = body360Done === BODY360_SEQUENCE.length
+  const finalWin = mentalWin && physicalWin && emotionalWin
+  const finalWinCount = [mentalWin, physicalWin, emotionalWin].filter(Boolean).length
+
   const getSequenceState = (id: string) => {
     const task = tasks.find(t => t.blockId === id)
     if (task?.status === 'DONE') return 'DONE'
     if (id === currentBlockId) return 'NOW'
     return getBlockLiveState(id, currentMinutes, task?.status || 'TODO')
   }
+
+  useEffect(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(BESTME_EMOTIONAL_STORAGE) || '{}')
+      setEmotionalWin(Boolean(raw?.[dateKey]))
+    } catch {
+      setEmotionalWin(false)
+    }
+  }, [dateKey])
+
+  useEffect(() => {
+    const syncBody360 = () => setBody360Done(readBody360TodayProgress(dateKey))
+    syncBody360()
+    const id = window.setInterval(syncBody360, 1000)
+    return () => window.clearInterval(id)
+  }, [dateKey])
 
   useEffect(() => {
     ErrorRepository.getTypeCounts().then(counts => {
@@ -352,6 +397,128 @@ export function DashboardPage() {
         <span className="live-time-label">INDIA TIME • LIVE • AUTO REFRESH 1s</span>
         <span className="live-time-date">{realDayName} • {realDateStr}</span>
       </div>
+
+
+      {/* ── BEST ME CONTROL BOARD ── */}
+      <section className="best-me-panel" aria-label="Best Me daily control board">
+        <div className="best-me-head">
+          <div>
+            <div className="best-me-kicker">◉ BEST ME // DAILY CONTROL BOARD</div>
+            <div className="best-me-title">What is the Best Me — TODAY?</div>
+            <div className="best-me-sub">
+              {realDayName}, {realDateStr} <span>•</span> CAT Day {dayNum < 10 ? '0' + dayNum : dayNum}/44 <span>•</span> {roadmapItem.chapter}
+            </div>
+          </div>
+          <div className={'best-me-final ' + (finalWin ? 'is-won' : '')}>
+            <div className="best-me-final-label">FINAL WIN</div>
+            <div className="best-me-final-main">{finalWin ? '🏆 WON' : finalWinCount + '/3 WINS'}</div>
+            <div className="best-me-final-sub">
+              {finalWin ? 'Promise kept. Day locked in.' : 'Physical + Mental + Emotional'}
+            </div>
+          </div>
+        </div>
+
+        <div className="best-me-win-grid">
+          <div className={'best-me-win physical ' + (physicalWin ? 'won' : 'active')}>
+            <div className="best-me-win-top">
+              <span className="best-me-win-icon">💪</span>
+              <span className="best-me-win-state">{bestMeStateLabel(physicalWin, currentSlot?.block === 'Gym / Movement')}</span>
+            </div>
+            <div className="best-me-win-title">PHYSICAL WIN</div>
+            <div className="best-me-win-rule">Body 360 • {todayBodyPlan.title}</div>
+            <div className="best-me-win-detail">{body360Done}/{BODY360_SEQUENCE.length} gates • {physicalPct}% ready</div>
+            <div className="best-me-bar"><span style={{ width: physicalPct + '%' }} /></div>
+            <button className="best-me-action" onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail: { page: 'body360' } }))}>
+              {physicalWin ? 'OPEN BODY 360 ✓' : 'OPEN TODAY’S BODY PLAN →'}
+            </button>
+          </div>
+
+          <div className={'best-me-win mental ' + (mentalWin ? 'won' : 'active')}>
+            <div className="best-me-win-top">
+              <span className="best-me-win-icon">🧠</span>
+              <span className="best-me-win-state">{bestMeStateLabel(mentalWin, Boolean(nextTask))}</span>
+            </div>
+            <div className="best-me-win-title">MENTAL WIN</div>
+            <div className="best-me-win-rule">CAT FIRST • Study → Test → Analyse → Repair</div>
+            <div className="best-me-win-detail">{done}/{tasks.length || 8} CAT blocks • {mentalPct}% complete</div>
+            <div className="best-me-bar"><span style={{ width: mentalPct + '%' }} /></div>
+            <button className="best-me-action" onClick={() => document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+              {mentalWin ? 'ALL CAT BLOCKS COMPLETE ✓' : nextTask ? 'NEXT: ' + nextTask.blockId + ' →' : 'START QA →'}
+            </button>
+          </div>
+
+          <div className={'best-me-win emotional ' + (emotionalWin ? 'won' : 'active')}>
+            <div className="best-me-win-top">
+              <span className="best-me-win-icon">🫶</span>
+              <span className="best-me-win-state">{emotionalWin ? 'WON' : 'NEXT'}</span>
+            </div>
+            <div className="best-me-win-title">EMOTIONAL WIN</div>
+            <div className="best-me-win-rule">Calm mind • no guilt debt • return to the plan</div>
+            <div className="best-me-win-detail">{emotionalWin ? 'You consciously chose composure today.' : 'One honest self-check = today’s emotional rep.'}</div>
+            <button
+              className={'best-me-action ' + (emotionalWin ? 'done' : '')}
+              onClick={() => {
+                const next = !emotionalWin
+                setEmotionalWin(next)
+                try {
+                  const raw = JSON.parse(localStorage.getItem(BESTME_EMOTIONAL_STORAGE) || '{}')
+                  raw[dateKey] = next
+                  localStorage.setItem(BESTME_EMOTIONAL_STORAGE, JSON.stringify(raw))
+                } catch {}
+              }}
+            >
+              {emotionalWin ? 'EMOTIONAL WIN LOCKED ✓' : 'MARK: I RETURNED TO CALM →'}
+            </button>
+          </div>
+
+          <div className={'best-me-win final ' + (finalWin ? 'won' : '')}>
+            <div className="best-me-win-top">
+              <span className="best-me-win-icon">🏆</span>
+              <span className="best-me-win-state">{finalWin ? 'WON' : 'LOCKED PATH'}</span>
+            </div>
+            <div className="best-me-win-title">FINAL WIN</div>
+            <div className="best-me-win-rule">Keep the promise — not perfection.</div>
+            <div className="best-me-win-detail">
+              {finalWin ? 'Physical + Mental + Emotional are all won.' : 'Final Win unlocks when all three daily wins are won.'}
+            </div>
+            <div className="best-me-formula"><span>BODY</span><b>+</b><span>MIND</span><b>+</b><span>CALM</span><b>=</b><strong>BEST ME</strong></div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── ALL-DAY LOCKED SCHEDULE ── */}
+      <section className="all-day-schedule" aria-label="All day locked schedule">
+        <div className="all-day-head">
+          <div>
+            <div className="all-day-kicker">▣ TODAY’S EXACT SCHEDULE • LOCKED</div>
+            <div className="all-day-title">Every block. No hunting. Follow the clock.</div>
+          </div>
+          <div className="all-day-clock">{liveTimeStr} IST</div>
+        </div>
+        <div className="all-day-grid">
+          {SCHEDULE_ITEMS.map((slot) => {
+            const active = currentSlot?.time === slot.time && currentSlot?.block === slot.block
+            const next = nextSlot?.time === slot.time && nextSlot?.block === slot.block
+            return (
+              <div key={slot.block + slot.time} className={'all-day-slot ' + (active ? 'now ' : '') + (next ? 'next' : '')}>
+                <div className="all-day-slot-time">{slot.time}</div>
+                <div className="all-day-slot-main">
+                  <span className="all-day-slot-icon">{slot.icon}</span>
+                  <div>
+                    <div className="all-day-slot-name">{slot.block}</div>
+                    <div className="all-day-slot-detail">
+                      {slot.block === 'Gym / Movement' ? 'BODY 360 • ' + todayBodyPlan.title + ' • ' + todayBodyPlan.duration : slot.detail}
+                    </div>
+                  </div>
+                </div>
+                <span className={'all-day-slot-badge ' + (active ? 'now' : next ? 'next' : '')}>
+                  {active ? 'NOW' : next ? 'NEXT' : 'LOCKED'}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </section>
 
       {/* ── HEADER ── */}
       <div className="header">
