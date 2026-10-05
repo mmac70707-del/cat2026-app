@@ -64,6 +64,8 @@ export function Body360Page({ onBack }: { onBack: () => void }) {
   const programDay = Math.min(100, daysSince(programStart || key, key) + 1)
   const programDaysLeft = Math.max(0, 100 - programDay)
   const isTodayLocked = lockedDays.includes(programDay)
+  const remainingLearning = BODY360_SEQUENCE.filter(step => !stepDone[step])
+  const nextLearningStep = remainingLearning[0] || null
 
   function lockToday() {
     if (done !== BODY360_SEQUENCE.length || isTodayLocked) return
@@ -73,7 +75,21 @@ export function Body360Page({ onBack }: { onBack: () => void }) {
   }
 
   function toggle(id: StepId) {
-    setStepDone(prev => ({ ...prev, [id]: !prev[id] }))
+    const next = BODY360_SEQUENCE.find(step => !stepDone[step])
+    if (isTodayLocked) return
+    if (!stepDone[id] && id !== next) return
+    const idx = BODY360_SEQUENCE.indexOf(id)
+    setStepDone(prev => {
+      const out = { ...prev }
+      if (prev[id]) {
+        BODY360_SEQUENCE.forEach((step, stepIndex) => {
+          if (stepIndex >= idx) delete out[step]
+        })
+      } else {
+        out[id] = true
+      }
+      return out
+    })
   }
 
   return (
@@ -107,13 +123,34 @@ export function Body360Page({ onBack }: { onBack: () => void }) {
       </section>
 
       <section style={{marginTop:12}} className="card">
-        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🔒 LOCKED DAILY SEQUENCE</div>
+        <div style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) auto',gap:10,alignItems:'start'}}>
+          <div>
+            <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'#4ADE80'}}>🏋️ TODAY’S BEST WORKOUT</div>
+            <div style={{fontSize:17,fontWeight:900,marginTop:5}}>{plan.title}</div>
+            <div style={{fontSize:10,color:'var(--muted)',marginTop:3}}>{plan.focus} • {plan.duration}</div>
+          </div>
+          <div style={{textAlign:'right',minWidth:82}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#4ADE80'}}>LEARNING</div>
+            <div style={{fontSize:18,fontWeight:900,marginTop:2}}>{remainingLearning.length}</div>
+            <div style={{fontSize:8,color:'var(--muted)'}}>remaining</div>
+          </div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:6,marginTop:10}}>
+          {plan.exercises.map((e,i)=><div key={i} style={{padding:'8px 9px',border:'1px solid var(--border)',borderRadius:9,fontSize:9,color:'var(--muted)',background:'var(--card)'}}><b style={{color:'var(--text)'}}>{String(i+1).padStart(2,'0')}</b> • {e}</div>)}
+        </div>
+        <div style={{marginTop:10,padding:'9px 10px',border:'1px solid rgba(96,165,250,.22)',borderRadius:10,background:'rgba(96,165,250,.05)',fontSize:10,color:'var(--muted)'}}>
+          <b style={{color:'#60A5FA'}}>REMAINING LEARNING:</b> {nextLearningStep ? nextLearningStep + (remainingLearning.length > 1 ? ' → ' + remainingLearning.slice(1,4).join(' → ') : '') : 'All 13 learning gates complete.'}
+        </div>
+      </section>
+
+      <section style={{marginTop:12}} className="card">
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'var(--muted)'}}>🔒 SEQUENCE LEARNING GATE</div>
         <div style={{display:'grid',gap:7,marginTop:10}}>
           {BODY360_SEQUENCE.map((s,i)=>(
-            <button key={s} onClick={()=>toggle(s)} style={{display:'grid',gridTemplateColumns:'34px 1fr 26px',alignItems:'center',gap:9,textAlign:'left',padding:'10px 11px',borderRadius:12,border:'1px solid var(--border)',background:stepDone[s]?'rgba(34,197,94,.08)':'var(--card)',color:'inherit',cursor:'pointer'}}>
+            <button key={s} onClick={()=>toggle(s)} disabled={!stepDone[s] && s !== nextLearningStep} style={{display:'grid',gridTemplateColumns:'34px 1fr 26px',alignItems:'center',gap:9,textAlign:'left',padding:'10px 11px',borderRadius:12,border:'1px solid var(--border)',background:stepDone[s]?'rgba(34,197,94,.08)':'var(--card)',color:'inherit',cursor:stepDone[s] || s === nextLearningStep?'pointer':'not-allowed',opacity:!stepDone[s] && s !== nextLearningStep?.55:1}}>
               <span style={{width:27,height:27,borderRadius:9,display:'grid',placeItems:'center',background:stepDone[s]?'rgba(34,197,94,.18)':'rgba(255,255,255,.05)',fontSize:9,fontWeight:900}}>{stepDone[s]?'✓':String(i+1).padStart(2,'0')}</span>
               <span><b style={{fontSize:11,letterSpacing:.5}}>{s}</b><small style={{display:'block',fontSize:10,color:'var(--muted)',marginTop:2}}>
-                {s==='CONNECT'?'Energy • pain • readiness':s==='REVISION'?'Recall the previous session':s==='RECAP'?'3–5 key facts':s==='MISSION'?'Today’s exact target':s==='THEORY'?'Anatomy + movement logic':s==='VISUALIZATION'?'See the movement before the set':s==='PRACTICAL'?'Demonstrate → practice → work sets':s==='MIND–MUSCLE'?'Feel target muscle without chasing burn':s==='MISTAKES'?'Technique leaks → correction':s==='SCIENCE'?'Evidence → action rule':s==='QUIZ'?'Recall before moving on':s==='HOMEWORK'?'Small recovery/habit action':'One lesson for next time'}
+                {s===nextLearningStep ? 'CURRENT GATE • ' : stepDone[s] ? 'COMPLETED • ' : 'LOCKED • '}{s==='CONNECT'?'Energy • pain • readiness':s==='REVISION'?'Recall the previous session':s==='RECAP'?'3–5 key facts':s==='MISSION'?'Today’s exact target':s==='THEORY'?'Anatomy + movement logic':s==='VISUALIZATION'?'See the movement before the set':s==='PRACTICAL'?'Demonstrate → practice → work sets':s==='MIND–MUSCLE'?'Feel target muscle without chasing burn':s==='MISTAKES'?'Technique leaks → correction':s==='SCIENCE'?'Evidence → action rule':s==='QUIZ'?'Recall before moving on':s==='HOMEWORK'?'Small recovery/habit action':'One lesson for next time'}
               </small></span>
               <span style={{fontSize:12,color:stepDone[s]?'#4ADE80':'var(--muted)'}}>{stepDone[s]?'DONE':'→'}</span>
             </button>
