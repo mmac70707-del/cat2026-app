@@ -245,6 +245,53 @@ const DAILY_BEST_BASICS = [
   { id:'PURPOSE' as BestMeDimensionId, n:'07', icon:'🚀', name:'PURPOSE', purpose:'Build + become', mentor:'Make one tiny deposit into your future.' },
 ] as const
 
+type DailyLesson = {
+  title: string
+  why: string
+  mechanism: string
+  example: string
+  practice: string
+  recall: string
+}
+
+const DAILY_BEST_BASIC_LESSONS: Record<BestMeDimensionId, DailyLesson[]> = {
+  MIND: [
+    { title:'Retrieval beats rereading', why:'Memory gets stronger when you pull the answer out instead of only looking at it.', mechanism:'Learn → close notes → recall → check → repair → retest.', example:'After Ratio theory, close the notes and explain proportional division from memory before solving.', practice:'2 minutes: write 3 things you remember from today’s CAT topic without looking.', recall:'What did I retrieve today that I could not recall yesterday?' },
+    { title:'Question selection is a skill', why:'A high score is not just solving power; it is choosing where your limited time earns marks.', mechanism:'Scan → classify → commit → abandon early when the expected return is poor.', example:'In DILR, a clean familiar set can beat a brilliant but time-hungry set.', practice:'Before your next set, state the reason you chose it in one sentence.', recall:'Why did I choose this question first?' },
+    { title:'Repair creates mastery', why:'Repeating the same mistake trains the mistake. Correction plus retest trains the skill.', mechanism:'Wrong → classify → find root cause → fix → fresh attempt → retest.', example:'If a VARC wrong answer came from misreading the author’s claim, repair the reading process—not just that question.', practice:'Take one wrong question and write one prevention rule.', recall:'What changed in my method after my last mistake?' },
+  ],
+  BODY: [
+    { title:'Progressive overload, not ego', why:'Your body adapts to a training stimulus; progress comes from gradually increasing useful work while keeping technique.', mechanism:'Good form → repeatable reps → small progression → recover → adapt.', example:'When all bench sets reach the top of the rep range cleanly, add a small load instead of jumping dramatically.', practice:'Choose one exercise today and record load + reps + clean RIR.', recall:'What exactly am I progressing: load, reps, control, or consistency?' },
+    { title:'Recovery is part of training', why:'Training is the stimulus; adaptation needs sleep, food and recovery time.', mechanism:'Stimulus → recovery → adaptation → stronger next session.', example:'A hard session followed by poor sleep can reduce the quality of the next workout.', practice:'Protect tonight’s sleep and do the planned cool-down instead of adding junk volume.', recall:'What recovery choice will improve tomorrow’s session?' },
+    { title:'Technique makes strength useful', why:'A strong movement pattern is more repeatable and easier to progress safely.', mechanism:'Stable position → controlled range → target muscle → consistent reps.', example:'A slower clean row with a stable torso teaches more than swinging a heavier weight.', practice:'For your first working set, use a controlled tempo and stop before form breaks.', recall:'What part of my technique will I watch today?' },
+  ],
+  EMOTIONAL: [
+    { title:'The pause creates choice', why:'An emotion can arrive before your deliberate decision. A brief pause gives your decision-making system room to catch up.', mechanism:'Trigger → pause → name it → choose response → act.', example:'A harsh message arrives; you breathe and draft the reply after the heat drops.', practice:'Before one difficult reply today, take 3 slow breaths and wait 10 seconds.', recall:'What did the pause change?' },
+    { title:'Name the emotion, do not become it', why:'“I am angry” can turn into identity; “I notice anger” creates distance.', mechanism:'Notice sensation → label emotion → identify need → choose action.', example:'“I notice frustration because the problem is taking longer than expected.”', practice:'Use the sentence “I notice ___; the next useful action is ___.” once today.', recall:'What feeling was present, and what action did I choose?' },
+    { title:'Discipline needs emotional flexibility', why:'A strong system must work on bad-mood days too.', mechanism:'Keep the standard → shrink the action → preserve the streak → resume full pace.', example:'On a low-energy day, you still do the minimum planned CAT block instead of abandoning the day.', practice:'When resistance appears, start for only 5 minutes.', recall:'Did I obey the plan or my temporary mood?' },
+  ],
+  SPIRITUAL: [
+    { title:'Values before mood', why:'A value gives you a direction when motivation is unstable.', mechanism:'Choose value → define behaviour → act → reflect.', example:'If honesty is the value, you correct a false statement even when admitting the mistake is uncomfortable.', practice:'Pick one value for today and define one visible action that proves it.', recall:'What did I do today that matched my value?' },
+    { title:'Gratitude changes the comparison frame', why:'Attention can default to what is missing; gratitude deliberately notices what is already working.', mechanism:'Notice good → name it specifically → appreciate → continue.', example:'Instead of measuring yourself only against someone ahead, notice the skill you have gained this month.', practice:'Write three specific things you are grateful for—no generic answers.', recall:'What did gratitude make easier to see?' },
+    { title:'Quiet time improves direction', why:'A small period without noise lets you notice whether your actions still match your priorities.', mechanism:'Silence → reflect → reconnect with purpose → choose next action.', example:'Two minutes of prayer/reflection before the day begins can prevent a whole day of reactive behaviour.', practice:'2 minutes: Radhe Radhe → gratitude → one intention.', recall:'What mattered most today?' },
+  ],
+  SOCIAL: [
+    { title:'Listen before solving', why:'People often need understanding before advice.', mechanism:'Listen → clarify → reflect → then advise only if useful.', example:'Ask “What is the real problem?” before giving a friend a solution.', practice:'In one conversation today, ask one extra question before giving your opinion.', recall:'What did I learn because I listened longer?' },
+    { title:'Trust is built in small deposits', why:'Reliable small actions create more trust than occasional grand gestures.', mechanism:'Promise → execute → communicate → repeat.', example:'Reply when you said you would, arrive when you said you would, and admit quickly when you cannot.', practice:'Keep one small promise exactly today.', recall:'Did my behaviour make me more trustworthy?' },
+    { title:'Network by being useful', why:'Strong professional relationships grow from genuine value, not collecting contacts.', mechanism:'Notice need → share useful insight → stay curious → follow up.', example:'A thoughtful comment on someone’s business idea can create a better connection than a generic “great post”.', practice:'Help one person with one useful piece of information today.', recall:'What value did I add?' },
+  ],
+  FINANCIAL: [
+    { title:'Know your cash flow', why:'You cannot control what you do not observe.', mechanism:'Earn → spend → save/invest → review.', example:'A daily 30-second spending log can reveal repeated small leaks that feel invisible individually.', practice:'Log every expense today and label each need or want.', recall:'Where did my money actually go?' },
+    { title:'Delay the purchase', why:'Time separates a real need from an emotional impulse.', mechanism:'Want → wait → question need → compare → decide.', example:'Waiting 24 hours before a non-essential purchase often exposes whether the desire lasts.', practice:'Delay one unnecessary purchase for 24 hours.', recall:'Was it a need, a useful want, or an impulse?' },
+    { title:'Small advantages compound', why:'Repeated small improvements accumulate over long periods.', mechanism:'Save a little → learn → increase earning power → repeat.', example:'A consistent learning habit can become more valuable than chasing one dramatic financial shortcut.', practice:'Spend 3 minutes learning one business or money principle after CAT priorities.', recall:'What small financial advantage did I build today?' },
+  ],
+  PURPOSE: [
+    { title:'Build from problems, not titles', why:'A builder becomes useful by solving real problems, not by collecting impressive labels.', mechanism:'Observe problem → understand user → test solution → measure result.', example:'Instead of “I want to be a founder,” ask which recurring problem you can solve better than today.', practice:'Write one real problem you observed today and who suffers from it.', recall:'What problem am I becoming capable of solving?' },
+    { title:'Think in systems', why:'Goals describe an outcome; systems make the outcome repeatable.', mechanism:'Goal → process → measurement → feedback → improvement.', example:'“Get fit” is a goal; “train 4 days, track lifts, recover, review weekly” is a system.', practice:'Turn one goal into one repeatable daily process.', recall:'What process produces the result I want?' },
+    { title:'Long-term identity is built today', why:'Your future reputation is the accumulation of today’s repeated behaviours.', mechanism:'Tiny action → repetition → capability → reputation → opportunity.', example:'Three focused minutes of business learning every day becomes a knowledge base over time.', practice:'Make one tiny deposit into your future identity after your core CAT work.', recall:'What did today’s action say about the person I am becoming?' },
+  ],
+}
+
 type BestMeSinId = 'PRIDE' | 'GREED' | 'LUST' | 'ENVY' | 'GLUTTONY' | 'WRATH' | 'SLOTH'
 
 const SIN_CONTROL_STORAGE = 'cat2026.bestme.sins.v1'
@@ -402,6 +449,7 @@ export function DashboardPage() {
   const [bestMeManualWins, setBestMeManualWins] = useState<Partial<Record<BestMeDimensionId, boolean>>>(() => readBestMeManualWins(getKolkataDateKey()))
   const [body360Done, setBody360Done] = useState(() => readBody360TodayProgress(getKolkataDateKey()))
   const [sinControls, setSinControls] = useState<Partial<Record<BestMeSinId, boolean>>>(() => readSinControls(getKolkataDateKey()))
+  const [activeLessonId, setActiveLessonId] = useState<BestMeDimensionId | null>('MIND')
 
 
   useEffect(() => {
@@ -591,7 +639,7 @@ export function DashboardPage() {
               action = 'TODAY: after CAT priorities, take one 3-minute business/leadership lesson.'
             }
             return (
-              <div key={basic.id} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked')}>
+              <button type="button" key={basic.id} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} aria-expanded={activeLessonId === basic.id}>
                 <div className="daily-basic-top">
                   <span className="daily-basic-number">{basic.n}</span>
                   <span className="daily-basic-icon">{basic.icon}</span>
@@ -609,10 +657,40 @@ export function DashboardPage() {
                 {basic.id === 'BODY' && isCurrent && (
                   <button className="daily-basic-btn" onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail:{ page:'body360' } }))}>OPEN BODY 360 →</button>
                 )}
-              </div>
+              </button>
             )
           })}
         </div>
+
+        {activeLessonId && (() => {
+          const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
+          const lessonSet = DAILY_BEST_BASIC_LESSONS[activeLessonId]
+          const lesson = lessonSet[seed % lessonSet.length]
+          const lessonMeta = DAILY_BEST_BASICS.find(basic => basic.id === activeLessonId)!
+          const lessonIsCurrent = nextDimensionIndex === DAILY_BEST_BASICS.findIndex(basic => basic.id === activeLessonId)
+          return (
+            <div className="daily-lesson-panel" aria-label={lessonMeta.name + ' daily lesson'} onClick={event => event.stopPropagation()}>
+              <div className="daily-lesson-head">
+                <div>
+                  <span className="daily-lesson-kicker">LEARN {lessonMeta.n} • {lessonMeta.name}</span>
+                  <strong>{lesson.title}</strong>
+                </div>
+                <button type="button" className="daily-lesson-close" onClick={() => setActiveLessonId(null)} aria-label="Close lesson">×</button>
+              </div>
+              <div className="daily-lesson-grid">
+                <div><span>WHY IT MATTERS</span><p>{lesson.why}</p></div>
+                <div><span>HOW IT WORKS</span><p>{lesson.mechanism}</p></div>
+                <div><span>REAL EXAMPLE</span><p>{lesson.example}</p></div>
+                <div><span>DO IT TODAY</span><p>{lesson.practice}</p></div>
+                <div className="daily-lesson-recall"><span>10-SEC RECALL</span><b>{lesson.recall}</b></div>
+              </div>
+              <div className="daily-lesson-footer">
+                <span>{lessonIsCurrent ? 'CURRENT STEP' : 'LEARNING IS ALWAYS OPEN'}</span>
+                <b>{lessonMeta.mentor}</b>
+              </div>
+            </div>
+          )
+        })()}
 
         <div className="daily-basics-footer">
           <span>MENTOR RULE</span>
