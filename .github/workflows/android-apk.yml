@@ -5,6 +5,13 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - 'tsconfig*.json'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradle/**'
@@ -30,6 +37,19 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
 
+      - name: Set up Node 22
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Build web dashboard bundle
+        run: npm ci && npm run build
+      - name: Sync web bundle into Android assets
+        shell: bash
+        run: |
+          rm -rf app/src/main/assets/public
+          mkdir -p app/src/main/assets/public
+          cp -R dist/. app/src/main/assets/public/
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
