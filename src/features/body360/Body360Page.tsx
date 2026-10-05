@@ -147,7 +147,6 @@ export function Body360Page({ onBack }: { onBack: () => void }) {
         <div style={{marginTop:8,padding:'9px 10px',borderRadius:10,border:'1px solid rgba(34,197,94,.22)',background:'rgba(34,197,94,.05)',fontSize:10,color:'var(--muted)'}}>
           <b style={{color:'#4ADE80'}}>PROGRESSION:</b> {plan.progression}
         </div>
-        </div>
       </section>
 
       <section style={{marginTop:12}} className="card">
