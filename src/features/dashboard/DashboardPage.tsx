@@ -636,7 +636,7 @@ export function DashboardPage() {
 
         <div className="best-me-sequence-note">
           <span>01 → 02 → 03 → 04 → 05 → 06 → 07 → FINAL</span>
-          <b>Mind → Body → Emotional → Spiritual → Social → Financial → Purpose</b>
+          <b>Mind → Body → Emotion → Spiritual → Social → Financial → Purpose</b>
         </div>
 
         <div className="best-me-seven-grid">
