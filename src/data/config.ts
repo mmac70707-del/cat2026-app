@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.0.9'
-export const LAST_UPDATED = '05 OCT 2026 • BODY 360 SCHEDULE SYNC'
+export const APP_VERSION = '1.1.0'
+export const LAST_UPDATED = '05 OCT 2026 • BRM READING MODE'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -23,7 +23,8 @@ export const APP_UPDATE_INFO = {
     'Clean Winter Arc command layer with CAT-first execution states',
     'Persistent Dark / Light / System mode, text size and Focus Mode controls',
     'Full portrait lock screen, native Face / Fingerprint prompt hardening and no-surprise browser PIN fallback',
-    'Body 360 locked learning sequence + automatic weekday gym rotation merged into Daily Schedule'
+    'Body 360 locked learning sequence + automatic weekday gym rotation merged into Daily Schedule',
+    'BRM Business School: self-contained daily lesson reader with date-driven Basic → Advanced curriculum'
   ]
 }
 
