@@ -2191,3 +2191,216 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   .jarvis-theme .dash-root .best-me-seven-grid { grid-template-columns:1fr; }
   .jarvis-theme .dash-root .best-me-dimension { min-height:auto; }
 }
+
+
+/* ── 7 SINS → 7 GOOD SELF-MASTERY CONTROL ── */
+.jarvis-theme .dash-root .sins-control-panel {
+  margin: 12px 18px 0;
+  padding: 16px;
+  border: 1px solid rgba(245,166,35,.18);
+  border-radius: 16px;
+  background:
+    radial-gradient(700px 240px at 100% 0%, rgba(245,166,35,.055), transparent 62%),
+    linear-gradient(145deg, rgba(16,18,18,.98), rgba(9,13,15,.98));
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+.jarvis-theme .dash-root .sins-control-head {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.jarvis-theme .dash-root .sins-control-kicker {
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:1.8px;
+  color:#FCD34D;
+}
+.jarvis-theme .dash-root .sins-control-title {
+  margin-top:4px;
+  font-size:17px;
+  line-height:1.2;
+  font-weight:950;
+  color:#EAF4F3;
+}
+.jarvis-theme .dash-root .sins-control-sub {
+  margin-top:6px;
+  max-width:760px;
+  font-size:9px;
+  line-height:1.5;
+  color:#71898B;
+}
+.jarvis-theme .dash-root .sins-control-score {
+  min-width:130px;
+  padding:9px 11px;
+  border-radius:12px;
+  text-align:right;
+  border:1px solid rgba(245,166,35,.16);
+  background:rgba(245,166,35,.035);
+}
+.jarvis-theme .dash-root .sins-control-score.won {
+  border-color:rgba(34,197,94,.26);
+  background:rgba(34,197,94,.045);
+}
+.jarvis-theme .dash-root .sins-control-score-label {
+  font-size:7px;
+  font-weight:950;
+  letter-spacing:1.2px;
+  color:#71888B;
+}
+.jarvis-theme .dash-root .sins-control-score-main {
+  margin-top:2px;
+  font-size:18px;
+  font-weight:950;
+  color:#FCD34D;
+}
+.jarvis-theme .dash-root .sins-control-score.won .sins-control-score-main { color:#6EE7B7; }
+.jarvis-theme .dash-root .sins-control-score-sub {
+  margin-top:2px;
+  font-size:8px;
+  color:#71888B;
+}
+.jarvis-theme .dash-root .sins-control-flow {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:12px 0;
+  padding:9px 10px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:10px;
+  background:rgba(255,255,255,.015);
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.8px;
+  color:#879B9E;
+}
+.jarvis-theme .dash-root .sins-control-flow b { color:#50676A; }
+.jarvis-theme .dash-root .sins-control-flow strong { color:#6EE7B7; }
+.jarvis-theme .dash-root .sins-control-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.jarvis-theme .dash-root .sin-control-card {
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  padding:11px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.014);
+}
+.jarvis-theme .dash-root .sin-control-card.won {
+  border-color:rgba(34,197,94,.24);
+  background:rgba(34,197,94,.035);
+}
+.jarvis-theme .dash-root .sin-control-top {
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+.jarvis-theme .dash-root .sin-control-num {
+  font:950 8px/1 ui-monospace,monospace;
+  color:#5D7477;
+}
+.jarvis-theme .dash-root .sin-control-icon { font-size:15px; }
+.jarvis-theme .dash-root .sin-control-state {
+  margin-left:auto;
+  padding:3px 5px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.06);
+  color:#71888B;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.7px;
+}
+.jarvis-theme .dash-root .sin-control-state.won {
+  color:#6EE7B7;
+  border-color:rgba(34,197,94,.22);
+}
+.jarvis-theme .dash-root .sin-control-pair {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:8px;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.7px;
+}
+.jarvis-theme .dash-root .sin-name { color:#D3DEDF; }
+.jarvis-theme .dash-root .sin-arrow { color:#50676A; }
+.jarvis-theme .dash-root .sin-control-pair strong { color:#8FE9BE; }
+.jarvis-theme .dash-root .sin-control-signal,
+.jarvis-theme .dash-root .sin-control-step {
+  margin-top:6px;
+  font-size:8px;
+  line-height:1.5;
+  color:#71898B;
+}
+.jarvis-theme .dash-root .sin-control-signal b,
+.jarvis-theme .dash-root .sin-control-step b {
+  color:#9AADAF;
+  letter-spacing:.4px;
+}
+.jarvis-theme .dash-root .sin-control-action {
+  width:100%;
+  margin-top:9px;
+  padding:7px 8px;
+  border-radius:9px;
+  border:1px solid rgba(245,166,35,.13);
+  background:rgba(245,166,35,.025);
+  color:#D9C98F;
+  cursor:pointer;
+  font-size:7.5px;
+  font-weight:950;
+  letter-spacing:.25px;
+}
+.jarvis-theme .dash-root .sin-control-action:hover { background:rgba(245,166,35,.06); }
+.jarvis-theme .dash-root .sin-control-action.done {
+  border-color:rgba(34,197,94,.2);
+  background:rgba(34,197,94,.04);
+  color:#6EE7B7;
+}
+.jarvis-theme .dash-root .sins-control-footer {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-top:10px;
+  padding:10px 11px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.05);
+  background:rgba(255,255,255,.012);
+}
+.jarvis-theme .dash-root .sins-control-footer > div:first-child {
+  display:grid;
+  gap:3px;
+}
+.jarvis-theme .dash-root .sins-control-footer b {
+  font-size:8px;
+  letter-spacing:.7px;
+  color:#FCD34D;
+}
+.jarvis-theme .dash-root .sins-control-footer span {
+  font-size:8px;
+  color:#6F8688;
+}
+.jarvis-theme .dash-root .sins-control-footer.won b { color:#6EE7B7; }
+.jarvis-theme .dash-root .sins-virtue-chain {
+  text-align:right;
+  font-size:7px;
+  line-height:1.5;
+  font-weight:950;
+  letter-spacing:.45px;
+  color:#5F777A;
+}
+@media (max-width:700px) {
+  .jarvis-theme .dash-root .sins-control-panel { margin-left:12px; margin-right:12px; padding:12px; }
+  .jarvis-theme .dash-root .sins-control-head { flex-direction:column; }
+  .jarvis-theme .dash-root .sins-control-score { width:100%; text-align:left; }
+  .jarvis-theme .dash-root .sins-control-grid { grid-template-columns:1fr; }
+  .jarvis-theme .dash-root .sins-control-footer { flex-direction:column; align-items:flex-start; }
+  .jarvis-theme .dash-root .sins-virtue-chain { text-align:left; }
+}
