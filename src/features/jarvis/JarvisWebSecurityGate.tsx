@@ -362,7 +362,7 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
         <section className="jarvis-lock-v5__hero">
           <article className="jarvis-lock-v5__identity">
             <div className="jarvis-lock-v5__portrait-frame">
-              <img src="/images/ashish_lock_portrait.jpg" alt="Ashish" />
+              <img src="images/ashish_lock_portrait.jpg" alt="Ashish" />
               <span className="jarvis-lock-v5__portrait-ring" />
               <span className="jarvis-lock-v5__portrait-tag">01</span>
             </div>
