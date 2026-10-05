@@ -172,6 +172,12 @@ function HairFoodCard() {
     try { localStorage.setItem(KEY, JSON.stringify(next)) } catch {}
   }
   const toggle = (id:string) => save({ ...state, done: { ...(state.done || {}), [dayKey]: { ...checks, [id]: !checks[id] } } })
+  const mealWhy: Record<string,string> = {
+    breakfast:'Protein + calcium/healthy fats depending on the meal. Fruit adds vitamin C and variety.',
+    lunch:'Main protein meal: dal/beans + paneer/tofu/soy. Add vegetables; pair iron-rich plant foods with vitamin-C foods when practical.',
+    snack:'Simple protein-rich snack to keep meals regular: chana, curd/milk, nuts or seeds.',
+    dinner:'Protein + carbohydrate + vegetables for a balanced evening meal and recovery.'
+  }
   const meals = [
     ['breakfast','08:00','BREAKFAST',menu.breakfast],
     ['lunch','13:30','LUNCH',menu.lunch],
@@ -199,13 +205,14 @@ function HairFoodCard() {
                 <span style={{fontSize:9,fontWeight:900,color:checks[id]?'#86EFAC':'#CBD5E1'}}>{checks[id]?'✓ ':''}{title}</span>
               </div>
               <div style={{fontSize:10,fontWeight:800,lineHeight:1.45,marginTop:5}}>{food}</div>
+              <div style={{fontSize:8,color:'#94A3B8',lineHeight:1.45,marginTop:4}}>WHY: {mealWhy[id]}</div>
             </button>
           ))}
         </div>
         <div style={{padding:11,borderRadius:10,border:'1px solid rgba(96,165,250,.16)',background:'rgba(59,130,246,.045)'}}>
           <div style={{fontSize:9,fontWeight:900,color:'#93C5FD'}}>HAIR-SUPPORT RULES</div>
           <div style={{fontSize:9,color:'#CBD5E1',lineHeight:1.55,marginTop:5}}>
-            Protein source at meals • vegetables + fruit daily • regular meals • enough overall food • water through the day • no crash dieting • no random biotin/iron/zinc supplements.
+            DAILY CHECK: 1) protein food at each main meal • 2) dal/chana/rajma/soy/tofu/paneer/curd/milk rotated across the week • 3) vegetables + fruit daily • 4) regular meals + enough overall food • 5) water through the day • 6) no crash dieting • 7) no random biotin/iron/zinc supplements.
           </div>
         </div>
         <div style={{fontSize:8,color:'#64748B',lineHeight:1.5}}>
