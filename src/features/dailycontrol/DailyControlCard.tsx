@@ -628,7 +628,7 @@ export function DailyControlCard() {
 
       <HairHealthCard />
 
-      {/* BOTTOM FOOTER */
+      {/* BOTTOM FOOTER */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
