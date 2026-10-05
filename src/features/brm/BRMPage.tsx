@@ -176,8 +176,9 @@ function buildStreak(dates: string[]): StreakState {
   return { completedDates, current, best }
 }
 export function BRMPage({ onBack }: { onBack?: () => void }) {
-  const lesson = getLessonForToday()
-  const progress = ((lesson.day - 1) / (LESSONS.length - 1)) * 100
+  const schedule = getTodaySchedule()
+  const lesson = schedule.type === 'lesson' ? schedule.lesson : schedule.lessons[schedule.lessons.length - 1]
+  const progress = lesson ? ((lesson.day - 1) / (LESSONS.length - 1)) * 100 : 0
   const today = getKolkataDateKey()
   const [streak, setStreak] = useState<StreakState>({ completedDates: [], current: 0, best: 0 })
 
@@ -218,7 +219,9 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
       <section style={{ border: '1px solid rgba(99,246,255,.35)', background: 'linear-gradient(135deg, rgba(14,31,45,.96), rgba(20,18,33,.96))', borderRadius: 18, padding: 18, boxShadow: '0 16px 50px rgba(0,0,0,.25)', marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 900, color: '#F5A623', letterSpacing: 1.2 }}>DAY {lesson.day} • READ TODAY</div>
+            <div style={{ fontSize: 10, fontWeight: 900, color: '#F5A623', letterSpacing: 1.2 }}>
+              {schedule.type === 'revision' ? 'SUNDAY • WEEKLY REVISION' : `DAY ${lesson?.day} • READ TODAY`}
+            </div>
             <div style={{ fontSize: 13, color: '#A5B4FC', marginTop: 5 }}>No PDF hunting • No article hunting • Just read</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginLeft: 'auto' }}>
@@ -236,11 +239,28 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
           </div>
         </div>
 
-        <div style={{ marginTop: 18, fontSize: 24, fontWeight: 950, lineHeight: 1.15 }}>{lesson.title}</div>
-
-        <div style={{ marginTop: 16, fontSize: 15, lineHeight: 1.85, color: '#E2E8F0' }}>
-          {lesson.paragraph}
-        </div>
+        {schedule.type === 'revision' ? (
+          <div style={{ marginTop: 18 }}>
+            <div style={{ fontSize: 24, fontWeight: 950, lineHeight: 1.15 }}>This Week → Lock It In</div>
+            <div style={{ marginTop: 8, color: '#94A3B8', fontSize: 13 }}>Sunday is not a new lesson. It is the memory-and-connection day for the six lessons you just studied.</div>
+            <div style={{ marginTop: 14, display: 'grid', gap: 8 }}>
+              {schedule.lessons.map((item) => (
+                <div key={item.day} style={{ padding: 11, borderRadius: 12, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.035)' }}>
+                  <div style={{ fontSize: 10, color: '#63F6FF', fontWeight: 900 }}>DAY {item.day}</div>
+                  <div style={{ marginTop: 3, fontSize: 14, fontWeight: 850 }}>{item.title}</div>
+                  <div style={{ marginTop: 4, fontSize: 12, lineHeight: 1.5, color: '#CBD5E1' }}>{item.takeaway}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div style={{ marginTop: 18, fontSize: 24, fontWeight: 950, lineHeight: 1.15 }}>{lesson.title}</div>
+            <div style={{ marginTop: 16, fontSize: 15, lineHeight: 1.85, color: '#E2E8F0' }}>
+              {lesson.paragraph}
+            </div>
+          </>
+        )}
 
         <div style={{ marginTop: 16, padding: 14, borderRadius: 14, border: '1px solid rgba(245,166,35,.28)', background: 'rgba(245,166,35,.07)' }}>
           <div style={{ fontSize: 10, fontWeight: 900, color: '#F5A623', letterSpacing: 1 }}>MEMORY LINE</div>
@@ -276,7 +296,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
       </section>
 
       <div style={{ marginTop: 14, textAlign: 'center', fontSize: 11, color: '#64748B' }}>
-        DAY {lesson.day} → NEXT BUSINESS LESSON TOMORROW • CAT FIRST 🔒
+        schedule.type === 'revision' ? 'SUNDAY REVISION → NEXT MONDAY = NEXT LOCKED LESSON' : `DAY ${lesson?.day} → NEXT LOCKED LESSON TOMORROW` • CAT FIRST 🔒
       </div>
 
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ marginTop: 12, width: '100%', border: '1px solid rgba(99,246,255,.22)', background: 'rgba(99,246,255,.05)', color: '#A5F3FC', borderRadius: 12, padding: '10px 12px', cursor: 'pointer' }}>
