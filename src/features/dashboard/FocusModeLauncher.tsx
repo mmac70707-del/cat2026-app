@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
 type FocusModule = {
@@ -24,7 +23,6 @@ type Props = {
   onFullDashboard: () => void
   onStartFocus: () => void
   modules: FocusModule[]
-  children?: ReactNode
 }
 
 export function FocusModeLauncher({
