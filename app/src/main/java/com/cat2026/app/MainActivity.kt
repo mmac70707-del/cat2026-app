@@ -89,6 +89,10 @@ class MainActivity : FragmentActivity() {
         val assetLoader = WebViewAssetLoader.Builder()
             .setDomain("appassets.androidplatform.net")
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+            // Vite's public assets remain root-relative (/images/*, /icons/*).
+            // Map only those directories explicitly; avoid a catch-all "/" handler.
+            .addPathHandler("/images/", WebViewAssetLoader.AssetsPathHandler(this))
+            .addPathHandler("/icons/", WebViewAssetLoader.AssetsPathHandler(this))
             .build()
 
         webView = WebView(this).apply {
