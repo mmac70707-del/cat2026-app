@@ -5,6 +5,13 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - 'tsconfig*.json'
       - 'gradle/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
@@ -16,6 +23,13 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.*'
+      - 'tsconfig*.json'
       - 'gradle/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
@@ -36,6 +50,18 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Build web dashboard bundle
+        run: npm ci && npm run build
+      - name: Sync web bundle into Android assets
+        shell: bash
+        run: |
+          rm -rf app/src/main/assets/public
+          mkdir -p app/src/main/assets/public
+          cp -R dist/. app/src/main/assets/public/
       - name: Make Gradle executable
         run: chmod +x ./gradlew
       - name: Assemble debug APK
