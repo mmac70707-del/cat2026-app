@@ -44,7 +44,7 @@ const DECISION_SCENARIOS: DecisionScenario[] = [
   { company:'STARTUP MVP', situation:'A founder has three ideas and capacity to test only one this week.', decision:'Choose the experiment with the clearest learning value, not the most exciting story.', metric:'learning per week', lesson:'Speed comes from shortening the feedback loop, not skipping thinking.' },
   { company:'B2B SOFTWARE', situation:'Revenue is growing, but support cost rises with every new customer.', decision:'Find the repeated workflow causing the cost before simply hiring more people.', metric:'cost-to-serve per account', lesson:'Growth is healthier when the operating system improves with volume.' },
   { company:'CONSUMER APP', situation:'Many people install, but too few return after the first week.', decision:'Investigate where promised value fails to become a habit.', metric:'week-1 retention', lesson:'Acquisition creates attention; retained value creates a business.' },
-  { company:'AI WORKFLOW', situation:'AI can automate part of a process but sometimes makes expensive mistakes.', decision:'Automate the repetitive layer and keep human review at the high-risk decision point.', metric:'time saved × error rate', lesson:'Good automation changes economics without pretending uncertainty disappeared.' },
+  { company:'AI WORKFLOW', situation:'AI can automate part of a process but sometimes makes expensive mistakes.', decision:'Automate the repetitive layer and keep human review at the high-risk decision point.', metric:'time saved x error rate', lesson:'Good automation changes economics without pretending uncertainty disappeared.' },
 ]
 
 const BUSINESS_LENSES: BusinessLens[] = [
