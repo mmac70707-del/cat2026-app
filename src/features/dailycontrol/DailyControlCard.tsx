@@ -94,16 +94,23 @@ function HairHealthCard() {
       </div>
 
       <div style={{padding:14,display:'grid',gap:12}}>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(125px,1fr))',gap:8}}>
-          {milestones.map(([code,title,sub],i) => {
-            const active = milestone === code
-            const complete = (code==='0M' && !!state.baselineDate) || (code==='3M' && elapsed>=75) || (code==='6M' && elapsed>=150) || (code==='12M' && elapsed>=365)
-            return <div key={code} style={{padding:'10px 9px',borderRadius:10,border:active?'1px solid rgba(99,246,255,.65)':'1px solid rgba(255,255,255,.07)',background:active?'rgba(99,246,255,.08)':'rgba(255,255,255,.025)'}}>
-              <div style={{fontSize:9,fontWeight:900,color:active?'#63F6FF':'#94A3B8'}}>{complete?'✓ ':''}{code}</div>
-              <div style={{fontSize:10,fontWeight:900,color:'#FFF',marginTop:3}}>{title}</div>
-              <div style={{fontSize:8,color:'#94A3B8',lineHeight:1.4,marginTop:3}}>{sub}</div>
-            </div>
-          })}
+        <div style={{padding:'12px 10px',borderRadius:12,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:8,marginBottom:10}}>
+            <div style={{fontSize:9,fontWeight:900,letterSpacing:.8,color:'#CBD5E1'}}>HAIR JOURNEY • VISUAL TIMELINE</div>
+            <div style={{fontSize:8,fontWeight:900,color:'#63F6FF'}}>0 → 3 → 6 → 12 MONTHS</div>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:5,position:'relative'}}>
+            {milestones.map(([code,title,sub],i) => {
+              const active = milestone === code
+              const complete = (code==='0M' && !!state.baselineDate) || (code==='3M' && elapsed>=75) || (code==='6M' && elapsed>=150) || (code==='12M' && elapsed>=365)
+              return <div key={code} style={{minWidth:0,textAlign:'center',position:'relative'}}>
+                {i>0 && <div style={{position:'absolute',top:10,left:'-50%',width:'100%',height:2,background:complete?'rgba(99,246,255,.45)':'rgba(255,255,255,.09)'}} />}
+                <div style={{position:'relative',zIndex:1,margin:'0 auto',width:20,height:20,borderRadius:999,display:'grid',placeItems:'center',fontSize:8,fontWeight:950,color:complete||active?'#0B1220':'#94A3B8',background:complete||active?'#63F6FF':'#1E293B',border:active?'2px solid #FFF':'1px solid rgba(255,255,255,.12)',boxShadow:active?'0 0 0 4px rgba(99,246,255,.10)':'none'}}>{complete?'✓':code.replace('M','')}</div>
+                <div style={{fontSize:8,fontWeight:900,color:active?'#63F6FF':'#FFF',marginTop:6}}>{title}</div>
+                <div style={{fontSize:7,color:'#64748B',lineHeight:1.35,marginTop:3}}>{sub}</div>
+              </div>
+            })}
+          </div>
         </div>
 
         <div style={{padding:12,borderRadius:11,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
@@ -197,17 +204,19 @@ function HairFoodCard() {
           <div style={{fontSize:10,fontWeight:900,color:'#FCD34D'}}>TODAY • {today.day}</div>
           <div style={{fontSize:9,color:'#86EFAC',fontWeight:900}}>{completed}/4 meals checked</div>
         </div>
-        <div style={{display:'grid',gap:7}}>
-          {meals.map(([id,time,title,food]) => (
-            <button key={id} onClick={()=>toggle(id)} style={{textAlign:'left',padding:11,borderRadius:10,cursor:'pointer',border:checks[id]?'1px solid rgba(34,197,94,.45)':'1px solid rgba(255,255,255,.07)',background:checks[id]?'rgba(34,197,94,.08)':'rgba(255,255,255,.025)',color:'#FFF'}}>
-              <div style={{display:'flex',gap:8,alignItems:'center'}}>
-                <span style={{fontSize:9,fontWeight:900,color:'#FCD34D',minWidth:42}}>{time}</span>
-                <span style={{fontSize:9,fontWeight:900,color:checks[id]?'#86EFAC':'#CBD5E1'}}>{checks[id]?'✓ ':''}{title}</span>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:8}}>
+          {meals.map(([id,time,title,food],index) => {
+            const icons = ['🥣','🍛','🥜','🍲']
+            return <button key={id} onClick={()=>toggle(id)} style={{textAlign:'left',padding:11,borderRadius:12,cursor:'pointer',border:checks[id]?'1px solid rgba(34,197,94,.50)':'1px solid rgba(255,255,255,.08)',background:checks[id]?'linear-gradient(145deg,rgba(34,197,94,.12),rgba(255,255,255,.025))':'linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))',color:'#FFF',minHeight:132,boxShadow:checks[id]?'0 8px 22px rgba(34,197,94,.08)':'0 8px 22px rgba(0,0,0,.12)'}}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:6}}>
+                <span style={{fontSize:20,lineHeight:1}}>{icons[index]}</span>
+                <span style={{fontSize:8,fontWeight:900,color:'#FCD34D',padding:'4px 6px',borderRadius:6,background:'rgba(245,166,35,.08)'}}>{time}</span>
               </div>
-              <div style={{fontSize:10,fontWeight:800,lineHeight:1.45,marginTop:5}}>{food}</div>
-              <div style={{fontSize:8,color:'#94A3B8',lineHeight:1.45,marginTop:4}}>WHY: {mealWhy[id]}</div>
+              <div style={{fontSize:9,fontWeight:950,color:checks[id]?'#86EFAC':'#CBD5E1',marginTop:9}}>{checks[id]?'✓ ':''}{title}</div>
+              <div style={{fontSize:10,fontWeight:850,lineHeight:1.4,marginTop:5}}>{food}</div>
+              <div style={{fontSize:7.5,color:'#94A3B8',lineHeight:1.4,marginTop:6}}>WHY • {mealWhy[id]}</div>
             </button>
-          ))}
+          })}
         </div>
         <div style={{padding:11,borderRadius:10,border:'1px solid rgba(96,165,250,.16)',background:'rgba(59,130,246,.045)'}}>
           <div style={{fontSize:9,fontWeight:900,color:'#93C5FD'}}>HAIR-SUPPORT RULES</div>
@@ -261,8 +270,17 @@ function ConfidenceSocialReset() {
         </div>
 
         <div style={{padding:12,borderRadius:11,border:'1px solid rgba(34,197,94,.16)',background:'rgba(34,197,94,.045)'}}>
-          <div style={{fontSize:9,fontWeight:900,color:'#86EFAC'}}>🤝 SOCIAL CONFIDENCE</div>
-          <div style={{fontSize:10,color:'#E5E7EB',lineHeight:1.6,marginTop:6}}><strong style={{color:'#FFF'}}>See → relax → natural smile → “Hi” → ask something simple → listen → respect the response → move on.</strong><br/>No staring. No pressure. No chasing. No trying to collect people as achievements.</div>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8}}>
+            <div style={{fontSize:9,fontWeight:900,color:'#86EFAC'}}>🤝 SOCIAL CONFIDENCE FLOW</div>
+            <div style={{fontSize:8,color:'#64748B'}}>RESPECT FIRST</div>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:5,marginTop:9}}>
+            {['👀 Notice','🧘 Relax','👋 Hello','👂 Listen'].map((step,i)=><div key={step} style={{padding:'7px 4px',textAlign:'center',borderRadius:8,background:'rgba(255,255,255,.035)',border:'1px solid rgba(255,255,255,.07)'}}>
+              <div style={{fontSize:8,fontWeight:900,color:'#FFF'}}>{step}</div>
+              <div style={{fontSize:7,color:'#64748B',marginTop:3}}>{i===0?'notice':i===1?'stay calm':i===2?'if appropriate':'respect answer'}</div>
+            </div>)}
+          </div>
+          <div style={{fontSize:8,color:'#94A3B8',lineHeight:1.5,marginTop:8}}>No staring • no pressure • no chasing • no treating people as achievements.</div>
         </div>
 
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:8}}>
@@ -715,24 +733,16 @@ export function DailyControlCard() {
             flexWrap: 'wrap',
             gap: 'clamp(6px, 2vw, 7px)',
           }}>
-            {['QA', 'DILR', 'VARC', 'TEST', 'ANALYSIS', 'REVISION', 'REPAIR', 'RETEST'].map(x => {
+            {['QA', 'DILR', 'VARC', 'TEST', 'ANALYSIS', 'REVISION', 'REPAIR', 'RETEST'].map((x,i) => {
               const isDone = tasks.find(t => t.blockId === x)?.status === 'DONE'
               return (
-                <span
-                  key={x}
-                  style={{
-                    padding: 'clamp(5px, 1.5vw, 6px) clamp(7px, 2vw, 9px)',
-                    borderRadius: 8,
-                    fontSize: 'clamp(8px, 2vw, 10px)',
-                    fontWeight: 900,
-                    background: isDone ? 'rgba(34,197,94,.14)' : 'rgba(148,163,184,.08)',
-                    border: isDone ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(255,255,255,.08)',
-                    color: isDone ? '#86EFAC' : '#CBD5E1',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {x}
-                </span>
+                <div key={x} style={{display:'flex',alignItems:'center',gap:5,minWidth:0}}>
+                  {i>0 && <div style={{width:10,height:1,background:'rgba(255,255,255,.10)',flex:'0 0 auto'}} />}
+                  <span style={{display:'inline-flex',alignItems:'center',gap:5,padding:'6px 8px',borderRadius:8,fontSize:'clamp(8px,2vw,9px)',fontWeight:900,background:isDone?'rgba(34,197,94,.14)':'rgba(148,163,184,.08)',border:isDone?'1px solid rgba(34,197,94,.3)':'1px solid rgba(255,255,255,.08)',color:isDone?'#86EFAC':'#CBD5E1',whiteSpace:'nowrap'}}>
+                    <span style={{width:15,height:15,borderRadius:999,display:'grid',placeItems:'center',fontSize:7,background:isDone?'#22C55E':'#1E293B',color:isDone?'#052E16':'#94A3B8'}}>{isDone?'✓':i+1}</span>
+                    {x}
+                  </span>
+                </div>
               )
             })}
           </div>
