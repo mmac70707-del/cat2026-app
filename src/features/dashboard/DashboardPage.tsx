@@ -540,7 +540,7 @@ export function DashboardPage() {
       raw[dateKey] = next
       localStorage.setItem(BESTME_LESSON_STORAGE, JSON.stringify(raw))
     } catch {}
-    toast(nextValue ? 'Lesson locked in ✓' : 'Lesson marked open again')
+    toast(nextValue ? 'Lesson saved ✓' : 'Lesson marked not done')
   }
 
   const getSequenceState = (id: string) => {
@@ -632,7 +632,7 @@ export function DashboardPage() {
             <div className="daily-basics-kicker">◉ START HERE // 7 DAILY BASICS</div>
             <div className="daily-basics-title">Do the next right thing. Let the system guide the rest.</div>
             <div className="daily-basics-sub">
-              Auto-updated every India day: <b>{realDayName}, {realDateStr}</b> • {bestMeWinCount}/7 wins • {lessonLearnedCount}/7 lessons locked • {sinWinCount}/7 self-control reps
+              Auto-updated every India day: <b>{realDayName}, {realDateStr}</b> • {bestMeWinCount}/7 wins • {lessonLearnedCount}/7 lessons done • {sinWinCount}/7 self-control reps
             </div>
           </div>
           <div className={'daily-basics-now ' + (finalWin ? 'complete' : '')}>
@@ -717,7 +717,7 @@ export function DashboardPage() {
               </div>
               <div className="daily-lesson-footer">
                 <div className="daily-lesson-footer-copy">
-                  <span>{lessonWins[activeLessonId] ? 'LESSON LOCKED IN ✓' : lessonIsCurrent ? 'CURRENT STEP' : 'LEARNING IS ALWAYS OPEN'}</span>
+                  <span>{lessonWins[activeLessonId] ? 'LESSON DONE ✓' : lessonIsCurrent ? 'CURRENT STEP' : 'LEARNING IS ALWAYS OPEN'}</span>
                   <b>{lessonMeta.mentor}</b>
                 </div>
                 <button
