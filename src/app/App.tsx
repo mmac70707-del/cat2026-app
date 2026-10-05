@@ -200,6 +200,7 @@ export function App() {
               </button>
             </div>
             <DashboardPage />
+            <StudyTimer />
           </div>
         ) : (
           <div
