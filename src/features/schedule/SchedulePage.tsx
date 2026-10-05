@@ -1,5 +1,7 @@
 import { SCHEDULE_ITEMS } from '@/data/config'
 import { AppIcon } from '@/components/AppIcon'
+import { getBodyPlan } from '@/data/body360'
+import { getKolkataDateParts } from '@/services/calendarEngine'
 
 interface Props { onBack: () => void }
 
@@ -19,6 +21,8 @@ function scheduleIcon(block: string) {
 }
 
 export function SchedulePage({ onBack }: Props) {
+  const { dayOfWeek } = getKolkataDateParts(new Date())
+  const bodyPlan = getBodyPlan(dayOfWeek)
   return (
     <div className="section-pad">
       <div className="page-header">
@@ -44,6 +48,13 @@ export function SchedulePage({ onBack }: Props) {
               </div>
             </div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{s.detail}</div>
+            {s.block === 'Gym / Movement' && (
+              <div style={{ marginTop: 9, padding: '9px 10px', borderRadius: 10, border: '1px solid rgba(34,197,94,.28)', background: 'rgba(34,197,94,.06)' }}>
+                <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 1, color: '#4ADE80' }}>BODY 360 • TODAY AUTO-SYNC</div>
+                <div style={{ fontSize: 12, fontWeight: 900, marginTop: 3 }}>{bodyPlan.title}</div>
+                <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 2 }}>{bodyPlan.focus} • {bodyPlan.duration}</div>
+              </div>
+            )}
           </div>
         </div>
       ))}
