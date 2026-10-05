@@ -639,7 +639,7 @@ export function DashboardPage() {
               action = 'TODAY: after CAT priorities, take one 3-minute business/leadership lesson.'
             }
             return (
-              <button type="button" key={basic.id} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} aria-expanded={activeLessonId === basic.id}>
+              <div key={basic.id} role="button" tabIndex={0} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setActiveLessonId(basic.id) } }} aria-expanded={activeLessonId === basic.id}>
                 <div className="daily-basic-top">
                   <span className="daily-basic-number">{basic.n}</span>
                   <span className="daily-basic-icon">{basic.icon}</span>
@@ -649,15 +649,15 @@ export function DashboardPage() {
                 <span className="daily-basic-purpose">{basic.purpose}</span>
                 <span className="daily-basic-mentor">{action}</span>
                 {isCurrent && !won && basic.id !== 'MIND' && basic.id !== 'BODY' && (
-                  <button className="daily-basic-btn" onClick={() => toggleBestMeManualWin(basic.id)}>MARK STEP DONE →</button>
+                  <button className="daily-basic-btn" onClick={event => { event.stopPropagation(); toggleBestMeManualWin(basic.id) }}>MARK STEP DONE →</button>
                 )}
                 {basic.id === 'MIND' && !mentalWin && isCurrent && (
-                  <button className="daily-basic-btn" onClick={() => document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior:'smooth', block:'center' })}>GO TO CAT →</button>
+                  <button className="daily-basic-btn" onClick={event => { event.stopPropagation(); document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior:'smooth', block:'center' }) }}>GO TO CAT →</button>
                 )}
                 {basic.id === 'BODY' && isCurrent && (
-                  <button className="daily-basic-btn" onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail:{ page:'body360' } }))}>OPEN BODY 360 →</button>
+                  <button className="daily-basic-btn" onClick={event => { event.stopPropagation(); window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail:{ page:'body360' } })) }}>OPEN BODY 360 →</button>
                 )}
-              </button>
+              </div>
             )
           })}
         </div>
