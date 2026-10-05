@@ -116,7 +116,17 @@ class MainActivity : FragmentActivity() {
             settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
             setBackgroundColor("#03070A".toColorInt())
             settings.setSupportMultipleWindows(false)
-            webChromeClient = WebChromeClient()
+            webChromeClient = object : WebChromeClient() {
+                override fun onConsoleMessage(consoleMessage: android.webkit.ConsoleMessage): Boolean {
+                    if (consoleMessage.messageLevel() == android.webkit.ConsoleMessage.MessageLevel.ERROR &&
+                        ::bootStatus.isInitialized
+                    ) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nJAVASCRIPT ERROR\n${consoleMessage.message()}"
+                        bootStatus.visibility = android.view.View.VISIBLE
+                    }
+                    return true
+                }
+            }
 
             webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
