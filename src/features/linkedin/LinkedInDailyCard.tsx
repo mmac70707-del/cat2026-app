@@ -36,6 +36,17 @@ const LESSONS: Lesson[] = [
   ['Founder Learning Loop','Founders repeatedly move through observation, decision, action, measurement and learning.','A pilot keeps adjusting its route after checking the map.','A product team learns from customers, changes the product, measures again and repeats.','The loop compounds learning.','What did the last action teach me?','Founder Learning Notes','The long-term advantage may come from learning faster, not simply working harder.','I’m learning to see entrepreneurship as a repeated learning loop rather than one giant idea.','What learning loop can I start with a real project?'],
 ]
 
+type DecisionScenario = { company:string; situation:string; decision:string; metric:string; lesson:string }
+
+const DECISION_SCENARIOS: DecisionScenario[] = [
+  { company:'SEARCH / AI', situation:'Users can get an answer faster, but trust and usefulness must stay high.', decision:'Improve the experience around the user job, not just add another feature.', metric:'task success + repeat usage', lesson:'Product progress is valuable when it improves a real user outcome.' },
+  { company:'MOBILE PRODUCT', situation:'A feature is powerful for experts but confusing for beginners.', decision:'Simplify the first-use path before adding advanced controls.', metric:'activation + successful first task', lesson:'The best product decision often removes friction rather than adding capability.' },
+  { company:'STARTUP MVP', situation:'A founder has three ideas and capacity to test only one this week.', decision:'Choose the experiment with the clearest learning value, not the most exciting story.', metric:'learning per week', lesson:'Speed comes from shortening the feedback loop, not skipping thinking.' },
+  { company:'B2B SOFTWARE', situation:'Revenue is growing, but support cost rises with every new customer.', decision:'Find the repeated workflow causing the cost before simply hiring more people.', metric:'cost-to-serve per account', lesson:'Growth is healthier when the operating system improves with volume.' },
+  { company:'CONSUMER APP', situation:'Many people install, but too few return after the first week.', decision:'Investigate where promised value fails to become a habit.', metric:'week-1 retention', lesson:'Acquisition creates attention; retained value creates a business.' },
+  { company:'AI WORKFLOW', situation:'AI can automate part of a process but sometimes makes expensive mistakes.', decision:'Automate the repetitive layer and keep human review at the high-risk decision point.', metric:'time saved × error rate', lesson:'Good automation changes economics without pretending uncertainty disappeared.' },
+]
+
 const BUSINESS_LENSES: BusinessLens[] = [
   { lens:'CEO LENS', role:'Vision + allocation', move:'Turn a broad goal into one clear priority, then decide what NOT to fund, build or chase.', question:'If I had one quarter and limited people, what would I stop doing?', visual:'CEO desk: one north-star metric, three priorities, three crossed-out distractions.' },
   { lens:'PRODUCT MANAGER LENS', role:'Customer + product', move:'Start from the user problem, define the smallest useful outcome, then measure behaviour instead of opinions.', question:'What user behaviour would prove this feature is actually useful?', visual:'Product board: USER → PROBLEM → HYPOTHESIS → MVP → METRIC.' },
@@ -67,25 +78,33 @@ function daysBetween(a:string,b:string) {
   return Math.floor((bb-aa)/86400000)
 }
 
-function CardVisual({ title, synthesis=false }:{title:string;synthesis?:boolean}) {
-  return <div style={{borderRadius:12,border:'1px solid rgba(103,232,249,.20)',background:'linear-gradient(145deg,#0B1114,#111827)',padding:10,marginTop:10,overflow:'hidden'}}>
-    <svg viewBox="0 0 720 170" width="100%" role="img" aria-label={title}>
-      <defs><linearGradient id="bizFlow" x1="0" x2="1"><stop offset="0%" stopColor="#164E63"/><stop offset="100%" stopColor="#1E293B"/></linearGradient></defs>
-      <rect x="1" y="1" width="718" height="168" rx="12" fill="#0B1114" stroke="#334155"/>
-      <text x="26" y="29" fill="#E2E8F0" fontSize="12" fontWeight="800">{synthesis ? 'WEEKLY BUSINESS MAP' : 'LIVE BUSINESS SIMULATION'}</text>
-      <text x="26" y="51" fill="#94A3B8" fontSize="11">{title.length > 86 ? title.slice(0,83)+'…' : title}</text>
-      <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800">
-        <rect x="24" y="75" width="132" height="38" rx="9" fill="url(#bizFlow)" stroke="#155E75"/><text x="43" y="99" fill="#CFFAFE">CUSTOMER</text>
-        <text x="164" y="100" fill="#64748B" fontSize="18">→</text>
-        <rect x="188" y="75" width="132" height="38" rx="9" fill="#172554" stroke="#334155"/><text x="209" y="99" fill="#DBEAFE">PROBLEM</text>
-        <text x="328" y="100" fill="#64748B" fontSize="18">→</text>
-        <rect x="352" y="75" width="132" height="38" rx="9" fill="url(#bizFlow)" stroke="#155E75"/><text x="371" y="99" fill="#CFFAFE">TEST / MVP</text>
-        <text x="492" y="100" fill="#64748B" fontSize="18">→</text>
-        <rect x="516" y="75" width="178" height="38" rx="9" fill="#1E293B" stroke="#334155"/><text x="536" y="99" fill="#E2E8F0">METRIC → DECISION</text>
-      </g>
-      <line x1="90" y1="137" x2="630" y2="137" stroke="#334155"/>
-      <text x="26" y="156" fill="#67E8F9" fontSize="10" fontWeight="700">ASK: “What evidence would make me change my mind?”</text>
-    </svg>
+function CardVisual({ title, synthesis=false, scenario }:{title:string;synthesis?:boolean;scenario?:DecisionScenario}) {
+  return <div style={{borderRadius:12,border:'1px solid rgba(96,165,250,.22)',background:'linear-gradient(145deg,#101827,#0A1019)',padding:12,marginTop:10}}>
+    <div style={{display:'grid',gridTemplateColumns:'minmax(0,1.3fr) minmax(150px,.7fr)',gap:10,alignItems:'stretch'}}>
+      <div>
+        <div style={{fontSize:9,letterSpacing:1,color:'#67E8F9',fontWeight:900}}>VISUAL DECISION MAP</div>
+        <svg viewBox="0 0 720 132" width="100%" role="img" aria-label={title} style={{display:'block',marginTop:5}}>
+          <rect x="1" y="1" width="718" height="130" rx="12" fill="#0B1220" stroke="#26364A"/>
+          <text x="24" y="30" fill="#F8FAFC" fontSize="15" fontWeight="800">{synthesis ? 'WEEKLY SYNTHESIS' : 'TODAY’S BUSINESS LOOP'}</text>
+          <text x="24" y="53" fill="#94A3B8" fontSize="12">{title.length > 78 ? title.slice(0,75)+'…' : title}</text>
+          <g fontFamily="Arial, sans-serif" fontSize="11" fontWeight="800">
+            <rect x="24" y="75" width="132" height="32" rx="8" fill="#172554"/><text x="40" y="96" fill="#BFDBFE">USER / MARKET</text>
+            <text x="168" y="97" fill="#64748B" fontSize="17">→</text>
+            <rect x="194" y="75" width="132" height="32" rx="8" fill="#172033"/><text x="215" y="96" fill="#E2E8F0">PROBLEM</text>
+            <text x="338" y="97" fill="#64748B" fontSize="17">→</text>
+            <rect x="364" y="75" width="132" height="32" rx="8" fill="#17323A"/><text x="382" y="96" fill="#A5F3FC">DECISION</text>
+            <text x="508" y="97" fill="#64748B" fontSize="17">→</text>
+            <rect x="534" y="75" width="162" height="32" rx="8" fill="#172033"/><text x="551" y="96" fill="#E2E8F0">METRIC → LEARN</text>
+          </g>
+        </svg>
+      </div>
+      {scenario && !synthesis && <div style={{padding:10,borderRadius:10,background:'rgba(2,6,23,.55)',border:'1px solid rgba(103,232,249,.12)'}}>
+        <div style={{fontSize:9,color:'#A5F3FC',fontWeight:900}}>{scenario.company} • 60-SEC CASE</div>
+        <div style={{marginTop:5,color:'#E2E8F0',fontSize:10,lineHeight:1.5}}>{scenario.situation}</div>
+        <div style={{marginTop:7,color:'#FFF',fontSize:10,fontWeight:800,lineHeight:1.5}}><span style={{color:'#67E8F9'}}>DECIDE:</span> {scenario.decision}</div>
+        <div style={{marginTop:6,color:'#94A3B8',fontSize:9}}>METRIC: {scenario.metric}</div>
+      </div>}
+    </div>
   </div>
 }
 
@@ -104,7 +123,9 @@ export function LinkedInDailyCard() {
   const lesson={concept:row[0],simple:row[1],analogy:row[2],example:row[3],takeaway:row[4],question:row[5],series:row[6],hook:row[7],body:row[8],cta:row[9]}
   // Rotate the executive lens every day so the lesson feels like a real mini business simulation.
   // The learner studies the decision pattern, not the celebrity.
-  const businessLens=BUSINESS_LENSES[(offset+cycleDay-1)%BUSINESS_LENSES.length]
+  const lensIndex=(offset+cycleDay-1)%BUSINESS_LENSES.length
+  const businessLens=BUSINESS_LENSES[lensIndex]
+  const decisionScenario=DECISION_SCENARIOS[(offset+lensIndex)%DECISION_SCENARIOS.length]
   const leaderCase=LEADER_CASES[(offset+cycleDay-1)%LEADER_CASES.length]
   const weekly=cycleDay===7
   const monthly=offset>0 && offset%30===0
@@ -166,7 +187,7 @@ export function LinkedInDailyCard() {
       </div>
       <div>
         <div style={{fontSize:9,color:'#93C5FD',fontWeight:900}}>REALISTIC IMAGE / VISUAL</div>
-        {postDay || weekly ? <CardVisual title={weekly ? '3–5 lessons → one coherent idea' : lesson.concept} synthesis={weekly}/> : <div style={{marginTop:7,padding:10,borderRadius:9,background:'rgba(148,163,184,.05)',color:'#CBD5E1',fontSize:10}}>SAVE-DRAFT DAY — visual concept only: one real notebook/desk visual showing “{lesson.concept}”. Use your own real photo if it strengthens authenticity.</div>}
+        {postDay || weekly ? <CardVisual title={weekly ? '3–5 lessons → one coherent idea' : lesson.concept} synthesis={weekly} scenario={decisionScenario}/> : <div style={{marginTop:7,padding:10,borderRadius:9,background:'rgba(148,163,184,.05)',color:'#CBD5E1',fontSize:10}}>SAVE-DRAFT DAY — visual concept only: one real notebook/desk visual showing “{lesson.concept}”. Use your own real photo if it strengthens authenticity.</div>}
       </div>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
         <div style={{padding:10,borderRadius:9,background:'rgba(59,130,246,.06)'}}><div style={{fontSize:9,color:'#93C5FD',fontWeight:900}}>NETWORKING — 1 MIN</div><div style={{marginTop:4,color:'#E2E8F0',fontSize:10,lineHeight:1.55}}>One thoughtful comment on a relevant founder/product/data post. Weekly baseline: 3 comments • 2 relevant messages • 1 genuine conversation.</div></div>
