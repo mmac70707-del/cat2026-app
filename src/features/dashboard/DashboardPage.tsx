@@ -171,8 +171,69 @@ function getRealWeekDates(now: Date = new Date()) {
 
 
 
-const BESTME_EMOTIONAL_STORAGE = 'cat2026.bestme.emotional.v1'
+const BESTME_PROGRESS_STORAGE = 'cat2026.bestme.dimensions.v1'
 const BODY360_PROGRESS_STORAGE = 'cat2026.body360.progress.v1'
+
+const BEST_ME_DIMENSIONS = [
+  {
+    id: 'MIND',
+    icon: '🧠',
+    title: 'MIND',
+    subtitle: 'CAT mastery',
+    rule: 'Protect the next CAT block.',
+    fallback: 'Start the next planned CAT task: solve → analyse → repair.',
+  },
+  {
+    id: 'BODY',
+    icon: '💪',
+    title: 'BODY',
+    subtitle: 'Strength + recovery',
+    rule: 'Complete today’s Body 360 session.',
+    fallback: 'Open today’s Body 360 plan and follow the warm-up → work → recovery sequence.',
+  },
+  {
+    id: 'EMOTIONAL',
+    icon: '❤️',
+    title: 'EMOTIONAL',
+    subtitle: 'Calm + self-control',
+    rule: 'Notice the feeling. Choose the next correct action.',
+    fallback: 'Pause → breathe → name the feeling → return to the plan without guilt.',
+  },
+  {
+    id: 'SPIRITUAL',
+    icon: '🙏',
+    title: 'SPIRITUAL',
+    subtitle: 'Values + inner direction',
+    rule: 'Live by your values before your mood.',
+    fallback: '2 minutes: Radhe Radhe → gratitude → remember who you are becoming.',
+  },
+  {
+    id: 'SOCIAL',
+    icon: '🤝',
+    title: 'SOCIAL',
+    subtitle: 'Respect + connection',
+    rule: 'One genuine, respectful human connection.',
+    fallback: 'Say hello, listen well, or strengthen one existing relationship.',
+  },
+  {
+    id: 'FINANCIAL',
+    icon: '₹',
+    title: 'FINANCIAL',
+    subtitle: 'Awareness + discipline',
+    rule: 'Know where your money went today.',
+    fallback: 'Log today’s spending and avoid one unnecessary purchase.',
+  },
+  {
+    id: 'PURPOSE',
+    icon: '🚀',
+    title: 'PURPOSE',
+    subtitle: 'Career + builder identity',
+    rule: 'Invest one tiny step in your future self.',
+    fallback: 'CAT first; after core work, take one 3-minute professional/business learning action.',
+  },
+] as const
+
+type BestMeDimensionId = typeof BEST_ME_DIMENSIONS[number]['id']
 
 function readBody360TodayProgress(dateKey: string) {
   try {
@@ -184,10 +245,21 @@ function readBody360TodayProgress(dateKey: string) {
   }
 }
 
-function bestMeStateLabel(done: boolean, active: boolean) {
-  if (done) return 'WON'
-  if (active) return 'ACTIVE'
-  return 'NEXT'
+function mentalWinPlaceholder(done: number, taskCount: number) {
+  return taskCount > 0 && done === taskCount
+}
+
+function physicalWinPlaceholder(bodyDone: number) {
+  return bodyDone === BODY360_SEQUENCE.length
+}
+
+function readBestMeManualWins(dateKey: string) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(BESTME_PROGRESS_STORAGE) || '{}')
+    return (raw?.[dateKey] || {}) as Partial<Record<BestMeDimensionId, boolean>>
+  } catch {
+    return {}
+  }
 }
 
 function WinterArcCard() {
@@ -282,7 +354,7 @@ export function DashboardPage() {
   const [feedback, setFeedback] = useState('')
   const [errorCounts, setErrorCounts] = useState<{ [key: string]: number }>({ C1: 0, C2: 0, C3: 0, C4: 0, C5: 0 })
   const [liveNow, setLiveNow] = useState(() => new Date())
-  const [emotionalWin, setEmotionalWin] = useState(false)
+  const [bestMeManualWins, setBestMeManualWins] = useState<Partial<Record<BestMeDimensionId, boolean>>>(() => readBestMeManualWins(getKolkataDateKey()))
   const [body360Done, setBody360Done] = useState(() => readBody360TodayProgress(getKolkataDateKey()))
 
   useEffect(() => {
@@ -312,10 +384,28 @@ export function DashboardPage() {
   const nextTask = tasks.find(task => task.status !== 'DONE') || null
   const mentalPct = tasks.length ? Math.round((done / tasks.length) * 100) : 0
   const physicalPct = Math.round((body360Done / BODY360_SEQUENCE.length) * 100)
-  const mentalWin = done === tasks.length && tasks.length > 0
-  const physicalWin = body360Done === BODY360_SEQUENCE.length
-  const finalWin = mentalWin && physicalWin && emotionalWin
-  const finalWinCount = [mentalWin, physicalWin, emotionalWin].filter(Boolean).length
+  const dimensionWins: Record<BestMeDimensionId, boolean> = {
+    MIND: mentalWinPlaceholder(done, tasks.length),
+    BODY: physicalWinPlaceholder(body360Done),
+    EMOTIONAL: Boolean(bestMeManualWins.EMOTIONAL),
+    SPIRITUAL: Boolean(bestMeManualWins.SPIRITUAL),
+    SOCIAL: Boolean(bestMeManualWins.SOCIAL),
+    FINANCIAL: Boolean(bestMeManualWins.FINANCIAL),
+    PURPOSE: Boolean(bestMeManualWins.PURPOSE),
+  }
+  const bestMeWinCount = Object.values(dimensionWins).filter(Boolean).length
+  const finalWin = bestMeWinCount === BEST_ME_DIMENSIONS.length
+
+  function toggleBestMeManualWin(id: BestMeDimensionId) {
+    const nextValue = !bestMeManualWins[id]
+    const next = { ...bestMeManualWins, [id]: nextValue }
+    setBestMeManualWins(next)
+    try {
+      const raw = JSON.parse(localStorage.getItem(BESTME_PROGRESS_STORAGE) || '{}')
+      raw[dateKey] = next
+      localStorage.setItem(BESTME_PROGRESS_STORAGE, JSON.stringify(raw))
+    } catch {}
+  }
 
   const getSequenceState = (id: string) => {
     const task = tasks.find(t => t.blockId === id)
@@ -325,12 +415,7 @@ export function DashboardPage() {
   }
 
   useEffect(() => {
-    try {
-      const raw = JSON.parse(localStorage.getItem(BESTME_EMOTIONAL_STORAGE) || '{}')
-      setEmotionalWin(Boolean(raw?.[dateKey]))
-    } catch {
-      setEmotionalWin(false)
-    }
+    setBestMeManualWins(readBestMeManualWins(dateKey))
   }, [dateKey])
 
   useEffect(() => {
@@ -399,90 +484,102 @@ export function DashboardPage() {
       </div>
 
 
-      {/* ── BEST ME CONTROL BOARD ── */}
-      <section className="best-me-panel" aria-label="Best Me daily control board">
+      {/* ── BEST ME 7-DIMENSION CONTROL BOARD ── */}
+      <section className="best-me-panel best-me-seven" aria-label="Best Me seven dimensions">
         <div className="best-me-head">
           <div>
-            <div className="best-me-kicker">◉ BEST ME // DAILY CONTROL BOARD</div>
-            <div className="best-me-title">What is the Best Me — TODAY?</div>
+            <div className="best-me-kicker">◉ BEST ME // 7-DIMENSION DAILY CONTROL</div>
+            <div className="best-me-title">Build the Best Me — one win at a time.</div>
             <div className="best-me-sub">
               {realDayName}, {realDateStr} <span>•</span> CAT Day {dayNum < 10 ? '0' + dayNum : dayNum}/44 <span>•</span> {roadmapItem.chapter}
             </div>
           </div>
           <div className={'best-me-final ' + (finalWin ? 'is-won' : '')}>
             <div className="best-me-final-label">FINAL WIN</div>
-            <div className="best-me-final-main">{finalWin ? '🏆 WON' : finalWinCount + '/3 WINS'}</div>
+            <div className="best-me-final-main">{finalWin ? '🏆 WON' : bestMeWinCount + '/7 WINS'}</div>
             <div className="best-me-final-sub">
-              {finalWin ? 'Promise kept. Day locked in.' : 'Physical + Mental + Emotional'}
+              {finalWin ? 'All 7 dimensions executed today.' : 'Win each dimension in order. No perfection required.'}
             </div>
           </div>
         </div>
 
-        <div className="best-me-win-grid">
-          <div className={'best-me-win physical ' + (physicalWin ? 'won' : 'active')}>
-            <div className="best-me-win-top">
-              <span className="best-me-win-icon">💪</span>
-              <span className="best-me-win-state">{bestMeStateLabel(physicalWin, currentSlot?.block === 'Gym / Movement')}</span>
-            </div>
-            <div className="best-me-win-title">PHYSICAL WIN</div>
-            <div className="best-me-win-rule">Body 360 • {todayBodyPlan.title}</div>
-            <div className="best-me-win-detail">{body360Done}/{BODY360_SEQUENCE.length} gates • {physicalPct}% ready</div>
-            <div className="best-me-bar"><span style={{ width: physicalPct + '%' }} /></div>
-            <button className="best-me-action" onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail: { page: 'body360' } }))}>
-              {physicalWin ? 'OPEN BODY 360 ✓' : 'OPEN TODAY’S BODY PLAN →'}
-            </button>
-          </div>
+        <div className="best-me-sequence-note">
+          <span>01 → 02 → 03 → 04 → 05 → 06 → 07 → FINAL</span>
+          <b>Mind → Body → Emotional → Spiritual → Social → Financial → Purpose</b>
+        </div>
 
-          <div className={'best-me-win mental ' + (mentalWin ? 'won' : 'active')}>
-            <div className="best-me-win-top">
-              <span className="best-me-win-icon">🧠</span>
-              <span className="best-me-win-state">{bestMeStateLabel(mentalWin, Boolean(nextTask))}</span>
-            </div>
-            <div className="best-me-win-title">MENTAL WIN</div>
-            <div className="best-me-win-rule">CAT FIRST • Study → Test → Analyse → Repair</div>
-            <div className="best-me-win-detail">{done}/{tasks.length || 8} CAT blocks • {mentalPct}% complete</div>
-            <div className="best-me-bar"><span style={{ width: mentalPct + '%' }} /></div>
-            <button className="best-me-action" onClick={() => document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-              {mentalWin ? 'ALL CAT BLOCKS COMPLETE ✓' : nextTask ? 'NEXT: ' + nextTask.blockId + ' →' : 'START QA →'}
-            </button>
-          </div>
+        <div className="best-me-seven-grid">
+          {BEST_ME_DIMENSIONS.map((dimension, index) => {
+            const autoWin = dimension.id === 'MIND' ? dimensionWins.MIND : dimension.id === 'BODY' ? dimensionWins.BODY : false
+            const won = dimensionWins[dimension.id]
+            const manual = !autoWin
+            const canMark = manual
+            const active = !won && (
+              (index === 0) ||
+              (index > 0 && BEST_ME_DIMENSIONS.slice(0,index).every(d => dimensionWins[d.id]))
+            )
 
-          <div className={'best-me-win emotional ' + (emotionalWin ? 'won' : 'active')}>
-            <div className="best-me-win-top">
-              <span className="best-me-win-icon">🫶</span>
-              <span className="best-me-win-state">{emotionalWin ? 'WON' : 'NEXT'}</span>
-            </div>
-            <div className="best-me-win-title">EMOTIONAL WIN</div>
-            <div className="best-me-win-rule">Calm mind • no guilt debt • return to the plan</div>
-            <div className="best-me-win-detail">{emotionalWin ? 'You consciously chose composure today.' : 'One honest self-check = today’s emotional rep.'}</div>
-            <button
-              className={'best-me-action ' + (emotionalWin ? 'done' : '')}
-              onClick={() => {
-                const next = !emotionalWin
-                setEmotionalWin(next)
-                try {
-                  const raw = JSON.parse(localStorage.getItem(BESTME_EMOTIONAL_STORAGE) || '{}')
-                  raw[dateKey] = next
-                  localStorage.setItem(BESTME_EMOTIONAL_STORAGE, JSON.stringify(raw))
-                } catch {}
-              }}
-            >
-              {emotionalWin ? 'EMOTIONAL WIN LOCKED ✓' : 'MARK: I RETURNED TO CALM →'}
-            </button>
-          </div>
+            return (
+              <div key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'locked')}>
+                <div className="best-me-dimension-top">
+                  <span className="best-me-dimension-number">{String(index + 1).padStart(2,'0')}</span>
+                  <span className="best-me-dimension-icon">{dimension.icon}</span>
+                  <span className="best-me-win-state">{won ? 'WON' : active ? 'ACTIVE' : 'LOCKED'}</span>
+                </div>
+                <div className="best-me-dimension-title">{dimension.title}</div>
+                <div className="best-me-dimension-sub">{dimension.subtitle}</div>
+                <div className="best-me-dimension-rule">{dimension.rule}</div>
+                <div className="best-me-dimension-step">
+                  <span>TODAY’S STEP</span>
+                  {dimension.id === 'MIND' ? (mentalWin ? 'All CAT blocks complete — mental win secured.' : (nextTask ? 'NEXT: ' + nextTask.blockId + ' — ' + nextTask.title : dimension.fallback))
+                    : dimension.id === 'BODY' ? (physicalWin ? 'Body 360 gates complete — physical win secured.' : todayBodyPlan.title + ' • ' + todayBodyPlan.duration)
+                    : dimension.fallback}
+                </div>
+                <div className="best-me-dimension-foot">
+                  {dimension.id === 'MIND' && (
+                    <div className="best-me-bar"><span style={{ width: mentalPct + '%' }} /></div>
+                  )}
+                  {dimension.id === 'BODY' && (
+                    <div className="best-me-bar"><span style={{ width: physicalPct + '%' }} /></div>
+                  )}
+                  {dimension.id !== 'MIND' && dimension.id !== 'BODY' && (
+                    <div className="best-me-manual-status">{won ? '✓ Manually logged for today' : canMark ? 'Tap after you genuinely do it.' : 'Complete previous dimension first.'}</div>
+                  )}
+                </div>
+                {canMark && (
+                  <button
+                    className={'best-me-action ' + (won ? 'done' : '')}
+                    disabled={!active && !won}
+                    onClick={() => toggleBestMeManualWin(dimension.id)}
+                  >
+                    {won ? '✓ WIN LOGGED — TAP TO UNDO' : active ? 'MARK THIS WIN →' : 'LOCKED — FINISH ABOVE'}
+                  </button>
+                )}
+                {dimension.id === 'MIND' && (
+                  <button className="best-me-action" onClick={() => document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                    {mentalWin ? 'MENTAL WIN ✓' : nextTask ? 'GO TO NEXT CAT BLOCK →' : 'START QA →'}
+                  </button>
+                )}
+                {dimension.id === 'BODY' && (
+                  <button className="best-me-action" onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail: { page: 'body360' } }))}>
+                    {physicalWin ? 'PHYSICAL WIN ✓' : 'OPEN TODAY’S BODY PLAN →'}
+                  </button>
+                )}
+              </div>
+            )
+          })}
+        </div>
 
-          <div className={'best-me-win final ' + (finalWin ? 'won' : '')}>
-            <div className="best-me-win-top">
-              <span className="best-me-win-icon">🏆</span>
-              <span className="best-me-win-state">{finalWin ? 'WON' : 'LOCKED PATH'}</span>
+        <div className={'best-me-final-rail ' + (finalWin ? 'won' : '')}>
+          <div>
+            <div className="best-me-final-rail-title">{finalWin ? '🏆 FINAL WIN UNLOCKED' : '🏁 FINAL WIN'}</div>
+            <div className="best-me-final-rail-copy">
+              {finalWin
+                ? 'Mind + Body + Emotional + Spiritual + Social + Financial + Purpose = Best Me for today.'
+                : 'Complete the seven dimensions step-by-step. The final win is earned, not forced.'}
             </div>
-            <div className="best-me-win-title">FINAL WIN</div>
-            <div className="best-me-win-rule">Keep the promise — not perfection.</div>
-            <div className="best-me-win-detail">
-              {finalWin ? 'Physical + Mental + Emotional are all won.' : 'Final Win unlocks when all three daily wins are won.'}
-            </div>
-            <div className="best-me-formula"><span>BODY</span><b>+</b><span>MIND</span><b>+</b><span>CALM</span><b>=</b><strong>BEST ME</strong></div>
           </div>
+          <div className="best-me-formula"><span>MIND</span><b>+</b><span>BODY</span><b>+</b><span>HEART</span><b>+</b><span>SPIRIT</span><b>+</b><span>SOCIAL</span><b>+</b><span>MONEY</span><b>+</b><span>PURPOSE</span><b>=</b><strong>BEST ME</strong></div>
         </div>
       </section>
 
