@@ -2853,3 +2853,78 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   from{opacity:0;transform:translateY(-4px)}
   to{opacity:1;transform:translateY(0)}
 }
+
+
+/* ── BEST ME FINAL: DAILY CHECKBOX + 7-YEAR LINK ── */
+.jarvis-theme .dash-root .best-me-dimension-check{
+  margin-top:8px;
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  padding:8px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:9px;
+  background:rgba(255,255,255,.018);
+}
+.jarvis-theme .dash-root .best-me-checkbox{
+  width:20px;
+  height:20px;
+  flex:0 0 20px;
+  display:grid;
+  place-items:center;
+  border-radius:6px;
+  border:1px solid #526263;
+  background:rgba(255,255,255,.025);
+  color:#071011;
+  font:950 13px/1 sans-serif;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.jarvis-theme .dash-root .best-me-checkbox:hover,
+.jarvis-theme .dash-root .best-me-checkbox:focus-visible{
+  border-color:#C7AA6B;
+  outline:none;
+}
+.jarvis-theme .dash-root .best-me-checkbox.checked{
+  background:#8FE9BE;
+  border-color:#8FE9BE;
+}
+.jarvis-theme .dash-root .best-me-checkbox.auto{
+  cursor:default;
+  border-style:dashed;
+}
+.jarvis-theme .dash-root .best-me-dimension-check > div{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+.jarvis-theme .dash-root .best-me-dimension-check b{
+  color:#D9C98F;
+  font:900 6.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.8px;
+}
+.jarvis-theme .dash-root .best-me-dimension-check > div > span{
+  color:#9AAEB1;
+  font-size:7.5px;
+  line-height:1.45;
+}
+.jarvis-theme .dash-root .best-me-seven-link{
+  margin-top:7px;
+  padding:7px 8px;
+  border-left:2px solid rgba(199,170,107,.30);
+  background:rgba(199,170,107,.035);
+  border-radius:0 8px 8px 0;
+}
+.jarvis-theme .dash-root .best-me-seven-link span{
+  display:block;
+  color:#7B8E90;
+  font:900 6px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.7px;
+}
+.jarvis-theme .dash-root .best-me-seven-link b{
+  display:block;
+  margin-top:3px;
+  color:#B8C5C6;
+  font-size:7px;
+  line-height:1.4;
+}
