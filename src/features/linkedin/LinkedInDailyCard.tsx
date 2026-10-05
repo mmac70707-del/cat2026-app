@@ -199,18 +199,14 @@ export function LinkedInDailyCard() {
         <strong style={{color:'#FCD34D'}}>MBA/PDPI:</strong> structured thinking + communication. &nbsp; <strong style={{color:'#FCD34D'}}>7-year founder:</strong> repeated business observation + decision practice.
       </div>
       <div style={{padding:12,borderRadius:11,border:'1px solid rgba(96,165,250,.20)',background:'linear-gradient(135deg,rgba(15,23,42,.96),rgba(8,47,73,.34))'}}>
-        <div style={{display:'flex',justifyContent:'space-between',gap:8,alignItems:'center',flexWrap:'wrap'}}>
-          <div style={{fontSize:9,color:'#7DD3FC',fontWeight:900}}>REAL BUSINESS SIMULATOR • {leaderCase.leader}</div>
-          <div style={{fontSize:9,color:'#94A3B8'}}>60-SECOND DECISION</div>
-        </div>
+        <div style={{fontSize:9,color:'#7DD3FC',fontWeight:900}}>REAL BUSINESS SIMULATOR - {leaderCase.leader}</div>
         <div style={{marginTop:6,color:'#FFF',fontSize:12,fontWeight:900}}>{leaderCase.context}</div>
         <div style={{marginTop:5,color:'#CBD5E1',fontSize:10,lineHeight:1.55}}>{leaderCase.lesson}</div>
-        <div style={{marginTop:8,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:5}}>
-          {leaderCase.visual.map((v,i)=><div key={v} style={{padding:'7px 4px',textAlign:'center',borderRadius:7,background:i===0?'rgba(34,211,238,.12)':'rgba(148,163,184,.07)',border:'1px solid rgba(148,163,184,.10)',color:i===0?'#A5F3FC':'#CBD5E1',fontSize:8,fontWeight:900}}>{v}</div> )}
+        <div style={{marginTop:8,display:'grid',gridTemplateColumns:'repeat(4,minmax(0,1fr))',gap:5}}>
+          {leaderCase.visual.map((v:string)=><div key={v} style={{padding:'7px 3px',textAlign:'center',borderRadius:7,background:'rgba(34,211,238,.08)',border:'1px solid rgba(148,163,184,.10)',color:'#A5F3FC',fontSize:8,fontWeight:900}}>{v}</div>)}
         </div>
         <div style={{marginTop:8,padding:8,borderRadius:8,background:'rgba(2,6,23,.65)',color:'#E0F2FE',fontSize:10,lineHeight:1.5}}>
-          <strong style={{color:'#67E8F9'}}>YOUR DECISION:</strong> {leaderCase.prompt}<br/>
-          <span style={{color:'#94A3B8'}}>Answer in one sentence. Then ask: “What evidence would change my mind?”</span>
+          <strong style={{color:'#67E8F9'}}>YOUR DECISION:</strong> {leaderCase.prompt}
         </div>
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(34,211,238,.16)',background:'rgba(34,211,238,.035)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
