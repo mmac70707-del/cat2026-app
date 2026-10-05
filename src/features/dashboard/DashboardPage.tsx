@@ -514,17 +514,14 @@ export function DashboardPage() {
             const won = dimensionWins[dimension.id]
             const manual = !autoWin
             const canMark = manual
-            const active = !won && (
-              (index === 0) ||
-              (index > 0 && BEST_ME_DIMENSIONS.slice(0,index).every(d => dimensionWins[d.id]))
-            )
+            const active = !won
 
             return (
               <div key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'locked')}>
                 <div className="best-me-dimension-top">
                   <span className="best-me-dimension-number">{String(index + 1).padStart(2,'0')}</span>
                   <span className="best-me-dimension-icon">{dimension.icon}</span>
-                  <span className="best-me-win-state">{won ? 'WON' : active ? 'ACTIVE' : 'LOCKED'}</span>
+                  <span className="best-me-win-state">{won ? 'WON' : active ? 'READY' : 'LOCKED'}</span>
                 </div>
                 <div className="best-me-dimension-title">{dimension.title}</div>
                 <div className="best-me-dimension-sub">{dimension.subtitle}</div>
@@ -543,7 +540,7 @@ export function DashboardPage() {
                     <div className="best-me-bar"><span style={{ width: physicalPct + '%' }} /></div>
                   )}
                   {dimension.id !== 'MIND' && dimension.id !== 'BODY' && (
-                    <div className="best-me-manual-status">{won ? '✓ Manually logged for today' : canMark ? 'Tap after you genuinely do it.' : 'Complete previous dimension first.'}</div>
+                    <div className="best-me-manual-status">{won ? '✓ Manually logged for today' : 'Tap after you genuinely do it.'}</div>
                   )}
                 </div>
                 {canMark && (
@@ -552,7 +549,7 @@ export function DashboardPage() {
                     disabled={!active && !won}
                     onClick={() => toggleBestMeManualWin(dimension.id)}
                   >
-                    {won ? '✓ WIN LOGGED — TAP TO UNDO' : active ? 'MARK THIS WIN →' : 'LOCKED — FINISH ABOVE'}
+                    {won ? '✓ WIN LOGGED — TAP TO UNDO' : 'MARK THIS WIN →'}
                   </button>
                 )}
                 {dimension.id === 'MIND' && (
