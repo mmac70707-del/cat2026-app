@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { recordAudit } from '@/services/auditLog'
 import { createSpeechRecognizer } from '@/services/voiceJarvisService'
-import { authenticateBiometric, isNative } from '@/services/native'
+import { authenticateBiometric, getDeviceCapabilities, isNative } from '@/services/native'
 import { clearVaultKey, isVaultUnlocked, unlockVaultWithNative, unlockVaultWithPin } from '@/services/secureVault'
 
 const PIN_KEY = 'jarvis_web_pin_v2'
@@ -158,6 +158,17 @@ export function JarvisWebSecurityGate({ children }: { children: ReactNode }) {
     window.addEventListener('keydown', resetIdle)
     document.addEventListener('visibilitychange', onVisibility)
     resetIdle()
+
+    // Native Android unlock is completed before this React page is loaded.
+    // Do not rely only on a timed CustomEvent: on slower devices the event can
+    // race React's useEffect and leave the whole feature set behind the lock.
+    if (isNative()) {
+      void getDeviceCapabilities().then((caps) => {
+        if (caps?.secureUnlock && !unlockedRef.current) {
+          void onUnlock()
+        }
+      })
+    }
 
     const interval = window.setInterval(() => setLockedMs(getLockRemainingMs()), 250)
     return () => {
