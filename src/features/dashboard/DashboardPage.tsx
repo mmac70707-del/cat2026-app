@@ -664,7 +664,7 @@ export function DashboardPage() {
               action = 'TODAY: after CAT priorities, take one 3-minute business/leadership lesson.'
             }
             return (
-              <div key={basic.id} role="button" tabIndex={0} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setActiveLessonId(basic.id) } }} aria-label={'Open today’s ' + basic.name + ' mini-lesson'} aria-expanded={activeLessonId === basic.id}>
+              <div key={basic.id} role="button" tabIndex={0} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'ready') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setActiveLessonId(basic.id) } }} aria-label={'Open today’s ' + basic.name + ' mini-lesson'} aria-expanded={activeLessonId === basic.id}>
                 <div className="daily-basic-top">
                   <span className="daily-basic-number">{basic.n}</span>
                   <span className="daily-basic-icon">{basic.icon}</span>
@@ -736,7 +736,7 @@ export function DashboardPage() {
         <div className="daily-basics-footer">
           <span>MENTOR RULE</span>
           <b>CAT FIRST • BODY SECOND • CHARACTER EVERYWHERE ELSE</b>
-          <em>Do not chase all 7 at once. Complete today’s current gate, then move forward.</em>
+          <em>Sequence: 01 → 07. All seven are open to learn; do the highlighted step first, then move forward.</em>
         </div>
       </section>
 
