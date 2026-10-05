@@ -117,21 +117,70 @@ class MainActivity : FragmentActivity() {
             setBackgroundColor("#03070A".toColorInt())
             settings.setSupportMultipleWindows(false)
             webChromeClient = object : WebChromeClient() {
+                override fun onConsoleMessage(consoleMessage: android.webkit.ConsoleMessage): Boolean {
+                    if (consoleMessage.messageLevel() == android.webkit.ConsoleMessage.MessageLevel.ERROR &&
+                        ::bootStatus.isInitialized
+                    ) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nJAVASCRIPT ERROR\n" + consoleMessage.message()
+                        bootStatus.visibility = android.view.View.VISIBLE
+                    }
+                    return true
+                }
+            }
+
+            webViewClient = object : WebViewClient() {
+                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
+                    assetLoader.shouldInterceptRequest(request.url)
+
+                override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    if (::bootStatus.isInitialized) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nLOADING…"
+                        bootStatus.visibility = android.view.View.VISIBLE
+                    }
+                }
+
+                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: android.webkit.WebResourceError) {
+                    super.onReceivedError(view, request, error)
+                    if (request.isForMainFrame && ::bootStatus.isInitialized) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nLOAD ERROR\n" + error.description
+                        bootStatus.visibility = android.view.View.VISIBLE
+                    }
+                }
+
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    if (::bootStatus.isInitialized) bootStatus.visibility = android.view.View.GONE
+                    if (nativeUnlocked && url.startsWith("https://appassets.androidplatform.net/assets/")) {
+                        view.postDelayed({
+                            view.evaluateJavascript(
+                                "window.dispatchEvent(new CustomEvent('jarvis:unlocked'))",
+                                null
+                            )
+                        }, 250)
+                    }
+                }
+
+                override fun onRenderProcessGone(view: WebView, detail: android.webkit.RenderProcessGoneDetail): Boolean {
+                    if (::bootStatus.isInitialized) {
+                        bootStatus.text = "JARVIS LOCAL CORE\nRENDERER RECOVERY…"
+                        bootStatus.visibility = android.view.View.VISIBLE
+                    }
+                    recreate()
+                    return true
+                }
+
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     if (!request.isForMainFrame) return false
                     val url = request.url.toString()
                     val trusted = url.startsWith("https://appassets.androidplatform.net/")
                     val debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0 && url.startsWith("http://localhost")
-
-                    return if (trusted || debug) {
-                        false
-                    } else {
+                    return if (trusted || debug) false else {
                         try { startActivity(Intent(Intent.ACTION_VIEW, request.url)) } catch (_: Exception) {}
                         true
                     }
                 }
             }
-
             if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
                 throw IllegalStateException("Secure WebMessage bridge is unavailable on this WebView.")
             }
