@@ -7,6 +7,7 @@ import { getWeekNumber, getDaysLeft } from '@/services/domain'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { BLOCKS, PHASES, SCHEDULE_ITEMS, WEEK_PLAN_TEMPLATE } from '@/data/config'
+import { SEVEN_YEAR_ROADMAP } from '@/data/visionConfig'
 import { useToast } from '@/components/Toast'
 import './Dashboard.css'
 import { DailyControlCard } from '@/features/dailycontrol/DailyControlCard'
@@ -237,13 +238,13 @@ const BEST_ME_DIMENSIONS = [
 type BestMeDimensionId = typeof BEST_ME_DIMENSIONS[number]['id']
 
 const DAILY_BEST_BASICS = [
-  { id:'MIND' as BestMeDimensionId, n:'01', icon:'🧠', name:'MIND', purpose:'Learn + think', mentor:'CAT mastery is today’s main job.' },
-  { id:'BODY' as BestMeDimensionId, n:'02', icon:'💪', name:'BODY', purpose:'Train + recover', mentor:'Train with form, recover well, repeat.' },
-  { id:'EMOTIONAL' as BestMeDimensionId, n:'03', icon:'❤️', name:'EMOTION', purpose:'Feel + regulate', mentor:'Pause before reaction. Choose the next right action.' },
-  { id:'SPIRITUAL' as BestMeDimensionId, n:'04', icon:'🙏', name:'SPIRITUAL', purpose:'Values + direction', mentor:'Let values lead when mood is noisy.' },
-  { id:'SOCIAL' as BestMeDimensionId, n:'05', icon:'🤝', name:'SOCIAL', purpose:'Respect + connect', mentor:'One genuine connection is enough.' },
-  { id:'FINANCIAL' as BestMeDimensionId, n:'06', icon:'₹', name:'FINANCIAL', purpose:'Track + control', mentor:'Know where the money goes.' },
-  { id:'PURPOSE' as BestMeDimensionId, n:'07', icon:'🚀', name:'PURPOSE', purpose:'Build + become', mentor:'Make one tiny deposit into your future.' },
+  { id:'MIND' as BestMeDimensionId, n:'01', icon:'🧠', name:'MIND', purpose:'Learn + think', mentor:'CAT mastery is today’s main job.', dailyCheck:'Complete today’s planned CAT blocks: solve → analyse → repair.', sevenYear:'Foundation → MBA capability → decision quality → builder judgement.' },
+  { id:'BODY' as BestMeDimensionId, n:'02', icon:'💪', name:'BODY', purpose:'Train + recover', mentor:'Train with form, recover well, repeat.', dailyCheck:'Complete today’s Body 360 workout + required learning/recovery gates.', sevenYear:'Energy engine → sustainable performance → leadership stamina.' },
+  { id:'EMOTIONAL' as BestMeDimensionId, n:'03', icon:'❤️', name:'EMOTION', purpose:'Feel + regulate', mentor:'Pause before reaction. Choose the next right action.', dailyCheck:'Use one pause before reacting: breathe → name → choose.', sevenYear:'Self-control → pressure handling → high-stakes judgement.' },
+  { id:'SPIRITUAL' as BestMeDimensionId, n:'04', icon:'🙏', name:'SPIRITUAL', purpose:'Values + direction', mentor:'Let values lead when mood is noisy.', dailyCheck:'2 minutes: Radhe Radhe → gratitude → choose one value to live today.', sevenYear:'Character → integrity → grounded leadership → legacy.' },
+  { id:'SOCIAL' as BestMeDimensionId, n:'05', icon:'🤝', name:'SOCIAL', purpose:'Respect + connect', mentor:'One genuine connection is enough.', dailyCheck:'Have one genuine conversation: listen first, add value, follow through.', sevenYear:'Communication → network → team leadership → ecosystem.' },
+  { id:'FINANCIAL' as BestMeDimensionId, n:'06', icon:'₹', name:'FINANCIAL', purpose:'Track + control', mentor:'Know where the money goes.', dailyCheck:'Log every spend and make one deliberate money decision.', sevenYear:'Financial literacy → capital discipline → business economics → allocation.' },
+  { id:'PURPOSE' as BestMeDimensionId, n:'07', icon:'🚀', name:'PURPOSE', purpose:'Build + become', mentor:'Make one tiny deposit into your future.', dailyCheck:'After CAT priorities, make one 3-minute deposit into your builder future.', sevenYear:'MBA/business capability → experiments → product → scale → impact.' },
 ] as const
 
 type DailyLesson = {
@@ -509,6 +510,8 @@ export function DashboardPage() {
   const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
   const nextDimensionIndex = BEST_ME_DIMENSIONS.findIndex(dimension => !dimensionWins[dimension.id])
   const nextDimension = nextDimensionIndex >= 0 ? BEST_ME_DIMENSIONS[nextDimensionIndex] : null
+  const currentSevenYear = SEVEN_YEAR_ROADMAP[Math.min(6, Math.max(0, kolkataParts.year - 2026))] || SEVEN_YEAR_ROADMAP[0]
+  const currentSevenYearLabel = 'Y' + currentSevenYear.yearNum + ' • ' + currentSevenYear.theme
   function toggleSinControl(id: BestMeSinId) {
     const nextValue = !sinControls[id]
     const next = { ...sinControls, [id]: nextValue }
@@ -633,6 +636,7 @@ export function DashboardPage() {
             <div className="daily-basics-title">Do the next right thing. Let the system guide the rest.</div>
             <div className="daily-basics-sub">
               Auto-updated every India day: <b>{realDayName}, {realDateStr}</b> • {bestMeWinCount}/7 wins • {lessonLearnedCount}/7 lessons done • {sinWinCount}/7 self-control reps
+              <br /><b>7-YEAR TRACK:</b> {currentSevenYearLabel}
             </div>
           </div>
           <div className={'daily-basics-now ' + (finalWin ? 'complete' : '')}>
@@ -755,6 +759,7 @@ export function DashboardPage() {
             <div className="best-me-final-main">{finalWin ? '🏆 WON' : bestMeWinCount + '/7 WINS'}</div>
             <div className="best-me-final-sub">
               {finalWin ? 'All 7 dimensions won in sequence today.' : 'All 7 stay open. The sequence shows the recommended order; your current step is highlighted.'}
+              <br />Today’s 7-year layer: {currentSevenYear.theme}.
             </div>
           </div>
         </div>
@@ -783,6 +788,44 @@ export function DashboardPage() {
                 <div className="best-me-dimension-title">{dimension.title}</div>
                 <div className="best-me-dimension-sub">{dimension.subtitle}</div>
                 <div className="best-me-dimension-rule">{dimension.rule}</div>
+                <div className="best-me-dimension-check">
+                  <span className={'best-me-checkbox ' + (won ? 'checked' : '') + ((dimension.id === 'MIND' || dimension.id === 'BODY') ? ' auto' : '')}
+                    role="checkbox"
+                    aria-checked={won}
+                    aria-readonly={dimension.id === 'MIND' || dimension.id === 'BODY'}
+                    tabIndex={0}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      if (dimension.id === 'MIND') {
+                        document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior:'smooth', block:'center' })
+                      } else if (dimension.id === 'BODY') {
+                        window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail: { page:'body360' } }))
+                      } else {
+                        toggleBestMeManualWin(dimension.id)
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key !== 'Enter' && event.key !== ' ') return
+                      event.preventDefault()
+                      event.stopPropagation()
+                      if (dimension.id === 'MIND') {
+                        document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior:'smooth', block:'center' })
+                      } else if (dimension.id === 'BODY') {
+                        window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail: { page:'body360' } }))
+                      } else {
+                        toggleBestMeManualWin(dimension.id)
+                      }
+                    }}
+                  >{won ? '✓' : ''}</span>
+                  <div>
+                    <b>CHECK TODAY</b>
+                    <span>{DAILY_BEST_BASICS.find(basic => basic.id === dimension.id)?.dailyCheck || dimension.fallback}</span>
+                  </div>
+                </div>
+                <div className="best-me-seven-link">
+                  <span>7-YEAR LINK • {currentSevenYearLabel}</span>
+                  <b>{DAILY_BEST_BASICS.find(basic => basic.id === dimension.id)?.sevenYear || 'Build capability that compounds.'}</b>
+                </div>
                 <div className="best-me-dimension-step">
                   <span>TODAY’S STEP</span>
                   {dimension.id === 'MIND' ? (mentalWin ? 'All CAT blocks complete — mental win secured.' : (nextTask ? 'NEXT: ' + nextTask.blockId + ' — ' + nextTask.title : dimension.fallback))
