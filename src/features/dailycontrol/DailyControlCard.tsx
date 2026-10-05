@@ -43,6 +43,110 @@ function todayIndia() {
   }
 }
 
+
+function HairHealthCard() {
+  const STORAGE = 'cat2026_hair_health_v1'
+  type HairState = {
+    baselineDate?: string
+    baselinePhotoNames?: string[]
+    doctorSeen?: boolean
+    daily?: Record<string, { nutrition:boolean; gentle:boolean; sleep:boolean }>
+  }
+  const [state, setState] = useState<HairState>(() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE) || '{}') } catch { return {} }
+  })
+  const [photoNames, setPhotoNames] = useState<string[]>(state.baselinePhotoNames || [])
+  const today = todayIndia()
+  const todayKey = today.key
+  const day0 = state.baselineDate ? new Date(state.baselineDate + 'T00:00:00') : null
+  const now = new Date(todayKey + 'T00:00:00')
+  const elapsed = day0 ? Math.max(0, Math.floor((now.getTime() - day0.getTime()) / 86400000)) : 0
+  const milestone = elapsed >= 365 ? '12M' : elapsed >= 150 ? '6M' : elapsed >= 75 ? '3M' : '0M'
+  const daily = state.daily?.[todayKey] || { nutrition:false, gentle:false, sleep:false }
+  const save = (next: HairState) => {
+    setState(next)
+    try { localStorage.setItem(STORAGE, JSON.stringify(next)) } catch {}
+  }
+  const toggleDaily = (key: 'nutrition'|'gentle'|'sleep') => {
+    save({ ...state, daily: { ...(state.daily || {}), [todayKey]: { ...daily, [key]: !daily[key] } } })
+  }
+  const setBaseline = () => save({ ...state, baselineDate: todayKey, baselinePhotoNames: photoNames })
+  const markDoctor = () => save({ ...state, doctorSeen: !state.doctorSeen })
+
+  const milestones = [
+    ['0M','BASELINE','Front • Left temple • Right temple • Top • Crown'],
+    ['3M','STABILITY','Compare same-angle photos; look for progression/shedding trend'],
+    ['6M','DENSITY','Compare frontal/temple coverage; review treatment with dermatologist'],
+    ['12M','YEAR REVIEW','Stable vs improving vs progressing; decide next medical step'],
+  ]
+
+  return (
+    <section aria-label="Hair Health Engine" style={{
+      marginTop: 16, borderRadius: 16, overflow:'hidden',
+      border:'1px solid rgba(99,246,255,.24)',
+      background:'linear-gradient(145deg,rgba(10,20,32,.98),rgba(15,23,42,.98))',
+      boxShadow:'0 14px 40px rgba(0,0,0,.28)'
+    }}>
+      <div style={{padding:'15px 16px',background:'linear-gradient(90deg,rgba(99,246,255,.08),rgba(124,58,237,.08))',borderBottom:'1px solid rgba(255,255,255,.06)'}}>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'#63F6FF'}}>BEST VERSION • HAIR HEALTH ENGINE</div>
+        <div style={{fontSize:20,fontWeight:950,color:'#FFF',marginTop:4}}>Protect what you have. Measure. Diagnose. Improve.</div>
+        <div style={{fontSize:10,color:'#94A3B8',marginTop:5,lineHeight:1.5}}>CAT stays primary. Hair care is a small support system — not another source of pressure.</div>
+      </div>
+
+      <div style={{padding:14,display:'grid',gap:12}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(125px,1fr))',gap:8}}>
+          {milestones.map(([code,title,sub],i) => {
+            const active = milestone === code
+            const complete = (code==='0M' && !!state.baselineDate) || (code==='3M' && elapsed>=75) || (code==='6M' && elapsed>=150) || (code==='12M' && elapsed>=365)
+            return <div key={code} style={{padding:'10px 9px',borderRadius:10,border:active?'1px solid rgba(99,246,255,.65)':'1px solid rgba(255,255,255,.07)',background:active?'rgba(99,246,255,.08)':'rgba(255,255,255,.025)'}}>
+              <div style={{fontSize:9,fontWeight:900,color:active?'#63F6FF':'#94A3B8'}}>{complete?'✓ ':''}{code}</div>
+              <div style={{fontSize:10,fontWeight:900,color:'#FFF',marginTop:3}}>{title}</div>
+              <div style={{fontSize:8,color:'#94A3B8',lineHeight:1.4,marginTop:3}}>{sub}</div>
+            </div>
+          })}
+        </div>
+
+        <div style={{padding:12,borderRadius:11,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
+          <div style={{fontSize:10,fontWeight:900,color:'#63F6FF',letterSpacing:.7}}>📸 M0 BASELINE — FIVE ANGLES</div>
+          <div style={{fontSize:9,color:'#CBD5E1',marginTop:5,lineHeight:1.5}}>Front → Left temple → Right temple → Top → Crown. Same lighting, dry hair, same distance. This is tracking — not diagnosis.</div>
+          <input
+            type="file" accept="image/*" multiple
+            onChange={e => setPhotoNames(Array.from(e.target.files || []).map(x => x.name).slice(0,5))}
+            style={{marginTop:9,width:'100%',fontSize:9,color:'#CBD5E1'}}
+          />
+          <div style={{display:'flex',gap:8,alignItems:'center',marginTop:9,flexWrap:'wrap'}}>
+            <button onClick={setBaseline} style={{padding:'8px 11px',borderRadius:8,border:'1px solid rgba(99,246,255,.35)',background:'rgba(99,246,255,.08)',color:'#63F6FF',fontWeight:900,fontSize:9,cursor:'pointer'}}>SAVE M0 BASELINE</button>
+            <span style={{fontSize:9,color:state.baselineDate?'#86EFAC':'#FCD34D'}}>{state.baselineDate ? 'Baseline: '+state.baselineDate : 'Baseline not locked yet'}</span>
+          </div>
+          {photoNames.length>0 && <div style={{fontSize:8,color:'#64748B',marginTop:6}}>{photoNames.length} photo(s) selected: {photoNames.join(' • ')}</div>}
+        </div>
+
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:8}}>
+          {[
+            ['nutrition','🥗','FOOD','Regular balanced meals + protein source; no crash dieting.'],
+            ['gentle','🧴','HAIR CARE','Gentle washing/drying; no pulling, scratching or unnecessary heat.'],
+            ['sleep','😴','RECOVERY','Protect regular sleep and recovery; hair is not a separate emergency every day.'],
+          ].map(([key,icon,title,desc]) => (
+            <button key={key} onClick={() => toggleDaily(key as 'nutrition'|'gentle'|'sleep')} style={{textAlign:'left',padding:11,borderRadius:10,cursor:'pointer',border:daily[key as keyof typeof daily]?'1px solid rgba(34,197,94,.4)':'1px solid rgba(255,255,255,.07)',background:daily[key as keyof typeof daily]?'rgba(34,197,94,.08)':'rgba(255,255,255,.025)',color:'#FFF'}}>
+              <div style={{fontSize:14}}>{icon}</div>
+              <div style={{fontSize:9,fontWeight:900,marginTop:4}}>{daily[key as keyof typeof daily]?'✓ ':''}{title}</div>
+              <div style={{fontSize:8,color:'#94A3B8',lineHeight:1.4,marginTop:3}}>{desc}</div>
+            </button>
+          ))}
+        </div>
+
+        <div style={{padding:12,borderRadius:11,border:'1px solid rgba(245,166,35,.22)',background:'rgba(245,166,35,.045)'}}>
+          <div style={{fontSize:10,fontWeight:900,color:'#FCD34D'}}>🩺 DOCTOR GATE — SOURCE OF TRUTH</div>
+          <div style={{fontSize:9,color:'#CBD5E1',lineHeight:1.5,marginTop:5}}>Ask a dermatologist for scalp examination/dermoscopy if the hairline is changing. The app will track the doctor's plan; it will not prescribe finasteride, minoxidil, PRP or supplements.</div>
+          <button onClick={markDoctor} style={{marginTop:8,padding:'7px 10px',borderRadius:8,border:'1px solid rgba(245,166,35,.28)',background:'transparent',color:state.doctorSeen?'#86EFAC':'#FCD34D',fontWeight:900,fontSize:9,cursor:'pointer'}}>{state.doctorSeen?'✓ DERMATOLOGY VISIT LOGGED':'LOG DERMATOLOGY VISIT'}</button>
+        </div>
+
+        <div style={{fontSize:8,color:'#64748B',lineHeight:1.5}}>Safety rule: sudden/patchy loss, significant scalp inflammation/pain, or rapid worsening → tell a parent/guardian and seek medical evaluation. Photos cannot determine the exact diagnosis or follicle viability.</div>
+      </div>
+    </section>
+  )
+}
+
 export function DailyControlCard() {
   // Live daily engine: date/weekday is derived from Asia/Kolkata and refreshed while the app is open.
   const phase = usePhase()
@@ -522,7 +626,9 @@ export function DailyControlCard() {
         </div>
       </div>
 
-      {/* BOTTOM FOOTER */}
+      <HairHealthCard />
+
+      {/* BOTTOM FOOTER */
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
