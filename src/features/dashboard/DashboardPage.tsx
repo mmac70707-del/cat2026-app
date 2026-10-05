@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useTodayTasks } from '@/hooks/useTasks'
 import { DailyScoreRepository } from '@/repositories/index'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
+import { MasteryRepository } from '@/repositories/MasteryRepository'
+import type { MasteryTopic } from '@/types'
 import { usePhase } from '@/hooks/usePhase'
 import { getWeekNumber, getDaysLeft, getCountdownParts } from '@/services/domain'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
@@ -320,6 +322,25 @@ function getConsecutiveStreak(completedDates: string[], todayKey: string) {
   return streak
 }
 
+function getBestStreak(completedDates: string[]) {
+  const days = [...new Set(completedDates)].sort()
+  if (!days.length) return 0
+  let best = 1
+  let run = 1
+  for (let i = 1; i < days.length; i++) {
+    const prev = new Date(days[i - 1] + 'T00:00:00Z')
+    const cur = new Date(days[i] + 'T00:00:00Z')
+    const diff = Math.round((cur.getTime() - prev.getTime()) / 86400000)
+    if (diff === 1) {
+      run++
+      best = Math.max(best, run)
+    } else {
+      run = 1
+    }
+  }
+  return best
+}
+
 function recordExecutionDay(dateKey: string, complete: boolean) {
   try {
     const raw = JSON.parse(localStorage.getItem(EXECUTION_STREAK_STORAGE) || '{}') as Record<string, boolean>
@@ -485,6 +506,7 @@ export function DashboardPage() {
   const [sinControls, setSinControls] = useState<Partial<Record<BestMeSinId, boolean>>>(() => readSinControls(getKolkataDateKey()))
   const [lessonWins, setLessonWins] = useState<Partial<Record<BestMeDimensionId, boolean>>>(() => readBestMeLessonWins(getKolkataDateKey()))
   const [activeLessonId, setActiveLessonId] = useState<BestMeDimensionId | null>('MIND')
+  const [masteryTopics, setMasteryTopics] = useState<MasteryTopic[]>([])
 
 
   useEffect(() => {
@@ -547,6 +569,44 @@ export function DashboardPage() {
   const nextDimension = nextDimensionIndex >= 0 ? BEST_ME_DIMENSIONS[nextDimensionIndex] : null
   const currentSevenYear = SEVEN_YEAR_ROADMAP[Math.min(6, Math.max(0, kolkataParts.year - 2026))] || SEVEN_YEAR_ROADMAP[0]
   const currentSevenYearLabel = 'Y' + currentSevenYear.yearNum + ' • ' + currentSevenYear.theme
+  const bestStreak = getBestStreak(executionStreakDates)
+  const currentTask = currentBlockId ? tasks.find(task => task.blockId === currentBlockId && task.status !== 'DONE') || null : null
+  const actionTask = currentTask || nextTask
+  const actionTitle = currentTask
+    ? currentTask.blockId + ' • ' + currentTask.title
+    : currentSlot
+      ? currentSlot.block
+      : actionTask
+        ? actionTask.blockId + ' • ' + actionTask.title
+        : 'CAT CORE COMPLETE'
+  const actionStatus = currentTask
+    ? 'DO THIS NOW'
+    : currentSlot
+      ? 'STAY ON SCHEDULE'
+      : actionTask
+        ? 'NEXT ACTION'
+        : 'DAY CLOSED'
+  const actionDetail = currentTask && currentSlot
+    ? currentSlot.time + ' • Complete this block, then move to the next planned task.'
+    : currentSlot && nextTask
+      ? currentSlot.time + ' • ' + currentSlot.block + ' now. Next CAT task: ' + nextTask.blockId + ' • ' + nextTask.title + '.'
+      : actionTask
+        ? getBlockTimeLabel(actionTask.blockId) + ' • Follow the locked sequence. No random replanning.'
+        : 'All planned CAT work is complete. Protect recovery and sleep.'
+  const masteryTargets = [
+    { key:'percentages', label:'Percentages', subject:'QA' as const, color:'#22C55E' },
+    { key:'ratio', label:'Ratio & Prop', subject:'QA' as const, color:'#F59E0B' },
+    { key:'tables', label:'Tables', subject:'DILR' as const, color:'#60A5FA' },
+    { key:'rc-main-idea', label:'RC Main Idea', subject:'VARC' as const, color:'#A78BFA' },
+  ].map(target => {
+    const topic = masteryTopics.find(t => {
+      if (t.subject !== target.subject) return false
+      const name = t.name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim()
+      const key = target.label.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, ' ').trim()
+      return name === key || name.includes(key) || key.includes(name)
+    }) || null
+    return { ...target, topic }
+  })
   function toggleSinControl(id: BestMeSinId) {
     const nextValue = !sinControls[id]
     const next = { ...sinControls, [id]: nextValue }
@@ -600,6 +660,14 @@ export function DashboardPage() {
     setSinControls(readSinControls(dateKey))
   }, [dateKey])
 
+  useEffect(() => {
+    let alive = true
+    MasteryRepository.init()
+      .then(() => MasteryRepository.getAll())
+      .then(data => { if (alive) setMasteryTopics(data) })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [])
 
   useEffect(() => {
     const syncBody360 = () => setBody360Done(readBody360TodayProgress(dateKey))
@@ -677,12 +745,27 @@ export function DashboardPage() {
         </div>
 
         <div className="master-command-metrics">
-          <div><span>🔥 EXECUTION STREAK</span><b>{liveStreak} DAY{liveStreak === 1 ? '' : 'S'}</b></div>
+          <div><span>🔥 EXECUTION STREAK</span><b>{liveStreak} DAY{liveStreak === 1 ? '' : 'S'}</b><small className="master-best-streak">BEST {bestStreak}</small></div>
           <div><span>TODAY SCORE</span><b>{executionScore}%</b></div>
           <div><span>CAT CORE</span><b>{done}/{tasks.length || 8}</b></div>
           <div><span>BEST ME</span><b>{bestMeWinCount}/7</b></div>
           <div><span>SELF-MASTERY</span><b>{sinWinCount}/7</b></div>
           <div><span>LESSONS</span><b>{lessonLearnedCount}/7</b></div>
+        </div>
+
+        <div className="master-next-action" aria-live="polite">
+          <div className="master-next-action-copy">
+            <span>{actionStatus}</span>
+            <strong>{actionTitle}</strong>
+            <small>{actionDetail}</small>
+          </div>
+          {actionTask && (
+            <button
+              type="button"
+              className="master-next-action-btn"
+              onClick={() => document.getElementById('dash_block_' + actionTask.blockId)?.scrollIntoView({ behavior:'smooth', block:'center' })}
+            >OPEN ACTION</button>
+          )}
         </div>
 
         <div className="master-checklist">
@@ -1385,51 +1468,34 @@ export function DashboardPage() {
         {/* MASTERY + PHASE + ERRORS ROW */}
         <div className="two-col">
 
-          {/* MASTERY TRACKER */}
+          {/* LIVE MASTERY TRACKER */}
           <div className="card">
-            <div className="card-title">📈 Mastery Tracker — Real-Time Level</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green2)', marginBottom: 10, textTransform: 'uppercase', letterSpacing: .5 }}>QA Progress</div>
-                <div className="mastery-track">
-                  <div className="mastery-row">
-                    <div className="mastery-name">Percentages</div>
-                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '60%', background: 'var(--green)' }}></div></div>
-                    <div className="mastery-level l3" style={{ color: '#6EE7B7' }}>L3</div>
-                  </div>
-                  <div className="mastery-row">
-                    <div className="mastery-name">Ratio &amp; Prop</div>
-                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '20%', background: 'var(--orange)' }}></div></div>
-                    <div className="mastery-level" style={{ color: '#FCD34D' }}>L1→</div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#60A5FA', marginBottom: 10, textTransform: 'uppercase', letterSpacing: .5 }}>DILR + VARC</div>
-                <div className="mastery-track">
-                  <div className="mastery-row">
-                    <div className="mastery-name">Tables</div>
-                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '40%', background: 'var(--blue2)' }}></div></div>
-                    <div className="mastery-level" style={{ color: '#93C5FD' }}>L2</div>
-                  </div>
-                  <div className="mastery-row">
-                    <div className="mastery-name">RC Main Idea</div>
-                    <div className="mastery-bar-wrap"><div className="mastery-bar" style={{ width: '40%', background: 'var(--purple)' }}></div></div>
-                    <div className="mastery-level" style={{ color: '#A78BFA' }}>L2</div>
-                  </div>
-                </div>
-              </div>
+            <div className="card-title">📈 Mastery Tracker — Real Evidence</div>
+            <div className="mastery-live-note">
+              <strong>VERIFIED DATA:</strong> level, attempts and accuracy come only from the stored mastery profile. No placeholder percentages.
             </div>
-            <div style={{ marginTop: 14, padding: '10px 12px', background: 'var(--bg3)', borderRadius: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>MASTERY SCALE</div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <span className="mastery-badge l0">L0 Don't Know</span>
-                <span className="mastery-badge l1">L1 Understand</span>
-                <span className="mastery-badge l2">L2 Guided</span>
-                <span className="mastery-badge l3">L3 Independent</span>
-                <span className="mastery-badge l4">L4 Under Time</span>
-                <span className="mastery-badge l5">L5 CAT Level</span>
-              </div>
+            <div className="mastery-live-grid">
+              {masteryTargets.map(target => {
+                const topic = target.topic
+                const level = topic?.currentLevel ?? 0
+                const attempts = topic?.attempts ?? 0
+                const accuracy = attempts > 0 ? Math.round(((topic?.correct ?? 0) / attempts) * 100) : null
+                const progress = Math.round((level / 5) * 100)
+                return (
+                  <div key={target.key} className="mastery-live-row">
+                    <div className="mastery-live-name">{target.label}<small>{target.subject}</small></div>
+                    <div className="mastery-live-bar-wrap"><div className="mastery-live-bar" style={{ width: progress + '%', background: target.color }} /></div>
+                    <div className="mastery-live-score">
+                      <b>L{level}</b>
+                      <span>{accuracy === null ? 'NO EVIDENCE' : accuracy + '% • ' + attempts + ' Q'}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="mastery-live-foot">
+              <span>L0 Don’t Know → L5 CAT Mastery</span>
+              <span>Evidence beats appearance.</span>
             </div>
           </div>
 
