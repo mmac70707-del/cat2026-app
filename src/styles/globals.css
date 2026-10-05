@@ -816,3 +816,38 @@ html[data-focus-mode="on"] .dash-root .today-header{box-shadow:0 0 0 1px var(--u
   .jarvis-lock-v5__quote-zone{min-height:112px!important}
   .jarvis-lock-v5__quote strong{font-size:20px!important}
 }
+
+
+/* FINAL LOCKSCREEN PORTRAIT OVERRIDE — keep the real portrait intact beside the quote */
+.jarvis-lock-v5__portrait-frame{
+  width:118px!important;
+  height:150px!important;
+  flex:0 0 118px!important;
+  overflow:hidden!important;
+  border-radius:16px!important;
+  background:#081114!important;
+}
+.jarvis-lock-v5__portrait-frame img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:#081114!important;
+  transform:none!important;
+  filter:saturate(.96) contrast(1.03)!important;
+}
+@media(max-width:700px){
+  .jarvis-lock-v5__portrait-frame{
+    width:112px!important;height:142px!important;flex-basis:112px!important;
+  }
+}
+@media(max-width:420px){
+  .jarvis-lock-v5__portrait-frame{
+    width:100px!important;height:128px!important;flex-basis:100px!important;
+  }
+}
+@media(max-width:360px){
+  .jarvis-lock-v5__portrait-frame{
+    width:92px!important;height:118px!important;flex-basis:92px!important;
+  }
+}
