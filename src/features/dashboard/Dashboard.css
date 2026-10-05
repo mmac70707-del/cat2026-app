@@ -3132,3 +3132,161 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
 @media(max-width:420px){
   .jarvis-theme .dash-root .master-command-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   FINAL DEEP PASS — readability, touch targets, live next action
+   ═══════════════════════════════════════════════════════════ */
+
+/* Master command: premium dark-slate, readable, still compact */
+.jarvis-theme .dash-root .master-command-rail{
+  background:linear-gradient(180deg,rgba(18,23,22,.98),rgba(14,19,18,.97));
+  border-bottom-color:rgba(199,170,107,.32);
+  box-shadow:0 10px 28px rgba(0,0,0,.22);
+}
+.jarvis-theme .dash-root .master-command-kicker{font-size:8px;line-height:1.2}
+.jarvis-theme .dash-root .master-command-title{font-size:17px;line-height:1.25}
+.jarvis-theme .dash-root .master-command-sub{font-size:9px;line-height:1.45;max-width:980px}
+.jarvis-theme .dash-root .master-countdown{min-width:228px;padding:9px 12px}
+.jarvis-theme .dash-root .master-countdown span{font-size:7.5px}
+.jarvis-theme .dash-root .master-countdown strong{font-size:23px}
+.jarvis-theme .dash-root .master-countdown strong i{font-size:13px}
+
+.jarvis-theme .dash-root .master-command-metrics{gap:7px;margin-top:9px}
+.jarvis-theme .dash-root .master-command-metrics>div{padding:8px 9px;min-height:45px}
+.jarvis-theme .dash-root .master-command-metrics span{font-size:7px;line-height:1.2}
+.jarvis-theme .dash-root .master-command-metrics b{font-size:13px}
+.jarvis-theme .dash-root .master-best-streak{
+  display:block;
+  margin-top:3px;
+  color:#8EAE96;
+  font:800 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.4px;
+}
+
+.jarvis-theme .dash-root .master-next-action{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:8px;
+  padding:10px 11px;
+  border:1px solid rgba(199,170,107,.28);
+  border-radius:11px;
+  background:linear-gradient(135deg,rgba(199,170,107,.10),rgba(255,255,255,.02));
+}
+.jarvis-theme .dash-root .master-next-action-copy{min-width:0;display:grid;gap:3px}
+.jarvis-theme .dash-root .master-next-action-copy span{
+  color:#D9C98F;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:1px;
+}
+.jarvis-theme .dash-root .master-next-action-copy strong{
+  color:#F1EFE8;
+  font-size:13px;
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+.jarvis-theme .dash-root .master-next-action-copy small{
+  color:#9BA8A2;
+  font-size:8.5px;
+  line-height:1.4;
+}
+.jarvis-theme .dash-root .master-next-action-btn{
+  min-width:96px;
+  min-height:44px;
+  padding:10px 12px;
+  border:1px solid rgba(199,170,107,.45);
+  border-radius:9px;
+  background:rgba(199,170,107,.12);
+  color:#E9D595;
+  font:900 7px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.6px;
+  cursor:pointer;
+  flex:none;
+}
+.jarvis-theme .dash-root .master-next-action-btn:hover,
+.jarvis-theme .dash-root .master-next-action-btn:focus-visible{
+  background:rgba(199,170,107,.20);
+  outline:2px solid rgba(199,170,107,.30);
+  outline-offset:2px;
+}
+
+.jarvis-theme .dash-root .master-checklist{gap:7px;margin-top:8px}
+.jarvis-theme .dash-root .master-check{
+  min-height:50px;
+  padding:9px 10px;
+  gap:9px;
+}
+.jarvis-theme .dash-root .master-box{width:22px;height:22px;font-size:12px;border-radius:6px}
+.jarvis-theme .dash-root .master-check b{font-size:8px;line-height:1.2}
+.jarvis-theme .dash-root .master-check small{font-size:8px;line-height:1.35}
+.jarvis-theme .dash-root .master-check em{font-size:7px}
+.jarvis-theme .dash-root .master-command-footer{gap:8px;margin-top:8px;padding-top:7px}
+.jarvis-theme .dash-root .master-command-footer span{font-size:7px}
+.jarvis-theme .dash-root .master-command-footer b{font-size:7px}
+.jarvis-theme .dash-root .master-command-footer small{font-size:8px}
+
+/* Daily basics: readable cards + safe touch targets */
+.jarvis-theme .dash-root .daily-basic{
+  min-height:150px;
+  padding:10px;
+}
+.jarvis-theme .dash-root .daily-basic-number{width:24px;height:24px;font-size:8px}
+.jarvis-theme .dash-root .daily-basic-icon{font-size:17px}
+.jarvis-theme .dash-root .daily-basic-state{font-size:7px}
+.jarvis-theme .dash-root .daily-basic-name{font-size:12px}
+.jarvis-theme .dash-root .daily-basic-purpose{font-size:9px}
+.jarvis-theme .dash-root .daily-basic-mentor{font-size:9px;line-height:1.45}
+.jarvis-theme .dash-root .daily-basic-btn{
+  min-height:44px;
+  padding:10px 8px;
+  font-size:8px;
+  line-height:1.2;
+}
+.jarvis-theme .dash-root .daily-lesson-grid p{font-size:9px}
+.jarvis-theme .dash-root .daily-lesson-grid>div>span{font-size:7px}
+.jarvis-theme .dash-root .daily-lesson-recall b{font-size:10px}
+
+/* Task completion control gets a larger pointer hit area without changing row layout */
+.jarvis-theme .dash-root .block-check{
+  width:24px;
+  height:24px;
+  min-width:24px;
+  min-height:24px;
+  margin:10px;
+}
+.jarvis-theme .dash-root .best-me-checkbox{
+  width:28px;
+  height:28px;
+  flex-basis:28px;
+}
+
+/* Responsive: preserve scanability rather than shrinking text */
+@media(max-width:700px){
+  .jarvis-theme .dash-root .master-command-rail{padding:10px 11px 9px}
+  .jarvis-theme .dash-root .master-command-title{font-size:16px}
+  .jarvis-theme .dash-root .master-command-sub{font-size:9px}
+  .jarvis-theme .dash-root .master-countdown{min-width:0}
+  .jarvis-theme .dash-root .master-countdown strong{font-size:20px}
+  .jarvis-theme .dash-root .master-command-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .jarvis-theme .dash-root .master-checklist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .jarvis-theme .dash-root .master-check{
+    grid-template-columns:auto 1fr;
+    min-height:48px;
+  }
+  .jarvis-theme .dash-root .master-check em{
+    grid-column:2;
+    justify-self:start;
+  }
+  .jarvis-theme .dash-root .master-next-action{align-items:stretch}
+  .jarvis-theme .dash-root .master-next-action-btn{min-width:88px}
+  .jarvis-theme .dash-root .daily-basics-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:380px){
+  .jarvis-theme .dash-root .master-command-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .jarvis-theme .dash-root .master-checklist{grid-template-columns:1fr}
+  .jarvis-theme .dash-root .daily-basics-flow{grid-template-columns:1fr}
+  .jarvis-theme .dash-root .master-next-action{flex-direction:column}
+  .jarvis-theme .dash-root .master-next-action-btn{width:100%}
+}
