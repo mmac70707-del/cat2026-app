@@ -754,7 +754,7 @@ export function DashboardPage() {
             <div className="best-me-final-label">FINAL WIN</div>
             <div className="best-me-final-main">{finalWin ? '🏆 WON' : bestMeWinCount + '/7 WINS'}</div>
             <div className="best-me-final-sub">
-              {finalWin ? 'All 7 dimensions won in sequence today.' : 'Only the current dimension can be logged. Finish this gate to unlock the next.'}
+              {finalWin ? 'All 7 dimensions won in sequence today.' : 'All 7 stay open. The sequence shows the recommended order; your current step is highlighted.'}
             </div>
           </div>
         </div>
@@ -770,15 +770,15 @@ export function DashboardPage() {
             const won = dimensionWins[dimension.id]
             const manual = !autoWin
             const isCurrent = index === nextDimensionIndex
-            const canMark = manual && isCurrent
+            const canMark = manual
             const active = isCurrent && !won
 
             return (
-              <div id={'bestme_dimension_' + dimension.id} key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'locked')}>
+              <div id={'bestme_dimension_' + dimension.id} key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'ready')}>
                 <div className="best-me-dimension-top">
                   <span className="best-me-dimension-number">{String(index + 1).padStart(2,'0')}</span>
                   <span className="best-me-dimension-icon">{dimension.icon}</span>
-                  <span className="best-me-win-state">{won ? 'WON' : active ? 'CURRENT' : 'LOCKED'}</span>
+                  <span className="best-me-win-state">{won ? 'WON' : active ? 'CURRENT' : 'READY'}</span>
                 </div>
                 <div className="best-me-dimension-title">{dimension.title}</div>
                 <div className="best-me-dimension-sub">{dimension.subtitle}</div>
@@ -811,7 +811,7 @@ export function DashboardPage() {
                 {canMark && (
                   <button
                     className={'best-me-action ' + (won ? 'done' : '')}
-                    disabled={!active && !won}
+                    disabled={false}
                     onClick={() => toggleBestMeManualWin(dimension.id)}
                   >
                     {won ? '✓ WIN LOGGED — TAP TO UNDO' : 'MARK THIS WIN →'}
@@ -838,7 +838,7 @@ export function DashboardPage() {
             <div className="best-me-final-rail-copy">
               {finalWin
                 ? 'Mind + Body + Emotional + Spiritual + Social + Financial + Purpose = Best Me for today.'
-                : 'Complete the seven dimensions in order. The final win is earned, not forced.'}
+                : 'Use 01→07 as your daily sequence. Every dimension stays open; finish the final formula honestly.'}
             </div>
           </div>
           <div className="best-me-formula"><span>MIND</span><b>+</b><span>BODY</span><b>+</b><span>HEART</span><b>+</b><span>SPIRIT</span><b>+</b><span>SOCIAL</span><b>+</b><span>MONEY</span><b>+</b><span>PURPOSE</span><b>=</b><strong>BEST ME</strong></div>
