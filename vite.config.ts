@@ -46,6 +46,9 @@ export default defineConfig({
     alias: { '@': resolve(process.cwd(), './src') },
   },
   build: {
+    // Relative URLs make the production bundle work from Android's local
+    // WebViewAssetLoader path without depending on root-relative routing.
+    base: './',
     target: 'es2020',
     outDir: 'dist',
     sourcemap: true,
