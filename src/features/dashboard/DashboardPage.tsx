@@ -235,6 +235,31 @@ const BEST_ME_DIMENSIONS = [
 
 type BestMeDimensionId = typeof BEST_ME_DIMENSIONS[number]['id']
 
+type BestMeSinId = 'PRIDE' | 'GREED' | 'LUST' | 'ENVY' | 'GLUTTONY' | 'WRATH' | 'SLOTH'
+
+const SIN_CONTROL_STORAGE = 'cat2026.bestme.sins.v1'
+
+const SEVEN_SINS_CONTROL = [
+  { id:'PRIDE' as BestMeSinId, number:'01', sin:'PRIDE', virtue:'HUMILITY', icon:'👑', signal:'Need to prove I am better/right.', step:'Listen → check evidence → admit what you do not know → correct without ego.' },
+  { id:'GREED' as BestMeSinId, number:'02', sin:'GREED', virtue:'GENEROSITY', icon:'💰', signal:'More, more, more—even when enough is enough.', step:'Pause → ask “need or want?” → choose enough → share/help where practical.' },
+  { id:'LUST' as BestMeSinId, number:'03', sin:'LUST', virtue:'RESPECT', icon:'🔥', signal:'Impulse starts controlling attention or behaviour.', step:'Notice → remove the trigger → redirect attention → treat people as whole human beings.' },
+  { id:'ENVY' as BestMeSinId, number:'04', sin:'ENVY', virtue:'GRATITUDE', icon:'👀', signal:'Someone else’s success makes my progress feel smaller.', step:'Notice comparison → name one thing to learn → name one thing to be grateful for → return to my path.' },
+  { id:'GLUTTONY' as BestMeSinId, number:'05', sin:'GLUTTONY', virtue:'TEMPERANCE', icon:'🍽️', signal:'Consumption keeps going after the real need is met.', step:'Pause → check hunger/need → choose a reasonable amount → stop deliberately.' },
+  { id:'WRATH' as BestMeSinId, number:'06', sin:'WRATH', virtue:'PATIENCE', icon:'⚡', signal:'Anger wants an immediate reaction.', step:'Stop → 3 slow breaths → delay the reply → respond to the problem, not the heat.' },
+  { id:'SLOTH' as BestMeSinId, number:'07', sin:'SLOTH', virtue:'DILIGENCE', icon:'🛡️', signal:'I know the right action but keep postponing it.', step:'Make it tiny → start for 5 minutes → finish the planned minimum → build momentum.' },
+] as const
+
+function readSinControls(dateKey: string) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(SIN_CONTROL_STORAGE) || '{}')
+    return (raw?.[dateKey] || {}) as Partial<Record<BestMeSinId, boolean>>
+  } catch {
+    return {}
+  }
+}
+
+
+
 function readBody360TodayProgress(dateKey: string) {
   try {
     const raw = JSON.parse(localStorage.getItem(BODY360_PROGRESS_STORAGE) || '{}')
@@ -356,6 +381,8 @@ export function DashboardPage() {
   const [liveNow, setLiveNow] = useState(() => new Date())
   const [bestMeManualWins, setBestMeManualWins] = useState<Partial<Record<BestMeDimensionId, boolean>>>(() => readBestMeManualWins(getKolkataDateKey()))
   const [body360Done, setBody360Done] = useState(() => readBody360TodayProgress(getKolkataDateKey()))
+  const [sinControls, setSinControls] = useState<Partial<Record<BestMeSinId, boolean>>>(() => readSinControls(getKolkataDateKey()))
+
 
   useEffect(() => {
     const tick = () => setLiveNow(new Date())
@@ -397,6 +424,21 @@ export function DashboardPage() {
   }
   const bestMeWinCount = Object.values(dimensionWins).filter(Boolean).length
   const finalWin = bestMeWinCount === BEST_ME_DIMENSIONS.length
+  const sinWinCount = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
+  const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
+
+
+
+  function toggleSinControl(id: BestMeSinId) {
+    const nextValue = !sinControls[id]
+    const next = { ...sinControls, [id]: nextValue }
+    setSinControls(next)
+    try {
+      const raw = JSON.parse(localStorage.getItem(SIN_CONTROL_STORAGE) || '{}')
+      raw[dateKey] = next
+      localStorage.setItem(SIN_CONTROL_STORAGE, JSON.stringify(raw))
+    } catch {}
+  }
 
   function toggleBestMeManualWin(id: BestMeDimensionId) {
     const nextValue = !bestMeManualWins[id]
@@ -419,6 +461,10 @@ export function DashboardPage() {
   useEffect(() => {
     setBestMeManualWins(readBestMeManualWins(dateKey))
   }, [dateKey])
+  useEffect(() => {
+    setSinControls(readSinControls(dateKey))
+  }, [dateKey])
+
 
   useEffect(() => {
     const syncBody360 = () => setBody360Done(readBody360TodayProgress(dateKey))
@@ -579,6 +625,65 @@ export function DashboardPage() {
             </div>
           </div>
           <div className="best-me-formula"><span>MIND</span><b>+</b><span>BODY</span><b>+</b><span>HEART</span><b>+</b><span>SPIRIT</span><b>+</b><span>SOCIAL</span><b>+</b><span>MONEY</span><b>+</b><span>PURPOSE</span><b>=</b><strong>BEST ME</strong></div>
+        </div>
+      </section>
+
+
+      {/* ── 7 SINS → 7 GOOD CONTROL SYSTEM ── */}
+      <section className="sins-control-panel" aria-label="Seven deadly sins control system">
+        <div className="sins-control-head">
+          <div>
+            <div className="sins-control-kicker">◉ SELF-MASTERY // 7 SINS → 7 GOOD</div>
+            <div className="sins-control-title">Do not fight yourself. Notice → choose → replace → win.</div>
+            <div className="sins-control-sub">The seven sins are control signals, not identity. Use the matching virtue as the replacement behaviour.</div>
+          </div>
+          <div className={'sins-control-score ' + (sinControlComplete ? 'won' : '')}>
+            <div className="sins-control-score-label">TODAY'S CONTROL</div>
+            <div className="sins-control-score-main">{sinControlComplete ? '🏆 7/7' : sinWinCount + '/7'}</div>
+            <div className="sins-control-score-sub">{sinControlComplete ? 'All seven consciously managed.' : '7 control reps available today.'}</div>
+          </div>
+        </div>
+
+        <div className="sins-control-flow">
+          <span>TRIGGER</span><b>→</b><span>PAUSE</span><b>→</b><span>CHOOSE VIRTUE</span><b>→</b><span>ACT</span><b>→</b><strong>WIN</strong>
+        </div>
+
+        <div className="sins-control-grid">
+          {SEVEN_SINS_CONTROL.map(item => {
+            const won = Boolean(sinControls[item.id])
+            return (
+              <div key={item.id} className={'sin-control-card ' + (won ? 'won' : '')}>
+                <div className="sin-control-top">
+                  <span className="sin-control-num">{item.number}</span>
+                  <span className="sin-control-icon">{item.icon}</span>
+                  <span className={'sin-control-state ' + (won ? 'won' : '')}>{won ? 'CONTROLLED' : 'READY'}</span>
+                </div>
+                <div className="sin-control-pair">
+                  <span className="sin-name">{item.sin}</span>
+                  <span className="sin-arrow">→</span>
+                  <strong>{item.virtue}</strong>
+                </div>
+                <div className="sin-control-signal"><b>NOTICE:</b> {item.signal}</div>
+                <div className="sin-control-step"><b>CONTROL STEP:</b> {item.step}</div>
+                <button
+                  className={'sin-control-action ' + (won ? 'done' : '')}
+                  onClick={() => toggleSinControl(item.id)}
+                >
+                  {won ? '✓ VIRTUE CHOSEN — TAP TO RESET' : 'I CONTROLLED THIS TODAY →'}
+                </button>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className={'sins-control-footer ' + (sinControlComplete ? 'won' : '')}>
+          <div>
+            <b>{sinControlComplete ? 'SELF-MASTERY WIN UNLOCKED' : 'ONE REACTION AT A TIME'}</b>
+            <span>{sinControlComplete ? 'Seven impulses met with seven deliberate choices.' : 'You do not need zero impulses. You need better responses.'}</span>
+          </div>
+          <div className="sins-virtue-chain">
+            HUMILITY · GENEROSITY · RESPECT · GRATITUDE · TEMPERANCE · PATIENCE · DILIGENCE
+          </div>
         </div>
       </section>
 
