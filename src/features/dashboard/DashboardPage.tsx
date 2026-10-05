@@ -270,6 +270,16 @@ function readBody360TodayProgress(dateKey: string) {
   }
 }
 
+function readBody360TodayRemaining(dateKey: string) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(BODY360_PROGRESS_STORAGE) || '{}')
+    const today = raw?.[dateKey] || {}
+    return BODY360_SEQUENCE.filter(step => !today[step])
+  } catch {
+    return [...BODY360_SEQUENCE]
+  }
+}
+
 function mentalWinPlaceholder(done: number, taskCount: number) {
   return taskCount > 0 && done === taskCount
 }
@@ -411,6 +421,7 @@ export function DashboardPage() {
   const nextTask = tasks.find(task => task.status !== 'DONE') || null
   const mentalPct = tasks.length ? Math.round((done / tasks.length) * 100) : 0
   const physicalPct = Math.round((body360Done / BODY360_SEQUENCE.length) * 100)
+  const bodyLearningRemaining = readBody360TodayRemaining(dateKey)
   const mentalWin = mentalWinPlaceholder(done, tasks.length)
   const physicalWin = physicalWinPlaceholder(body360Done)
   const dimensionWins: Record<BestMeDimensionId, boolean> = {
@@ -426,6 +437,8 @@ export function DashboardPage() {
   const finalWin = bestMeWinCount === BEST_ME_DIMENSIONS.length
   const sinWinCount = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
   const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
+  const nextDimensionIndex = BEST_ME_DIMENSIONS.findIndex(dimension => !dimensionWins[dimension.id])
+  const nextDimension = nextDimensionIndex >= 0 ? BEST_ME_DIMENSIONS[nextDimensionIndex] : null
 
 
 
@@ -546,7 +559,7 @@ export function DashboardPage() {
             <div className="best-me-final-label">FINAL WIN</div>
             <div className="best-me-final-main">{finalWin ? '🏆 WON' : bestMeWinCount + '/7 WINS'}</div>
             <div className="best-me-final-sub">
-              {finalWin ? 'All 7 dimensions executed today.' : 'Win each dimension in order. No perfection required.'}
+              {finalWin ? 'All 7 dimensions won in sequence today.' : 'Only the current dimension can be logged. Finish this gate to unlock the next.'}
             </div>
           </div>
         </div>
@@ -561,15 +574,16 @@ export function DashboardPage() {
             const autoWin = dimension.id === 'MIND' ? dimensionWins.MIND : dimension.id === 'BODY' ? dimensionWins.BODY : false
             const won = dimensionWins[dimension.id]
             const manual = !autoWin
-            const canMark = manual
-            const active = !won
+            const isCurrent = index === nextDimensionIndex
+            const canMark = manual && isCurrent
+            const active = isCurrent && !won
 
             return (
               <div key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'locked')}>
                 <div className="best-me-dimension-top">
                   <span className="best-me-dimension-number">{String(index + 1).padStart(2,'0')}</span>
                   <span className="best-me-dimension-icon">{dimension.icon}</span>
-                  <span className="best-me-win-state">{won ? 'WON' : active ? 'READY' : 'LOCKED'}</span>
+                  <span className="best-me-win-state">{won ? 'WON' : active ? 'CURRENT' : 'LOCKED'}</span>
                 </div>
                 <div className="best-me-dimension-title">{dimension.title}</div>
                 <div className="best-me-dimension-sub">{dimension.subtitle}</div>
@@ -577,8 +591,16 @@ export function DashboardPage() {
                 <div className="best-me-dimension-step">
                   <span>TODAY’S STEP</span>
                   {dimension.id === 'MIND' ? (mentalWin ? 'All CAT blocks complete — mental win secured.' : (nextTask ? 'NEXT: ' + nextTask.blockId + ' — ' + nextTask.title : dimension.fallback))
-                    : dimension.id === 'BODY' ? (physicalWin ? 'Body 360 gates complete — physical win secured.' : todayBodyPlan.title + ' • ' + todayBodyPlan.duration)
-                    : dimension.fallback}
+                    : dimension.id === 'BODY' ? (
+                      <div className="best-me-body-mini">
+                        <div className="best-me-body-label">TODAY’S BEST WORKOUT</div>
+                        <strong>{todayBodyPlan.title}</strong>
+                        <small>{todayBodyPlan.focus} • {todayBodyPlan.duration}</small>
+                        <div className="best-me-body-exercises">{todayBodyPlan.exercises.slice(0, 4).map((exercise, i) => <span key={i}>{exercise}</span>)}{todayBodyPlan.exercises.length > 4 && <span>+{todayBodyPlan.exercises.length - 4} more</span>}</div>
+                        <div className="best-me-body-label">LEARNING REMAINING • {bodyLearningRemaining.length}/{BODY360_SEQUENCE.length}</div>
+                        <small>{bodyLearningRemaining.length ? 'NEXT: ' + bodyLearningRemaining[0] + (bodyLearningRemaining.length > 1 ? ' → ' + bodyLearningRemaining.slice(1, 3).join(' → ') : '') : 'All Body 360 learning gates complete.'}</small>
+                      </div>
+                    ) : dimension.fallback}
                 </div>
                 <div className="best-me-dimension-foot">
                   {dimension.id === 'MIND' && (
@@ -621,7 +643,7 @@ export function DashboardPage() {
             <div className="best-me-final-rail-copy">
               {finalWin
                 ? 'Mind + Body + Emotional + Spiritual + Social + Financial + Purpose = Best Me for today.'
-                : 'Complete the seven dimensions step-by-step. The final win is earned, not forced.'}
+                : 'Complete the seven dimensions in order. The final win is earned, not forced.'}
             </div>
           </div>
           <div className="best-me-formula"><span>MIND</span><b>+</b><span>BODY</span><b>+</b><span>HEART</span><b>+</b><span>SPIRIT</span><b>+</b><span>SOCIAL</span><b>+</b><span>MONEY</span><b>+</b><span>PURPOSE</span><b>=</b><strong>BEST ME</strong></div>
