@@ -325,7 +325,7 @@ html, body, #root {
 
 .jarvis-lock-v5__hero{
   display:grid!important;
-  grid-template-columns:minmax(250px,.72fr) minmax(0,1.28fr)!important;
+  grid-template-columns:minmax(300px,.82fr) minmax(0,1.18fr)!important;
   gap:18px!important;
   align-items:stretch!important;
 }
@@ -344,13 +344,13 @@ html, body, #root {
   padding:16px!important;border-radius:20px!important;
 }
 .jarvis-lock-v5__portrait-frame{
-  position:relative!important;flex:0 0 92px!important;width:92px!important;height:116px!important;
+  position:relative!important;flex:0 0 140px!important;width:140px!important;height:180px!important;
   border-radius:16px!important;overflow:hidden!important;
   border:1px solid rgba(85,244,255,.32)!important;
   background:#061013!important;
   box-shadow:0 0 0 5px rgba(85,244,255,.035),0 14px 30px rgba(0,0,0,.36)!important;
 }
-.jarvis-lock-v5__portrait-frame img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important;filter:saturate(.84)!important}
+.jarvis-lock-v5__portrait-frame img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center center!important;display:block!important;filter:saturate(.84)!important}
 .jarvis-lock-v5__portrait-ring{
   position:absolute!important;inset:7px!important;border:1px solid rgba(85,244,255,.28)!important;border-radius:12px!important;pointer-events:none!important;
 }
@@ -748,11 +748,11 @@ html[data-focus-mode="on"] .dash-root .today-header{box-shadow:0 0 0 1px var(--u
   .jarvis-lock-v5{padding:6px!important}
   .jarvis-lock-v5__shell{gap:6px!important}
   .jarvis-lock-v5__hero{
-    grid-template-columns:94px minmax(0,1fr)!important;
+    grid-template-columns:120px minmax(0,1fr)!important;
     gap:7px!important;
   }
   .jarvis-lock-v5__identity{padding:7px!important}
-  .jarvis-lock-v5__portrait-frame{height:118px!important}
+  .jarvis-lock-v5__portrait-frame{height:160px!important}
   .jarvis-lock-v5__identity-copy h1{font-size:14px!important}
   .jarvis-lock-v5__identity-copy p{font-size:6.5px!important}
   .jarvis-lock-v5__quote-zone{padding:8px!important}
