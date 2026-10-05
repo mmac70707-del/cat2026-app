@@ -129,13 +129,47 @@ function getKolkataDateKey() {
   return `${get('year')}-${get('month')}-${get('day')}`
 }
 
-function getLessonForToday() {
-  const start = Date.UTC(2026, 9, 5)
-  const [year, month, day] = getKolkataDateKey().split('-').map(Number)
-  const current = Date.UTC(year, month - 1, day)
-  const diff = Math.max(0, Math.floor((current - start) / 86400000))
-  const index = diff % LESSONS.length
-  return LESSONS[index]
+function dateFromKey(key: string) {
+  const [year, month, day] = key.split('-').map(Number)
+  return new Date(Date.UTC(year, month - 1, day))
+}
+
+function getBusinessLessonNumberForDate(key: string) {
+  const startKey = '2026-10-05'
+  if (key < startKey) return 0
+  let count = 0
+  const cursor = dateFromKey(startKey)
+  const end = dateFromKey(key)
+  while (cursor <= end) {
+    if (cursor.getUTCDay() !== 0) count += 1
+    cursor.setUTCDate(cursor.getUTCDate() + 1)
+  }
+  return count
+}
+
+function getTodaySchedule() {
+  const today = getKolkataDateKey()
+  const dayOfWeek = dateFromKey(today).getUTCDay()
+  const lessonNumber = getBusinessLessonNumberForDate(today)
+
+  if (dayOfWeek === 0) {
+    const reviewed: Lesson[] = []
+    const cursor = dateFromKey(today)
+    while (reviewed.length < 6) {
+      cursor.setUTCDate(cursor.getUTCDate() - 1)
+      if (cursor.getUTCDay() !== 0) {
+        const key = cursor.toISOString().slice(0, 10)
+        const number = getBusinessLessonNumberForDate(key)
+        const lesson = LESSONS[number - 1]
+        if (lesson) reviewed.unshift(lesson)
+      }
+      if (cursor < dateFromKey('2026-10-05')) break
+    }
+    return { type: 'revision' as const, lessons: reviewed, lessonNumber }
+  }
+
+  const lesson = LESSONS[Math.min(lessonNumber - 1, LESSONS.length - 1)]
+  return { type: 'lesson' as const, lesson, lessonNumber }
 }
 
 
@@ -263,21 +297,38 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
         )}
 
         <div style={{ marginTop: 16, padding: 14, borderRadius: 14, border: '1px solid rgba(245,166,35,.28)', background: 'rgba(245,166,35,.07)' }}>
-          <div style={{ fontSize: 10, fontWeight: 900, color: '#F5A623', letterSpacing: 1 }}>MEMORY LINE</div>
-          <div style={{ marginTop: 5, fontSize: 18, fontWeight: 900, lineHeight: 1.35 }}>{lesson.takeaway}</div>
+          <div style={{ fontSize: 10, fontWeight: 900, color: '#F5A623', letterSpacing: 1 }}>{schedule.type === 'revision' ? 'REVISION MEMORY' : 'MEMORY LINE'}</div>
+          <div style={{ marginTop: 5, fontSize: 16, fontWeight: 900, lineHeight: 1.45 }}>
+            {schedule.type === 'revision'
+              ? 'READ → RECALL → CONNECT → APPLY'
+              : lesson.takeaway}
+          </div>
         </div>
 
-        <div style={{ marginTop: 16 }}>
-          <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 1, color: '#63F6FF', marginBottom: 8 }}>BUSINESS VISUAL</div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${lesson.visual.length}, minmax(0,1fr))`, gap: 7 }}>
-            {lesson.visual.map((step, i) => (
-              <div key={step} style={{ minHeight: 58, padding: '10px 8px', borderRadius: 11, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.035)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', fontSize: 10, fontWeight: 900 }}>
-                <span style={{ fontSize: 17, opacity: .55 }}>{String(i + 1).padStart(2, '0')}</span>
-                <span style={{ marginTop: 4 }}>{step}</span>
+        {schedule.type === 'lesson' ? (
+          <div style={{ marginTop: 16 }}>
+            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 1, color: '#63F6FF', marginBottom: 8 }}>BUSINESS VISUAL</div>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${lesson.visual.length}, minmax(0,1fr))`, gap: 7 }}>
+              {lesson.visual.map((step, i) => (
+                <div key={step} style={{ minHeight: 58, padding: '10px 8px', borderRadius: 11, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.035)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', fontSize: 10, fontWeight: 900 }}>
+                  <span style={{ fontSize: 17, opacity: .55 }}>{String(i + 1).padStart(2, '0')}</span>
+                  <span style={{ marginTop: 4 }}>{step}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{ marginTop: 16, display: 'grid', gap: 10 }}>
+            {schedule.lessons.map((item) => (
+              <div key={item.day} style={{ padding: 13, borderRadius: 14, border: '1px solid rgba(99,246,255,.16)', background: 'rgba(255,255,255,.028)' }}>
+                <div style={{ fontSize: 10, color: '#63F6FF', fontWeight: 900 }}>DAY {item.day}</div>
+                <div style={{ marginTop: 4, fontSize: 16, fontWeight: 900 }}>{item.title}</div>
+                <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.7, color: '#CBD5E1' }}>{item.paragraph}</div>
+                <div style={{ marginTop: 9, fontSize: 11, fontWeight: 900, color: '#FDBA4B' }}>{item.takeaway}</div>
               </div>
             ))}
           </div>
-        </div>
+        )}
 
         <button onClick={markDone} disabled={isDoneToday} style={{ marginTop: 18, width: '100%', border: isDoneToday ? '1px solid rgba(34,197,94,.32)' : '1px solid rgba(99,246,255,.34)', background: isDoneToday ? 'rgba(34,197,94,.10)' : 'rgba(99,246,255,.08)', color: isDoneToday ? '#86EFAC' : '#A5F3FC', borderRadius: 13, padding: '12px 14px', cursor: isDoneToday ? 'default' : 'pointer', fontWeight: 950, letterSpacing: .8 }}>
           {isDoneToday ? `✅ TODAY COMPLETE • CURRENT STREAK ${streak.current}` : 'MARK TODAY DONE → BUILD THE STREAK'}
@@ -296,7 +347,9 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
       </section>
 
       <div style={{ marginTop: 14, textAlign: 'center', fontSize: 11, color: '#64748B' }}>
-        schedule.type === 'revision' ? 'SUNDAY REVISION → NEXT MONDAY = NEXT LOCKED LESSON' : `DAY ${lesson?.day} → NEXT LOCKED LESSON TOMORROW` • CAT FIRST 🔒
+        {schedule.type === 'revision'
+          ? 'SUNDAY REVISION → NEXT MONDAY = NEXT LOCKED LESSON'
+          : `DAY ${lesson?.day} → NEXT LOCKED LESSON TOMORROW`} • CAT FIRST 🔒
       </div>
 
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ marginTop: 12, width: '100%', border: '1px solid rgba(99,246,255,.22)', background: 'rgba(99,246,255,.05)', color: '#A5F3FC', borderRadius: 12, padding: '10px 12px', cursor: 'pointer' }}>
