@@ -232,7 +232,9 @@ class MainActivity : FragmentActivity() {
             }
         })
 
-        showJarvisSecurityGate()
+        // React owns the JARVIS lock screen. Keeping a single UI layer avoids
+        // a native HTML gate racing the WebView/React boot sequence.
+        loadAppAfterUnlock()
     }
 
     private fun hasJarvisPin(): Boolean =
