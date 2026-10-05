@@ -245,6 +245,16 @@ const BEST_ME_DIMENSIONS = [
 
 type BestMeDimensionId = typeof BEST_ME_DIMENSIONS[number]['id']
 
+const DAILY_BEST_BASICS = [
+  { id:'MIND' as BestMeDimensionId, n:'01', icon:'🧠', name:'MIND', purpose:'Learn + think', mentor:'CAT mastery is today’s main job.' },
+  { id:'BODY' as BestMeDimensionId, n:'02', icon:'💪', name:'BODY', purpose:'Train + recover', mentor:'Train with form, recover well, repeat.' },
+  { id:'EMOTIONAL' as BestMeDimensionId, n:'03', icon:'❤️', name:'EMOTION', purpose:'Feel + regulate', mentor:'Pause before reaction. Choose the next right action.' },
+  { id:'SPIRITUAL' as BestMeDimensionId, n:'04', icon:'🙏', name:'SPIRITUAL', purpose:'Values + direction', mentor:'Let values lead when mood is noisy.' },
+  { id:'SOCIAL' as BestMeDimensionId, n:'05', icon:'🤝', name:'SOCIAL', purpose:'Respect + connect', mentor:'One genuine connection is enough.' },
+  { id:'FINANCIAL' as BestMeDimensionId, n:'06', icon:'₹', name:'FINANCIAL', purpose:'Track + control', mentor:'Know where the money goes.' },
+  { id:'PURPOSE' as BestMeDimensionId, n:'07', icon:'🚀', name:'PURPOSE', purpose:'Build + become', mentor:'Make one tiny deposit into your future.' },
+] as const
+
 type BestMeSinId = 'PRIDE' | 'GREED' | 'LUST' | 'ENVY' | 'GLUTTONY' | 'WRATH' | 'SLOTH'
 
 const SIN_CONTROL_STORAGE = 'cat2026.bestme.sins.v1'
@@ -612,6 +622,65 @@ export function DashboardPage() {
         <div className="daily-seven-footer">
           <span>ONE RULE</span>
           <b>Do not plan the whole life at once. Finish the current step, then the dashboard unlocks the next.</b>
+        </div>
+      </section>
+
+      {/* ── START HERE: DAILY 7 BASICS ── */}
+      <section className="daily-basics-rail" aria-label="Daily seven basics mentor sequence">
+        <div className="daily-basics-head">
+          <div>
+            <div className="daily-basics-kicker">◉ START HERE // 7 DAILY BASICS</div>
+            <div className="daily-basics-title">Do the next right thing. Let the system guide the rest.</div>
+            <div className="daily-basics-sub">
+              Auto-updated every India day: <b>{realDayName}, {realDateStr}</b> • {bestMeWinCount}/7 wins • {sinWinCount}/7 self-control reps
+            </div>
+          </div>
+          <div className={'daily-basics-now ' + (finalWin ? 'complete' : '')}>
+            <span>{finalWin ? '🏆 FINAL' : '🟨 NEXT STEP'}</span>
+            <strong>{finalWin ? 'BEST ME COMPLETE' : nextDimension ? String(nextDimensionIndex + 1).padStart(2,'0') + ' ' + nextDimension.title : 'START'}</strong>
+            <small>{currentSlot ? 'NOW: ' + currentSlot.block : nextSlot ? 'NEXT: ' + nextSlot.block : 'Follow the first unfinished gate.'}</small>
+          </div>
+        </div>
+
+        <div className="daily-basics-flow">
+          {DAILY_BEST_BASICS.map((basic, index) => {
+            const won = dimensionWins[basic.id]
+            const isCurrent = !finalWin && index === nextDimensionIndex
+            const bodyRemaining = bodyLearningRemaining.length
+            let action = basic.mentor
+            if (basic.id === 'MIND') {
+              action = mentalWin ? 'CAT blocks complete — Mind win earned.' : nextTask ? 'NEXT: ' + nextTask.blockId + ' — ' + nextTask.title : basic.mentor
+            } else if (basic.id === 'BODY') {
+              action = todayBodyPlan.title + ' • ' + todayBodyPlan.duration + (bodyRemaining ? ' • ' + bodyRemaining + ' learning steps left' : ' • learning complete')
+            }
+            return (
+              <div key={basic.id} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked')}>
+                <div className="daily-basic-top">
+                  <span className="daily-basic-number">{basic.n}</span>
+                  <span className="daily-basic-icon">{basic.icon}</span>
+                  <span className="daily-basic-state">{won ? 'DONE' : isCurrent ? 'DO THIS' : 'LATER'}</span>
+                </div>
+                <b className="daily-basic-name">{basic.name}</b>
+                <span className="daily-basic-purpose">{basic.purpose}</span>
+                <span className="daily-basic-mentor">{action}</span>
+                {isCurrent && !won && basic.id !== 'MIND' && basic.id !== 'BODY' && (
+                  <button className="daily-basic-btn" onClick={() => toggleBestMeManualWin(basic.id)}>MARK STEP DONE →</button>
+                )}
+                {basic.id === 'MIND' && !mentalWin && isCurrent && (
+                  <button className="daily-basic-btn" onClick={() => document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior:'smooth', block:'center' })}>GO TO CAT →</button>
+                )}
+                {basic.id === 'BODY' && isCurrent && (
+                  <button className="daily-basic-btn" onClick={() => window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail:{ page:'body360' } }))}>OPEN BODY 360 →</button>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="daily-basics-footer">
+          <span>MENTOR RULE</span>
+          <b>CAT FIRST • BODY SECOND • CHARACTER EVERYWHERE ELSE</b>
+          <em>Do not chase all 7 at once. Complete today’s current gate, then move forward.</em>
         </div>
       </section>
 
