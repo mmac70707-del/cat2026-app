@@ -2280,7 +2280,7 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
 .jarvis-theme .dash-root .sins-control-flow strong { color:#6EE7B7; }
 .jarvis-theme .dash-root .sins-control-grid {
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
 }
 .jarvis-theme .dash-root .sin-control-card {
@@ -2395,6 +2395,10 @@ body.jarvis-theme .dash-root .stat-card::before{background:var(--dash-accent)!im
   font-weight:950;
   letter-spacing:.45px;
   color:#5F777A;
+}
+
+@media (max-width:1000px) and (min-width:701px) {
+  .jarvis-theme .dash-root .sins-control-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:700px) {
   .jarvis-theme .dash-root .sins-control-panel { margin-left:12px; margin-right:12px; padding:12px; }
