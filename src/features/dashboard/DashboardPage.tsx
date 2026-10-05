@@ -532,7 +532,6 @@ export function DashboardPage() {
   const sinWinCount = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
   const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
   const coreDayComplete = done === tasks.length && tasks.length > 0 && bestMeWinCount === BEST_ME_DIMENSIONS.length
-  const lessonLearnedCount = Object.values(lessonWins).filter(Boolean).length
   const executionStreakDates = Object.keys((() => {
     try { return JSON.parse(localStorage.getItem(EXECUTION_STREAK_STORAGE) || '{}') as Record<string, boolean> } catch { return {} }
   })())
@@ -544,8 +543,6 @@ export function DashboardPage() {
     ((lessonLearnedCount / DAILY_BEST_BASICS.length) * 5)
   )
   const countdown = getCountdownParts()
- = SEVEN_SINS_CONTROL.filter(item => Boolean(sinControls[item.id])).length
-  const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
   const nextDimensionIndex = BEST_ME_DIMENSIONS.findIndex(dimension => !dimensionWins[dimension.id])
   const nextDimension = nextDimensionIndex >= 0 ? BEST_ME_DIMENSIONS[nextDimensionIndex] : null
   const currentSevenYear = SEVEN_YEAR_ROADMAP[Math.min(6, Math.max(0, kolkataParts.year - 2026))] || SEVEN_YEAR_ROADMAP[0]
