@@ -148,6 +148,75 @@ function HairHealthCard() {
 }
 
 
+function HairFoodCard() {
+  const KEY = 'cat2026_hair_food_v1'
+  type FoodState = { done?: Record<string, Record<string, boolean>> }
+  const [state, setState] = useState<FoodState>(() => {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} }
+  })
+  const today = todayIndia()
+  const dayKey = today.key
+  const dayMenus: Record<string, { day:string; breakfast:string; lunch:string; snack:string; dinner:string }> = {
+    MONDAY: { day:'MON', breakfast:'Moong/besan chilla + curd + fruit', lunch:'Dal + paneer/tofu + roti + sabzi + curd', snack:'Roasted chana + fruit', dinner:'Rajma + rice/roti + vegetables' },
+    TUESDAY: { day:'TUE', breakfast:'Oats with milk/curd + nuts/seeds + fruit', lunch:'Chana + roti + sabzi + curd', snack:'Milk/curd + nuts', dinner:'Soy/tofu + dal + roti + vegetables' },
+    WEDNESDAY: { day:'WED', breakfast:'Paneer/tofu sandwich or poha + curd + fruit', lunch:'Rajma + rice + vegetables + curd', snack:'Roasted chana + fruit', dinner:'Dal + paneer + roti + vegetables' },
+    THURSDAY: { day:'THU', breakfast:'Moong chilla + curd + fruit', lunch:'Dal + soy/tofu + roti + sabzi', snack:'Milk/curd + nuts/seeds', dinner:'Chole + rice/roti + vegetables' },
+    FRIDAY: { day:'FRI', breakfast:'Oats + milk + nuts/seeds + banana', lunch:'Rajma/chole + roti + curd + vegetables', snack:'Roasted chana + fruit', dinner:'Tofu/paneer + dal + roti + vegetables' },
+    SATURDAY: { day:'SAT', breakfast:'Besan chilla + paneer/curd + fruit', lunch:'Mixed dal + soy/tofu + rice/roti + vegetables', snack:'Curd + nuts/seeds + fruit', dinner:'Chana + paneer + roti + vegetables' },
+    SUNDAY: { day:'SUN', breakfast:'Moong/besan chilla + curd + fruit', lunch:'Dal + paneer/tofu + rice/roti + vegetables + curd', snack:'Roasted chana + fruit', dinner:'Rajma/chole + roti/rice + vegetables' },
+  }
+  const menu = dayMenus[today.day] || dayMenus.MONDAY
+  const checks = state.done?.[dayKey] || {}
+  const save = (next: FoodState) => {
+    setState(next)
+    try { localStorage.setItem(KEY, JSON.stringify(next)) } catch {}
+  }
+  const toggle = (id:string) => save({ ...state, done: { ...(state.done || {}), [dayKey]: { ...checks, [id]: !checks[id] } } })
+  const meals = [
+    ['breakfast','08:00','BREAKFAST',menu.breakfast],
+    ['lunch','13:30','LUNCH',menu.lunch],
+    ['snack','17:00','SNACK',menu.snack],
+    ['dinner','20:30','DINNER',menu.dinner],
+  ] as const
+  const completed = meals.filter(([id]) => checks[id]).length
+  return (
+    <section aria-label="Daily Hair Food Card" style={{marginTop:16,borderRadius:16,overflow:'hidden',border:'1px solid rgba(34,197,94,.22)',background:'linear-gradient(145deg,#0b1712,#111827)',boxShadow:'0 12px 34px rgba(0,0,0,.22)'}}>
+      <div style={{padding:'14px 16px',borderBottom:'1px solid rgba(255,255,255,.06)',background:'linear-gradient(90deg,rgba(34,197,94,.10),rgba(245,166,35,.06))'}}>
+        <div style={{fontSize:10,fontWeight:900,letterSpacing:1.2,color:'#86EFAC'}}>BEST VERSION • DAILY HAIR FOOD</div>
+        <div style={{fontSize:19,fontWeight:950,color:'#FFF',marginTop:4}}>Eat well. Feed the body. Support healthy hair.</div>
+        <div style={{fontSize:9,color:'#94A3B8',marginTop:4}}>CAT stays primary. This is a simple vegetarian food reminder, not a medical treatment.</div>
+      </div>
+      <div style={{padding:14,display:'grid',gap:10}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,flexWrap:'wrap'}}>
+          <div style={{fontSize:10,fontWeight:900,color:'#FCD34D'}}>TODAY • {today.day}</div>
+          <div style={{fontSize:9,color:'#86EFAC',fontWeight:900}}>{completed}/4 meals checked</div>
+        </div>
+        <div style={{display:'grid',gap:7}}>
+          {meals.map(([id,time,title,food]) => (
+            <button key={id} onClick={()=>toggle(id)} style={{textAlign:'left',padding:11,borderRadius:10,cursor:'pointer',border:checks[id]?'1px solid rgba(34,197,94,.45)':'1px solid rgba(255,255,255,.07)',background:checks[id]?'rgba(34,197,94,.08)':'rgba(255,255,255,.025)',color:'#FFF'}}>
+              <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                <span style={{fontSize:9,fontWeight:900,color:'#FCD34D',minWidth:42}}>{time}</span>
+                <span style={{fontSize:9,fontWeight:900,color:checks[id]?'#86EFAC':'#CBD5E1'}}>{checks[id]?'✓ ':''}{title}</span>
+              </div>
+              <div style={{fontSize:10,fontWeight:800,lineHeight:1.45,marginTop:5}}>{food}</div>
+            </button>
+          ))}
+        </div>
+        <div style={{padding:11,borderRadius:10,border:'1px solid rgba(96,165,250,.16)',background:'rgba(59,130,246,.045)'}}>
+          <div style={{fontSize:9,fontWeight:900,color:'#93C5FD'}}>HAIR-SUPPORT RULES</div>
+          <div style={{fontSize:9,color:'#CBD5E1',lineHeight:1.55,marginTop:5}}>
+            Protein source at meals • vegetables + fruit daily • regular meals • enough overall food • water through the day • no crash dieting • no random biotin/iron/zinc supplements.
+          </div>
+        </div>
+        <div style={{fontSize:8,color:'#64748B',lineHeight:1.5}}>
+          Food supports nutrition and normal hair growth but cannot diagnose or reverse genetic hair loss by itself. If a doctor has prescribed a diet or treatment, follow that plan.
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
 function RealLifeEngine() {
   const KEY = 'cat2026_real_life_v1'
   type State = { energy?: 'LOW'|'NORMAL'|'HIGH'; wins?: Record<string, number>; week?: Record<string, { planned:number; done:number }> }
