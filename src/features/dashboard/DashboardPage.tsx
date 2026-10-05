@@ -174,6 +174,16 @@ function getRealWeekDates(now: Date = new Date()) {
 const BESTME_PROGRESS_STORAGE = 'cat2026.bestme.dimensions.v1'
 const BODY360_PROGRESS_STORAGE = 'cat2026.body360.progress.v1'
 
+const DAILY_BASICS = [
+  { id:'MIND', seq:'01', icon:'🧠', title:'MIND', label:'Learn + think', rule:'CAT first. Understand → solve → analyse → repair.', update:'Live from today’s CAT tasks, phase and current block.' },
+  { id:'BODY', seq:'02', icon:'💪', title:'BODY', label:'Train + recover', rule:'Do today’s best workout with clean form and recovery.', update:'Live from today’s weekday Body 360 plan + learning queue.' },
+  { id:'EMOTION', seq:'03', icon:'❤️', title:'EMOTION', label:'Pause + choose', rule:'Notice the feeling; choose the useful response.', update:'One calm response is today’s rep.' },
+  { id:'SPIRITUAL', seq:'04', icon:'🙏', title:'SPIRITUAL', label:'Values + direction', rule:'Let values lead before mood.', update:'2 minutes of prayer, gratitude or quiet reflection.' },
+  { id:'SOCIAL', seq:'05', icon:'🤝', title:'SOCIAL', label:'Respect + connect', rule:'Listen well. Speak clearly. Strengthen one relationship.', update:'One genuine human connection today.' },
+  { id:'FINANCIAL', seq:'06', icon:'₹', title:'FINANCIAL', label:'Know + control', rule:'Know where money goes before asking for more.', update:'Log spending and learn one useful money principle.' },
+  { id:'PURPOSE', seq:'07', icon:'🚀', title:'PURPOSE', label:'Build + become', rule:'Invest one small action in the future you want.', update:'After CAT priorities: one 3-minute business/leadership/founder lesson.' },
+] as const
+
 const BEST_ME_DIMENSIONS = [
   {
     id: 'MIND',
@@ -439,6 +449,15 @@ export function DashboardPage() {
   const sinControlComplete = sinWinCount === SEVEN_SINS_CONTROL.length
   const nextDimensionIndex = BEST_ME_DIMENSIONS.findIndex(dimension => !dimensionWins[dimension.id])
   const nextDimension = nextDimensionIndex >= 0 ? BEST_ME_DIMENSIONS[nextDimensionIndex] : null
+  const dailyBasicWins: Record<string, boolean> = {
+    MIND: dimensionWins.MIND,
+    BODY: dimensionWins.BODY,
+    EMOTION: dimensionWins.EMOTIONAL,
+    SPIRITUAL: dimensionWins.SPIRITUAL,
+    SOCIAL: dimensionWins.SOCIAL,
+    FINANCIAL: dimensionWins.FINANCIAL,
+    PURPOSE: dimensionWins.PURPOSE,
+  }
 
 
 
@@ -545,6 +564,57 @@ export function DashboardPage() {
       </div>
 
 
+      {/* ── DAILY 7 BASICS COMMAND ── */}
+      <section className="daily-seven-panel" aria-label="Daily seven basics command">
+        <div className="daily-seven-head">
+          <div>
+            <div className="daily-seven-kicker">◉ BEST VERSION // 7 DAILY BASICS • AUTO-UPDATED</div>
+            <div className="daily-seven-title">Open → see the current step → do it → win → move forward.</div>
+            <div className="daily-seven-sub">{realDayName}, {realDateStr} • CAT-first • {phase.name}</div>
+          </div>
+          <div className="daily-seven-now">
+            <span>{nextDimensionIndex < 0 ? '🏆 COMPLETE' : 'DO THIS NOW'}</span>
+            <b>{nextDimensionIndex < 0 ? 'All 7 basics won.' : DAILY_BASICS[nextDimensionIndex]?.seq + ' ' + DAILY_BASICS[nextDimensionIndex]?.title}</b>
+          </div>
+        </div>
+
+        <div className="daily-seven-flow">
+          {DAILY_BASICS.map((basic, index) => {
+            const won = Boolean(dailyBasicWins[basic.id])
+            const current = index === nextDimensionIndex
+            const locked = !won && !current
+            const click = () => {
+              if (basic.id === 'MIND') {
+                document.getElementById(nextTask ? 'dash_block_' + nextTask.blockId : 'dash_block_QA')?.scrollIntoView({ behavior:'smooth', block:'center' })
+              } else if (basic.id === 'BODY') {
+                window.dispatchEvent(new CustomEvent('jarvis:navigate', { detail:{ page:'body360' } }))
+              } else {
+                document.getElementById('bestme_dimension_' + (basic.id === 'EMOTION' ? 'EMOTIONAL' : basic.id))?.scrollIntoView({ behavior:'smooth', block:'center' })
+              }
+            }
+            return (
+              <div key={basic.id} className={'daily-seven-step ' + (won ? 'won' : current ? 'current' : 'locked')} onClick={current ? click : undefined} role={current ? 'button' : undefined} tabIndex={current ? 0 : undefined}>
+                <div className="daily-seven-step-top">
+                  <span className="daily-seven-step-num">{basic.seq}</span>
+                  <span className="daily-seven-step-icon">{basic.icon}</span>
+                  <span className="daily-seven-step-state">{won ? 'WON' : current ? 'DO NOW' : 'LOCKED'}</span>
+                </div>
+                <div className="daily-seven-step-title">{basic.title}</div>
+                <div className="daily-seven-step-label">{basic.label}</div>
+                <div className="daily-seven-step-rule">{basic.rule}</div>
+                <div className="daily-seven-step-update">{basic.update}</div>
+                {current && <div className="daily-seven-step-cta">OPEN THIS STEP →</div>}
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="daily-seven-footer">
+          <span>ONE RULE</span>
+          <b>Do not plan the whole life at once. Finish the current step, then the dashboard unlocks the next.</b>
+        </div>
+      </section>
+
       {/* ── BEST ME 7-DIMENSION CONTROL BOARD ── */}
       <section className="best-me-panel best-me-seven" aria-label="Best Me seven dimensions">
         <div className="best-me-head">
@@ -579,7 +649,7 @@ export function DashboardPage() {
             const active = isCurrent && !won
 
             return (
-              <div key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'locked')}>
+              <div id={'bestme_dimension_' + dimension.id} key={dimension.id} className={'best-me-dimension ' + (won ? 'won' : active ? 'active' : 'locked')}>
                 <div className="best-me-dimension-top">
                   <span className="best-me-dimension-number">{String(index + 1).padStart(2,'0')}</span>
                   <span className="best-me-dimension-icon">{dimension.icon}</span>
