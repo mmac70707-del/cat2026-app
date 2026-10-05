@@ -324,7 +324,7 @@ function ConfidenceSocialReset() {
 
 function RealLifeEngine() {
   const KEY = 'cat2026_real_life_v1'
-  type State = { energy?: 'LOW'|'NORMAL'|'HIGH'; wins?: Record<string, number>; week?: Record<string, { planned:number; done:number }> }
+  type State = { energy?: 'LOW'|'NORMAL'|'HIGH'; week?: Record<string, { planned:number; done:number }> }
   const [state, setState] = useState<State>(() => {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch { return {} }
   })
@@ -339,8 +339,6 @@ function RealLifeEngine() {
   const energy = state.energy || 'NORMAL'
   const energyText = energy === 'LOW' ? 'Protect the essentials. Do one deep CAT block, then recover.' : energy === 'HIGH' ? 'Use the extra energy for one repair/retest block — not random extra work.' : 'Stay with the locked sequence. Depth beats volume.'
   const setEnergy = (e: State['energy']) => save({ ...state, energy: e })
-  const wins = state.wins?.[dayKey] || 0
-  const addWin = () => save({ ...state, wins: { ...(state.wins || {}), [dayKey]: Math.min(3, wins + 1) } })
   const weekKey = dayKey.slice(0, 7)
   const week = state.week?.[weekKey] || { planned: 0, done: 0 }
   const addPlanned = () => save({ ...state, week: { ...(state.week || {}), [weekKey]: { ...week, planned: week.planned + 1 } } })
@@ -376,9 +374,9 @@ function RealLifeEngine() {
         </div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
           <div style={{padding:11,borderRadius:10,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
-            <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>TODAY'S 3 WINS</div>
-            <div style={{fontSize:20,fontWeight:950,color:'#FFF',marginTop:4}}>{wins}/3</div>
-            <button onClick={addWin} disabled={wins>=3} style={{marginTop:6,padding:'6px 9px',borderRadius:7,border:'1px solid rgba(34,197,94,.25)',background:'rgba(34,197,94,.07)',color:'#86EFAC',fontSize:8,fontWeight:900,cursor:'pointer'}}>MARK ONE WIN</button>
+            <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>BEST ME HANDOFF</div>
+            <div style={{fontSize:11,fontWeight:900,color:'#FFF',marginTop:6}}>Dimension by dimension: Mind → Body → Emotional → Spiritual → Social → Financial → Purpose.</div>
+            <div style={{fontSize:8,color:'#71898B',lineHeight:1.45,marginTop:5}}>This board is the single daily win sequence. CAT remains the priority.</div>
           </div>
           <div style={{padding:11,borderRadius:10,background:'rgba(255,255,255,.025)',border:'1px solid rgba(255,255,255,.07)'}}>
             <div style={{fontSize:9,fontWeight:900,color:'#CBD5E1'}}>WEEKLY REALITY</div>
@@ -390,7 +388,7 @@ function RealLifeEngine() {
           </div>
         </div>
         <div style={{padding:10,borderRadius:9,background:'rgba(59,130,246,.045)',border:'1px solid rgba(59,130,246,.12)',fontSize:9,color:'#CBD5E1',lineHeight:1.5}}>
-          <strong style={{color:'#93C5FD'}}>REALITY STATUS:</strong> {wins>=3 ? 'On Track' : wins>0 ? 'Moving' : week.done<week.planned && week.planned>0 ? 'Needs Repair' : 'Ready'} • The goal is the next correct action, not 100% perfection.
+          <strong style={{color:'#93C5FD'}}>REALITY STATUS:</strong> {week.done<week.planned && week.planned>0 ? 'Needs Repair' : week.done>0 ? 'Moving' : 'Ready'} • The goal is the next correct action, not 100% perfection.
         </div>
       </div>
     </section>
