@@ -44,7 +44,17 @@ const BUSINESS_LENSES: BusinessLens[] = [
   { lens:'AI + TECHNOLOGY LENS', role:'Leverage + systems', move:'Use technology where it changes the economics or speed of a real workflow—not merely because it is impressive.', question:'Which bottleneck becomes cheaper, faster or better if technology is applied?', visual:'Workflow: HUMAN BOTTLENECK → AI ASSIST → HUMAN JUDGMENT → OUTCOME.' },
   { lens:'GROWTH LENS', role:'Distribution + retention', move:'Separate acquisition from retention and find the stage where the system loses the most value.', question:'Where is the biggest leak: discovery, activation, conversion or retention?', visual:'Funnel: REACH → ACTIVATE → CONVERT → RETAIN → REFER.' },
   { lens:'CAPITAL LENS', role:'Economics + runway', move:'Ask what one customer/unit contributes, what growth costs, and which assumption can break the model.', question:'If volume doubles, which cost or constraint becomes the problem?', visual:'Simple model: PRICE − DIRECT COST → CONTRIBUTION → SCALE CONSTRAINT.' },
-]\n\nconst ANCHOR = '2026-09-26'
+]\n\nconst LEADER_CASES = [
+  { leader:'SUNDAR / CEO LENS', context:'Scale a product people already use', lesson:'Start with user value, then scale the system behind it. At Google, product strategy connects user needs, technology, experimentation and measurable outcomes.', prompt:'If 1 million people used my product tomorrow, what would break first?', visual:['USER VALUE','PRODUCT','SYSTEM','SCALE'] },
+  { leader:'PRODUCT MANAGER LENS', context:'A feature request arrives from a loud customer', lesson:'Do not automatically build the request. Identify the underlying user problem, define the success metric, test the smallest useful solution, then learn.', prompt:'What behaviour would prove the problem is actually solved?', visual:['USER','PROBLEM','HYPOTHESIS','METRIC'] },
+  { leader:'ELON / FOUNDER LENS', context:'A process is slow and expensive', lesson:'Use first-principles thinking: question the requirement, remove unnecessary work, simplify, then accelerate and automate. Tesla explicitly describes first-principles thinking as part of how it approaches engineering.', prompt:'What part of this process should not exist at all?', visual:['QUESTION','DELETE','SIMPLIFY','SCALE'] },
+  { leader:'FOUNDER / CAPITAL LENS', context:'You have ₹1 lakh and one month', lesson:'Capital is a constraint that forces prioritisation. Fund the smallest experiment that can change your next decision—not the biggest version of the dream.', prompt:'What evidence would make the next ₹1 lakh easier to justify?', visual:['CAPITAL','BET','SIGNAL','NEXT BET'] },
+  { leader:'STRATEGY LENS', context:'Three competitors copy your feature', lesson:'A copied feature is not a durable advantage. Look for distribution, trust, switching costs, network effects, cost structure or a capability that compounds.', prompt:'What becomes harder to copy after we win?', visual:['CHOICE','TRADE-OFF','ADVANTAGE','MOAT'] },
+  { leader:'GROWTH LENS', context:'Traffic is rising but customers are not staying', lesson:'Do not celebrate top-of-funnel growth blindly. Find the stage where value leaks: activation, conversion, retention or referral.', prompt:'Where is the biggest leak in the customer journey?', visual:['REACH','ACTIVATE','CONVERT','RETAIN'] },
+  { leader:'AI PRODUCT LENS', context:'The team wants to add AI everywhere', lesson:'Start with the bottleneck, not the technology. Define the human task, where AI can assist, where human judgment stays necessary, and the outcome metric.', prompt:'What gets measurably better if AI is introduced here?', visual:['BOTTLENECK','AI ASSIST','HUMAN JUDGMENT','OUTCOME'] },
+]
+
+const ANCHOR = '2026-09-26'
 
 function dateKeyIndia() {
   const p = getKolkataDateParts(new Date())
@@ -95,6 +105,7 @@ export function LinkedInDailyCard() {
   // Rotate the executive lens every day so the lesson feels like a real mini business simulation.
   // The learner studies the decision pattern, not the celebrity.
   const businessLens=BUSINESS_LENSES[(offset+cycleDay-1)%BUSINESS_LENSES.length]
+  const leaderCase=LEADER_CASES[(offset+cycleDay-1)%LEADER_CASES.length]
   const weekly=cycleDay===7
   const monthly=offset>0 && offset%30===0
   const postDay=!weekly && [1,3,5].includes(today.p.dayOfWeek)
@@ -163,6 +174,21 @@ export function LinkedInDailyCard() {
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(245,166,35,.16)',background:'rgba(245,166,35,.04)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
         <strong style={{color:'#FCD34D'}}>MBA/PDPI:</strong> structured thinking + communication. &nbsp; <strong style={{color:'#FCD34D'}}>7-year founder:</strong> repeated business observation + decision practice.
+      </div>
+      <div style={{padding:12,borderRadius:11,border:'1px solid rgba(96,165,250,.20)',background:'linear-gradient(135deg,rgba(15,23,42,.96),rgba(8,47,73,.34))'}}>
+        <div style={{display:'flex',justifyContent:'space-between',gap:8,alignItems:'center',flexWrap:'wrap'}}>
+          <div style={{fontSize:9,color:'#7DD3FC',fontWeight:900}}>REAL BUSINESS SIMULATOR • {leaderCase.leader{'}'}</div>
+          <div style={{fontSize:9,color:'#94A3B8'}}>60-SECOND DECISION</div>
+        </div>
+        <div style={{marginTop:6,color:'#FFF',fontSize:12,fontWeight:900}}>{leaderCase.context{'}'}</div>
+        <div style={{marginTop:5,color:'#CBD5E1',fontSize:10,lineHeight:1.55}}>{leaderCase.lesson{'}'}</div>
+        <div style={{marginTop:8,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:5}}>
+          {leaderCase.visual.map((v,i)=><div key={v} style={{padding:'7px 4px',textAlign:'center',borderRadius:7,background:i===0?'rgba(34,211,238,.12)':'rgba(148,163,184,.07)',border:'1px solid rgba(148,163,184,.10)',color:i===0?'#A5F3FC':'#CBD5E1',fontSize:8,fontWeight:900}}>{v{'}'}</div>){'}'}
+        </div>
+        <div style={{marginTop:8,padding:8,borderRadius:8,background:'rgba(2,6,23,.65)',color:'#E0F2FE',fontSize:10,lineHeight:1.5}}>
+          <strong style={{color:'#67E8F9'}}>YOUR DECISION:</strong> {leaderCase.prompt{'}'}<br/>
+          <span style={{color:'#94A3B8'}}>Answer in one sentence. Then ask: “What evidence would change my mind?”</span>
+        </div>
       </div>
       <div style={{padding:10,borderRadius:9,border:'1px solid rgba(34,211,238,.16)',background:'rgba(34,211,238,.035)',fontSize:10,color:'#CBD5E1',lineHeight:1.55}}>
         <strong style={{color:'#67E8F9'}}>LEADER CASE — {businessLens.lens}:</strong> Study the decision pattern, not the celebrity. Sundar Pichai’s public Google remarks emphasize mission, product usefulness, AI at scale and disciplined resource allocation; Tesla public materials describe first-principles, data-driven manufacturing and cost/quality optimisation. Use these as case-study prompts, not as a claim that one leader has a single secret formula.
