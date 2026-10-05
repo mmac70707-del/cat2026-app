@@ -3,13 +3,14 @@ import { useQuickStats } from '@/hooks/index'
 import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
-export type SubPage = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'settings'
+export type SubPage = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'PERSONAL' | 'SYSTEM'
 
 const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<Category, 'ALL'>; featured?: boolean; hint: string }[] = [
   { id: 'missionos', icon: 'compass', label: 'Mission OS', category: 'EXECUTE', featured: true, hint: 'Adaptive next action' },
+  { id: 'body360', icon: 'focus', label: 'Body 360', category: 'PERSONAL', featured: true, hint: 'Auto-synced gym + recovery' },
   { id: 'jarvisconsole', icon: 'zap', label: '⚡ Advanced Jarvis Quantum Console', category: 'SYSTEM', featured: true, hint: 'AI command center' },
   { id: 'jarvis', icon: 'jarvis', label: 'JARVIS Command', category: 'EXECUTE', featured: true, hint: 'Control center' },
   { id: 'schedule', icon: 'clock', label: 'Daily Schedule', category: 'EXECUTE', hint: 'Time-block plan' },
