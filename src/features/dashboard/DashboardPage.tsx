@@ -639,11 +639,11 @@ export function DashboardPage() {
               action = 'TODAY: after CAT priorities, take one 3-minute business/leadership lesson.'
             }
             return (
-              <div key={basic.id} role="button" tabIndex={0} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setActiveLessonId(basic.id) } }} aria-expanded={activeLessonId === basic.id}>
+              <div key={basic.id} role="button" tabIndex={0} className={'daily-basic ' + (won ? 'won' : isCurrent ? 'current' : 'locked') + (activeLessonId === basic.id ? ' lesson-open' : '')} onClick={() => setActiveLessonId(basic.id)} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setActiveLessonId(basic.id) } }} aria-label={'Open today’s ' + basic.name + ' mini-lesson'} aria-expanded={activeLessonId === basic.id}>
                 <div className="daily-basic-top">
                   <span className="daily-basic-number">{basic.n}</span>
                   <span className="daily-basic-icon">{basic.icon}</span>
-                  <span className="daily-basic-state">{won ? 'DONE' : isCurrent ? 'DO THIS' : 'LATER'}</span>
+                  <span className="daily-basic-state">{won ? 'DONE' : isCurrent ? 'DO THIS' : 'LEARN'}</span><span className="daily-basic-learn-hint">TAP TO LEARN</span>
                 </div>
                 <b className="daily-basic-name">{basic.name}</b>
                 <span className="daily-basic-purpose">{basic.purpose}</span>
@@ -665,14 +665,15 @@ export function DashboardPage() {
         {activeLessonId && (() => {
           const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
           const lessonSet = DAILY_BEST_BASIC_LESSONS[activeLessonId]
-          const lesson = lessonSet[seed % lessonSet.length]
+          const lessonIndex = seed % lessonSet.length
+          const lesson = lessonSet[lessonIndex]
           const lessonMeta = DAILY_BEST_BASICS.find(basic => basic.id === activeLessonId)!
           const lessonIsCurrent = nextDimensionIndex === DAILY_BEST_BASICS.findIndex(basic => basic.id === activeLessonId)
           return (
             <div className="daily-lesson-panel" aria-label={lessonMeta.name + ' daily lesson'} onClick={event => event.stopPropagation()}>
               <div className="daily-lesson-head">
                 <div>
-                  <span className="daily-lesson-kicker">LEARN {lessonMeta.n} • {lessonMeta.name}</span>
+                  <span className="daily-lesson-kicker">TODAY’S MICRO-LESSON • {lessonMeta.n} / 07 • LESSON {lessonIndex + 1} / {lessonSet.length}</span>
                   <strong>{lesson.title}</strong>
                 </div>
                 <button type="button" className="daily-lesson-close" onClick={() => setActiveLessonId(null)} aria-label="Close lesson">×</button>
