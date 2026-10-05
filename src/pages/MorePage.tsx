@@ -3,7 +3,7 @@ import { useQuickStats } from '@/hooks/index'
 import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
-export type SubPage = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'settings'
+export type SubPage = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'brm' | 'settings'
 
 interface Props { onNavigate: (page: SubPage) => void }
 type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'PERSONAL' | 'SYSTEM'
@@ -19,6 +19,7 @@ const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<
   { id: 'qbank', icon: 'library', label: 'Question Vault', category: 'LEARN', hint: 'Practice bank' },
   { id: 'drills', icon: 'zap', label: 'Calculation Drills', category: 'LEARN', hint: 'Build speed' },
   { id: 'livesessions', icon: 'monitor', label: 'Masterclasses', category: 'LEARN', hint: 'Deep learning' },
+  { id: 'brm', icon: 'book', label: 'BRM — Business School', category: 'LEARN', featured: true, hint: 'Read today’s business lesson' },
   { id: 'syllabus', icon: 'book', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
   { id: 'flashcards', icon: 'layers', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
   { id: 'catmock', icon: 'trophy', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
