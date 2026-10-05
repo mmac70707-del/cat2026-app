@@ -14,7 +14,9 @@ import { isNative } from './services/native'
 // Android native build this module still loads harmlessly (it just
 // registers a service worker the native WebView never needs, since
 // assets are served straight from the APK).
-if (!isNative()) {
+const runningInsideAndroidCore = isNative() || window.location.hostname === 'appassets.androidplatform.net'
+
+if (!runningInsideAndroidCore) {
   registerSW({ immediate: true })
 }
 
