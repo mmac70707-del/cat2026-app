@@ -34,11 +34,21 @@ export function getTextSize(): TextSize {
   return 'normal'
 }
 
+const FOCUS_MODE_MIGRATION_KEY = 'cat2026_focus_mode_migration_v2'
+
 export function isFocusMode(): boolean {
   try {
+    const migrated = localStorage.getItem(FOCUS_MODE_MIGRATION_KEY)
     const saved = localStorage.getItem(FOCUS_MODE_KEY)
-    // Focus is the default operating state for CAT-first execution.
-    // An explicit user choice of "off" is always respected.
+
+    // One-time migration: Focus Mode is the CAT-first default for existing installs.
+    // After migration, an explicit user OFF choice is respected normally.
+    if (migrated !== '1') {
+      localStorage.setItem(FOCUS_MODE_MIGRATION_KEY, '1')
+      localStorage.setItem(FOCUS_MODE_KEY, 'on')
+      return true
+    }
+
     return saved !== 'off'
   } catch {
     return true
