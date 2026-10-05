@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.1.1'
-export const LAST_UPDATED = '05 OCT 2026 • BEST ME 7-DIMENSION SYSTEM'
+export const APP_VERSION = '1.1.2'
+export const LAST_UPDATED = '05 OCT 2026 • BEST VERSION 7 DAILY BASICS'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -25,7 +25,7 @@ export const APP_UPDATE_INFO = {
     'Full portrait lock screen, native Face / Fingerprint prompt hardening and no-surprise browser PIN fallback',
     'Body 360 locked learning sequence + automatic weekday gym rotation merged into Daily Schedule',
     'BRM Business School: self-contained daily lesson reader with date-driven Basic → Advanced curriculum',
-    'Best Me: seven daily dimensions — Mind → Body → Emotional → Spiritual → Social → Financial → Purpose → Final Win'
+    'Best Version: seven daily basics with one current step, automatic daily rollover and sequence-based wins'
   ]
 }
 
