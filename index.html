@@ -25,6 +25,22 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script>
+(function(){
+  var shown=false;
+  function show(kind,msg){
+    if(shown)return; shown=true;
+    var s=document.getElementById('native-boot-status');
+    if(s){s.textContent=kind+': '+String(msg).slice(0,240);}
+  }
+  window.addEventListener('error',function(e){show('JavaScript error',e.message||e.error||'Unknown error');});
+  window.addEventListener('unhandledrejection',function(e){show('Startup error',e.reason||'Unhandled promise rejection');});
+  setTimeout(function(){
+    var r=document.getElementById('root');
+    if(r && r.querySelector('#native-boot')) show('Startup timeout','CAT dashboard did not render');
+  },8000);
+})();
+</script>
+<script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
