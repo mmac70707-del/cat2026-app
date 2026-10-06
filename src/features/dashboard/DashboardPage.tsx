@@ -57,6 +57,21 @@ const DAILY_LINES = [
   { quote: 'The gap closes every time you solve, analyze and repair.', action: 'Finish the loop: Solve → Analyze → Repair → Retest.' },
 ]
 
+const VISION_QUOTES = [
+  { quote: 'DREAM BIG. PLAN SMART. EXECUTE DAILY.', sub: 'Success is built one faithful day at a time.' },
+  { quote: 'FROM SMALL TOWN TO BIG VISION.', sub: 'Think bigger. Work smaller. Execute today.' },
+  { quote: 'YOUR STORY IS BUILT BY WHAT YOU REPEAT.', sub: 'Protect the next block. Let the results compound.' },
+  { quote: 'DREAM → PLAN → EXECUTE → LEARN → GROW.', sub: 'A strong future starts with a clear next action.' },
+  { quote: 'DISCIPLINE TURNS PLANS INTO PROGRESS.', sub: 'Do the work before asking how far you have come.' },
+  { quote: 'BUILD THE MAN. BUILD THE MISSION.', sub: 'Character first. Capability next. Impact follows.' },
+  { quote: 'MAKE TODAY WORTH REMEMBERING.', sub: 'Not through pressure—through clean execution.' },
+  { quote: 'VISION GIVES DIRECTION. EXECUTION GIVES PROOF.', sub: 'One completed loop is evidence that you are moving.' },
+  { quote: 'SUCCESS IS A SYSTEM, NOT A MOOD.', sub: 'Show up. Solve. Analyse. Repair. Retest.' },
+  { quote: 'YOUR NEXT ACTION IS YOUR NEXT VOTE.', sub: 'Choose the action that your future self would respect.' },
+  { quote: 'BELIEVE. WORK. LEARN. REPEAT.', sub: 'Keep faith grounded in effort and evidence.' },
+  { quote: 'START TODAY. CHANGE TOMORROW.', sub: 'The future is shaped by what you execute now.' },
+]
+
 
 type LiveSlot = (typeof SCHEDULE_ITEMS)[number]
 
@@ -1311,11 +1326,21 @@ export function DashboardPage() {
       })()}
 
       {/* ── MISSION BAR ── */}
-      <div className="mission-bar">
-        <div className="mission-text"><AppIcon name="target" size={12} /> MISSION: {phase.mission}</div>
-        <div className="date-display">{realDayName}, {realDateStr}</div>
-        <div className="mission-quote">"Discipline Today Builds the Freedom Tomorrow"</div>
-      </div>
+      {(() => {
+        const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
+        const vision = VISION_QUOTES[seed % VISION_QUOTES.length]
+        return (
+          <div className="mission-bar">
+            <div className="mission-text"><AppIcon name="target" size={12} /> MISSION: {phase.mission}</div>
+            <div className="date-display">{realDayName}, {realDateStr}</div>
+            <div className="mission-vision" aria-live="polite">
+              <span className="mission-vision-label"><AppIcon name="rocket" size={11} /> DAILY VISION</span>
+              <strong>“{vision.quote}”</strong>
+              <em>{vision.sub}</em>
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ── MAIN ── */}
       <div className="main">
