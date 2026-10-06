@@ -837,6 +837,14 @@ export function DashboardPage() {
         actionTitle={actionTitle}
         actionStatus={actionStatus}
         actionDetail={actionDetail}
+        visionQuote={(() => {
+          const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
+          return VISION_QUOTES[seed % VISION_QUOTES.length].quote
+        })()}
+        visionSub={(() => {
+          const seed = kolkataParts.year * 10000 + kolkataParts.month * 100 + kolkataParts.date
+          return VISION_QUOTES[seed % VISION_QUOTES.length].sub
+        })()}
         done={done}
         total={tasks.length || 8}
         pct={pct}
