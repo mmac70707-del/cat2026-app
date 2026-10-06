@@ -17,6 +17,8 @@ type Props = {
   actionTitle: string
   actionStatus: string
   actionDetail: string
+  visionQuote: string
+  visionSub: string
   done: number
   total: number
   pct: number
@@ -34,6 +36,8 @@ export function FocusModeLauncher({
   actionTitle,
   actionStatus,
   actionDetail,
+  visionQuote,
+  visionSub,
   done,
   total,
   pct,
@@ -63,6 +67,11 @@ export function FocusModeLauncher({
           <span>{actionStatus}</span>
           <strong>{actionTitle}</strong>
           <small>{actionDetail}</small>
+        </div>
+        <div className="focus-vision-quote" aria-live="polite">
+          <span><AppIcon name="rocket" size={11} /> DAILY VISION</span>
+          <b>“{visionQuote}”</b>
+          <em>{visionSub}</em>
         </div>
         <button type="button" className="focus-primary-start" onClick={onStartFocus}>
           <span>⏱</span>
