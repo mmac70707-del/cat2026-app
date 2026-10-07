@@ -113,11 +113,13 @@ const LESSONS: Lesson[] = [
 
 type StreakState = {
   completedDates: string[]
+  completedLessons: number[]
   current: number
   best: number
 }
 
 const STREAK_KEY = 'brm-streak-v1'
+const PROGRESS_KEY = 'brm-lesson-progress-v2'
 function getKolkataDateKey() {
   const parts = new Intl.DateTimeFormat('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -147,31 +149,15 @@ function getBusinessLessonNumberForDate(key: string) {
   return count
 }
 
-function getTodaySchedule(completedDates: string[]) {
-  const today = getKolkataDateKey()
+function getTodaySchedule(completedLessons: number[], today = getKolkataDateKey()) {
   const dayOfWeek = dateFromKey(today).getUTCDay()
 
-  // The curriculum is completion-gated: a lesson never advances just because the
-  // calendar changed. If Day 2 is not marked done, tomorrow still shows Day 2.
-  const completed = new Set(completedDates)
-  let nextLesson = 1
-  for (let day = 1; day <= LESSONS.length; day += 1) {
-    const scheduledKey = (() => {
-      const cursor = dateFromKey('2026-10-05')
-      let seen = 0
-      while (seen < day) {
-        if (cursor.getUTCDay() !== 0) seen += 1
-        if (seen === day) return cursor.toISOString().slice(0, 10)
-        cursor.setUTCDate(cursor.getUTCDate() + 1)
-      }
-      return ''
-    })()
-    if (!completed.has(scheduledKey)) {
-      nextLesson = day
-      break
-    }
-    nextLesson = Math.min(day + 1, LESSONS.length)
-  }
+  // The curriculum is completion-gated by lesson number, not calendar date.
+  // This means a late completion still unlocks the next lesson immediately, while
+  // an unfinished lesson never gets skipped just because the date changed.
+  const completed = new Set(completedLessons)
+  let nextLesson = LESSONS.findIndex((_, index) => !completed.has(index + 1)) + 1
+  if (nextLesson === 0) nextLesson = LESSONS.length
 
   if (dayOfWeek === 0) {
     const reviewed: Lesson[] = []
@@ -194,9 +180,10 @@ function daysBetween(a: string, b: string) {
   return Math.round(ms / 86400000)
 }
 
-function buildStreak(dates: string[]): StreakState {
+function buildStreak(dates: string[], completedLessons: number[] = []): StreakState {
   const completedDates = Array.from(new Set(dates)).sort()
-  if (!completedDates.length) return { completedDates: [], current: 0, best: 0 }
+  const lessons = Array.from(new Set(completedLessons.filter(n => Number.isInteger(n) && n >= 1 && n <= LESSONS.length))).sort((a,b) => a-b)
+  if (!completedDates.length) return { completedDates: [], completedLessons: lessons, current: 0, best: 0 }
 
   let best = 1
   let run = 1
@@ -221,34 +208,58 @@ function buildStreak(dates: string[]): StreakState {
       break
     }
   }
-  return { completedDates, current, best }
+  return { completedDates, completedLessons: lessons, current, best }
 }
 export function BRMPage({ onBack }: { onBack?: () => void }) {
-  const today = getKolkataDateKey()
-  const [streak, setStreak] = useState<StreakState>({ completedDates: [], current: 0, best: 0 })
+  const [today, setToday] = useState(getKolkataDateKey())
+  const [streak, setStreak] = useState<StreakState>({ completedDates: [], completedLessons: [], current: 0, best: 0 })
+
+  useEffect(() => {
+    const syncDate = () => {
+      const next = getKolkataDateKey()
+      setToday(prev => prev === next ? prev : next)
+    }
+    syncDate()
+    const interval = window.setInterval(syncDate, 30000)
+    window.addEventListener('focus', syncDate)
+    document.addEventListener('visibilitychange', syncDate)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('focus', syncDate)
+      document.removeEventListener('visibilitychange', syncDate)
+    }
+  }, [])
 
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem(STREAK_KEY)
-      if (!saved) return
-      const parsed = JSON.parse(saved) as Partial<StreakState>
-      if (Array.isArray(parsed.completedDates)) setStreak(buildStreak(parsed.completedDates))
+      const savedProgress = window.localStorage.getItem(PROGRESS_KEY)
+      const parsed = saved ? JSON.parse(saved) as Partial<StreakState> : {}
+      const completedDates = Array.isArray(parsed.completedDates) ? parsed.completedDates : []
+      const explicitLessons = savedProgress ? JSON.parse(savedProgress) : []
+      const completedLessons = Array.isArray(explicitLessons)
+        ? explicitLessons
+        : (Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [])
+      setStreak(buildStreak(completedDates, completedLessons))
     } catch {
       // Keep the UI usable even when local storage is unavailable.
     }
   }, [])
 
-  const schedule = getTodaySchedule(streak.completedDates)
+  const schedule = getTodaySchedule(streak.completedLessons, today)
   const lesson = schedule.type === 'lesson' ? schedule.lesson : schedule.lessons[schedule.lessons.length - 1]
   const progress = lesson ? ((lesson.day - 1) / (LESSONS.length - 1)) * 100 : 0
   const isDoneToday = streak.completedDates.includes(today)
 
   const markDone = () => {
     if (isDoneToday) return
-    const next = buildStreak([...streak.completedDates, today])
+    const lessonNumber = schedule.lessonNumber
+    const nextLessons = Array.from(new Set([...streak.completedLessons, lessonNumber])).sort((a,b) => a-b)
+    const next = buildStreak([...streak.completedDates, today], nextLessons)
     setStreak(next)
     try {
       window.localStorage.setItem(STREAK_KEY, JSON.stringify(next))
+      window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(nextLessons))
     } catch {
       // Streak remains visible for this session.
     }
