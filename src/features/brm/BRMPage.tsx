@@ -237,7 +237,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
       const parsed = saved ? JSON.parse(saved) as Partial<StreakState> : {}
       const completedDates = Array.isArray(parsed.completedDates) ? parsed.completedDates : []
       const explicitLessons = savedProgress ? JSON.parse(savedProgress) : []
-      const completedLessons = Array.isArray(explicitLessons)
+      const completedLessons = savedProgress && Array.isArray(explicitLessons)
         ? explicitLessons
         : (Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [])
       setStreak(buildStreak(completedDates, completedLessons))
@@ -253,8 +253,11 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
 
   const markDone = () => {
     if (isDoneToday) return
-    const lessonNumber = schedule.lessonNumber
-    const nextLessons = Array.from(new Set([...streak.completedLessons, lessonNumber])).sort((a,b) => a-b)
+    // Sunday is revision-only: it may count toward the streak, but must never
+    // mark an unseen next lesson as complete or advance the curriculum.
+    const nextLessons = schedule.type === 'lesson'
+      ? Array.from(new Set([...streak.completedLessons, schedule.lessonNumber])).sort((a,b) => a-b)
+      : streak.completedLessons
     const next = buildStreak([...streak.completedDates, today], nextLessons)
     setStreak(next)
     try {
