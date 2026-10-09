@@ -359,7 +359,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
         )}
 
         <button onClick={markDone} disabled={isDoneToday} style={{ marginTop: 18, width: '100%', border: isDoneToday ? '1px solid rgba(34,197,94,.32)' : '1px solid rgba(99,246,255,.34)', background: isDoneToday ? 'rgba(34,197,94,.10)' : 'rgba(99,246,255,.08)', color: isDoneToday ? '#86EFAC' : '#A5F3FC', borderRadius: 13, padding: '12px 14px', cursor: isDoneToday ? 'default' : 'pointer', fontWeight: 950, letterSpacing: .8 }}>
-          {isDoneToday ? `✅ TODAY COMPLETE • CURRENT STREAK ${streak.current}` : 'MARK TODAY DONE → UNLOCK NEXT LESSON'}
+          {isDoneToday ? `✅ TODAY COMPLETE • CURRENT STREAK ${streak.current}` : schedule.type === 'revision' ? 'MARK SUNDAY REVISION DONE → KEEP YOUR STREAK' : 'MARK TODAY DONE → UNLOCK NEXT LESSON'}
         </button>
       </section>
 
