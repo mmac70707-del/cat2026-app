@@ -46,7 +46,8 @@ import javax.crypto.SecretKey
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 
-// Android runtime hardening: local WebView core + native bridge recovery.\nclass MainActivity : FragmentActivity() {
+// Android runtime hardening: local WebView core + native bridge recovery.
+class MainActivity : FragmentActivity() {
 
     private lateinit var webView: WebView
     private lateinit var bootStatus: TextView
