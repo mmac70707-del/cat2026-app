@@ -241,9 +241,9 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 10, marginBottom: 16 }}>
           {[
-            { n: '01', title: 'WHO WE SERVE FIRST', body: 'Right now: CAT 2026 learners who need a focused, trustworthy execution cockpit. Start narrow; understand one user group deeply before broadening.' },
+            { n: '01', title: 'WHO WE SERVE FIRST', body: 'Students across India (JEE, NEET, UPSC, SSC, banking, boards and more), plus professionals and lifelong learners who struggle with distraction, inconsistent routines and follow-through. Let each person choose a goal mode; CAT is the founder's personal priority, not the product's audience limit.' },
             { n: '02', title: 'THE REAL PAIN', body: 'Ambition gets split across planners, timers, quotes, notes and trackers. People often know the goal but struggle to choose the next step, return after distraction and learn from mistakes.' },
-            { n: '03', title: 'WHY USE THIS APP?', body: 'One clear next action; a Focus-first interface; practice → analysis → repair → retest; real progress evidence; daily systems; and recovery without guilt or fake score promises.' },
+            { n: '03', title: 'WHY USE THIS APP?', body: 'One clear next action; a Focus-first interface; goal-specific plans; distraction-aware sessions; progress based on real evidence; adaptive routines; and a guilt-free restart after setbacks. Exam learners get syllabus/revision/mock workflows; professionals get project/skill milestones.' },
             { n: '04', title: 'WHAT MAKES IT DIFFERENT', body: 'Not motivation alone. Connect goal, action, routine, evidence, reflection and repair in one coherent loop. Personalise from verified behaviour without inventing data.' },
           ].map(item => (
             <article key={item.n} style={{ background: '#1c2938', border: '1px solid #304457', borderRadius: 10, padding: 12 }}>
@@ -274,8 +274,8 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
         <div style={{ color: '#38BDF8', fontSize: 10, fontWeight: 900, letterSpacing: 1.3, marginBottom: 8 }}>FROM FIRST USERS TO SCALE • BRM GROWTH MAP</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: 8 }}>
           {[
-            { n: '1', title: 'VALIDATE THE PAIN', body: 'Talk to real CAT learners. Observe their current workflow and ask what is frustrating—not just whether they like the idea.' },
-            { n: '2', title: 'PROVE FIRST VALUE', body: 'Help a small pilot group complete its first focused session and understand the next step without needing a tutorial.' },
+            { n: '1', title: 'VALIDATE THE PAIN', body: 'Interview and observe different segments separately: JEE/NEET, SSC/UPSC/banking, college students and working professionals. Find the strongest repeated pain before choosing the first launch segment.' },
+            { n: '2', title: 'PROVE FIRST VALUE', body: 'Help a small pilot cohort in one chosen segment reach first value: select a goal, receive a realistic plan and complete one focused session without needing a tutorial.' },
             { n: '3', title: 'MEASURE RETENTION', body: 'Track consented, privacy-respecting signals: activation, weekly return, task completion, repair/retest use, and reported usefulness.' },
             { n: '4', title: 'IMPROVE THE LOOP', body: 'Fix the largest friction point each cycle. Keep the app fast, accessible, accurate, and genuinely useful on mobile and laptop.' },
             { n: '5', title: 'EARN DISTRIBUTION', body: 'Use useful learning content, honest demos, user referrals and relevant communities. No spam, fake testimonials or guaranteed-result claims.' },
@@ -295,7 +295,7 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
           <strong style={{ color: '#F5A623' }}>7 Cs product culture:</strong> Confidence from evidence • Clarity in every screen • Concentration through Focus Mode • Consistency through repeatable systems • Character through honest data • Commitment with adaptable methods • Capacity for Joy through humane recovery.
         </div>
         <div style={{ marginTop: 9, color: '#94A3B8', fontSize: 10, lineHeight: 1.55 }}>
-          GUARDRAIL: This is a product hypothesis and growth plan—not proof of market demand yet. Until CAT 2026, website quality may improve without disturbing the locked study mission. Validate with real users before claiming scale.
+          GUARDRAIL: Chrono Vyu is intended for students and professionals across India, not CAT alone. This is a product hypothesis—not proof of market demand yet. Validate each segment with real users; do not claim outcomes, retention or scale without evidence. The founder's CAT schedule remains personal and must not restrict product positioning.
         </div>
       </section>
 
