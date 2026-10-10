@@ -241,7 +241,7 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 10, marginBottom: 16 }}>
           {[
-            { n: '01', title: 'WHO WE SERVE FIRST', body: 'Students across India (JEE, NEET, UPSC, SSC, banking, boards and more), plus professionals and lifelong learners who struggle with distraction, inconsistent routines and follow-through. Let each person choose a goal mode; CAT is the founder's personal priority, not the product's audience limit.' },
+            { n: '01', title: 'WHO WE SERVE FIRST', body: 'Students across India (JEE, NEET, UPSC, SSC, banking, boards and more), plus professionals and lifelong learners who struggle with distraction, inconsistent routines and follow-through. Let each person choose a goal mode; CAT is the founder’s personal priority, not the product’s audience limit.' },
             { n: '02', title: 'THE REAL PAIN', body: 'Ambition gets split across planners, timers, quotes, notes and trackers. People often know the goal but struggle to choose the next step, return after distraction and learn from mistakes.' },
             { n: '03', title: 'WHY USE THIS APP?', body: 'One clear next action; a Focus-first interface; goal-specific plans; distraction-aware sessions; progress based on real evidence; adaptive routines; and a guilt-free restart after setbacks. Exam learners get syllabus/revision/mock workflows; professionals get project/skill milestones.' },
             { n: '04', title: 'WHAT MAKES IT DIFFERENT', body: 'Not motivation alone. Connect goal, action, routine, evidence, reflection and repair in one coherent loop. Personalise from verified behaviour without inventing data.' },
@@ -295,7 +295,7 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
           <strong style={{ color: '#F5A623' }}>7 Cs product culture:</strong> Confidence from evidence • Clarity in every screen • Concentration through Focus Mode • Consistency through repeatable systems • Character through honest data • Commitment with adaptable methods • Capacity for Joy through humane recovery.
         </div>
         <div style={{ marginTop: 9, color: '#94A3B8', fontSize: 10, lineHeight: 1.55 }}>
-          GUARDRAIL: Chrono Vyu is intended for students and professionals across India, not CAT alone. This is a product hypothesis—not proof of market demand yet. Validate each segment with real users; do not claim outcomes, retention or scale without evidence. The founder's CAT schedule remains personal and must not restrict product positioning.
+          GUARDRAIL: Chrono Vyu is intended for students and professionals across India, not CAT alone. This is a product hypothesis—not proof of market demand yet. Validate each segment with real users; do not claim outcomes, retention or scale without evidence. The founder’s CAT schedule remains personal and must not restrict product positioning.
         </div>
       </section>
 
