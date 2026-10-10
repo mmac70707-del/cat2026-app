@@ -44,12 +44,38 @@ jobs:
           cache: 'npm'
       - name: Build web dashboard bundle
         run: npm ci && npm run build
-      - name: Sync web bundle into Android assets
+      - name: Sync web bundle into Android runtime assets
         shell: bash
         run: |
-          rm -rf app/src/main/assets/public
-          mkdir -p app/src/main/assets/public
-          cp -R dist/. app/src/main/assets/public/
+          set -euo pipefail
+          runtime_assets="app/src/main/assets"
+          test -f dist/index.html
+          test -d dist/assets
+
+          # MainActivity uses AssetsPathHandler for /assets/, which removes that
+          # URL prefix before opening a file from app/src/main/assets/.
+          # Copy the current Vite entry point and its referenced files to that
+          # exact runtime location; do not leave an extra nested assets/ folder.
+          rm -rf "$runtime_assets/assets"
+          cp dist/index.html "$runtime_assets/index.html"
+          cp -R dist/assets/. "$runtime_assets/"
+
+          # /images/ and /icons/ handlers also strip their URL prefixes.
+          # Flatten generated files to the asset root while preserving the
+          # existing nested folders and any native-only artwork.
+          if [ -d dist/images ]; then cp -R dist/images/. "$runtime_assets/"; fi
+          if [ -d dist/icons ]; then cp -R dist/icons/. "$runtime_assets/"; fi
+          if [ -f dist/favicon.png ]; then cp dist/favicon.png "$runtime_assets/favicon.png"; fi
+
+          # Fail the APK build instead of packaging an index with missing chunks.
+          while IFS= read -r asset; do
+            test -f "$runtime_assets/$asset" || { echo "Missing Android runtime asset: $asset"; exit 1; }
+          done < <(grep -oE '(src|href)="/assets/[^"]+"' dist/index.html | cut -d '"' -f2 | sed 's#^/assets/##')
+
+          # Keep the public mirror for other tooling.
+          rm -rf "$runtime_assets/public"
+          mkdir -p "$runtime_assets/public"
+          cp -R dist/. "$runtime_assets/public/"
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
