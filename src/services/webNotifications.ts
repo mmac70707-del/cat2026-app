@@ -79,7 +79,7 @@ function notifyItem(dateKey: string, item: typeof SCHEDULE_ITEMS[number]): void 
 
 function parseStartTime(time: string): { hour: number; minute: number } | null {
   const raw = time.split('–')[0]?.trim() || time.split('-')[0]?.trim()
-  const match = raw.match(/^(\\d{2}):(\\d{2})$/)
+  const match = raw.match(/^(\d{2}):(\d{2})$/)
   if (!match) return null
   return { hour: Number(match[1]), minute: Number(match[2]) }
 }
