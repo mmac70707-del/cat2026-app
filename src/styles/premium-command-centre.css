@@ -97,3 +97,267 @@ html[data-theme-mode="light"] .dash-root .block-card { box-shadow: 0 6px 18px rg
 @media (prefers-reduced-motion: reduce) {
   .dash-root *, .dash-root *::before, .dash-root *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Chrono Vyu cross-app design convergence
+   Appearance-only: no task state, scheduling, or learning logic.
+   Shared controls follow the user's Dark / Light / System choice.
+───────────────────────────────────────────────────────────── */
+:root {
+  --cv-radius-card: 18px;
+  --cv-radius-control: 12px;
+  --cv-focus-ring: var(--ui-accent-strong);
+  --cv-shadow-card: 0 10px 28px rgba(0, 0, 0, .10);
+}
+html[data-theme-mode="light"] {
+  --cv-shadow-card: 0 8px 24px rgba(32, 32, 24, .055);
+}
+
+/* Shared app chrome: remove the old hard-coded cyan palette. */
+.app-shell .app-header,
+.app-shell .bottom-nav {
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border-strong) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .045);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+html[data-theme-mode="light"] .app-shell .app-header,
+html[data-theme-mode="light"] .app-shell .bottom-nav {
+  box-shadow: 0 6px 18px rgba(32, 32, 24, .045);
+}
+.app-shell .app-title {
+  color: var(--ui-accent-strong) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--ui-accent-strong) !important;
+}
+.app-shell .app-subtitle,
+.app-shell .countdown-label,
+.app-shell .countdown-hms {
+  color: var(--ui-muted) !important;
+}
+.app-shell .phase-badge {
+  background: var(--ui-accent-soft) !important;
+  color: var(--ui-accent-strong) !important;
+  border: 1px solid var(--ui-border-strong);
+  line-height: 1.35;
+}
+.app-shell .countdown-days {
+  color: var(--ui-accent-strong) !important;
+}
+.app-shell .bottom-nav {
+  border-top: 1px solid var(--ui-border-strong) !important;
+}
+.app-shell .nav-btn {
+  min-height: 48px;
+  color: var(--ui-muted);
+  border-radius: 12px;
+}
+.app-shell .nav-btn.active {
+  color: var(--ui-accent-strong);
+}
+.app-shell .nav-btn.active .nav-icon {
+  background: var(--ui-accent-soft);
+  border: 1px solid var(--ui-border);
+}
+
+/* Keep surfaces calm and consistent across features. */
+.app-shell .card,
+.app-shell .card-sm,
+.app-shell .block-card,
+.app-shell .jarvis-panel,
+.app-shell .month-panel,
+.app-shell .task-card,
+.app-shell .stat-card,
+.app-shell .priority-item,
+.app-shell .panel,
+.app-shell .surface,
+.app-shell .glass-card {
+  border-color: var(--ui-border);
+  box-shadow: var(--cv-shadow-card), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+.app-shell .card,
+.app-shell .card-sm {
+  border-radius: var(--cv-radius-card);
+}
+.app-shell .card-title {
+  color: var(--ui-text);
+}
+.app-shell .form-input,
+.app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.app-shell textarea,
+.app-shell select {
+  color: var(--ui-text);
+  border-color: var(--ui-border-strong);
+  border-radius: var(--cv-radius-control);
+}
+html[data-theme-mode="dark"] .app-shell .form-input,
+html[data-theme-mode="dark"] .app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme-mode="dark"] .app-shell textarea,
+html[data-theme-mode="dark"] .app-shell select {
+  background-color: var(--ui-surface-2);
+}
+html[data-theme-mode="light"] .app-shell .form-input,
+html[data-theme-mode="light"] .app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme-mode="light"] .app-shell textarea,
+html[data-theme-mode="light"] .app-shell select {
+  background-color: var(--ui-surface);
+}
+
+/* Reliable keyboard focus and deliberate touch interaction. */
+.app-shell button:focus-visible,
+.app-shell a:focus-visible,
+.app-shell input:focus-visible,
+.app-shell textarea:focus-visible,
+.app-shell select:focus-visible {
+  outline: 2px solid var(--cv-focus-ring);
+  outline-offset: 3px;
+}
+.app-shell button {
+  touch-action: manipulation;
+}
+.app-shell button,
+.app-shell a,
+.app-shell .card,
+.app-shell .card-sm,
+.app-shell .block-card {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .app-shell .card,
+  .app-shell .card-sm,
+  .app-shell .block-card,
+  .app-shell .task-card,
+  .app-shell .panel,
+  .app-shell .surface {
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  .app-shell .card:hover,
+  .app-shell .card-sm:hover,
+  .app-shell .task-card:hover,
+  .app-shell .panel:hover,
+  .app-shell .surface:hover {
+    border-color: var(--ui-border-strong);
+  }
+}
+@media (max-width: 380px) {
+  .app-shell .app-header { gap: 7px; padding-inline: 10px; }
+  .app-shell .app-title { font-size: 15px; }
+  .app-shell .app-subtitle { font-size: 8px; }
+  .app-shell .phase-badge { font-size: 8px; padding: 3px 6px; max-width: 100px; }
+  .app-shell .countdown-days { font-size: 19px; }
+  .app-shell .countdown-hms { font-size: 8px; }
+  .app-shell .nav-label { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *,
+  .app-shell *::before,
+  .app-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+
+/* ── Master dashboard: real Light mode + readable mobile labels ── */
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-rail {
+  background: linear-gradient(180deg, var(--ui-surface), var(--ui-surface-2)) !important;
+  border-bottom-color: var(--ui-border-strong) !important;
+  box-shadow: var(--cv-shadow-card);
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-kicker,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-title,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-sub,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-copy strong,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-check b {
+  color: var(--ui-text) !important;
+  -webkit-text-fill-color: var(--ui-text) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-countdown,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-metrics > div,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-check,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border-strong) !important;
+  box-shadow: none;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-countdown span,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-metrics span,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-check small,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-sub,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-copy small {
+  color: var(--ui-muted) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-countdown strong,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-metrics b,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-copy span {
+  color: var(--ui-accent-strong) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-btn {
+  color: var(--ui-accent-strong) !important;
+  background: var(--ui-accent-soft) !important;
+  border-color: var(--ui-border-strong) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .header,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .mission-bar {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border-strong) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .header-sub,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .date-display {
+  color: var(--ui-muted) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .date-display {
+  background: var(--ui-surface-2) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .card,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .panel,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .stat-card,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .task-card {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border) !important;
+  color: var(--ui-text);
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .card-title,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .today-title {
+  color: var(--ui-text) !important;
+}
+
+/* Do not force the whole dashboard rail to a near-black look in Light mode. */
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer {
+  border-top-color: var(--ui-border) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer span,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer b,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer small {
+  color: var(--ui-muted) !important;
+}
+
+/* Baseline readable type for dense dashboard labels on phones. */
+@media (max-width: 700px) {
+  .jarvis-theme .dash-root .master-command-kicker { font-size: 9px; line-height: 1.3; }
+  .jarvis-theme .dash-root .master-command-sub { font-size: 10px; line-height: 1.5; }
+  .jarvis-theme .dash-root .master-command-metrics span { font-size: 8.5px; line-height: 1.3; }
+  .jarvis-theme .dash-root .master-command-metrics b { font-size: 14px; }
+  .jarvis-theme .dash-root .master-check b { font-size: 9px; line-height: 1.35; }
+  .jarvis-theme .dash-root .master-check small { font-size: 9px; line-height: 1.45; }
+  .jarvis-theme .dash-root .master-check em { font-size: 8px; }
+  .jarvis-theme .dash-root .master-command-footer span,
+  .jarvis-theme .dash-root .master-command-footer b { font-size: 8px; }
+  .jarvis-theme .dash-root .master-command-footer small { font-size: 9px; line-height: 1.4; }
+  .jarvis-theme .dash-root .daily-basic-state { font-size: 8.5px; }
+  .jarvis-theme .dash-root .daily-basic-purpose,
+  .jarvis-theme .dash-root .daily-basic-mentor { font-size: 10px; line-height: 1.45; }
+  .jarvis-theme .dash-root .daily-lesson-grid p { font-size: 10px; line-height: 1.45; }
+  .jarvis-theme .dash-root .daily-lesson-grid > div > span { font-size: 8px; }
+}
+@media (max-width: 380px) {
+  .jarvis-theme .dash-root .master-command-kicker { font-size: 8.5px; }
+  .jarvis-theme .dash-root .master-command-sub { font-size: 9.5px; }
+  .jarvis-theme .dash-root .master-check b,
+  .jarvis-theme .dash-root .master-check small { font-size: 9px; }
+}
