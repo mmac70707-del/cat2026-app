@@ -112,6 +112,19 @@ export function App() {
     return () => window.removeEventListener('jarvis:navigate', handler)
   }, [])
 
+  // ── Keep stored reminder preference aligned with Android permission changes ──
+  // Native permission callbacks may arrive while SettingsPage is not mounted.
+  useEffect(() => {
+    const handleNotificationPermission = (event: Event) => {
+      const granted = Boolean((event as CustomEvent<{ granted?: boolean }>).detail?.granted)
+      void SettingsRepository.set('notifications', granted).catch(err => {
+        console.warn('[CAT2026] Could not sync notification preference:', err)
+      })
+    }
+    window.addEventListener('cat2026:native-notification-permission', handleNotificationPermission)
+    return () => window.removeEventListener('cat2026:native-notification-permission', handleNotificationPermission)
+  }, [])
+
   // ── Android hardware back button ────────────────
   const activePageRef = useRef(activePage)
   useEffect(() => { activePageRef.current = activePage }, [activePage])

@@ -1,6 +1,7 @@
 package com.cat2026.app
 
 import android.Manifest
+import android.app.NotificationManager
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -71,8 +72,8 @@ class MainActivity : FragmentActivity() {
         } else {
             prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
             ReminderSchedule.cancel(this)
+            emitNotificationPermissionState(false)
         }
-        emitNotificationPermissionState(isGranted)
     }
 
     private val requestRecordAudioPermissionLauncher = registerForActivityResult(
@@ -578,6 +579,12 @@ class MainActivity : FragmentActivity() {
         if (message.isNotBlank()) updateGateMessage(message)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reconcile notification permission after returning from Android settings.
+        if (nativeUnlocked) checkNotificationPermission()
+    }
+
     private fun loadAppAfterUnlock() {
         if (!nativeUnlocked) return
         // Notification workers are intentionally controlled by Settings.
@@ -697,6 +704,11 @@ class MainActivity : FragmentActivity() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            // Android permissions can be revoked from system settings after
+            // reminders were enabled. Stop queued work and clear the native
+            // preference so the UI cannot keep showing a false "on" state.
+            prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
+            ReminderSchedule.cancel(this)
             emitNotificationPermissionState(false)
             return
         }
@@ -721,23 +733,32 @@ class MainActivity : FragmentActivity() {
 
         prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, true).apply()
         triggerNotificationSetup()
-        emitNotificationPermissionState(true)
     }
 
     private fun triggerNotificationSetup() {
         if (!nativeUnlocked) return
         ReminderSchedule.createChannel(this)
 
-        if (
+        val permissionGranted =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        val manager = getSystemService(NotificationManager::class.java)
+        val channelEnabled =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
+            manager.getNotificationChannel(ReminderSchedule.CHANNEL_ID)?.importance !=
+                NotificationManager.IMPORTANCE_NONE
+        val systemEnabled = manager.areNotificationsEnabled() && channelEnabled
+
+        if (permissionGranted && systemEnabled) {
             ReminderSchedule.scheduleMorning(this)
             ReminderSchedule.scheduleEvening(this)
+            emitNotificationPermissionState(true)
         } else {
+            prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
+            ReminderSchedule.cancel(this)
             emitNotificationPermissionState(false)
         }
     }

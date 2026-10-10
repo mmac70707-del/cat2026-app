@@ -83,6 +83,13 @@ object ReminderSchedule {
     fun sendTestNotification(context: Context): Boolean {
         return try {
             createChannel(context)
+            val manager = context.getSystemService(NotificationManager::class.java)
+            if (!manager.areNotificationsEnabled()) return false
+            if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                manager.getNotificationChannel(CHANNEL_ID)?.importance == NotificationManager.IMPORTANCE_NONE
+            ) return false
+
             showNotification(
                 context,
                 id = 1003,
