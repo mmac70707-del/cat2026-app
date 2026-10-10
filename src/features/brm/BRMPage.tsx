@@ -754,7 +754,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
   }, [])
 
   const schedule = getTodaySchedule(streak.completedLessons, today)
-  const lesson = schedule.type === 'lesson' ? schedule.lesson : schedule.lessons[schedule.lessons.length - 1]
+  const lesson = schedule.type === 'lesson' ? schedule.lesson : (schedule.lessons[schedule.lessons.length - 1] || getLessonByNumber(1))
   const progress = lesson ? (lesson.day <= 48 ? ((lesson.day - 1) / 47) * 100 : (((lesson.day - 49) % 48) / 47) * 100) : 0
   const isDoneToday = streak.completedDates.includes(today)
 
@@ -796,11 +796,11 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
           <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginLeft: 'auto' }}>
             <div style={{ minWidth: 126, padding: '9px 10px', borderRadius: 13, border: '1px solid rgba(245,166,35,.38)', background: 'rgba(245,166,35,.10)', textAlign: 'right', boxShadow: '0 8px 24px rgba(245,166,35,.08)' }}>
               <div style={{ fontSize: 9, fontWeight: 950, letterSpacing: 1, color: '#FDBA4B' }}>🔥 BEST STREAK</div>
-              <div style={{ marginTop: 2, fontSize: 21, fontWeight: 950, lineHeight: 1 }}>{streak.best} <span style={{ fontSize: 10, color: '#CBD5E1' }}>days</span></div>
-              <div style={{ marginTop: 4, fontSize: 9, color: '#CBD5E1' }}>CURRENT {streak.current}</div>
+              <div style={{ marginTop: 2, fontSize: 21, fontWeight: 950, lineHeight: 1 }}>{streak.completedDates.length ? streak.best : '—'} <span style={{ fontSize: 10, color: '#CBD5E1' }}>{streak.completedDates.length ? 'days' : 'not verified'}</span></div>
+              <div style={{ marginTop: 4, fontSize: 9, color: '#CBD5E1' }}>CURRENT {streak.completedDates.length ? streak.current : 'NOT VERIFIED'}</div>
             </div>
             <div style={{ minWidth: 120 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#94A3B8', marginBottom: 5 }}><span>CURRICULUM</span><span>{lesson ? (lesson.day <= 48 ? `CORE ${lesson.day}/48` : `ADVANCED ${lesson.day}`) : 'REVISION'}</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#94A3B8', marginBottom: 5 }}><span>CURRICULUM</span><span>{schedule.type === 'revision' && schedule.lessons.length === 0 ? 'REVISION · NO DATA' : lesson.day <= 48 ? `CORE ${lesson.day}/48` : `ADVANCED ${lesson.day}`}</span></div>
               <div style={{ height: 7, borderRadius: 999, background: 'rgba(255,255,255,.08)', overflow: 'hidden' }}>
                 <div style={{ width: `${progress}%`, height: '100%', borderRadius: 999, background: 'linear-gradient(90deg,#22C55E,#63F6FF)' }} />
               </div>
@@ -813,6 +813,7 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
             <div style={{ fontSize: 24, fontWeight: 950, lineHeight: 1.15 }}>This Week → Lock It In</div>
             <div style={{ marginTop: 8, color: '#94A3B8', fontSize: 13 }}>Sunday is not a new lesson. It is the memory-and-connection day for the six lessons you just studied.</div>
             <div style={{ marginTop: 14, display: 'grid', gap: 8 }}>
+              {schedule.lessons.length === 0 && <div style={{ padding: 12, borderRadius: 12, color: '#CBD5E1', background: 'rgba(255,255,255,.035)', fontSize: 13, lineHeight: 1.6 }}>No BRM lesson completion is recorded yet. Sunday stays revision-only; start Day 1 on the next lesson day.</div>}
               {schedule.lessons.map((item) => (
                 <div key={item.day} style={{ padding: 11, borderRadius: 12, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.035)' }}>
                   <div style={{ fontSize: 10, color: '#63F6FF', fontWeight: 900 }}>DAY {item.day}</div>
@@ -843,9 +844,9 @@ export function BRMPage({ onBack }: { onBack?: () => void }) {
         {schedule.type === 'lesson' ? (
           <div style={{ marginTop: 16 }}>
             <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 1, color: '#63F6FF', marginBottom: 8 }}>BUSINESS VISUAL</div>
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${lesson.visual.length}, minmax(0,1fr))`, gap: 7 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(82px, 1fr))', gap: 7 }}>
               {lesson.visual.map((step, i) => (
-                <div key={step} style={{ minHeight: 58, padding: '10px 8px', borderRadius: 11, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.035)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', fontSize: 10, fontWeight: 900 }}>
+                <div key={step} style={{ minHeight: 58, padding: '10px 8px', borderRadius: 11, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.035)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', fontSize: 10, fontWeight: 900, minWidth: 0, overflowWrap: 'anywhere' }}>
                   <span style={{ fontSize: 17, opacity: .55 }}>{String(i + 1).padStart(2, '0')}</span>
                   <span style={{ marginTop: 4 }}>{step}</span>
                 </div>
