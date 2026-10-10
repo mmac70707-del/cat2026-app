@@ -85,17 +85,20 @@ export function getKolkataWeekKey(d: Date = new Date()): string {
 
 // ── 3. 44-Day First Pass Day Calculation ──────────────
 export function getFirstPassDayNum(dateKey: string): number {
-  const startMs = new Date(`${FIRST_PASS_START}T00:00:00`).getTime()
-  const endMs   = new Date(`${FIRST_PASS_END}T23:59:59`).getTime()
-  const targetMs= new Date(`${dateKey}T12:00:00`).getTime()
-
-  // Calendar tracker: 18 Sep = Day 1; 5 Oct = Day 18; 10 Oct = Day 23.
-  // After 31 Oct, retain Day 44. This is calendar position, not completion proof.
-  if (targetMs < startMs) return 1
+  // Calendar position only—not proof that today's work was completed.
+  // Use UTC date keys so browser timezone and daylight-saving rules cannot shift the count.
+  const toUtcMs = (key: string) => {
+    const [year, month, day] = key.split('-').map(Number)
+    if (!year || !month || !day) return Number.NaN
+    return Date.UTC(year, month - 1, day)
+  }
+  const startMs = toUtcMs(FIRST_PASS_START)
+  const endMs = toUtcMs(FIRST_PASS_END)
+  const targetMs = toUtcMs(dateKey)
+  if (!Number.isFinite(targetMs) || !Number.isFinite(startMs) || !Number.isFinite(endMs)) return 0
+  if (targetMs < startMs) return 0
   if (targetMs > endMs) return 44
-
-  const diffDays = Math.floor((targetMs - startMs) / 86_400_000) + 1
-  return Math.max(1, Math.min(44, diffDays))
+  return Math.floor((targetMs - startMs) / 86_400_000) + 1
 }
 
 // ── 4. Phase Detection for Date Key ───────────────────
