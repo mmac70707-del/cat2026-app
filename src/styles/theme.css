@@ -821,3 +821,176 @@ html[data-focus-mode="on"] .timer-display{
   }
 }
 
+
+/* ── JARVIS Material System v2: graphite + ivory + champagne ──
+   One restrained design language across the entire app. Theme mode
+   changes surfaces and contrast; the champagne accent stays consistent.
+*/
+:root {
+  --ui-bg: #111315;
+  --ui-surface: #191c1f;
+  --ui-surface-2: #202428;
+  --ui-surface-3: #292e32;
+  --ui-border: rgba(205, 190, 151, .14);
+  --ui-border-strong: rgba(205, 190, 151, .28);
+  --ui-text: #f3f0e8;
+  --ui-muted: #a5a49d;
+  --ui-accent: #c8ad70;
+  --ui-accent-strong: #e5d09a;
+  --ui-accent-soft: rgba(200, 173, 112, .10);
+  --ui-positive: #8fb59a;
+
+  --bg: #111315;
+  --bg-2: #171a1d;
+  --bg-3: #1c2023;
+  --panel: rgba(25, 28, 31, .96);
+  --panel-2: #202428;
+  --panel-3: #292e32;
+  --card: rgba(25, 28, 31, .96);
+  --card-strong: #191c1f;
+  --line: rgba(205, 190, 151, .14);
+  --line-strong: rgba(205, 190, 151, .28);
+  --text: #f3f0e8;
+  --text-strong: #fffdf7;
+  --sub: #c5c2b8;
+  --muted: #a5a49d;
+  --gold: #c8ad70;
+  --amber: #e5d09a;
+  --blue: #9eb8c7;
+  --teal: #9bbdb7;
+  --green: #8fb59a;
+  --red: #d98b83;
+  --brand-1: #c8ad70;
+  --brand-2: #9bbdb7;
+  --brand-3: #a6b7c3;
+  --glow: rgba(200, 173, 112, .08);
+  --ring: rgba(200, 173, 112, .30);
+}
+html[data-theme-mode="light"] {
+  --ui-bg: #f4f1e9;
+  --ui-surface: #fffdf8;
+  --ui-surface-2: #f0ece3;
+  --ui-surface-3: #e7e1d5;
+  --ui-border: rgba(69, 66, 56, .14);
+  --ui-border-strong: rgba(125, 99, 48, .28);
+  --ui-text: #22241f;
+  --ui-muted: #66685f;
+  --ui-accent: #8b6b30;
+  --ui-accent-strong: #6f5121;
+  --ui-accent-soft: rgba(139, 107, 48, .09);
+  --ui-positive: #3f7452;
+
+  --bg: #f4f1e9;
+  --bg-2: #eeeadf;
+  --bg-3: #faf8f2;
+  --panel: rgba(255, 253, 248, .97);
+  --panel-2: #f8f5ed;
+  --panel-3: #ebe5d9;
+  --card: rgba(255, 253, 248, .98);
+  --card-strong: #fffdf8;
+  --line: rgba(69, 66, 56, .14);
+  --line-strong: rgba(125, 99, 48, .25);
+  --text: #22241f;
+  --text-strong: #151712;
+  --sub: #4f534a;
+  --muted: #66685f;
+  --gold: #8b6b30;
+  --amber: #a77d32;
+  --blue: #526f80;
+  --teal: #477c73;
+  --green: #3f7452;
+  --red: #ad514a;
+  --brand-1: #8b6b30;
+  --brand-2: #477c73;
+  --brand-3: #526f80;
+  --glow: rgba(139, 107, 48, .06);
+  --ring: rgba(139, 107, 48, .24);
+}
+html[data-theme-mode="dark"],
+html[data-theme-mode="dark"] body,
+html[data-theme-mode="dark"] #root,
+html[data-theme-mode="light"] body,
+html[data-theme-mode="light"] #root,
+.jarvis-theme {
+  background: var(--bg);
+  color: var(--text);
+}
+body::before {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(200, 173, 112, .055), transparent 28%),
+    radial-gradient(circle at 92% 8%, rgba(155, 189, 183, .035), transparent 24%);
+}
+button, input, select, textarea {
+  font: inherit;
+}
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.card, .setting-row, .theme-switcher-popover, .theme-switcher-option, .theme-switcher-trigger,
+  .bottom-nav, .header, .modal, .modal-card, .settings-card, .feature-card, .stat-card) {
+  border-color: var(--ui-border);
+}
+.theme-switcher-trigger {
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  border: 1px solid var(--ui-border-strong);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+.theme-switcher-popover {
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  border-color: var(--ui-border-strong);
+  box-shadow: 0 20px 60px rgba(0,0,0,.24);
+  backdrop-filter: blur(18px);
+}
+.theme-switcher-option.is-active {
+  background: var(--ui-accent-soft);
+  border-color: var(--ui-border-strong);
+}
+.theme-switcher-live, .theme-switcher-focus-dot {
+  color: var(--ui-accent-strong);
+}
+.jarvis-theme .dash-root {
+  --navy: #191c1f;
+  --navy2: #202428;
+  --bg: #111315;
+  --bg2: #171a1d;
+  --gold: #c8ad70;
+  --blue: #a6b7c3;
+  --teal: #9bbdb7;
+  --green: #8fb59a;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root {
+  --navy: #fffdf8;
+  --navy2: #f0ece3;
+  --bg: #f4f1e9;
+  --bg2: #eeeadf;
+  --gold: #8b6b30;
+  --blue: #526f80;
+  --teal: #477c73;
+  --green: #3f7452;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .main,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .today-header {
+  color: var(--ui-text);
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root :is(.mission-quote, .command-rules-rail, .jarvis-quick-command-dock,
+  .winter-arc-card, .focus-mode-launcher, .focus-3d-pod, .focus-vision-quote) {
+  background-color: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 8px 24px rgba(36, 31, 20, .06) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root :is(.mission-quote, .command-rules-rail, .jarvis-quick-command-dock,
+  .winter-arc-card, .focus-mode-launcher, .focus-3d-pod, .focus-vision-quote) :is(p, span, small, strong, b, em) {
+  color: inherit;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
