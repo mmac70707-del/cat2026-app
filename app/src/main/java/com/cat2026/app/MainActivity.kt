@@ -1,6 +1,7 @@
 package com.cat2026.app
 
 import android.Manifest
+import android.app.NotificationManager
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -733,16 +734,26 @@ class MainActivity : FragmentActivity() {
         if (!nativeUnlocked) return
         ReminderSchedule.createChannel(this)
 
-        if (
+        val permissionGranted =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        val manager = getSystemService(NotificationManager::class.java)
+        val channelEnabled =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
+            manager.getNotificationChannel(ReminderSchedule.CHANNEL_ID)?.importance !=
+                NotificationManager.IMPORTANCE_NONE
+        val systemEnabled = manager.areNotificationsEnabled() && channelEnabled
+
+        if (permissionGranted && systemEnabled) {
             ReminderSchedule.scheduleMorning(this)
             ReminderSchedule.scheduleEvening(this)
+            emitNotificationPermissionState(true)
         } else {
+            prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
+            ReminderSchedule.cancel(this)
             emitNotificationPermissionState(false)
         }
     }
