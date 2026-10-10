@@ -220,7 +220,7 @@ export function SettingsPage({ onBack }: Props) {
 
       {/* STITCH DESIGN SYSTEM THEME SELECTOR */}
       <div className="card" style={{ border: '1px solid #F5A623' }}>
-        <div className="card-title" style={{ color: '#F5A623' }}>🎨 Stitch Design System Theme Accent</div>
+        <div className="card-title" style={{ color: '#F5A623' }}>🎨 Appearance & Accent Palette</div>
         <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 10 }}>
           Choose a restrained accent palette. Light / Dark / System mode stays independent:
         </div>
