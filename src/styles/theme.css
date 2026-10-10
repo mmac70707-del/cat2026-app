@@ -1158,3 +1158,113 @@ html[data-theme-mode="light"] .jarvis-theme .dash-root {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+
+/* ── Premium theme conflict fix (Oct 2026) ─────────────────────────
+   These final tokens intentionally override legacy feature-theme tokens
+   declared earlier in this file. Keep dark/light mode independent from
+   the selected accent palette.
+*/
+:root,
+html[data-theme-mode="dark"] {
+  color-scheme: dark;
+  --bg: var(--ui-bg);
+  --bg-2: var(--ui-surface);
+  --bg-3: var(--ui-surface-2);
+  --panel: var(--ui-surface);
+  --panel-2: var(--ui-surface-2);
+  --panel-3: var(--ui-surface-3);
+  --card: var(--ui-surface);
+  --card-strong: var(--ui-surface-2);
+  --line: var(--ui-border);
+  --line-strong: var(--ui-border-strong);
+  --text: var(--ui-text);
+  --text-strong: var(--ui-text);
+  --sub: var(--ui-muted);
+  --muted: var(--ui-muted);
+  --gold: var(--ui-accent);
+  --amber: var(--ui-accent-strong);
+  --blue: #9aa8b8;
+  --teal: var(--ui-positive);
+  --green: var(--ui-positive);
+  --brand-1: var(--ui-accent);
+  --brand-2: #7f8b84;
+  --brand-3: #9aa8b8;
+  --glow: transparent;
+  --ring: var(--ui-border-strong);
+}
+html[data-theme-mode="light"] {
+  color-scheme: light;
+  --bg: var(--ui-bg);
+  --bg-2: var(--ui-surface);
+  --bg-3: var(--ui-surface-2);
+  --panel: var(--ui-surface);
+  --panel-2: var(--ui-surface-2);
+  --panel-3: var(--ui-surface-3);
+  --card: var(--ui-surface);
+  --card-strong: var(--ui-surface);
+  --line: var(--ui-border);
+  --line-strong: var(--ui-border-strong);
+  --text: var(--ui-text);
+  --text-strong: var(--ui-text);
+  --sub: var(--ui-muted);
+  --muted: var(--ui-muted);
+  --gold: var(--ui-accent);
+  --amber: var(--ui-accent-strong);
+  --blue: #657b8a;
+  --teal: var(--ui-positive);
+  --green: var(--ui-positive);
+  --brand-1: var(--ui-accent);
+  --brand-2: #7f8b84;
+  --brand-3: #9aa8b8;
+  --glow: transparent;
+  --ring: var(--ui-border-strong);
+}
+html[data-theme-mode="dark"] body,
+html[data-theme-mode="dark"] #root,
+html[data-theme-mode="dark"] .jarvis-theme {
+  background: var(--ui-bg) !important;
+  color: var(--ui-text);
+}
+html[data-theme-mode="light"] body,
+html[data-theme-mode="light"] #root,
+html[data-theme-mode="light"] .jarvis-theme {
+  background: var(--ui-bg) !important;
+  color: var(--ui-text);
+}
+body::before {
+  background: radial-gradient(circle at 50% 0%, var(--ui-accent-soft), transparent 42%) !important;
+  opacity: .35;
+}
+.app-shell,
+.content-area,
+.card,
+.block-card,
+.jarvis-panel,
+.month-panel,
+.task-card,
+.stat-card,
+.priority-item,
+.panel,
+.surface,
+.glass-card {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+html[data-theme-mode="light"] .app-shell,
+html[data-theme-mode="light"] .content-area,
+html[data-theme-mode="light"] .card,
+html[data-theme-mode="light"] .block-card,
+html[data-theme-mode="light"] .jarvis-panel,
+html[data-theme-mode="light"] .month-panel,
+html[data-theme-mode="light"] .task-card,
+html[data-theme-mode="light"] .stat-card,
+html[data-theme-mode="light"] .priority-item,
+html[data-theme-mode="light"] .panel,
+html[data-theme-mode="light"] .surface,
+html[data-theme-mode="light"] .glass-card {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 6px 20px rgba(40, 35, 25, .05);
+}
