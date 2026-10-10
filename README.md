@@ -1,147 +1,46 @@
-# CAT 2026 — Master Execution App (Stage 4)
+# Chrono Vyu — Goal Execution & Focus System
 
-React + TypeScript + Vite production build.  
-Migrated from Stage 1 HTML prototype.
+Chrono Vyu is being developed as a goal-execution and distraction-management platform for students and professionals across India. People should be able to choose a goal mode and turn a meaningful goal into a realistic plan, one clear next action, protected focus, honest progress evidence, learning/repair loops, and a guilt-free restart after setbacks.
 
----
+**Important positioning:** CAT 2026 is the founder's personal priority during the current exam season, not the product's target-market limit. Potential goal modes include exam preparation (JEE, NEET, CAT, UPSC, SSC, banking, boards and college), professional projects, skill-building, fitness and personal learning. These are product directions to validate with users, not claims of proven demand or outcomes.
+
+## Product principles
+
+- **Start with a real problem:** interview and observe distinct user segments before choosing a launch segment.
+- **First value fast:** help a person choose a goal, get a realistic next action, and complete one useful focused session.
+- **Evidence over hype:** measure meaningful behaviour and user-reported usefulness; do not promise guaranteed scores or outcomes.
+- **Focus without shame:** support distraction management and a guilt-free restart after setbacks.
+- **Build, measure, learn:** validate activation and repeat use before claiming retention, product-market fit or scale.
+- **Mobile-first, accessible and trustworthy:** keep the interface clear, responsive, low-friction and respectful of user data.
+
+## Tech stack
+
+React + TypeScript + Vite, with a Progressive Web App setup and Capacitor Android packaging.
 
 ## Quick Start
 
 ```bash
-cd cat2026
 npm install
 npm run dev
 ```
 
-Open: http://localhost:5173
+Open http://localhost:5173
 
----
-
-## Build Commands
+## Build and verification
 
 ```bash
-npm install          # install all dependencies
-npm run dev          # development server (hot reload)
-npm run build        # production build → dist/
-npm run preview      # preview production build locally
-npm run typecheck   # TypeScript type check only
-```
-
----
-
-## Project Structure
-
-```
-cat2026/
-├── index.html
-├── package.json
-├── tsconfig.json
-├── tsconfig.node.json
-├── vite.config.ts
-└── src/
-    ├── main.tsx              # entry point + PWA SW
-    ├── app/
-    │   └── App.tsx           # main router + swipe nav
-    ├── components/
-    │   ├── Header.tsx        # live countdown + phase
-    │   ├── BottomNav.tsx     # 5-tab navigation
-    │   ├── StudyTimer.tsx    # floating FAB timer
-    │   ├── Toast.tsx         # global toast system
-    │   ├── EmptyState.tsx    # NO DATA states
-    │   └── MasteryBar.tsx    # mastery level bars
-    ├── features/
-    │   ├── today/            # Today page + BlockCard
-    │   ├── week/             # Week page + daily plan
-    │   ├── mastery/          # Mastery tracker
-    │   ├── phases/           # Phase roadmap
-    │   ├── errors/           # Error log C1–C5
-    │   ├── repair/           # Repair queue
-    │   ├── retest/           # Retest queue
-    │   ├── mocks/            # Mock analysis
-    │   ├── schedule/         # Daily schedule
-    │   ├── vision/           # Vision & Mission
-    │   ├── syllabus/         # Full syllabus
-    │   └── settings/         # Settings + export
-    ├── pages/
-    │   └── MorePage.tsx      # Hub + quick stats
-    ├── data/
-    │   └── config.ts         # All CAT static config
-    ├── db/
-    │   └── index.ts          # IndexedDB abstraction
-    ├── repositories/
-    │   ├── TaskRepository.ts
-    │   ├── ErrorRepository.ts
-    │   ├── MasteryRepository.ts
-    │   └── index.ts          # Mock, Score, Settings repos
-    ├── services/
-    │   └── domain.ts         # Pure CAT business logic
-    ├── hooks/
-    │   ├── useCountdown.ts   # live countdown
-    │   ├── usePhase.ts       # dynamic phase
-    │   ├── useTasks.ts       # task CRUD
-    │   └── index.ts          # errors, timer, stats hooks
-    ├── types/
-    │   └── index.ts          # all TypeScript types
-    └── styles/
-        └── globals.css       # complete design system
-```
-
----
-
-## Architecture
-
-```
-UI Components
-    ↓
-React Hooks (state + side effects)
-    ↓
-Repositories (data access layer)
-    ↓
-IndexedDB (db/index.ts abstraction)
-    ↓
-Browser IndexedDB (persistent storage)
-
-+ Domain Service (pure logic, no side effects)
-+ Config (single source of truth)
-```
-
----
-
-## IndexedDB Schema
-
-| Store         | Key Path | Indexes                        |
-|---------------|----------|--------------------------------|
-| tasks         | id       | byDate, byStatus, bySubject    |
-| errors        | id       | byType, bySubject, byRepair    |
-| masteryTopics | id       | —                              |
-| mocks         | id       | byDate                         |
-| dailyScores   | date     | —                              |
-| settings      | key      | —                              |
-
----
-
-## Stage 5 — Android (Capacitor)
-
-Stage 5 is prepared but **not executed** — this container has no
-network access and no Android SDK, so `npm install`, `cap add
-android`, and all device/build testing must run on your machine.
-
-See **`STAGE5_SETUP.md`** for the exact command sequence, the native
-code that was wired in (status bar, splash, back button, app-resume),
-the pre-generated icon/splash assets in `android-assets/`, the
-on-device persistence test protocol, and signing instructions.
-
-Quick summary of the command sequence (full detail in STAGE5_SETUP.md):
-
-```bash
-npm install
+npm run typecheck
 npm run build
-npx cap add android
-npm run build && npx cap sync android
-npx cap open android
-# then Run ▶ in Android Studio on a device/emulator
+npm run preview
 ```
 
-## Daily Control System
+## Product strategy sequence
 
-The dashboard now derives the daily CAT control card from the Asia/Kolkata calendar and the app's date-specific adaptive task engine.
+1. Segment users and observe the current alternatives.
+2. Identify the strongest repeated pain and define a testable value proposition.
+3. Prototype the smallest useful experience for one initial segment.
+4. Test first value, usability and accessibility on real phones and laptops.
+5. Measure activation, repeat use, trust and qualitative feedback.
+6. Improve the product before investing in distribution or scaling.
+
+Do not treat this roadmap as proof of market demand. Real user research and product telemetry must guide the next decisions.
