@@ -1,0 +1,99 @@
+/* Figma-aligned premium command centre — presentation only.
+   Keeps all task state, repositories, and locked CAT sequence untouched. */
+.dash-root {
+  --navy: var(--ui-bg);
+  --navy2: var(--ui-surface-2);
+  --blue: var(--ui-accent);
+  --blue2: var(--ui-accent-strong);
+  --teal: var(--ui-positive);
+  --gold: var(--ui-accent);
+  --bg: var(--ui-bg);
+  --bg2: var(--ui-surface);
+  --bg3: var(--ui-surface-2);
+  --card: var(--ui-surface);
+  --border: var(--ui-border);
+  --text: var(--ui-text);
+  --muted: var(--ui-muted);
+  background: var(--ui-bg) !important;
+  color: var(--ui-text) !important;
+  font-family: Inter, "DM Sans", system-ui, sans-serif;
+}
+.dash-root .header {
+  background: var(--ui-bg) !important;
+  border-bottom: 1px solid var(--ui-border-strong) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.08);
+}
+.dash-root .header-inner { max-width: 1480px; margin: 0 auto; padding: 16px clamp(16px, 3vw, 36px); }
+.dash-root .header-brand {
+  background: none !important;
+  color: var(--ui-accent-strong) !important;
+  -webkit-text-fill-color: var(--ui-accent-strong) !important;
+  letter-spacing: -.045em;
+}
+.dash-root .phase-badge {
+  background: var(--ui-accent-soft) !important;
+  border: 1px solid var(--ui-border-strong);
+  color: var(--ui-accent-strong) !important;
+}
+.dash-root .phase-dot { background: var(--ui-positive) !important; }
+.dash-root .countdown-big { color: var(--ui-accent-strong) !important; }
+.dash-root .mission-bar {
+  background: var(--ui-surface) !important;
+  border-bottom: 1px solid var(--ui-border) !important;
+  padding: 14px clamp(16px, 3vw, 36px);
+}
+.dash-root .mission-text, .dash-root .mission-vision-label { color: var(--ui-accent-strong) !important; }
+.dash-root .date-display { background: var(--ui-surface-2) !important; border: 1px solid var(--ui-border); color: var(--ui-text) !important; }
+.dash-root .main { max-width: 1480px; padding: clamp(16px, 2.5vw, 32px); gap: 22px; }
+.dash-root .stat-card,
+.dash-root .panel,
+.dash-root .card,
+.dash-root .jarvis-panel,
+.dash-root .winter-arc-card,
+.dash-root .task-card,
+.dash-root .block-card {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.045), inset 0 1px 0 rgba(255,255,255,.025);
+  border-radius: 16px;
+}
+.dash-root .stat-card:hover { border-color: var(--ui-border-strong) !important; transform: translateY(-2px); }
+.dash-root .mission-vision { border-left-color: var(--ui-border-strong) !important; }
+.dash-root .mission-vision strong { color: var(--ui-text) !important; }
+.dash-root .mission-vision em { color: var(--ui-muted) !important; }
+.dash-root .main h1, .dash-root .main h2, .dash-root .main h3 { letter-spacing: -.025em; }
+.dash-root button { transition: background-color .18s ease, border-color .18s ease, transform .18s ease; }
+.dash-root button:focus-visible, .dash-root a:focus-visible { outline: 2px solid var(--ui-accent-strong); outline-offset: 3px; }
+html[data-theme-mode="light"] .dash-root { color-scheme: light; }
+html[data-theme-mode="light"] .dash-root .header,
+html[data-theme-mode="light"] .dash-root .mission-bar { box-shadow: 0 6px 20px rgba(32,32,24,.035); }
+html[data-theme-mode="light"] .dash-root .stat-card,
+html[data-theme-mode="light"] .dash-root .panel,
+html[data-theme-mode="light"] .dash-root .card,
+html[data-theme-mode="light"] .dash-root .jarvis-panel,
+html[data-theme-mode="light"] .dash-root .winter-arc-card,
+html[data-theme-mode="light"] .dash-root .task-card,
+html[data-theme-mode="light"] .dash-root .block-card { box-shadow: 0 6px 18px rgba(32,32,24,.045); }
+@media (max-width: 900px) {
+  .dash-root .header-inner { grid-template-columns: 1fr auto; gap: 10px; }
+  .dash-root .header-center { display: none; }
+  .dash-root .countdown-big { font-size: clamp(20px, 5vw, 28px); }
+  .dash-root .mission-bar { grid-template-columns: 1fr auto; gap: 10px; }
+  .dash-root .mission-vision { grid-column: 1 / -1; justify-self: stretch; text-align: left; padding: 10px 0 0; border-left: 0; border-top: 1px solid var(--ui-border); }
+  .dash-root .mission-vision-label { justify-content: flex-start; }
+  .dash-root .stats-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .dash-root { padding-bottom: max(80px, env(safe-area-inset-bottom)); }
+  .dash-root .header-inner { padding: 12px 14px; }
+  .dash-root .header-brand { font-size: 19px; }
+  .dash-root .header-sub { font-size: 9px; letter-spacing: .08em; }
+  .dash-root .mission-bar { padding: 12px 14px; grid-template-columns: 1fr; }
+  .dash-root .date-display { justify-self: start; white-space: normal; }
+  .dash-root .main { padding: 14px; gap: 16px; }
+  .dash-root .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .dash-root .stat-card { padding: 12px 8px; border-radius: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dash-root *, .dash-root *::before, .dash-root *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
