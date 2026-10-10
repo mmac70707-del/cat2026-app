@@ -56,9 +56,21 @@ jobs:
           cache: 'npm'
       - name: Build web dashboard bundle
         run: npm ci && npm run build
-      - name: Sync web bundle into Android assets
+      - name: Sync web bundle into Android runtime assets
         shell: bash
         run: |
+          test -f dist/index.html
+          test -d dist/assets
+          # MainActivity loads /assets/index.html from the root Android asset folder.
+          rm -rf app/src/main/assets/assets
+          mkdir -p app/src/main/assets/assets
+          cp -R dist/assets/. app/src/main/assets/assets/
+          cp dist/index.html app/src/main/assets/index.html
+          # Overlay generated web images/icons without deleting native-only artwork.
+          if [ -d dist/images ]; then mkdir -p app/src/main/assets/images; cp -R dist/images/. app/src/main/assets/images/; fi
+          if [ -d dist/icons ]; then mkdir -p app/src/main/assets/icons; cp -R dist/icons/. app/src/main/assets/icons/; fi
+          if [ -f dist/favicon.png ]; then cp dist/favicon.png app/src/main/assets/favicon.png; fi
+          # Keep the public mirror for other tooling.
           rm -rf app/src/main/assets/public
           mkdir -p app/src/main/assets/public
           cp -R dist/. app/src/main/assets/public/
