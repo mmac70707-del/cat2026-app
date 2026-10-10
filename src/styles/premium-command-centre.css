@@ -97,3 +97,166 @@ html[data-theme-mode="light"] .dash-root .block-card { box-shadow: 0 6px 18px rg
 @media (prefers-reduced-motion: reduce) {
   .dash-root *, .dash-root *::before, .dash-root *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Chrono Vyu cross-app design convergence
+   Appearance-only: no task state, scheduling, or learning logic.
+   Shared controls follow the user's Dark / Light / System choice.
+───────────────────────────────────────────────────────────── */
+:root {
+  --cv-radius-card: 18px;
+  --cv-radius-control: 12px;
+  --cv-focus-ring: var(--ui-accent-strong);
+  --cv-shadow-card: 0 10px 28px rgba(0, 0, 0, .10);
+}
+html[data-theme-mode="light"] {
+  --cv-shadow-card: 0 8px 24px rgba(32, 32, 24, .055);
+}
+
+/* Shared app chrome: remove the old hard-coded cyan palette. */
+.app-shell .app-header,
+.app-shell .bottom-nav {
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border-strong) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .045);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+html[data-theme-mode="light"] .app-shell .app-header,
+html[data-theme-mode="light"] .app-shell .bottom-nav {
+  box-shadow: 0 6px 18px rgba(32, 32, 24, .045);
+}
+.app-shell .app-title {
+  color: var(--ui-accent-strong) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--ui-accent-strong) !important;
+}
+.app-shell .app-subtitle,
+.app-shell .countdown-label,
+.app-shell .countdown-hms {
+  color: var(--ui-muted) !important;
+}
+.app-shell .phase-badge {
+  background: var(--ui-accent-soft) !important;
+  color: var(--ui-accent-strong) !important;
+  border: 1px solid var(--ui-border-strong);
+  line-height: 1.35;
+}
+.app-shell .countdown-days {
+  color: var(--ui-accent-strong) !important;
+}
+.app-shell .bottom-nav {
+  border-top: 1px solid var(--ui-border-strong) !important;
+}
+.app-shell .nav-btn {
+  min-height: 48px;
+  color: var(--ui-muted);
+  border-radius: 12px;
+}
+.app-shell .nav-btn.active {
+  color: var(--ui-accent-strong);
+}
+.app-shell .nav-btn.active .nav-icon {
+  background: var(--ui-accent-soft);
+  border: 1px solid var(--ui-border);
+}
+
+/* Keep surfaces calm and consistent across features. */
+.app-shell .card,
+.app-shell .card-sm,
+.app-shell .block-card,
+.app-shell .jarvis-panel,
+.app-shell .month-panel,
+.app-shell .task-card,
+.app-shell .stat-card,
+.app-shell .priority-item,
+.app-shell .panel,
+.app-shell .surface,
+.app-shell .glass-card {
+  border-color: var(--ui-border);
+  box-shadow: var(--cv-shadow-card), inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+.app-shell .card,
+.app-shell .card-sm {
+  border-radius: var(--cv-radius-card);
+}
+.app-shell .card-title {
+  color: var(--ui-text);
+}
+.app-shell .form-input,
+.app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.app-shell textarea,
+.app-shell select {
+  color: var(--ui-text);
+  border-color: var(--ui-border-strong);
+  border-radius: var(--cv-radius-control);
+}
+html[data-theme-mode="dark"] .app-shell .form-input,
+html[data-theme-mode="dark"] .app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme-mode="dark"] .app-shell textarea,
+html[data-theme-mode="dark"] .app-shell select {
+  background-color: var(--ui-surface-2);
+}
+html[data-theme-mode="light"] .app-shell .form-input,
+html[data-theme-mode="light"] .app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-theme-mode="light"] .app-shell textarea,
+html[data-theme-mode="light"] .app-shell select {
+  background-color: var(--ui-surface);
+}
+
+/* Reliable keyboard focus and deliberate touch interaction. */
+.app-shell button:focus-visible,
+.app-shell a:focus-visible,
+.app-shell input:focus-visible,
+.app-shell textarea:focus-visible,
+.app-shell select:focus-visible {
+  outline: 2px solid var(--cv-focus-ring);
+  outline-offset: 3px;
+}
+.app-shell button {
+  touch-action: manipulation;
+}
+.app-shell button,
+.app-shell a,
+.app-shell .card,
+.app-shell .card-sm,
+.app-shell .block-card {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .app-shell .card,
+  .app-shell .card-sm,
+  .app-shell .block-card,
+  .app-shell .task-card,
+  .app-shell .panel,
+  .app-shell .surface {
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  .app-shell .card:hover,
+  .app-shell .card-sm:hover,
+  .app-shell .task-card:hover,
+  .app-shell .panel:hover,
+  .app-shell .surface:hover {
+    border-color: var(--ui-border-strong);
+  }
+}
+@media (max-width: 380px) {
+  .app-shell .app-header { gap: 7px; padding-inline: 10px; }
+  .app-shell .app-title { font-size: 15px; }
+  .app-shell .app-subtitle { font-size: 8px; }
+  .app-shell .phase-badge { font-size: 8px; padding: 3px 6px; max-width: 100px; }
+  .app-shell .countdown-days { font-size: 19px; }
+  .app-shell .countdown-hms { font-size: 8px; }
+  .app-shell .nav-label { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *,
+  .app-shell *::before,
+  .app-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
