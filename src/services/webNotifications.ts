@@ -5,6 +5,7 @@ const SENT_KEY = 'cat2026_notification_sent_v2'
 const CAT_EXAM_DATE_KEY = '2026-11-29'
 let nextTimer: number | null = null
 let schedulerStarted = false
+let resumeListenersAttached = false
 
 function supported(): boolean {
   return typeof window !== 'undefined' && 'Notification' in window
@@ -101,9 +102,7 @@ function scheduleNext(): void {
     const day = addDays(parts.year, parts.month, parts.date, dayOffset)
     const dateKey = `${day.year}-${String(day.month).padStart(2, '0')}-${String(day.date).padStart(2, '0')}`
 
-    const allowedBlocks = new Set(['Morning Reset', 'Test Analysis + Error Log'])
     for (const item of SCHEDULE_ITEMS) {
-      if (!allowedBlocks.has(item.block)) continue
       const start = parseStartTime(item.time)
       if (!start) continue
 
@@ -124,8 +123,26 @@ function scheduleNext(): void {
   }, delay)
 }
 
+function refreshScheduleOnResume(): void {
+  if (!schedulerStarted) return
+  // Browser timers can be throttled while backgrounded. Recalculate from the
+  // current India time whenever the user returns instead of replaying stale alerts.
+  scheduleNext()
+}
+
+function attachResumeListeners(): void {
+  if (resumeListenersAttached || typeof window === 'undefined') return
+  resumeListenersAttached = true
+  window.addEventListener('focus', refreshScheduleOnResume)
+  window.addEventListener('pageshow', refreshScheduleOnResume)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') refreshScheduleOnResume()
+  })
+}
+
 export function enableWebNotificationScheduler(): void {
   schedulerStarted = true
+  attachResumeListeners()
   scheduleNext()
 }
 
