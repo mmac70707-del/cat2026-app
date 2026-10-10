@@ -10,61 +10,61 @@ export interface RoadmapDayItem {
 }
 
 export const MASTER_SPINE_44: RoadmapDayItem[] = [
-  // Week 1 (21 Sep - 27 Sep)
-  { dayNum: 1,  dateStr: '21 Sep', dateIso: '2026-09-21', chapter: 'Averages', dilrFamily: 'Seating Arrangements', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
-  { dayNum: 2,  dateStr: '22 Sep', dateIso: '2026-09-22', chapter: 'Averages', dilrFamily: 'Bar Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
-  { dayNum: 3,  dateStr: '23 Sep', dateIso: '2026-09-23', chapter: 'Percentages', dilrFamily: 'Seating Arrangements', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
-  { dayNum: 4,  dateStr: '24 Sep', dateIso: '2026-09-24', chapter: 'Percentages', dilrFamily: 'Bar Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
-  { dayNum: 5,  dateStr: '25 Sep', dateIso: '2026-09-25', chapter: 'Mixtures & Alligations', dilrFamily: 'Seating Arrangements', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
-  { dayNum: 6,  dateStr: '26 Sep', dateIso: '2026-09-26', chapter: 'Ratio, Proportion & Variation', dilrFamily: 'Bar Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
-  { dayNum: 7,  dateStr: '27 Sep', dateIso: '2026-09-27', chapter: 'Arithmetic Sectional', dilrFamily: 'Week 1 DILR Review', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  // Week 1 (18 Sep - 24 Sep)
+  { dayNum: 1,  dateStr: '18 Sep', dateIso: '2026-09-18', chapter: 'Averages', dilrFamily: 'Seating Arrangements', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  { dayNum: 2,  dateStr: '19 Sep', dateIso: '2026-09-19', chapter: 'Averages', dilrFamily: 'Bar Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  { dayNum: 3,  dateStr: '20 Sep', dateIso: '2026-09-20', chapter: 'Percentages', dilrFamily: 'Seating Arrangements', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  { dayNum: 4,  dateStr: '21 Sep', dateIso: '2026-09-21', chapter: 'Percentages', dilrFamily: 'Bar Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  { dayNum: 5,  dateStr: '22 Sep', dateIso: '2026-09-22', chapter: 'Mixtures & Alligations', dilrFamily: 'Seating Arrangements', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  { dayNum: 6,  dateStr: '23 Sep', dateIso: '2026-09-23', chapter: 'Ratio, Proportion & Variation', dilrFamily: 'Bar Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
+  { dayNum: 7,  dateStr: '24 Sep', dateIso: '2026-09-24', chapter: 'Arithmetic Sectional', dilrFamily: 'Week 1 DILR Review', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 1 — Arithmetic Core' },
 
-  // Week 2 (28 Sep - 4 Oct)
-  { dayNum: 8,  dateStr: '28 Sep', dateIso: '2026-09-28', chapter: 'Profit & Loss', dilrFamily: 'Caselets', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
-  { dayNum: 9,  dateStr: '29 Sep', dateIso: '2026-09-29', chapter: 'Profit & Loss', dilrFamily: 'Column Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
-  { dayNum: 10, dateStr: '30 Sep', dateIso: '2026-09-30', chapter: 'Profit & Loss', dilrFamily: 'Caselets', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
-  { dayNum: 11, dateStr: '01 Oct', dateIso: '2026-10-01', chapter: 'Progressions / Series', dilrFamily: 'Column Graphs', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 2 — Arithmetic & Algebra' },
-  { dayNum: 12, dateStr: '02 Oct', dateIso: '2026-10-02', chapter: 'Time & Work', dilrFamily: 'Caselets', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
-  { dayNum: 13, dateStr: '03 Oct', dateIso: '2026-10-03', chapter: 'Ratio & Variation', dilrFamily: 'Column Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
-  { dayNum: 14, dateStr: '04 Oct', dateIso: '2026-10-04', chapter: 'Week 2 Practice', dilrFamily: 'Week 2 DILR Review', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
+  // Week 2 (25 Sep - 1 Oct)
+  { dayNum: 8,  dateStr: '25 Sep', dateIso: '2026-09-25', chapter: 'Profit & Loss', dilrFamily: 'Caselets', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
+  { dayNum: 9,  dateStr: '26 Sep', dateIso: '2026-09-26', chapter: 'Profit & Loss', dilrFamily: 'Column Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
+  { dayNum: 10, dateStr: '27 Sep', dateIso: '2026-09-27', chapter: 'Profit & Loss', dilrFamily: 'Caselets', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
+  { dayNum: 11, dateStr: '28 Sep', dateIso: '2026-09-28', chapter: 'Progressions / Series', dilrFamily: 'Column Graphs', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 2 — Arithmetic & Algebra' },
+  { dayNum: 12, dateStr: '29 Sep', dateIso: '2026-09-29', chapter: 'Time & Work', dilrFamily: 'Caselets', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
+  { dayNum: 13, dateStr: '30 Sep', dateIso: '2026-09-30', chapter: 'Ratio & Variation', dilrFamily: 'Column Graphs', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
+  { dayNum: 14, dateStr: '1 Oct', dateIso: '2026-10-01', chapter: 'Week 2 Practice', dilrFamily: 'Week 2 DILR Review', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 2 — Arithmetic & Algebra' },
 
-  // Week 3 (5 Oct - 11 Oct)
-  { dayNum: 15, dateStr: '05 Oct', dateIso: '2026-10-05', chapter: 'Time Speed Distance', dilrFamily: 'Line Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
-  { dayNum: 16, dateStr: '06 Oct', dateIso: '2026-10-06', chapter: 'Time Speed Distance', dilrFamily: 'Cubes', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
-  { dayNum: 17, dateStr: '07 Oct', dateIso: '2026-10-07', chapter: 'Pipes, Trains & Boats', dilrFamily: 'Line Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
-  { dayNum: 18, dateStr: '08 Oct', dateIso: '2026-10-08', chapter: 'Time & Work', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
-  { dayNum: 19, dateStr: '09 Oct', dateIso: '2026-10-09', chapter: 'Time & Work', dilrFamily: 'Line Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
-  { dayNum: 20, dateStr: '10 Oct', dateIso: '2026-10-10', chapter: 'Interest (SI/CI)', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
-  { dayNum: 21, dateStr: '11 Oct', dateIso: '2026-10-11', chapter: 'TSD + Work Sectional', dilrFamily: 'Week 3 DILR Review', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  // Week 3 (2 Oct - 8 Oct)
+  { dayNum: 15, dateStr: '2 Oct', dateIso: '2026-10-02', chapter: 'Time Speed Distance', dilrFamily: 'Line Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  { dayNum: 16, dateStr: '3 Oct', dateIso: '2026-10-03', chapter: 'Time Speed Distance', dilrFamily: 'Cubes', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  { dayNum: 17, dateStr: '4 Oct', dateIso: '2026-10-04', chapter: 'Pipes, Trains & Boats', dilrFamily: 'Line Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  { dayNum: 18, dateStr: '5 Oct', dateIso: '2026-10-05', chapter: 'Time & Work', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  { dayNum: 19, dateStr: '6 Oct', dateIso: '2026-10-06', chapter: 'Time & Work', dilrFamily: 'Line Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  { dayNum: 20, dateStr: '7 Oct', dateIso: '2026-10-07', chapter: 'Interest (SI/CI)', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
+  { dayNum: 21, dateStr: '8 Oct', dateIso: '2026-10-08', chapter: 'TSD + Work Sectional', dilrFamily: 'Week 3 DILR Review', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 3 — TSD & Work' },
 
-  // Week 4 (12 Oct - 18 Oct)
-  { dayNum: 22, dateStr: '12 Oct', dateIso: '2026-10-12', chapter: 'Linear & Quadratic Equations', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
-  { dayNum: 23, dateStr: '13 Oct', dateIso: '2026-10-13', chapter: 'Linear & Quadratic Equations', dilrFamily: 'Tables', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
-  { dayNum: 24, dateStr: '14 Oct', dateIso: '2026-10-14', chapter: 'Linear & Quadratic Equations', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
-  { dayNum: 25, dateStr: '15 Oct', dateIso: '2026-10-15', chapter: 'Inequalities', dilrFamily: 'Tables', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
-  { dayNum: 26, dateStr: '16 Oct', dateIso: '2026-10-16', chapter: 'Inequalities', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
-  { dayNum: 27, dateStr: '17 Oct', dateIso: '2026-10-17', chapter: 'Interest (SI/CI)', dilrFamily: 'Tables', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 4 — Algebra Core' },
-  { dayNum: 28, dateStr: '18 Oct', dateIso: '2026-10-18', chapter: 'Algebra Sectional', dilrFamily: 'Week 4 DILR Review', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
+  // Week 4 (9 Oct - 15 Oct)
+  { dayNum: 22, dateStr: '9 Oct', dateIso: '2026-10-09', chapter: 'Linear & Quadratic Equations', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
+  { dayNum: 23, dateStr: '10 Oct', dateIso: '2026-10-10', chapter: 'Linear & Quadratic Equations', dilrFamily: 'Tables', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
+  { dayNum: 24, dateStr: '11 Oct', dateIso: '2026-10-11', chapter: 'Linear & Quadratic Equations', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
+  { dayNum: 25, dateStr: '12 Oct', dateIso: '2026-10-12', chapter: 'Inequalities', dilrFamily: 'Tables', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
+  { dayNum: 26, dateStr: '13 Oct', dateIso: '2026-10-13', chapter: 'Inequalities', dilrFamily: 'Pie Charts', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
+  { dayNum: 27, dateStr: '14 Oct', dateIso: '2026-10-14', chapter: 'Interest (SI/CI)', dilrFamily: 'Tables', varcSkill: 'Reading Comprehension', category: 'Arithmetic', blockName: 'Week 4 — Algebra Core' },
+  { dayNum: 28, dateStr: '15 Oct', dateIso: '2026-10-15', chapter: 'Algebra Sectional', dilrFamily: 'Week 4 DILR Review', varcSkill: 'Reading Comprehension', category: 'Algebra', blockName: 'Week 4 — Algebra Core' },
 
-  // Week 5 (19 Oct - 25 Oct)
-  { dayNum: 29, dateStr: '19 Oct', dateIso: '2026-10-19', chapter: 'Functions', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
-  { dayNum: 30, dateStr: '20 Oct', dateIso: '2026-10-20', chapter: 'Functions', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
-  { dayNum: 31, dateStr: '21 Oct', dateIso: '2026-10-21', chapter: 'Functions & Maxima', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
-  { dayNum: 32, dateStr: '22 Oct', dateIso: '2026-10-22', chapter: 'Logarithms', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
-  { dayNum: 33, dateStr: '23 Oct', dateIso: '2026-10-23', chapter: 'Set Theory', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Modern Math', blockName: 'Week 5 — Advanced Algebra' },
-  { dayNum: 34, dateStr: '24 Oct', dateIso: '2026-10-24', chapter: 'Number System', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Number System', blockName: 'Week 5 — Advanced Algebra' },
-  { dayNum: 35, dateStr: '25 Oct', dateIso: '2026-10-25', chapter: 'Functions & Numbers Review', dilrFamily: 'Games & Tournaments', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
+  // Week 5 (16 Oct - 22 Oct)
+  { dayNum: 29, dateStr: '16 Oct', dateIso: '2026-10-16', chapter: 'Functions', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
+  { dayNum: 30, dateStr: '17 Oct', dateIso: '2026-10-17', chapter: 'Functions', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
+  { dayNum: 31, dateStr: '18 Oct', dateIso: '2026-10-18', chapter: 'Functions & Maxima', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
+  { dayNum: 32, dateStr: '19 Oct', dateIso: '2026-10-19', chapter: 'Logarithms', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
+  { dayNum: 33, dateStr: '20 Oct', dateIso: '2026-10-20', chapter: 'Set Theory', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Modern Math', blockName: 'Week 5 — Advanced Algebra' },
+  { dayNum: 34, dateStr: '21 Oct', dateIso: '2026-10-21', chapter: 'Number System', dilrFamily: 'Venn Diagrams', varcSkill: 'RC + Odd One Out', category: 'Number System', blockName: 'Week 5 — Advanced Algebra' },
+  { dayNum: 35, dateStr: '22 Oct', dateIso: '2026-10-22', chapter: 'Functions & Numbers Review', dilrFamily: 'Games & Tournaments', varcSkill: 'RC + Odd One Out', category: 'Algebra', blockName: 'Week 5 — Advanced Algebra' },
 
-  // Week 6 (26 Oct - 1 Nov)
-  { dayNum: 36, dateStr: '26 Oct', dateIso: '2026-10-26', chapter: 'Number System', dilrFamily: 'Games & Tournaments', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 37, dateStr: '27 Oct', dateIso: '2026-10-27', chapter: 'Number System', dilrFamily: 'Games & Tournaments', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 38, dateStr: '28 Oct', dateIso: '2026-10-28', chapter: 'Number System', dilrFamily: 'Games & Tournaments', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 39, dateStr: '29 Oct', dateIso: '2026-10-29', chapter: 'Number System PYQs', dilrFamily: 'Syllogisms & Clocks', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 40, dateStr: '30 Oct', dateIso: '2026-10-30', chapter: 'Geometry', dilrFamily: 'Games & Syllogisms', varcSkill: 'Para Summary', category: 'Geometry', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 41, dateStr: '31 Oct', dateIso: '2026-10-31', chapter: 'Geometry Mensuration', dilrFamily: 'Syllogisms & Clocks', varcSkill: 'Para Summary', category: 'Geometry', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 42, dateStr: '01 Nov', dateIso: '2026-11-01', chapter: 'NS & Geometry Review', dilrFamily: 'Week 6 DILR Review', varcSkill: 'Para Summary Review', category: 'Revision/Repair', blockName: 'Week 6 — Number System & Geometry' },
-  { dayNum: 43, dateStr: '02 Nov', dateIso: '2026-11-02', chapter: 'Geometry Circles/Triangles', dilrFamily: 'Logical Sequence', varcSkill: 'Para Jumbles', category: 'Geometry', blockName: 'Week 7 — Geometry & Modern Math' },
-  { dayNum: 44, dateStr: '03 Nov', dateIso: '2026-11-03', chapter: 'Coordinate Geometry', dilrFamily: 'Logical Sequence', varcSkill: 'Para Jumbles', category: 'Geometry', blockName: 'Week 7 — Geometry & Modern Math' },
+  // Week 6 (23 Oct - 29 Oct)
+  { dayNum: 36, dateStr: '23 Oct', dateIso: '2026-10-23', chapter: 'Number System', dilrFamily: 'Games & Tournaments', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 37, dateStr: '24 Oct', dateIso: '2026-10-24', chapter: 'Number System', dilrFamily: 'Games & Tournaments', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 38, dateStr: '25 Oct', dateIso: '2026-10-25', chapter: 'Number System', dilrFamily: 'Games & Tournaments', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 39, dateStr: '26 Oct', dateIso: '2026-10-26', chapter: 'Number System PYQs', dilrFamily: 'Syllogisms & Clocks', varcSkill: 'Para Summary', category: 'Number System', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 40, dateStr: '27 Oct', dateIso: '2026-10-27', chapter: 'Geometry', dilrFamily: 'Games & Syllogisms', varcSkill: 'Para Summary', category: 'Geometry', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 41, dateStr: '28 Oct', dateIso: '2026-10-28', chapter: 'Geometry Mensuration', dilrFamily: 'Syllogisms & Clocks', varcSkill: 'Para Summary', category: 'Geometry', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 42, dateStr: '29 Oct', dateIso: '2026-10-29', chapter: 'NS & Geometry Review', dilrFamily: 'Week 6 DILR Review', varcSkill: 'Para Summary Review', category: 'Revision/Repair', blockName: 'Week 6 — Number System & Geometry' },
+  { dayNum: 43, dateStr: '30 Oct', dateIso: '2026-10-30', chapter: 'Geometry Circles/Triangles', dilrFamily: 'Logical Sequence', varcSkill: 'Para Jumbles', category: 'Geometry', blockName: 'Week 7 — Geometry & Modern Math' },
+  { dayNum: 44, dateStr: '31 Oct', dateIso: '2026-10-31', chapter: 'Coordinate Geometry', dilrFamily: 'Logical Sequence', varcSkill: 'Para Jumbles', category: 'Geometry', blockName: 'Week 7 — Geometry & Modern Math' },
 ]
 
 export const ROADMAP_44 = MASTER_SPINE_44
