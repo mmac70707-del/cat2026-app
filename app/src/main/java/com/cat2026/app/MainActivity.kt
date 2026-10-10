@@ -579,6 +579,12 @@ class MainActivity : FragmentActivity() {
         if (message.isNotBlank()) updateGateMessage(message)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reconcile notification permission after returning from Android settings.
+        if (nativeUnlocked) checkNotificationPermission()
+    }
+
     private fun loadAppAfterUnlock() {
         if (!nativeUnlocked) return
         // Notification workers are intentionally controlled by Settings.
