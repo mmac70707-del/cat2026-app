@@ -18,10 +18,10 @@ import { type TextSize, type ThemeMode, getTextSize, getThemeMode, isFocusMode, 
 interface Props { onBack: () => void }
 
 const STITCH_THEMES = [
-  { id: 'apex', name: 'Apex Protocol Obsidian', color: '#F5A623', border: '#16A34A' },
-  { id: 'glacier', name: 'Glacier Cyan Cybernetic', color: '#38BDF8', border: '#2563EB' },
-  { id: 'athenaeum', name: 'Athenaeum Editorial Gold', color: '#FBBF24', border: '#D97706' },
-  { id: 'crimson', name: 'Cybernetic Crimson Command', color: '#EF4444', border: '#7C3AED' }
+  { id: 'apex', name: 'Graphite + Champagne', color: '#CBB780', border: '#8FB5AA' },
+  { id: 'glacier', name: 'Steel + Sage', color: '#8FAEAC', border: '#557C80' },
+  { id: 'athenaeum', name: 'Editorial Ivory', color: '#927238', border: '#D8C9A0' },
+  { id: 'crimson', name: 'Muted Rosewood', color: '#B86E70', border: '#7D5556' }
 ]
 
 export function SettingsPage({ onBack }: Props) {
@@ -97,7 +97,7 @@ export function SettingsPage({ onBack }: Props) {
       await SettingsRepository.set('notifications', true)
       setNotifications(true)
       enableWebNotificationScheduler()
-      toast('App alerts ON — two daily reminders will run while this app is open')
+      toast('App alerts ON — timed block reminders run while this app is open; import the calendar for alerts when closed')
     } else {
       await SettingsRepository.set('notifications', false)
       setNotifications(false)
@@ -222,7 +222,7 @@ export function SettingsPage({ onBack }: Props) {
       <div className="card" style={{ border: '1px solid #F5A623' }}>
         <div className="card-title" style={{ color: '#F5A623' }}>🎨 Stitch Design System Theme Accent</div>
         <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 10 }}>
-          Select your tactical command theme from the Stitch Design System generator:
+          Choose a restrained accent palette. Light / Dark / System mode stays independent:
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 8 }}>
           {STITCH_THEMES.map(th => (
