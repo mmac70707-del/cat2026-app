@@ -37,19 +37,56 @@ export function SettingsPage({ onBack }: Props) {
   const { show: toast } = useToast()
 
   useEffect(() => {
-    Promise.all([
-      SettingsRepository.get('wake',          false),
-      SettingsRepository.get('quotes',        true),
-      SettingsRepository.get('sound',         true),
-      SettingsRepository.get('notifications', false),
-      SettingsRepository.get('stitchTheme',    'apex'),
-    ]).then(([w, q, s, n, th]) => {
+    let active = true
+
+    async function loadSettings() {
+      const [w, q, s, n, th] = await Promise.all([
+        SettingsRepository.get('wake',          false),
+        SettingsRepository.get('quotes',        true),
+        SettingsRepository.get('sound',         true),
+        SettingsRepository.get('notifications', false),
+        SettingsRepository.get('stitchTheme',    'apex'),
+      ])
+      if (!active) return
       setWake(w as boolean)
       setQuotes(q as boolean)
       setSound(s as boolean)
       setNotifications(n as boolean)
       setSelectedTheme(th as string || 'apex')
-    })
+
+      // Browser storage is the user's preference, but Android permission and
+      // channel settings can be revoked independently. Reflect the real native
+      // state so the toggle does not claim reminders are active when blocked.
+      if (isNative()) {
+        try {
+          const status = await nativeRequest({ action: 'getNotificationStatus' })
+          if (!active || !status.ok || typeof status.enabled !== 'boolean') return
+          setNotifications(status.enabled)
+          await SettingsRepository.set('notifications', status.enabled)
+        } catch {
+          // Preserve the saved preference if the bridge is temporarily unavailable.
+        }
+      }
+    }
+
+    const handleNativeNotificationPermission = (event: Event) => {
+      const granted = Boolean((event as CustomEvent<{ granted?: boolean }>).detail?.granted)
+      setNotifications(granted)
+      void SettingsRepository.set('notifications', granted)
+      if (!granted) {
+        toast('Android notification permission is off. Enable it in Android app settings to receive reminders.', '#D97706')
+      }
+    }
+
+    if (isNative()) {
+      window.addEventListener('cat2026:native-notification-permission', handleNativeNotificationPermission)
+    }
+    void loadSettings()
+
+    return () => {
+      active = false
+      window.removeEventListener('cat2026:native-notification-permission', handleNativeNotificationPermission)
+    }
   }, [])
 
   async function toggleSetting(key: string, val: boolean, setter: (v: boolean) => void) {
