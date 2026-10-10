@@ -1,38 +1,13 @@
-import { SCHEDULE_ITEMS, CAT_DATE } from '@/data/config'
+import { SCHEDULE_ITEMS, CAT_EXAM_DATE_STR } from '@/data/config'
+import { getKolkataDateParts } from '@/services/calendarEngine'
 
-// ═══════════════════════════════════════════════════
-//  Calendar export (.ics)
-//
-//  Solves "reminders on my phone AND my laptop" honestly:
-//  a real Microsoft To Do task sync would need OAuth against the
-//  Microsoft identity platform (an Azure AD app registration only
-//  you can create, plus MSAL wiring) — real, buildable, but gated
-//  on a setup step on your end that can't be done from here.
-//
-//  This works immediately, with zero accounts, zero API keys,
-//  zero network calls: a standard .ics file, generated from the
-//  exact same SCHEDULE_ITEMS/CAT_DATE this app already uses (no
-//  separate hand-maintained copy to drift out of sync). Import it
-//  into Outlook Calendar, Google Calendar, or Apple Calendar and
-//  it appears — with real alarms — on every device signed into
-//  that account: phone and laptop both.
-//
-//  Times are written as "floating" (no timezone marker), which is
-//  the correct choice here — every calendar app interprets a
-//  floating time as your device's local wall-clock time, so a
-//  9:00am block shows as 9:00am wherever you open it.
-// ═══════════════════════════════════════════════════
+// Calendar export uses UTC timestamps calculated from the fixed India Standard
+// Time schedule. This avoids device-timezone drift and keeps alerts consistent
+// across Google Calendar, Outlook, Apple Calendar, Android and desktop clients.
 
-function pad(n: number): string {
-  return String(n).padStart(2, '0')
-}
 
-function toFloatingICSDate(d: Date): string {
-  return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`
-}
-
-function toICSDateOnly(d: Date): string {
-  return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`
+function toUTCICSDate(date: Date): string {
+  return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
 }
 
 function escapeICS(text: string): string {
@@ -40,22 +15,42 @@ function escapeICS(text: string): string {
     .replace(/\\/g, '\\\\')
     .replace(/,/g, '\\,')
     .replace(/;/g, '\\;')
-    .replace(/\n/g, '\\n')
+    .replace(/\r?\n/g, '\\n')
 }
 
-// Parses "05:00–05:15" or "22:00" → { h, m } of the block's start time.
-function parseStartTime(timeRange: string): { h: number; m: number } | null {
-  const first = timeRange.split(/[–-]/)[0].trim()
-  const match = first.match(/^(\d{1,2}):(\d{2})$/)
-  if (!match) return null
-  return { h: parseInt(match[1], 10), m: parseInt(match[2], 10) }
+function parseTimes(timeRange: string): { startHour: number; startMinute: number; endHour?: number; endMinute?: number } | null {
+  const parts = timeRange.split(/[–-]/).map(part => part.trim())
+  const start = parts[0]?.match(/^(\d{1,2}):(\d{2})$/)
+  if (!start) return null
+  const end = parts[1]?.match(/^(\d{1,2}):(\d{2})$/)
+  return {
+    startHour: Number(start[1]),
+    startMinute: Number(start[2]),
+    ...(end ? { endHour: Number(end[1]), endMinute: Number(end[2]) } : {}),
+  }
+}
+
+function indiaLocalToUtc(year: number, month: number, day: number, hour: number, minute: number, second = 0): Date {
+  // IST is UTC+05:30 and does not observe daylight saving time.
+  return new Date(Date.UTC(year, month - 1, day, hour, minute, second) - 330 * 60 * 1000)
+}
+
+function addIndiaDays(year: number, month: number, day: number, amount: number) {
+  const d = new Date(Date.UTC(year, month - 1, day + amount))
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() }
+}
+
+function dateKeyParts(key: string): { year: number; month: number; day: number } {
+  const [year, month, day] = key.split('-').map(Number)
+  return { year, month, day }
 }
 
 export function generateScheduleICS(): string {
   const now = new Date()
-  const untilDate = new Date(CAT_DATE)
-  untilDate.setDate(untilDate.getDate() - 1) // stop the day before the exam
-  const until = `${toICSDateOnly(untilDate)}T235959`
+  const today = getKolkataDateParts(now)
+  const exam = dateKeyParts(CAT_EXAM_DATE_STR)
+  const until = indiaLocalToUtc(exam.year, exam.month, exam.day, 23, 59, 59)
+  const stamp = toUTCICSDate(now)
 
   const lines: string[] = [
     'BEGIN:VCALENDAR',
@@ -63,46 +58,65 @@ export function generateScheduleICS(): string {
     'PRODID:-//CAT 2026 Execution System//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
-    `X-WR-CALNAME:${escapeICS('CAT 2026 Daily Schedule')}`,
+    'X-WR-CALNAME:CAT 2026 Daily Schedule',
+    'X-WR-TIMEZONE:Asia/Kolkata',
   ]
 
   SCHEDULE_ITEMS.forEach((item, i) => {
-    const start = parseStartTime(item.time)
-    if (!start) return
-    const dtStart = new Date(now)
-    dtStart.setHours(start.h, start.m, 0, 0)
-    // Default 30-minute block for events with no explicit end time
-    // in the source data — good enough for a calendar reminder, not
-    // meant to be a precise duration.
-    const uid = `cat2026-block-${i}-${item.block.replace(/\s+/g, '')}@cat2026app`
+    const times = parseTimes(item.time)
+    if (!times) return
 
+    let day = { year: today.year, month: today.month, day: today.date }
+    let start = indiaLocalToUtc(day.year, day.month, day.day, times.startHour, times.startMinute)
+
+    // Never create a first occurrence in the past. A missed block starts with
+    // its next scheduled occurrence; it is not backfilled into today's calendar.
+    if (start.getTime() <= now.getTime()) {
+      day = addIndiaDays(day.year, day.month, day.day, 1)
+      start = indiaLocalToUtc(day.year, day.month, day.day, times.startHour, times.startMinute)
+    }
+    if (start.getTime() > until.getTime()) return
+
+    let end: Date
+    if (times.endHour !== undefined && times.endMinute !== undefined) {
+      end = indiaLocalToUtc(day.year, day.month, day.day, times.endHour, times.endMinute)
+      if (end.getTime() <= start.getTime()) end = new Date(start.getTime() + 30 * 60 * 1000)
+    } else {
+      end = new Date(start.getTime() + 30 * 60 * 1000)
+    }
+
+    const uid = `cat2026-${i}-${item.block.toLowerCase().replace(/[^a-z0-9]+/g, '-') }@cat2026app`
     lines.push(
       'BEGIN:VEVENT',
       `UID:${uid}`,
-      `DTSTAMP:${toFloatingICSDate(now)}Z`,
-      `DTSTART:${toFloatingICSDate(dtStart)}`,
-      `SUMMARY:${escapeICS(item.block)}`,
-      `DESCRIPTION:${escapeICS(item.detail)}`,
-      `RRULE:FREQ=DAILY;UNTIL=${until}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${toUTCICSDate(start)}`,
+      `DTEND:${toUTCICSDate(end)}`,
+      `SUMMARY:${escapeICS(item.icon + ' ' + item.block)}`,
+      `DESCRIPTION:${escapeICS(item.detail + ' | CAT 2026 execution system')}`,
+      `RRULE:FREQ=DAILY;UNTIL=${toUTCICSDate(until)}`,
       'BEGIN:VALARM',
       'ACTION:DISPLAY',
-      `DESCRIPTION:${escapeICS(item.block)}`,
-      'TRIGGER:PT0M',
+      `DESCRIPTION:${escapeICS(item.block + ' starts soon')}`,
+      'TRIGGER:-PT5M',
       'END:VALARM',
       'END:VEVENT',
     )
   })
 
   lines.push('END:VCALENDAR')
-  return lines.join('\r\n')
+  return lines.join('\r\n') + '\r\n'
 }
 
 export function downloadScheduleICS(): void {
   const content = generateScheduleICS()
   const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
+  a.href = url
   a.download = 'cat2026-daily-schedule.ics'
+  document.body.appendChild(a)
   a.click()
-  URL.revokeObjectURL(a.href)
+  a.remove()
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
