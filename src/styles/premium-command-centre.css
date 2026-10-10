@@ -260,3 +260,104 @@ html[data-theme-mode="light"] .app-shell select {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* ── Master dashboard: real Light mode + readable mobile labels ── */
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-rail {
+  background: linear-gradient(180deg, var(--ui-surface), var(--ui-surface-2)) !important;
+  border-bottom-color: var(--ui-border-strong) !important;
+  box-shadow: var(--cv-shadow-card);
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-kicker,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-title,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-sub,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-copy strong,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-check b {
+  color: var(--ui-text) !important;
+  -webkit-text-fill-color: var(--ui-text) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-countdown,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-metrics > div,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-check,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border-strong) !important;
+  box-shadow: none;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-countdown span,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-metrics span,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-check small,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-sub,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-copy small {
+  color: var(--ui-muted) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-countdown strong,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-metrics b,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-copy span {
+  color: var(--ui-accent-strong) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-next-action-btn {
+  color: var(--ui-accent-strong) !important;
+  background: var(--ui-accent-soft) !important;
+  border-color: var(--ui-border-strong) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .header,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .mission-bar {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border-strong) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .header-sub,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .date-display {
+  color: var(--ui-muted) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .date-display {
+  background: var(--ui-surface-2) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .card,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .panel,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .stat-card,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .task-card {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-border) !important;
+  color: var(--ui-text);
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .card-title,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .today-title {
+  color: var(--ui-text) !important;
+}
+
+/* Do not force the whole dashboard rail to a near-black look in Light mode. */
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer {
+  border-top-color: var(--ui-border) !important;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer span,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer b,
+html[data-theme-mode="light"] .jarvis-theme .dash-root .master-command-footer small {
+  color: var(--ui-muted) !important;
+}
+
+/* Baseline readable type for dense dashboard labels on phones. */
+@media (max-width: 700px) {
+  .jarvis-theme .dash-root .master-command-kicker { font-size: 9px; line-height: 1.3; }
+  .jarvis-theme .dash-root .master-command-sub { font-size: 10px; line-height: 1.5; }
+  .jarvis-theme .dash-root .master-command-metrics span { font-size: 8.5px; line-height: 1.3; }
+  .jarvis-theme .dash-root .master-command-metrics b { font-size: 14px; }
+  .jarvis-theme .dash-root .master-check b { font-size: 9px; line-height: 1.35; }
+  .jarvis-theme .dash-root .master-check small { font-size: 9px; line-height: 1.45; }
+  .jarvis-theme .dash-root .master-check em { font-size: 8px; }
+  .jarvis-theme .dash-root .master-command-footer span,
+  .jarvis-theme .dash-root .master-command-footer b { font-size: 8px; }
+  .jarvis-theme .dash-root .master-command-footer small { font-size: 9px; line-height: 1.4; }
+  .jarvis-theme .dash-root .daily-basic-state { font-size: 8.5px; }
+  .jarvis-theme .dash-root .daily-basic-purpose,
+  .jarvis-theme .dash-root .daily-basic-mentor { font-size: 10px; line-height: 1.45; }
+  .jarvis-theme .dash-root .daily-lesson-grid p { font-size: 10px; line-height: 1.45; }
+  .jarvis-theme .dash-root .daily-lesson-grid > div > span { font-size: 8px; }
+}
+@media (max-width: 380px) {
+  .jarvis-theme .dash-root .master-command-kicker { font-size: 8.5px; }
+  .jarvis-theme .dash-root .master-command-sub { font-size: 9.5px; }
+  .jarvis-theme .dash-root .master-check b,
+  .jarvis-theme .dash-root .master-check small { font-size: 9px; }
+}
