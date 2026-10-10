@@ -242,7 +242,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-p, div, span, li {
+p, li {
   color: var(--sub);
 }
 
@@ -993,4 +993,168 @@ html[data-theme-mode="light"] .jarvis-theme .dash-root :is(.mission-quote, .comm
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   FINAL MATERIAL PASS — graphite / ivory / champagne
+   Keep the existing app structure and study workflow unchanged.
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  color-scheme: dark;
+  --bg: #101311;
+  --bg-2: #171b17;
+  --bg-3: #20251f;
+  --panel: rgba(25, 29, 25, .96);
+  --panel-2: #20251f;
+  --panel-3: #2a3028;
+  --card: rgba(25, 29, 25, .96);
+  --card-strong: #171b17;
+  --line: rgba(204, 183, 128, .16);
+  --line-strong: rgba(204, 183, 128, .30);
+  --text: #f1f0e8;
+  --text-strong: #fffdf5;
+  --sub: #c0c1b7;
+  --muted: #92988e;
+  --gold: #cbb780;
+  --amber: #e0c98d;
+  --blue: #a6bdb9;
+  --teal: #8fb5aa;
+  --green: #92b39a;
+  --red: #d78e85;
+  --shadow: rgba(0, 0, 0, .28);
+  --shadow-soft: rgba(0, 0, 0, .18);
+  --brand-1: #9bbdb4;
+  --brand-2: #cbb780;
+  --brand-3: #718d84;
+  --glow: rgba(143, 181, 170, .09);
+  --ring: rgba(203, 183, 128, .58);
+}
+html[data-theme-mode="light"] {
+  color-scheme: light;
+  --bg: #f4f1e8;
+  --bg-2: #eee9dd;
+  --bg-3: #e5dfd2;
+  --panel: rgba(255, 253, 247, .98);
+  --panel-2: #faf7ef;
+  --panel-3: #ece6d9;
+  --card: rgba(255, 253, 247, .98);
+  --card-strong: #fffdf7;
+  --line: rgba(70, 76, 65, .14);
+  --line-strong: rgba(70, 76, 65, .25);
+  --text: #252923;
+  --text-strong: #171b17;
+  --sub: #51594f;
+  --muted: #72796f;
+  --gold: #927238;
+  --amber: #a7813d;
+  --blue: #557c80;
+  --teal: #477d72;
+  --green: #3f7452;
+  --red: #a74643;
+  --shadow: rgba(42, 39, 29, .08);
+  --shadow-soft: rgba(42, 39, 29, .05);
+  --brand-1: #477d72;
+  --brand-2: #927238;
+  --brand-3: #6b8175;
+  --glow: rgba(71, 125, 114, .08);
+  --ring: rgba(146, 114, 56, .35);
+}
+html[data-theme-mode="dark"] body,
+html[data-theme-mode="dark"] #root,
+.jarvis-theme {
+  background:
+    radial-gradient(850px 300px at 50% -150px, rgba(203, 183, 128, .08), transparent 65%),
+    radial-gradient(650px 360px at 100% 0%, rgba(143, 181, 170, .045), transparent 65%),
+    linear-gradient(180deg, #101311 0%, #141814 52%, #101311 100%);
+  color: var(--text);
+}
+html[data-theme-mode="light"] body,
+html[data-theme-mode="light"] #root {
+  background:
+    radial-gradient(850px 300px at 50% -150px, rgba(146, 114, 56, .07), transparent 65%),
+    linear-gradient(180deg, #faf8f1 0%, #f4f1e8 52%, #eee9dd 100%);
+  color: var(--text);
+}
+body::before {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(143, 181, 170, .055), transparent 27%),
+    radial-gradient(circle at 85% 10%, rgba(203, 183, 128, .06), transparent 24%);
+}
+html[data-theme-mode="light"] body::before {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(71, 125, 114, .04), transparent 27%),
+    radial-gradient(circle at 85% 10%, rgba(146, 114, 56, .045), transparent 24%);
+}
+.app-shell, .content-area, .card, .block-card, .jarvis-panel, .month-panel,
+.task-card, .stat-card, .priority-item, .panel, .surface, .glass-card {
+  background: linear-gradient(180deg, var(--panel), var(--card-strong));
+  border-color: var(--line);
+  box-shadow: 0 10px 28px var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.025);
+}
+html[data-theme-mode="light"] .app-shell,
+html[data-theme-mode="light"] .content-area,
+html[data-theme-mode="light"] .card,
+html[data-theme-mode="light"] .block-card,
+html[data-theme-mode="light"] .jarvis-panel,
+html[data-theme-mode="light"] .month-panel,
+html[data-theme-mode="light"] .task-card,
+html[data-theme-mode="light"] .stat-card,
+html[data-theme-mode="light"] .priority-item,
+html[data-theme-mode="light"] .panel,
+html[data-theme-mode="light"] .surface,
+html[data-theme-mode="light"] .glass-card {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border-color: var(--line);
+  box-shadow: 0 8px 22px var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.62);
+}
+.jarvis-theme .dash-root {
+  --navy: #191d19;
+  --navy2: #222720;
+  --bg: #101311;
+  --bg2: #171b17;
+  --gold: #cbb780;
+  --blue: #a6bdb9;
+  --teal: #8fb5aa;
+  --green: #92b39a;
+}
+html[data-theme-mode="light"] .jarvis-theme .dash-root {
+  --navy: #fffdf7;
+  --navy2: #eee9dd;
+  --bg: #f4f1e8;
+  --bg2: #eee9dd;
+  --gold: #927238;
+  --blue: #557c80;
+  --teal: #477d72;
+  --green: #3f7452;
+}
+.gold-accent {
+  background: linear-gradient(135deg, rgba(203,183,128,.12), rgba(143,181,170,.045));
+  border-color: var(--line-strong);
+}
+.blue-accent {
+  background: linear-gradient(135deg, rgba(143,181,170,.10), rgba(113,141,132,.045));
+  border-color: var(--line);
+}
+.success-accent {
+  background: linear-gradient(135deg, rgba(146,179,154,.11), rgba(146,179,154,.035));
+  border-color: rgba(146,179,154,.22);
+}
+.warning-accent {
+  background: linear-gradient(135deg, rgba(203,183,128,.10), rgba(203,183,128,.035));
+  border-color: var(--line-strong);
+}
+::selection {
+  background: rgba(203,183,128,.26);
+  color: var(--text-strong);
+}
+:focus-visible {
+  outline-color: var(--ring);
+}
+@media (max-width: 480px) {
+  .app-shell, .content-area { border-radius: 18px; }
+  .card, .block-card, .task-card, .stat-card, .priority-item, .panel, .surface, .glass-card { border-radius: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
