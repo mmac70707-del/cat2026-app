@@ -15,6 +15,9 @@ type NativeResponse = {
   ok: boolean
   error?: string
   locked?: boolean
+  enabled?: boolean
+  permissionGranted?: boolean
+  systemEnabled?: boolean
   capabilities?: Record<string, boolean>
   vaultKey?: string
 }
