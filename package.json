@@ -2,7 +2,7 @@
   "name": "cat2026-app",
   "private": true,
   "version": "1.0.0",
-  "description": "CAT 2026 Master Execution System — 75-day countdown",
+  "description": "Chrono Vyu — goal execution and focus system for students and professionals",
   "type": "module",
   "scripts": {
     "dev": "vite",
