@@ -7,7 +7,7 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
 export const APP_VERSION = '1.1.3'
-export const LAST_UPDATED = '10 OCT 2026 • LOCKED CAT/BRM SYNC'
+export const LAST_UPDATED = '10 OCT 2026 • DATE + BRM SEQUENCE SYNC'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -28,7 +28,8 @@ export const APP_UPDATE_INFO = {
     'Full portrait lock screen, native Face / Fingerprint prompt hardening and no-surprise browser PIN fallback',
     'Body 360 locked learning sequence + automatic weekday gym rotation merged into Daily Schedule',
     'BRM Business School: self-contained daily lesson reader with date-driven Basic → Advanced curriculum',
-    'Best Version: seven daily basics with one current step, automatic daily rollover and sequence-based wins'
+    'Best Version: seven daily basics with one current step, automatic daily rollover and sequence-based wins',
+    'Aligned 44-day tracker (18 Sep–31 Oct) with India-date-safe day numbering and BRM 48-lesson curriculum'
   ]
 }
 
