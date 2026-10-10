@@ -72,8 +72,8 @@ class MainActivity : FragmentActivity() {
         } else {
             prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
             ReminderSchedule.cancel(this)
+            emitNotificationPermissionState(false)
         }
-        emitNotificationPermissionState(isGranted)
     }
 
     private val requestRecordAudioPermissionLauncher = registerForActivityResult(
