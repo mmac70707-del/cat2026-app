@@ -697,6 +697,11 @@ class MainActivity : FragmentActivity() {
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            // Android permissions can be revoked from system settings after
+            // reminders were enabled. Stop queued work and clear the native
+            // preference so the UI cannot keep showing a false "on" state.
+            prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, false).apply()
+            ReminderSchedule.cancel(this)
             emitNotificationPermissionState(false)
             return
         }
