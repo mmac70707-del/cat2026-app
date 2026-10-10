@@ -6,13 +6,16 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.1.2'
-export const LAST_UPDATED = '05 OCT 2026 • BEST VERSION 7 DAILY BASICS'
+export const APP_VERSION = '1.1.3'
+export const LAST_UPDATED = '10 OCT 2026 • LOCKED CAT/BRM SYNC'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
   lastUpdated: LAST_UPDATED,
   changes: [
+    'Locked CAT weekly test cycle and clock anchors synchronized',
+    '44-day calendar tracker anchored to 18 Sep 2026 and capped at Day 44 on 31 Oct',
+    'BRM core Day 1–48 sequence, completion migration and Sunday revision aligned',
     'Always-Visible Top Status Bar & Automatic Daily Sync Indicator',
     'Percentyl 2.0 Full 44-Day Syllabus Breakdown & Targets',
     '3 Core Targets Card (QA, DILR, VARC) on Today & 1:1 Dashboard',
@@ -32,8 +35,8 @@ export const APP_UPDATE_INFO = {
 export const CAT_EXAM_DATE_STR = '2026-11-29'
 // Always anchor the exam to India Standard Time, independent of the device/browser timezone.
 export const CAT_DATE = new Date('2026-11-29T09:00:00+05:30')
-export const FIRST_PASS_START = '2026-09-21'
-export const FIRST_PASS_END = '2026-11-03'
+export const FIRST_PASS_START = '2026-09-18'
+export const FIRST_PASS_END = '2026-10-31'
 
 export const OFFICIAL_EXAM_INFO = {
   examDate: '29 November 2026',

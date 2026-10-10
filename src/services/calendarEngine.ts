@@ -89,9 +89,9 @@ export function getFirstPassDayNum(dateKey: string): number {
   const endMs   = new Date(`${FIRST_PASS_END}T23:59:59`).getTime()
   const targetMs= new Date(`${dateKey}T12:00:00`).getTime()
 
-  // If tested before Sep 18, 2026, default to active Day 4 (21 Sep 2026)
-  if (targetMs < startMs) return 4
-  // If tested after Oct 31, 2026, default to Day 44
+  // Calendar tracker: 18 Sep = Day 1; 5 Oct = Day 18; 10 Oct = Day 23.
+  // After 31 Oct, retain Day 44. This is calendar position, not completion proof.
+  if (targetMs < startMs) return 1
   if (targetMs > endMs) return 44
 
   const diffDays = Math.floor((targetMs - startMs) / 86_400_000) + 1

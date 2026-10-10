@@ -3,30 +3,35 @@ import { useTodayTasks } from '@/hooks/useTasks'
 import { usePhase } from '@/hooks/usePhase'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum, getPhaseForDateKey } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
-import { PHASES as CONFIG_PHASES } from '@/data/config'
+import { CAT_EXAM_DATE_STR, PHASES as CONFIG_PHASES } from '@/data/config'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 
 const DAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
 
 const OMIA: Record<string,string> = {
-  MONDAY:'Mock analysis + Error Log + Repair',
-  TUESDAY:'VARC Sectional + deepest verified VARC weakness',
-  WEDNESDAY:'DILR Sectional + link building from topics',
-  THURSDAY:'QA Sectional + verify core rules + solve 1 unsolved set',
-  FRIDAY:'Full Mock Test + deep analysis by question',
-  SATURDAY:'Error Log review + repair 5 high-frequency errors',
-  SUNDAY:'Percentile & mock review + forecast next week',
+  MONDAY:'Mock Analysis + Error Log + Repair',
+  TUESDAY:'VARC Sectional',
+  WEDNESDAY:'VARC Analysis + Repair/Retest',
+  THURSDAY:'DILR Sectional',
+  FRIDAY:'DILR Analysis + Repair/Retest',
+  SATURDAY:'Quant Sectional',
+  SUNDAY:'Full Mock',
 }
 
 const schedule = [
-  ['05:30–06:00','Yoga'],
-  ['06:00–06:30','Breathing + Throat warm up'],
-  ['06:30–07:00','Shower + Light breakfast'],
-  ['07:00–09:00','Morning blocks (QA/DILR/VARC)'],
-  ['09:00–09:15','Break + hydration'],
-  ['09:15–09:45','Test/Analysis (unburden)'],
-  ['09:45–10:00','Revision — recap → revise → connect → preview'],
+  ['05:00–05:15','Morning Reset'],
+  ['05:15–05:55','Daily Dose (LRDI test + VA test)'],
+  ['09:00','Breakfast'],
+  ['09:00–10:30','QA'],
+  ['10:45–12:00','DILR'],
+  ['12:15–01:15','VARC'],
+  ['01:15–03:00','Library Deep Work'],
+  ['05:30–07:00','Coaching'],
+  ['07:20–08:20','Gym'],
+  ['08:30–09:00','Dinner'],
+  ['09:00–09:45','Test Analysis + Error Log'],
+  ['09:45–10:00','Revision'],
   ['10:00','Sleep'],
 ]
 
@@ -417,7 +422,8 @@ export function DailyControlCard() {
   const phaseId = getPhaseForDateKey(today.key)
   const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase
   const dayNum = getFirstPassDayNum(today.key)
-  const roadmap = ROADMAP_44.find(x => x.dayNum === dayNum) ?? ROADMAP_44[0]
+  const countdownDays = Math.max(0, Math.ceil((Date.parse(`${CAT_EXAM_DATE_STR}T00:00:00Z`) - Date.parse(`${today.key}T00:00:00Z`)) / 86400000))
+  const roadmap = ROADMAP_44.find(x => x.dateIso === today.key) ?? ROADMAP_44.find(x => x.dayNum === dayNum) ?? ROADMAP_44[0]
   const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
   const dailyTarget = getPercentylDailyTarget(today.key)
   const completed = tasks.filter(t => t.status === 'DONE').length
@@ -491,7 +497,17 @@ export function DailyControlCard() {
             fontSize: 'clamp(8px, 2vw, 9px)',
             fontWeight: 900,
             whiteSpace: 'nowrap',
-          }}>DAY {dayNum}/44</span>
+          }}>CALENDAR DAY {dayNum}/44</span>
+          <span style={{
+            padding: 'clamp(4px, 1.5vw, 5px) clamp(6px, 2vw, 8px)',
+            borderRadius: 8,
+            background: 'rgba(239,68,68,.10)',
+            border: '1px solid rgba(239,68,68,.24)',
+            color: '#FCA5A5',
+            fontSize: 'clamp(8px, 2vw, 9px)',
+            fontWeight: 900,
+            whiteSpace: 'nowrap',
+          }}>{countdownDays} DAYS TO CAT</span>
         </div>
       </div>
 
@@ -654,7 +670,7 @@ export function DailyControlCard() {
               fontSize: 'clamp(9px, 2vw, 10px)',
               color: '#93C5FD',
               fontWeight: 900,
-            }}>TODAY'S O.M.I.A.</div>
+            }}>ONE MOST IMPORTANT ACTION</div>
             <div style={{
               marginTop: 'clamp(3px, 1.5vw, 4px)',
               color: '#FFF',
@@ -665,7 +681,7 @@ export function DailyControlCard() {
               marginTop: 'clamp(2px, 1vw, 3px)',
               color: '#94A3B8',
               fontSize: 'clamp(9px, 2vw, 11px)',
-            }}>Day {dayNum}/44 • {roadmap.chapter}</div>}
+            }}>Calendar tracker Day {dayNum}/44 • Date-scheduled unit: {roadmap.chapter}</div>}
           </div>
         </div>
 
@@ -764,7 +780,7 @@ export function DailyControlCard() {
             color: '#E5E7EB',
             fontSize: 'clamp(11px, 2.5vw, 12px)',
             lineHeight: 1.65,
-          }}>Wake/reset → water → gentle humming → gentle jaw mobility → gentle voice warm-up → comfortable neck tension release.</div>
+          }}>Wake/reset → water → gentle humming → gentle jaw mobility → gentle voice warm-up → comfortable neck mobility → phone away.</div>
           <div style={{
             marginTop: 'clamp(4px, 1.5vw, 5px)',
             color: '#86EFAC',
@@ -861,7 +877,8 @@ export function DailyControlCard() {
             fontSize: 'clamp(9px, 2vw, 10px)',
             lineHeight: 1.6,
           }}>
-            <strong style={{ color: '#FFF' }}>Rule:</strong> Basic → Advanced → Practice → Review → Connection → Next. If weak: repair → retest. Revision = 30-sec recap → 2-min revision → 1-min connection.
+            <strong style={{ color: '#FFF' }}>Rule:</strong> Basic → Advanced → Practice → Review → Connection → Next. If weak: repair → retest. Revision = 30-sec recap → 2-min revision → previous connection → next preview.
+            <div style={{ marginTop: 6, color: '#94A3B8' }}><strong style={{ color: '#CBD5E1' }}>FAST:</strong> Focus → Action → System → Tracking • <strong style={{ color: '#CBD5E1' }}>7 Cs:</strong> Confidence, Clarity, Concentration, Consistency, Character, Commitment, Capacity for Joy.</div>
           </div>
         </div>
       </div>
