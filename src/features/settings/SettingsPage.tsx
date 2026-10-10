@@ -54,19 +54,6 @@ export function SettingsPage({ onBack }: Props) {
       setNotifications(n as boolean)
       setSelectedTheme(th as string || 'apex')
 
-      // Browser storage is the user's preference, but Android permission and
-      // channel settings can be revoked independently. Reflect the real native
-      // state so the toggle does not claim reminders are active when blocked.
-      if (isNative()) {
-        try {
-          const status = await nativeRequest({ action: 'getNotificationStatus' })
-          if (!active || !status.ok || typeof status.enabled !== 'boolean') return
-          setNotifications(status.enabled)
-          await SettingsRepository.set('notifications', status.enabled)
-        } catch {
-          // Preserve the saved preference if the bridge is temporarily unavailable.
-        }
-      }
     }
 
     const handleNativeNotificationPermission = (event: Event) => {
