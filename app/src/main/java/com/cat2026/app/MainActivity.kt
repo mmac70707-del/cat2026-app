@@ -727,7 +727,6 @@ class MainActivity : FragmentActivity() {
 
         prefs.edit().putBoolean(NATIVE_NOTIFICATIONS_ENABLED, true).apply()
         triggerNotificationSetup()
-        emitNotificationPermissionState(true)
     }
 
     private fun triggerNotificationSetup() {
