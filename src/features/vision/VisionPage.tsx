@@ -227,6 +227,78 @@ export function VisionPage({ onBack }: { onBack?: () => void }) {
         </div>
       </div>
 
+      {/* FOUNDER BRM BOARD — WHY THIS APP SHOULD EXIST AND HOW IT CAN SCALE */}
+      <section aria-labelledby="founder-brm-title" style={{ background: 'linear-gradient(145deg, #121d2b, #161d2e)', border: '1px solid #3b5267', borderRadius: 14, padding: 18, marginBottom: 24 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: '#38BDF8', letterSpacing: 1.6, marginBottom: 6 }}>
+          FOUNDER BRM • PRODUCT STRATEGY
+        </div>
+        <h2 id="founder-brm-title" style={{ margin: '0 0 8px', color: '#F8FAFC', fontSize: 19, lineHeight: 1.25 }}>
+          Build the system people return to—not another app they forget.
+        </h2>
+        <p style={{ margin: '0 0 16px', color: '#AFC0D0', fontSize: 12, lineHeight: 1.6 }}>
+          Long-term product promise: help people turn a meaningful goal into a clear next action, a repeatable system, honest progress evidence and a calm return after setbacks. The motto is “Become the Man You Promised Yourself”; the product should be useful to anyone who wants to become the person they promised themselves they would be.
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 10, marginBottom: 16 }}>
+          {[
+            { n: '01', title: 'WHO WE SERVE FIRST', body: 'Right now: CAT 2026 learners who need a focused, trustworthy execution cockpit. Start narrow; understand one user group deeply before broadening.' },
+            { n: '02', title: 'THE REAL PAIN', body: 'Ambition gets split across planners, timers, quotes, notes and trackers. People often know the goal but struggle to choose the next step, return after distraction and learn from mistakes.' },
+            { n: '03', title: 'WHY USE THIS APP?', body: 'One clear next action; a Focus-first interface; practice → analysis → repair → retest; real progress evidence; daily systems; and recovery without guilt or fake score promises.' },
+            { n: '04', title: 'WHAT MAKES IT DIFFERENT', body: 'Not motivation alone. Connect goal, action, routine, evidence, reflection and repair in one coherent loop. Personalise from verified behaviour without inventing data.' },
+          ].map(item => (
+            <article key={item.n} style={{ background: '#1c2938', border: '1px solid #304457', borderRadius: 10, padding: 12 }}>
+              <div style={{ fontSize: 9, color: '#F5A623', fontWeight: 900, letterSpacing: 1.2 }}>{item.n} • PRODUCT TRUTH</div>
+              <h3 style={{ fontSize: 12, color: '#F8FAFC', margin: '7px 0 5px', lineHeight: 1.35 }}>{item.title}</h3>
+              <p style={{ color: '#AFC0D0', fontSize: 11, lineHeight: 1.55, margin: 0 }}>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div style={{ border: '1px solid rgba(245,166,35,.3)', borderRadius: 10, padding: 12, marginBottom: 14, background: 'rgba(245,166,35,.045)' }}>
+          <div style={{ color: '#F5A623', fontSize: 10, fontWeight: 900, letterSpacing: 1.3, marginBottom: 8 }}>THE F.A.S.T. PRODUCT LOOP</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(115px, 1fr))', gap: 7 }}>
+            {[
+              ['FOCUS', 'Choose what matters'],
+              ['ACTION', 'Start the next step'],
+              ['SYSTEM', 'Repeat the process'],
+              ['TRACKING', 'Measure real evidence'],
+            ].map(([label, note], idx) => (
+              <div key={label} style={{ background: '#202b38', borderRadius: 8, padding: 9, minWidth: 0 }}>
+                <div style={{ color: '#F5A623', fontSize: 10, fontWeight: 900 }}>{idx + 1}. {label}</div>
+                <div style={{ color: '#CBD5E1', fontSize: 10, lineHeight: 1.4, marginTop: 4 }}>{note}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ color: '#38BDF8', fontSize: 10, fontWeight: 900, letterSpacing: 1.3, marginBottom: 8 }}>FROM FIRST USERS TO SCALE • BRM GROWTH MAP</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: 8 }}>
+          {[
+            { n: '1', title: 'VALIDATE THE PAIN', body: 'Talk to real CAT learners. Observe their current workflow and ask what is frustrating—not just whether they like the idea.' },
+            { n: '2', title: 'PROVE FIRST VALUE', body: 'Help a small pilot group complete its first focused session and understand the next step without needing a tutorial.' },
+            { n: '3', title: 'MEASURE RETENTION', body: 'Track consented, privacy-respecting signals: activation, weekly return, task completion, repair/retest use, and reported usefulness.' },
+            { n: '4', title: 'IMPROVE THE LOOP', body: 'Fix the largest friction point each cycle. Keep the app fast, accessible, accurate, and genuinely useful on mobile and laptop.' },
+            { n: '5', title: 'EARN DISTRIBUTION', body: 'Use useful learning content, honest demos, user referrals and relevant communities. No spam, fake testimonials or guaranteed-result claims.' },
+            { n: '6', title: 'SCALE RESPONSIBLY', body: 'Only after repeat value is demonstrated: broaden to other goal-driven learners, test pricing carefully, and strengthen support, security and unit economics.' },
+          ].map(item => (
+            <div key={item.n} style={{ display: 'flex', gap: 9, alignItems: 'flex-start', background: '#182331', borderRadius: 9, padding: 10 }}>
+              <span style={{ display: 'grid', placeItems: 'center', width: 24, height: 24, flex: '0 0 24px', borderRadius: 8, background: '#26384a', color: '#F5A623', fontSize: 11, fontWeight: 900 }}>{item.n}</span>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ color: '#F8FAFC', fontSize: 10, fontWeight: 900, marginBottom: 4 }}>{item.title}</div>
+                <p style={{ color: '#AFC0D0', fontSize: 10, lineHeight: 1.5, margin: 0 }}>{item.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid #304457', color: '#CBD5E1', fontSize: 11, lineHeight: 1.6 }}>
+          <strong style={{ color: '#F5A623' }}>7 Cs product culture:</strong> Confidence from evidence • Clarity in every screen • Concentration through Focus Mode • Consistency through repeatable systems • Character through honest data • Commitment with adaptable methods • Capacity for Joy through humane recovery.
+        </div>
+        <div style={{ marginTop: 9, color: '#94A3B8', fontSize: 10, lineHeight: 1.55 }}>
+          GUARDRAIL: This is a product hypothesis and growth plan—not proof of market demand yet. Until CAT 2026, website quality may improve without disturbing the locked study mission. Validate with real users before claiming scale.
+        </div>
+      </section>
+
       {/* FINAL VISION QUOTE CARD */}
       <div style={{ background: 'linear-gradient(135deg, #1A2E45, #0D1B2A)', border: '1px solid #F5A623', borderRadius: 12, padding: 20, textAlign: 'center' }}>
         <div style={{ fontSize: 16, fontWeight: 800, color: '#F5A623', marginBottom: 8 }}>
