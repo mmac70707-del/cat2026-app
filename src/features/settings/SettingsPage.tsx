@@ -11,7 +11,7 @@ import { MockRepository, DailyScoreRepository } from '@/repositories/index'
 import { useToast } from '@/components/Toast'
 import { todayKey } from '@/services/domain'
 import { downloadScheduleICS } from '@/services/calendarExport'
-import { isNative, requestNotificationPermission, setNotificationsEnabled } from '@/services/native'
+import { isNative, requestNotificationPermission, setNotificationsEnabled, nativeRequest } from '@/services/native'
 import { enableWebNotificationScheduler, disableWebNotificationScheduler, isWebNotificationSupported, requestWebNotificationPermission, getWebNotificationPermission, sendWebNotificationTest } from '@/services/webNotifications'
 import { type TextSize, type ThemeMode, getTextSize, getThemeMode, isFocusMode, applyTextSize, applyThemeMode, applyFocusMode, applyStitchTheme } from '@/services/uiPreferences'
 
@@ -109,6 +109,20 @@ export function SettingsPage({ onBack }: Props) {
   function testNotification() {
     const ok = sendWebNotificationTest()
     toast(ok ? 'Test notification sent ✓' : 'Allow notifications first', ok ? '#16A34A' : '#D97706')
+  }
+
+  async function testNativeNotification() {
+    try {
+      const result = await nativeRequest({ action: 'sendTestNotification' })
+      toast(
+        result.ok
+          ? 'Android test notification sent ✓'
+          : `Test failed: ${result.error ?? 'check Android notification settings'}`,
+        result.ok ? '#16A34A' : '#D97706'
+      )
+    } catch {
+      toast('Could not test Android notifications. Check app and system permissions.', '#D97706')
+    }
   }
 
   function exportCalendar() {
@@ -305,6 +319,16 @@ export function SettingsPage({ onBack }: Props) {
             <div className="toggle-knob" />
           </div>
         </div>
+        {isNative() && notifications && (
+          <div style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
+            <button className="btn-ghost" onClick={() => { void testNativeNotification() }} style={{ width: '100%' }}>
+              🔔 Send Test Android Notification
+            </button>
+            <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 6, lineHeight: 1.5 }}>
+              Sends one test alert without changing the morning or evening schedule. If it fails, check Android Settings → Apps → CAT 2026 → Notifications.
+            </div>
+          </div>
+        )}
         {!isNative() && isWebNotificationSupported() && notifications && getWebNotificationPermission() === 'granted' && (
           <div style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
             <button className="btn-ghost" onClick={testNotification} style={{ width: '100%' }}>

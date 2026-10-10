@@ -773,6 +773,27 @@ class MainActivity : FragmentActivity() {
                     }
                     response.put("ok", nativeUnlocked)
                 }
+                "sendTestNotification" -> {
+                    val permissionGranted =
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                        ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+                    val notificationsEnabled = prefs.getBoolean(NATIVE_NOTIFICATIONS_ENABLED, false)
+                    val sent = nativeUnlocked && notificationsEnabled && permissionGranted &&
+                        ReminderSchedule.sendTestNotification(this)
+                    response.put("ok", sent)
+                    if (!sent) {
+                        val reason = when {
+                            !nativeUnlocked -> "Unlock the app first"
+                            !notificationsEnabled -> "Turn Daily Reminders on first"
+                            !permissionGranted -> "Android notification permission is not granted"
+                            else -> "Notifications may be disabled in Android system settings"
+                        }
+                        response.put("error", reason)
+                    }
+                }
                 "authenticateBiometric" -> {
                     runOnUiThread { authenticateBiometricInternal() }
                     response.put("ok", true).put("started", true)

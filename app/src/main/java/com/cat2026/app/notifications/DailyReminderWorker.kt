@@ -79,6 +79,23 @@ object ReminderSchedule {
         WorkManager.getInstance(context).cancelUniqueWork(EVENING_WORK_NAME)
     }
 
+    /** Sends a single diagnostic notification without altering the reminder schedule. */
+    fun sendTestNotification(context: Context): Boolean {
+        return try {
+            createChannel(context)
+            showNotification(
+                context,
+                id = 1003,
+                title = "CAT 2026 • Test notification",
+                text = "Android can display app notifications. Your scheduled reminders remain unchanged."
+            )
+            true
+        } catch (_: Exception) {
+            // The app may be blocked by OS notification settings or permission.
+            false
+        }
+    }
+
     fun daysLeft(): Long {
         val today = LocalDate.now(APP_ZONE)
         return (CAT_EXAM_DATE.toEpochDay() - today.toEpochDay()).coerceAtLeast(0)
