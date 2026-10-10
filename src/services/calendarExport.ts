@@ -5,9 +5,6 @@ import { getKolkataDateParts } from '@/services/calendarEngine'
 // Time schedule. This avoids device-timezone drift and keeps alerts consistent
 // across Google Calendar, Outlook, Apple Calendar, Android and desktop clients.
 
-function pad(n: number): string {
-  return String(n).padStart(2, '0')
-}
 
 function toUTCICSDate(date: Date): string {
   return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
