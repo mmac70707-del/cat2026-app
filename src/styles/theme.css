@@ -31,14 +31,14 @@ html[data-theme-mode="light"]{
   --ui-accent-soft:rgba(146,112,45,.10);
   --ui-positive:#47745a;
 }
-html[data-stitch-theme="apex"]{--ui-accent:#c7aa6b;--ui-accent-strong:#e4cb91;--ui-accent-soft:rgba(199,170,107,.11)}
-html[data-stitch-theme="glacier"]{--ui-accent:#38bdf8;--ui-accent-strong:#7dd3fc;--ui-accent-soft:rgba(56,189,248,.11)}
-html[data-stitch-theme="athenaeum"]{--ui-accent:#d4a94e;--ui-accent-strong:#f2cf7b;--ui-accent-soft:rgba(212,169,78,.11)}
-html[data-stitch-theme="crimson"]{--ui-accent:#ef5b67;--ui-accent-strong:#ff8a93;--ui-accent-soft:rgba(239,91,103,.11)}
+html[data-stitch-theme="apex"]{--ui-accent:#cbb780;--ui-accent-strong:#e0c98d;--ui-accent-soft:rgba(203,183,128,.11)}
+html[data-stitch-theme="glacier"]{--ui-accent:#8faeac;--ui-accent-strong:#b7cfca;--ui-accent-soft:rgba(143,174,172,.12)}
+html[data-stitch-theme="athenaeum"]{--ui-accent:#927238;--ui-accent-strong:#b29353;--ui-accent-soft:rgba(146,114,56,.10)}
+html[data-stitch-theme="crimson"]{--ui-accent:#b86e70;--ui-accent-strong:#d19495;--ui-accent-soft:rgba(184,110,112,.11)}
 
-html[data-theme-mode="light"][data-stitch-theme="glacier"]{--ui-accent:#0284c7;--ui-accent-strong:#0369a1;--ui-accent-soft:rgba(2,132,199,.10)}
+html[data-theme-mode="light"][data-stitch-theme="glacier"]{--ui-accent:#557c80;--ui-accent-strong:#3f686c;--ui-accent-soft:rgba(85,124,128,.10)}
 html[data-theme-mode="light"][data-stitch-theme="athenaeum"]{--ui-accent:#a26c11;--ui-accent-strong:#7c4f0c;--ui-accent-soft:rgba(162,108,17,.10)}
-html[data-theme-mode="light"][data-stitch-theme="crimson"]{--ui-accent:#c73b49;--ui-accent-strong:#a52f3b;--ui-accent-soft:rgba(199,59,73,.10)}
+html[data-theme-mode="light"][data-stitch-theme="crimson"]{--ui-accent:#9e5557;--ui-accent-strong:#814144;--ui-accent-soft:rgba(158,85,87,.10)}
 
 html[data-text-size="large"]{--ui-text-scale:1.08}
 html[data-text-size="xlarge"]{--ui-text-scale:1.16}
