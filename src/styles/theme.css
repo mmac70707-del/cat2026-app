@@ -481,7 +481,7 @@ html[data-focus-mode="on"] .dash-root{
 
 .jarvis-theme .dash-root .focus-execution-strip{
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:5px;
   margin-top:10px;
 }
