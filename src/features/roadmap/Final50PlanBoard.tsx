@@ -41,6 +41,18 @@ export function Final50PlanBoard() {
           <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
             <strong>After every mock</strong><br />Fill attempts, correct, wrong and score by section; identify the weakest section; classify C1–C5; write three repair topics.
           </div>
+          <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
+            <strong>Attempt / leave rule</strong><br />MCQ expected value is positive when your honest chance of being correct is above 25%. TITA has no negative marking: the PDF says never leave one blank.
+          </div>
+          <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
+            <strong>Use each 40-minute section wisely</strong><br />Rough average: ~100 seconds per VARC question and ~109 seconds per DILR / QA question. Easy questions should take less; decide when to leave inside the section. No switching or returning after time ends.
+          </div>
+          <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
+            <strong>Fix process before adding volume</strong><br />QA: SOLVE · DILR: SCOPE · RC: OCTAVES. For repeated errors, fix the method before adding more questions or new resources.
+          </div>
+          <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
+            <strong>Protect the person</strong><br />Keep sleep and gym steady, avoid comparing and new resources, and taper on purpose. Last full mock: Sun 22 Nov. No test on Fri 27 or Sat 28 Nov.
+          </div>
         </div>
         <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 8 }}>
           These exam rules are transcribed from the uploaded plan. Re-check official instructions and the admit card when released.
