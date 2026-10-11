@@ -51,16 +51,17 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
       return
     }
     const sectionCounts = [
-      { name: 'QA', attempts: Number(qaat), correct: Number(qaCorrect), wrong: Number(qaWrong) },
-      { name: 'DILR', attempts: Number(dlat), correct: Number(dilrCorrect), wrong: Number(dilrWrong) },
-      { name: 'VARC', attempts: Number(vcat), correct: Number(varcCorrect), wrong: Number(varcWrong) },
+      { name: 'QA', attempts: Number(qaat), correct: Number(qaCorrect), wrong: Number(qaWrong), maxQuestions: 22 },
+      { name: 'DILR', attempts: Number(dlat), correct: Number(dilrCorrect), wrong: Number(dilrWrong), maxQuestions: 22 },
+      { name: 'VARC', attempts: Number(vcat), correct: Number(varcCorrect), wrong: Number(varcWrong), maxQuestions: 24 },
     ]
     const inconsistent = sectionCounts.find(section =>
       section.correct + section.wrong !== section.attempts ||
-      section.correct > section.attempts || section.wrong > section.attempts
+      section.correct > section.attempts || section.wrong > section.attempts ||
+      section.attempts > section.maxQuestions
     )
     if (inconsistent) {
-      setFeedback(`${inconsistent.name}: correct + wrong must equal attempts. Check this section before saving.`)
+      setFeedback(`${inconsistent.name}: correct + wrong must equal attempts, and attempts cannot exceed ${inconsistent.maxQuestions} questions.`)
       return
     }
     const analysis = analyseMock({ qa, dilr, varc, qaat, dlat, vcat, qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong })
