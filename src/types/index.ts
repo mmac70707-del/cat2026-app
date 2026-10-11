@@ -107,6 +107,12 @@ export interface MockAnalysis {
   qaat: number;
   dlat: number;
   vcat: number;
+  qaCorrect?: number;
+  qaWrong?: number;
+  dilrCorrect?: number;
+  dilrWrong?: number;
+  varcCorrect?: number;
+  varcWrong?: number;
 }
 
 export interface MockRecord extends MockAnalysis {

@@ -5,6 +5,7 @@ import { usePhase } from '@/hooks/usePhase'
 import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
 import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
+import { getFinal50DayPlan } from '@/data/final50Plan'
 import { playSuccessSound } from '@/services/audioService'
 import { BlockCard } from './BlockCard'
 import { ExecutionIntelligenceCard } from './ExecutionIntelligenceCard'
@@ -35,7 +36,12 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
   const now = new Date()
   const dateKey = getKolkataDateKey(now)
   const pt = getPercentylDailyTarget(dateKey)
-  const dayNum = pt.dayNum || getFirstPassDayNum(dateKey)
+  const finalPlan = getFinal50DayPlan(dateKey)
+  const firstPassDayNum = getFirstPassDayNum(dateKey)
+  const dayNum = finalPlan ? finalPlan.dayNum : firstPassDayNum
+  const qaTargetLabel = finalPlan ? finalPlan.qaFocus : pt.quantTopic + ' (' + pt.quantTargetQs + ' Qs)'
+  const dilrTargetLabel = finalPlan ? finalPlan.dilrFocus : pt.dilrTopic + ' (' + pt.dilrTargetSets + ' sets)'
+  const varcTargetLabel = finalPlan ? finalPlan.varcFocus : pt.varcTopic + ' (' + pt.varcTargetPsg + ' passages)'
 
   const activeTask = tasks.find(t => t.status === 'IN_PROGRESS')
   const nextTask = tasks.find(t => t.status === 'TODO')
@@ -102,7 +108,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
           </div>
         </div>
         <div className="today-command-mission">Mission: {phase.mission}</div>
-        <div className="today-command-meta">{formatDate(now)} · Week {getWeekNumber()} · {phase.id} {phase.name}</div>
+        <div className="today-command-meta">{formatDate(now)} · {finalPlan && finalPlan.weekNum > 0 ? 'Final Plan Week ' + finalPlan.weekNum + '/7' : 'Week ' + getWeekNumber()} · {phase.id} {phase.name}</div>
       </div>
 
       <ExecutionIntelligenceCard tasks={tasks} onNavigate={onNavigate} />
@@ -131,32 +137,44 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       <div className="today-core-targets" style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--ql-surface)', border: '1px solid var(--ql-accent)', borderRadius: 10, padding: 14 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--ql-accent-strong)', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' }}>
-            🎯 TODAY'S 3 CORE TARGETS (DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44)
+            {finalPlan?.isExamDay ? '🎯 CAT EXAM DAY — FOLLOW ADMIT-CARD INSTRUCTIONS' : finalPlan && !finalPlan.isDayZero ? '🎯 FINAL 50-DAY PDF PLAN · DAY ' + dayNum + '/49 · WEEK ' + finalPlan.weekNum + '/7' : finalPlan?.isDayZero ? '🎯 FINAL 50-DAY PLAN · DAY 0' : '🎯 TODAY’S 3 CORE TARGETS · FIRST-PASS DAY ' + firstPassDayNum + '/44'}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 12, fontWeight: 700 }}>
             <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-accent-strong)' }}>
-              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.quantTopic.toUpperCase()} ({pt.quantTargetQs} Qs)</span>
+              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{qaTargetLabel}</span>
             </div>
             <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
-              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.dilrTopic.toUpperCase()} ({pt.dilrTargetSets} Sets)</span>
+              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{dilrTargetLabel}</span>
             </div>
             <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
-              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.varcTopic.toUpperCase()} ({pt.varcTargetPsg} Psg)</span>
+              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{varcTargetLabel}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 44-Day First-Pass Day & Progress Bar */}
+      {finalPlan && (
+        <div style={{ padding: '12px 16px 0' }}>
+          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: 14 }}>
+            <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--gold)', letterSpacing: 1 }}>TODAY’S LOCKED TEST / GATE</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--ql-text)', marginTop: 5 }}>{finalPlan.testTitle}</div>
+            <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 5, lineHeight: 1.5 }}>{finalPlan.testNotes}</div>
+            <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 7 }}>Week {finalPlan.weekNum || '—'} priority: {finalPlan.weeklyPriority}</div>
+            {finalPlan.coverageFreeze && <div style={{ fontSize: 10, color: '#F59E0B', fontWeight: 800, marginTop: 6 }}>COVERAGE FREEZE: no new topics except repeated Tier-1 C1 gaps.</div>}
+          </div>
+        </div>
+      )}
+
+      {/* Daily execution progress. Historical first-pass syllabus progress remains in Roadmap. */}
       <div className="today-first-pass" style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
-                🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
+                🚀 TODAY’S 8-BLOCK EXECUTION
               </div>
               <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ql-text)', marginTop: 2 }}>
-                Target Topic: {pt.quantTopic} ({pt.quantTargetQs} Qs)
+                {finalPlan ? finalPlan.testTitle : 'Syllabus focus: ' + pt.quantTopic}
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>

@@ -1,6 +1,7 @@
 import { CAT_DATE, PHASES, WEEK_PLAN_TEMPLATE } from '@/data/config'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { MASTER_SPINE_44 } from '@/data/roadmap44'
+import { FINAL_50_WEEK_PLANS, getFinal50DayPlan } from '@/data/final50Plan'
 import type { Phase, WeekDay, MockAnalysis, MasteryLevel, Task } from '@/types'
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -39,6 +40,8 @@ export function getCountdownParts(): { days: number; hours: number; minutes: num
 
 // ── Week number (from Phase 1 start) ─────────────────
 export function getWeekNumber(): number {
+  const todayPlan = getFinal50DayPlan(getKolkataDateKey())
+  if (todayPlan && todayPlan.weekNum > 0 && !todayPlan.isExamDay) return todayPlan.weekNum
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const p1Start = new Date(Date.UTC(2026, 8, 1))
@@ -46,33 +49,41 @@ export function getWeekNumber(): number {
   return Math.floor(diff / (7 * 86_400_000)) + 1
 }
 
-// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
+// ── Dynamic week plan: PDF-locked Sunday–Saturday cycle during the Final 50 Days ─
 export function buildWeekPlan(): WeekDay[] {
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const todayKey = getKolkataDateKey()
   const day = parts.dayOfWeek
-  const mon = new Date(todayKolkata)
-  mon.setUTCDate(todayKolkata.getUTCDate() - (day === 0 ? 6 : day - 1))
+  const todayFinalPlan = getFinal50DayPlan(todayKey)
+  const finalCycleActive = Boolean(todayFinalPlan && !todayFinalPlan.isDayZero && !todayFinalPlan.isExamDay)
+  const weekStart = new Date(todayKolkata)
+  weekStart.setUTCDate(todayKolkata.getUTCDate() - (finalCycleActive ? day : (day === 0 ? 6 : day - 1)))
 
-  return WEEK_PLAN_TEMPLATE.map((t, i) => {
-    const d = new Date(mon)
-    d.setUTCDate(mon.getUTCDate() + i)
+  return Array.from({ length: 7 }, (_, i) => {
+    const t = WEEK_PLAN_TEMPLATE[finalCycleActive ? (i + 6) % 7 : i]
+    const d = new Date(weekStart)
+    d.setUTCDate(weekStart.getUTCDate() + i)
     const dKey = d.toISOString().slice(0, 10)
-    const dNum = getFirstPassDayNum(dKey)
-    const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === dNum)
-
+    const firstPassNum = getFirstPassDayNum(dKey)
+    const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === firstPassNum)
+    const finalPlan = getFinal50DayPlan(dKey)
+    const usingFinalPlan = Boolean(finalPlan && !finalPlan.isDayZero && !finalPlan.isExamDay)
     const isToday = dKey === todayKey
     const isPast = dKey < todayKey
+    const testTitle = finalPlan?.testTitle || ''
+    const isTestDay = testTitle.includes('MOCK') || testTitle.includes('SECTIONAL') || testTitle.includes('NO TEST')
 
     return {
       ...t,
       date: d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()],
-      qa: roadmapItem ? roadmapItem.chapter : t.qa,
-      dilr: roadmapItem ? roadmapItem.dilrFamily : t.dilr,
-      varc: roadmapItem ? roadmapItem.varcSkill : t.varc,
-      focus: isToday ? 'TODAY' : t.focus,
-      fCol: isToday ? '#F5A623' : t.fCol,
+      qa: usingFinalPlan ? finalPlan!.qaFocus : roadmapItem ? roadmapItem.chapter : t.qa,
+      dilr: usingFinalPlan ? finalPlan!.dilrFocus : roadmapItem ? roadmapItem.dilrFamily : t.dilr,
+      varc: usingFinalPlan ? finalPlan!.varcFocus : roadmapItem ? roadmapItem.varcSkill : t.varc,
+      focus: finalPlan ? testTitle : isToday ? 'TODAY' : t.focus,
+      eve: finalPlan ? finalPlan.testNotes : t.eve,
+      fCol: isToday ? '#F5A623' : isTestDay ? '#A78BFA' : t.fCol,
+      isTest: finalPlan ? isTestDay : t.isTest,
       isToday,
       isPast,
     }
@@ -81,6 +92,11 @@ export function buildWeekPlan(): WeekDay[] {
 
 // ── Week label (Mon X – Sun Y) ───────────────────────
 export function getWeekLabel(): string {
+  const todayPlan = getFinal50DayPlan(getKolkataDateKey())
+  if (todayPlan && todayPlan.weekNum > 0 && !todayPlan.isExamDay) {
+    const activeWeek = FINAL_50_WEEK_PLANS.find(w => w.number === todayPlan.weekNum)
+    if (activeWeek) return activeWeek.dates + ' 2026 (Sun–Sat)'
+  }
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const day = parts.dayOfWeek
@@ -103,6 +119,9 @@ export function calcTaskProgress(tasks: Task[]): { total: number; done: number; 
 export function analyseMock(raw: {
   qa: string; dilr: string; varc: string
   qaat: string; dlat: string; vcat: string
+  qaCorrect?: string; qaWrong?: string
+  dilrCorrect?: string; dilrWrong?: string
+  varcCorrect?: string; varcWrong?: string
 }): MockAnalysis {
   const qa   = parseInt(raw.qa)   || 0
   const dilr = parseInt(raw.dilr) || 0
@@ -110,23 +129,41 @@ export function analyseMock(raw: {
   const qaat = parseInt(raw.qaat) || 0
   const dlat = parseInt(raw.dlat) || 0
   const vcat = parseInt(raw.vcat) || 0
+  const parseOptionalCount = (value?: string): number | undefined =>
+    value !== undefined && value.trim() !== '' ? Number.parseInt(value, 10) : undefined
+  const qaCorrect = parseOptionalCount(raw.qaCorrect)
+  const qaWrong = parseOptionalCount(raw.qaWrong)
+  const dilrCorrect = parseOptionalCount(raw.dilrCorrect)
+  const dilrWrong = parseOptionalCount(raw.dilrWrong)
+  const varcCorrect = parseOptionalCount(raw.varcCorrect)
+  const varcWrong = parseOptionalCount(raw.varcWrong)
+  const hasAllOutcomeCounts = [qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong].every(v => v !== undefined)
 
-  const total   = qa + dilr + varc
-  const att     = qaat + dlat + vcat
-  const qaAcc   = qaat > 0 ? Math.round(qa   / (qaat * 3) * 100) : 0
-  const dlAcc   = dlat > 0 ? Math.round(dilr / (dlat * 3) * 100) : 0
-  const vcAcc   = vcat > 0 ? Math.round(varc / (vcat * 3) * 100) : 0
-  const overall = att  > 0 ? Math.round(total / (att  * 3) * 100) : 0
+  const total = qa + dilr + varc
+  const att = qaat + dlat + vcat
+  const qaAcc = qaat > 0 ? (qaCorrect !== undefined ? Math.round(qaCorrect / qaat * 100) : Math.round(qa / (qaat * 3) * 100)) : 0
+  const dlAcc = dlat > 0 ? (dilrCorrect !== undefined ? Math.round(dilrCorrect / dlat * 100) : Math.round(dilr / (dlat * 3) * 100)) : 0
+  const vcAcc = vcat > 0 ? (varcCorrect !== undefined ? Math.round(varcCorrect / vcat * 100) : Math.round(varc / (vcat * 3) * 100)) : 0
+  const correctTotal = (qaCorrect ?? 0) + (dilrCorrect ?? 0) + (varcCorrect ?? 0)
+  const overall = att > 0
+    ? hasAllOutcomeCounts ? Math.round(correctTotal / att * 100) : Math.round(total / (att * 3) * 100)
+    : 0
 
   const weak: string[] = []
-  if (qaAcc < 70) weak.push(`QA accuracy ${qaAcc}% — repair concept gaps (C1)`)
-  if (dlAcc < 70) weak.push(`DILR accuracy ${dlAcc}% — work on set selection`)
-  if (vcAcc < 70) weak.push(`VARC accuracy ${vcAcc}% — improve elimination`)
-  if (qaat  < 14) weak.push(`QA attempts ${qaat} — build speed on Tier 1 topics`)
-  if (dlat  < 3)  weak.push(`DILR attempts ${dlat} sets — practice set selection faster`)
-  if (vcat  < 18) weak.push(`VARC attempts ${vcat} — increase RC reading speed`)
+  if (qaat >= 8 && qaAcc < 70) weak.push(`QA accuracy ${qaAcc}% — repair concept gaps (C1)`)
+  else if (qaat < 8) weak.push(`QA has ${qaat} attempts; wait for about 8 attempts before judging section accuracy`)
+  if (dlat >= 8 && dlAcc < 70) weak.push(`DILR accuracy ${dlAcc}% — work on set selection`)
+  else if (dlat < 8) weak.push(`DILR has ${dlat} question attempts; wait for about 8 before judging section accuracy`)
+  if (vcat >= 8 && vcAcc < 70) weak.push(`VARC accuracy ${vcAcc}% — improve elimination`)
+  else if (vcat < 8) weak.push(`VARC has ${vcat} attempts; wait for about 8 before judging section accuracy`)
+  if (qaat < 14) weak.push(`QA attempts ${qaat} — build speed on Tier 1 topics`)
+  if (dlat < 14) weak.push(`DILR question attempts ${dlat} — practise set selection and commitment`)
+  if (vcat < 18) weak.push(`VARC attempts ${vcat} — increase RC reading speed`)
 
-  return { total, att, overall, qaAcc, dlAcc, vcAcc, weak, qa, dilr, varc, qaat, dlat, vcat }
+  return {
+    total, att, overall, qaAcc, dlAcc, vcAcc, weak, qa, dilr, varc, qaat, dlat, vcat,
+    qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong
+  }
 }
 
 // ── Mastery helpers ───────────────────────────────────

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Task } from '@/types'
 import { BLOCKS } from '@/data/config'
+import { getFinal50DayPlan } from '@/data/final50Plan'
 
 interface Props {
   task: Task
@@ -17,6 +18,55 @@ export function BlockCard({ task, onStart, onDone, onUndo, onSkip, onNotes }: Pr
 
   const b = BLOCKS.find(x => x.id === task.blockId)
   if (!b) return null
+
+  const finalPlan = b.id === 'TEST' ? getFinal50DayPlan(task.date) : null
+  const plannedTestTitle = finalPlan?.testTitle ?? ''
+  const isFullMock = plannedTestTitle.includes('FULL MOCK')
+  const isSectional = plannedTestTitle.includes('SECTIONAL')
+  const isNoTestDay = plannedTestTitle.includes('NO TEST')
+  const isAnalysisBlock = plannedTestTitle.includes('ANALYSIS')
+  let displayName = finalPlan ? task.title : b.name
+  let displayTime = b.time
+  let displayDuration = b.dur
+  let displayTarget = b.target
+
+  if (finalPlan?.isExamDay) {
+    displayTime = 'Follow admit-card slot'
+    displayDuration = 'Exam day · no mock'
+    displayTarget = 'ID · admit card · route · calm start'
+  } else if (isFullMock) {
+    displayTime = 'Same fixed weekly mock slot'
+    displayDuration = '120 minutes · no pause'
+    displayTarget = 'Match official CAT slot when released'
+  } else if (finalPlan?.isDayZero) {
+    displayTime = 'Library 13:15–15:00'
+    displayDuration = '40 min QA sectional + remaining deep work'
+    displayTarget = 'Same-evening analysis 21:00–21:45 · no new topic'
+  } else if (isSectional) {
+    displayTime = 'Library 13:15–15:00'
+    displayDuration = '40 min sectional + remaining deep work'
+    displayTarget = 'No peeking · use remaining time for the weakest-section repair'
+  } else if (isNoTestDay) {
+    displayTime = 'No test today'
+    displayDuration = 'Rest / logistics'
+    displayTarget = 'Protect recovery'
+  } else if (finalPlan && isAnalysisBlock && !plannedTestTitle.includes('LIGHT ANALYSIS')) {
+    displayTime = 'Library 13:15–15:00 + evening block'
+    displayDuration = plannedTestTitle.includes('MOCK') ? 'Analysis ≥ mock duration' : 'Analyse · repair · retest'
+    displayTarget = 'Update C1–C5 log and repair topics'
+  } else if (plannedTestTitle.includes('LIGHT VARC')) {
+    displayTime = 'Light warm-up'
+    displayDuration = '20 minutes'
+    displayTarget = 'No new material'
+  } else if (plannedTestTitle.includes('ONE DILR SET')) {
+    displayTime = 'Single familiar set'
+    displayDuration = 'Untimed'
+    displayTarget = 'Explain the method'
+  } else if (plannedTestTitle.includes('LIGHT ANALYSIS')) {
+    displayTime = 'Light review'
+    displayDuration = 'Short and calm'
+    displayTarget = 'Repair only known high-value errors'
+  }
 
   const isDone  = task.status === 'DONE'
   const isIP    = task.status === 'IN_PROGRESS'
@@ -39,9 +89,9 @@ export function BlockCard({ task, onStart, onDone, onUndo, onSkip, onNotes }: Pr
 
         <div className="block-info">
           <div className="block-seq" style={{ color: b.color }}>{b.label}</div>
-          <div className="block-name">{b.name}</div>
+          <div className="block-name">{displayName}</div>
           <div className="block-meta">
-            {b.time} · {b.dur} · <strong>{b.target}</strong>
+            {displayTime} · {displayDuration} · <strong>{displayTarget}</strong>
             {isDone && <span style={{ color: '#22C55E', marginLeft: 4 }}> ✓ Done</span>}
             {isIP   && <span style={{ color: '#F5A623', marginLeft: 4 }}> ● In progress</span>}
             {isSkip && <span style={{ color: '#94A3B8', marginLeft: 4 }}> ↷ Skipped</span>}

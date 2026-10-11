@@ -5,6 +5,7 @@ import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum, getPhaseFor
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { CAT_EXAM_DATE_STR, PHASES as CONFIG_PHASES, SCHEDULE_ITEMS } from '@/data/config'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
+import { getFinal50DayPlan } from '@/data/final50Plan'
 
 const DAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
@@ -416,10 +417,12 @@ export function DailyControlCard() {
   const today = useMemo(() => todayIndia(), [tick])
   const phaseId = getPhaseForDateKey(today.key)
   const phaseInfo = CONFIG_PHASES.find(p => p.id === phaseId) ?? phase
-  const dayNum = getFirstPassDayNum(today.key)
+  const final50Plan = getFinal50DayPlan(today.key)
+  const firstPassDayNum = getFirstPassDayNum(today.key)
+  const dayNum = final50Plan && !final50Plan.isExamDay ? final50Plan.dayNum : firstPassDayNum
   const countdownDays = Math.max(0, Math.ceil((Date.parse(`${CAT_EXAM_DATE_STR}T00:00:00Z`) - Date.parse(`${today.key}T00:00:00Z`)) / 86400000))
-  const roadmap = ROADMAP_44.find(x => x.dateIso === today.key) ?? ROADMAP_44.find(x => x.dayNum === dayNum) ?? ROADMAP_44[0]
-  const dayAction = OMIA[today.day] ?? 'Execute the next verified CAT task.'
+  const roadmap = ROADMAP_44.find(x => x.dateIso === today.key) ?? ROADMAP_44.find(x => x.dayNum === firstPassDayNum) ?? ROADMAP_44[0]
+  const dayAction = final50Plan?.testTitle ?? OMIA[today.day] ?? 'Execute the next verified CAT task.'
   const dailyTarget = getPercentylDailyTarget(today.key)
   const completed = tasks.filter(t => t.status === 'DONE').length
   const current = tasks.find(t => t.status !== 'DONE') ?? null
@@ -492,7 +495,7 @@ export function DailyControlCard() {
             fontSize: 'clamp(8px, 2vw, 9px)',
             fontWeight: 900,
             whiteSpace: 'nowrap',
-          }}>CALENDAR DAY {dayNum}/44</span>
+          }}>{final50Plan?.isExamDay ? 'CAT EXAM DAY' : final50Plan?.isDayZero ? 'FINAL PLAN DAY 0' : final50Plan ? 'FINAL DAY ' + dayNum + '/49 · WEEK ' + final50Plan.weekNum + '/7' : 'CALENDAR DAY ' + firstPassDayNum + '/44'}</span>
           <span style={{
             padding: 'clamp(4px, 1.5vw, 5px) clamp(6px, 2vw, 8px)',
             borderRadius: 8,
@@ -676,7 +679,7 @@ export function DailyControlCard() {
               marginTop: 'clamp(2px, 1vw, 3px)',
               color: '#94A3B8',
               fontSize: 'clamp(9px, 2vw, 11px)',
-            }}>Calendar tracker Day {dayNum}/44 • Date-scheduled unit: {roadmap.chapter}</div>}
+            }}>{final50Plan ? 'FINAL 50-DAY PLAN · ' + (final50Plan.isExamDay ? 'EXAM DAY' : final50Plan.isDayZero ? 'DAY 0' : 'DAY ' + final50Plan.dayNum + '/49 · WEEK ' + final50Plan.weekNum + '/7') + ' • ' + final50Plan.testTitle : '44-day tracker Day ' + firstPassDayNum + '/44 • Date-scheduled unit: ' + roadmap.chapter}</div>}
           </div>
         </div>
 
@@ -703,28 +706,28 @@ export function DailyControlCard() {
               color: '#CBD5E1',
               lineHeight: 1.4,
             }}>
-              <strong style={{ color: '#86EFAC' }}>QA:</strong> {dailyTarget.quantDetail} ({dailyTarget.quantTargetQs} Qs)
+              <strong style={{ color: '#86EFAC' }}>QA:</strong> {final50Plan ? final50Plan.qaFocus : dailyTarget.quantDetail + ' (' + dailyTarget.quantTargetQs + ' Qs)'}
             </div>
             <div style={{
               fontSize: 'clamp(9px, 2vw, 10px)',
               color: '#CBD5E1',
               lineHeight: 1.4,
             }}>
-              <strong style={{ color: '#93C5FD' }}>DILR:</strong> {dailyTarget.dilrDetail} ({dailyTarget.dilrTargetSets} sets)
+              <strong style={{ color: '#93C5FD' }}>DILR:</strong> {final50Plan ? final50Plan.dilrFocus : dailyTarget.dilrDetail + ' (' + dailyTarget.dilrTargetSets + ' sets)'}
             </div>
             <div style={{
               fontSize: 'clamp(9px, 2vw, 10px)',
               color: '#DDD6FE',
               lineHeight: 1.4,
             }}>
-              <strong style={{ color: '#C4B5FD' }}>VARC:</strong> {dailyTarget.varcDetail} ({dailyTarget.varcTargetPsg} passages)
+              <strong style={{ color: '#C4B5FD' }}>VARC:</strong> {final50Plan ? final50Plan.varcFocus : dailyTarget.varcDetail + ' (' + dailyTarget.varcTargetPsg + ' passages)'}
             </div>
             <div style={{
               marginTop: 'clamp(4px, 1.5vw, 5px)',
               color: '#CBD5E1',
               fontSize: 'clamp(8px, 2vw, 9px)',
               lineHeight: 1.4,
-            }}>Today: {dailyTarget.quantTopic} • {dailyTarget.dilrTopic} • {dailyTarget.varcTopic}</div>
+            }}>{final50Plan ? 'Today: ' + final50Plan.testTitle : 'Today: ' + dailyTarget.quantTopic + ' • ' + dailyTarget.dilrTopic + ' • ' + dailyTarget.varcTopic}</div>
           </div>
         </div>
 

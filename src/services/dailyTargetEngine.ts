@@ -1,28 +1,48 @@
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { BLOCKS } from '@/data/config'
-import { getCurrentPhase, localDateKey } from '@/services/domain'
-import { getFirstPassDayNum } from '@/services/calendarEngine'
-import type { Task, ErrorRecord, DailyScore, TaskStatus } from '@/types'
+import { getFirstPassDayNum, getKolkataDateKey } from '@/services/calendarEngine'
+import { getFinal50DayPlan } from '@/data/final50Plan'
+import type { Task, ErrorRecord, DailyScore, TaskStatus, MockRecord } from '@/types'
 
 export interface DailyTargetInput {
   dateIso?: string;
   pendingErrors?: ErrorRecord[];
   allErrors?: ErrorRecord[];
   dailyScores?: DailyScore[];
+  recentMocks?: MockRecord[];
   repairCount?: number;
   retestCount?: number;
 }
 
 export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
-  const d = input.dateIso ? new Date(input.dateIso) : new Date()
-  const dateKey = localDateKey(d)
-  const phase = getCurrentPhase()
+  const d = input.dateIso ? new Date(input.dateIso + 'T12:00:00Z') : new Date()
+  const dateKey = input.dateIso && /^\d{4}-\d{2}-\d{2}$/.test(input.dateIso) ? input.dateIso : getKolkataDateKey(d)
+  const finalPlan = getFinal50DayPlan(dateKey)
 
-  // Find exact 44-Day First-Pass day & roadmap item
+  // Preserve 44-day first-pass history; the uploaded PDF wins for active dates.
   const dayNum = getFirstPassDayNum(dateKey)
   const roadmapItem = ROADMAP_44.find(r => r.dateIso === dateKey) || ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
   const pt = getPercentylDailyTarget(dateKey)
+  const latestMock = (input.recentMocks || [])
+    .filter(mock => mock.date <= dateKey)
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))[0] || null
+  const daysAfterLatestMock = latestMock
+    ? Math.floor((Date.parse(dateKey + 'T00:00:00Z') - Date.parse(latestMock.date + 'T00:00:00Z')) / 86400000)
+    : 0
+  const hasLatestMockCounts = Boolean(latestMock && [
+    latestMock.qaCorrect, latestMock.qaWrong, latestMock.dilrCorrect,
+    latestMock.dilrWrong, latestMock.varcCorrect, latestMock.varcWrong,
+  ].every(value => typeof value === 'number'))
+  const sectionAccuracy = latestMock && hasLatestMockCounts ? [
+    { label: 'QA', accuracy: latestMock.qaAcc, attempts: latestMock.qaat },
+    { label: 'DILR', accuracy: latestMock.dlAcc, attempts: latestMock.dlat },
+    { label: 'VARC', accuracy: latestMock.vcAcc, attempts: latestMock.vcat },
+  ].filter(section => section.attempts >= 8) : []
+  const weakestMockSection = sectionAccuracy.length > 0
+    ? sectionAccuracy.slice().sort((a, b) => a.accuracy - b.accuracy)[0]
+    : null
+  const postMockLibraryBlock = Boolean(latestMock && daysAfterLatestMock >= 1 && daysAfterLatestMock <= 3)
 
   const pendingList = input.pendingErrors || []
   const allList     = input.allErrors || pendingList
@@ -75,73 +95,132 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
     let notes = ''
 
     if (b.id === 'QA') {
-      title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
-
-      if (lastAcc < 60 || pendingC1Count >= 2) {
-        notes = `${pt.quantDetail} • [ADAPTIVE: <60% Acc or C1 Gaps] Concept Repair Focus: Basic → Medium Qs.`
-      } else if (lastAcc >= 60 && lastAcc < 75) {
-        notes = `${pt.quantDetail} • [ADAPTIVE: 60–75% Acc] Medium Practice + Error Correction.`
-      } else if (lastAcc >= 75 && lastAcc < 85) {
-        notes = `${pt.quantDetail} • [ADAPTIVE: 75–85% Acc] Timed Practice + CAT/PYQs.`
+      if (finalPlan) {
+        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW QA PRACTICE' : finalPlan.qaFocus
+        notes = finalPlan.isExamDay
+          ? 'No new topic expansion. Follow official exam-day instructions.'
+          : finalPlan.isDayZero
+            ? finalPlan.testNotes
+            : finalPlan.weeklyPriority + ' • Let the latest mock’s weakest section and three repair topics outrank the fixed topic list.'
       } else {
-        notes = `${pt.quantDetail} • [ADAPTIVE: >85% Acc] Advanced Timed / Mixed PYQs.`
+        title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
+        if (lastAcc < 60 || pendingC1Count >= 2) {
+          notes = `${pt.quantDetail} • [ADAPTIVE: <60% Acc or C1 Gaps] Concept Repair Focus: Basic → Medium Qs.`
+        } else if (lastAcc >= 60 && lastAcc < 75) {
+          notes = `${pt.quantDetail} • [ADAPTIVE: 60–75% Acc] Medium Practice + Error Correction.`
+        } else if (lastAcc >= 75 && lastAcc < 85) {
+          notes = `${pt.quantDetail} • [ADAPTIVE: 75–85% Acc] Timed Practice + CAT/PYQs.`
+        } else {
+          notes = `${pt.quantDetail} • [ADAPTIVE: >85% Acc] Advanced Timed / Mixed PYQs.`
+        }
+        if (trendMsg) notes += trendMsg
       }
-      if (trendMsg) notes += trendMsg
 
     } else if (b.id === 'DILR') {
-      title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
-      notes = `${pt.dilrDetail}`
-      if (dominantError === 'C4') {
-        notes += ' • [ADAPTIVE C4] Selection & Approach Drill Focus.'
-      } else if (dominantError === 'C5') {
-        notes += ' • [ADAPTIVE C5] Timed Micro-Sets & Skip Discipline Focus.'
+      if (finalPlan) {
+        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW DILR PRACTICE' : finalPlan.dilrFocus
+        notes = finalPlan.isExamDay ? 'No new sets. Follow official exam-day instructions.' : finalPlan.isDayZero ? finalPlan.testNotes : finalPlan.weeklyPriority
+      } else {
+        title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
+        notes = `${pt.dilrDetail}`
+        if (dominantError === 'C4') {
+          notes += ' • [ADAPTIVE C4] Selection & Approach Drill Focus.'
+        } else if (dominantError === 'C5') {
+          notes += ' • [ADAPTIVE C5] Timed Micro-Sets & Skip Discipline Focus.'
+        }
       }
 
     } else if (b.id === 'VARC') {
-      title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
-      notes = `${pt.varcDetail}`
-      if (dominantError === 'C3') {
-        notes += ' • [ADAPTIVE C3] Keyword & Option Elimination Discipline.'
+      if (finalPlan) {
+        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW VARC PRACTICE' : finalPlan.varcFocus
+        notes = finalPlan.isExamDay ? 'No new passages. Follow official exam-day instructions.' : finalPlan.isDayZero ? finalPlan.testNotes : finalPlan.weeklyPriority
+      } else {
+        title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
+        notes = `${pt.varcDetail}`
+        if (dominantError === 'C3') {
+          notes += ' • [ADAPTIVE C3] Keyword & Option Elimination Discipline.'
+        }
       }
 
     } else if (b.id === 'TEST') {
-      const dayOfWeek = d.getDay() // 0=Sun, 1=Mon, ..., 6=Sat
-      if (dayOfWeek === 0) {
-        title = 'SUNDAY FULL MOCK EXAM'
-        notes = 'Full 120-min exam condition • 100% analysis required.'
-      } else if (dayOfWeek === 1) {
-        title = 'MONDAY MOCK ANALYSIS + REPAIR'
-        notes = 'Classify C1–C5 errors from Sunday Mock • Re-solve wrong Qs.'
-      } else if (dayOfWeek === 2) {
-        title = 'TUESDAY VARC SECTIONAL'
-        notes = '40-min VARC Sectional Test under strict timed conditions.'
-      } else if (dayOfWeek === 3) {
-        title = 'WEDNESDAY VARC ANALYSIS + REPAIR/RETEST'
-        notes = 'Deconstruct Tuesday VARC errors • Re-solve & Retest.'
-      } else if (dayOfWeek === 4) {
-        title = 'THURSDAY DILR SECTIONAL'
-        notes = '40-min DILR Sectional Test • Practice set selection.'
-      } else if (dayOfWeek === 5) {
-        title = 'FRIDAY DILR ANALYSIS + REPAIR/RETEST'
-        notes = 'Deconstruct Thursday DILR errors • Re-solve & Retest.'
-      } else if (dayOfWeek === 6) {
-        title = 'SATURDAY QA SECTIONAL'
-        notes = '40-min QA Sectional Test • Speed + Accuracy benchmark.'
+      if (finalPlan) {
+        title = finalPlan.testTitle
+        notes = finalPlan.testNotes
       } else {
-        title = 'TIMED PRACTICE & ERROR REPAIR'
-        notes = 'Timed condition • 100% analysis required.'
+        const dayOfWeek = new Date(dateKey + 'T12:00:00Z').getUTCDay()
+        if (dayOfWeek === 0) {
+          title = 'SUNDAY FULL MOCK EXAM'
+          notes = 'Full 120-min exam condition • 100% analysis required.'
+        } else if (dayOfWeek === 1) {
+          title = 'MONDAY MOCK ANALYSIS + REPAIR'
+          notes = 'Classify C1–C5 errors from Sunday Mock • Re-solve wrong Qs.'
+        } else if (dayOfWeek === 2) {
+          title = 'TUESDAY VARC SECTIONAL'
+          notes = '40-min VARC Sectional Test under strict timed conditions.'
+        } else if (dayOfWeek === 3) {
+          title = 'WEDNESDAY VARC ANALYSIS + REPAIR/RETEST'
+          notes = 'Deconstruct Tuesday VARC errors • Re-solve & Retest.'
+        } else if (dayOfWeek === 4) {
+          title = 'THURSDAY DILR SECTIONAL'
+          notes = '40-min DILR Sectional Test • Practice set selection.'
+        } else if (dayOfWeek === 5) {
+          title = 'FRIDAY DILR ANALYSIS + REPAIR/RETEST'
+          notes = 'Deconstruct Thursday DILR errors • Re-solve & Retest.'
+        } else {
+          title = 'SATURDAY QA SECTIONAL'
+          notes = '40-min QA Sectional Test • Speed + Accuracy benchmark.'
+        }
       }
 
     } else if (b.id === 'ANALYSIS') {
-      title = `Error Analysis — Classify C1–C5 (${totalPending} Logged)`
-      notes = 'Classify mistake → Why it happened → Correct method → Prevention rule.'
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — CALM CHECKLIST ONLY'
+        notes = 'No analysis or new work. Follow the admit card and centre instructions.'
+      } else if (finalPlan?.isDayZero) {
+        title = 'DAY 0 — QA SECTIONAL SAME-EVENING ANALYSIS'
+        notes = 'Use 21:00–21:45 to review the 40-minute QA sectional, mark mistakes, and write a short error note. No new topic today.'
+      } else if (finalPlan?.testTitle.includes('FULL MOCK')) {
+        title = 'SAME-NIGHT MOCK TRACKER — ATTEMPTS / CORRECT / WRONG / SCORE'
+        notes = 'Fill the Mock Tracker tonight for VARC, DILR and QA. Full mock analysis is Monday and must take at least as long as the 120-minute mock.'
+      } else if (finalPlan?.testTitle.includes('QA SECTIONAL')) {
+        title = 'QA SECTIONAL — SAME-EVENING ANALYSIS'
+        notes = 'Use the 21:00–21:45 slot tonight. Record attempts, correct, wrong and score; classify C1–C5 and identify what needs repair.'
+      } else if (finalPlan?.testTitle.includes('VARC SECTIONAL')) {
+        title = 'VARC SECTIONAL — SCORE LOG TONIGHT'
+        notes = 'Record attempts, correct, wrong and score tonight. The full analysis, repair and retest are Wednesday.'
+      } else if (finalPlan?.testTitle.includes('DILR SECTIONAL')) {
+        title = 'DILR SECTIONAL — SCORE LOG TONIGHT'
+        notes = 'Record attempts, correct, wrong and score tonight. The full analysis, repair and retest are Friday.'
+      } else if (finalPlan?.testTitle.includes('LIGHT ANALYSIS')) {
+        title = 'LIGHT ANALYSIS + REPAIR — TAPER'
+        notes = 'Keep this short and calm. Review only known high-value errors, then stop while fresh. No new material.'
+      } else if (finalPlan?.testTitle.includes('ANALYSIS')) {
+        title = 'PDF ANALYSIS GATE — ' + finalPlan.testTitle
+        notes = finalPlan.testTitle.includes('MOCK ANALYSIS')
+          ? 'Analysis takes at least as long as the mock. Complete section-wise attempts/correct/wrong/score; select the weakest section only with about 8+ attempts; classify C1–C5; write three repair topics for Monday–Wednesday and the next three Library blocks.'
+          : finalPlan.testNotes
+      } else {
+        title = `Error Analysis — Classify C1–C5 (${totalPending} Logged)`
+        notes = 'Classify mistake → Why it happened → Correct method → Prevention rule.'
+      }
 
     } else if (b.id === 'REVISION') {
-      title = `Formula & Concept Recap — ${roadmapItem.chapter}`
-      notes = '30-sec recap → 2-min formula review → Today\'s biggest trap.'
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM CHECKLIST — ADMIT CARD, ID, ROUTE, SLEEP'
+        notes = 'No new material. Align sleep to the exam slot and follow the admit card.'
+      } else if (finalPlan) {
+        title = finalPlan.isDayZero ? 'DAY 0 — NO NEW TOPICS' : 'PDF-LOCKED REVISION — ' + finalPlan.title
+        notes = finalPlan.isDayZero ? finalPlan.testNotes : '30-sec recap → 2-min revision → connect to a previous concept → preview tomorrow. Use only your error log, Tier-1 formulas and familiar strategies.'
+      } else {
+        title = `Formula & Concept Recap — ${roadmapItem.chapter}`
+        notes = '30-sec recap → 2-min formula review → Today\'s biggest trap.'
+      }
 
     } else if (b.id === 'REPAIR') {
-      if (pendingC1Count > 0) {
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — NO NEW REPAIR WORK'
+        notes = 'Trust the preparation. Follow official exam-day instructions.'
+      } else if (pendingC1Count > 0) {
         title = `HIGH PRIORITY REPAIR: ${pendingC1Count} C1 Concept Gaps`
         notes = 'Re-solve failed questions without looking at solutions.'
       } else if (pendingC2Count > 0) {
@@ -162,8 +241,18 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'RETEST') {
-      title = `Mastery Retest — ${input.retestCount || totalPending} Retests Pending`
-      notes = '3–5 fresh questions on weak topics • 3+/5 correct = verified pass.'
+      title = finalPlan?.isExamDay ? 'EXAM DAY — NO RETEST' : `Mastery Retest — ${input.retestCount || totalPending} Retests Pending`
+      notes = finalPlan?.isExamDay ? 'No practice test today.' : '3–5 fresh questions on weak topics • 3+/5 correct = verified pass.'
+    }
+
+    if (b.id === 'TEST' && postMockLibraryBlock && latestMock) {
+      if (weakestMockSection) {
+        title += ` · LIBRARY PRIORITY ${daysAfterLatestMock}/3: ${weakestMockSection.label}`
+        notes += `\n\nPDF LIBRARY RULE: In block ${daysAfterLatestMock}/3 after ${latestMock.name} (${latestMock.date}), prioritise ${weakestMockSection.label} in the 13:15–15:00 Library Deep Work slot. Its accuracy was ${weakestMockSection.accuracy}% from ${weakestMockSection.attempts} attempts. Record three repair topics and let them outrank the weekly topic list.`
+      } else {
+        title += ` · LIBRARY PRIORITY ${daysAfterLatestMock}/3: REVIEW MOCK DATA`
+        notes += `\n\nPDF LIBRARY RULE: This is one of the next three Library blocks after ${latestMock.name}. The stored mock does not have complete correct/wrong counts or at least 8 attempts in a section, so do not guess the weakest section. Complete the tracker and choose three evidence-based repair topics.`
+      }
     }
 
     return {

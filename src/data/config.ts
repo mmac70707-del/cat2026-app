@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.1.3'
-export const LAST_UPDATED = '10 OCT 2026 • DATE + BRM SEQUENCE SYNC'
+export const APP_VERSION = '1.1.4'
+export const LAST_UPDATED = '11 OCT 2026 • FINAL 50-DAY PDF PLAN'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -29,7 +29,9 @@ export const APP_UPDATE_INFO = {
     'Body 360 locked learning sequence + automatic weekday gym rotation merged into Daily Schedule',
     'BRM Business School: self-contained daily lesson reader with date-driven Basic → Advanced curriculum',
     'Best Version: seven daily basics with one current step, automatic daily rollover and sequence-based wins',
-    'Aligned 44-day tracker (18 Sep–31 Oct) with India-date-safe day numbering and BRM 48-lesson curriculum'
+    'Aligned 44-day tracker (18 Sep–31 Oct) with India-date-safe day numbering and BRM 48-lesson curriculum',
+    'Uploaded Final 50 Days PDF is the active CAT plan from 10 Oct through exam day',
+    'Sunday-to-Saturday weekly test cycle, coverage freeze and final taper gates aligned to the PDF'
   ]
 }
 
@@ -113,7 +115,7 @@ export const BLOCKS: Block[] = [
     tasks:['<strong>Task:</strong> 1 quality Bar or Line Graph set (4–6 questions)','<strong>Rule:</strong> 2nd set ONLY if 1st fully analysed','<strong>Exit:</strong> 3+ correct with method explained'] },
   { id:'VARC',     seq:3, label:'VARC',     name:'Main Idea + Inference',         color:'#7C3AED', bg:'rgba(124,58,237,.15)',  time:'12:15–13:15', dur:'60 min',     target:'4/6 correct',
     tasks:['<strong>Task:</strong> 2 RC passages, 3 questions each','<strong>Flow:</strong> Read → Structure → Argument → Predict → Eliminate','<strong>Exit:</strong> 4+ correct across 6 questions'] },
-  { id:'TEST',     seq:4, label:'TEST',     name:'Library Deep Work + Repair',    color:'#D97706', bg:'rgba(217,119,6,.15)',   time:'13:15–17:00', dur:'Deep Work',  target:'0 pending errors',
+  { id:'TEST',     seq:4, label:'TEST',     name:'Library Deep Work + Repair',    color:'#D97706', bg:'rgba(217,119,6,.15)',   time:'13:15–15:00', dur:'105 min',  target:'0 pending errors',
     tasks:['<strong>Task:</strong> Fix all logged C1–C5 errors','<strong>Rule:</strong> Error log material only — no random resources','<strong>Exit:</strong> Every logged error re-solved'] },
   { id:'ANALYSIS', seq:5, label:'ANALYSIS', name:'Error Log — Classify C1–C5',   color:'#DC2626', bg:'rgba(220,38,38,.15)',   time:'21:00–21:45', dur:'45 min',     target:'100% classified',
     tasks:['<strong>C1</strong>=Concept · <strong>C2</strong>=Calc · <strong>C3</strong>=Misread · <strong>C4</strong>=Approach · <strong>C5</strong>=Time','<strong>For each:</strong> Why → Correct method → Prevention rule','<strong>Exit:</strong> Every wrong Q classified + rule written'] },
@@ -160,7 +162,7 @@ export const SCHEDULE_ITEMS = [
   {time:'09:00–10:30', block:'QA Session',               icon:'📐', col:'#16A34A', detail:'Concept 10 min → 15–20 quality Qs · Easy → Moderate · Accuracy first'},
   {time:'10:45–12:00', block:'DILR Session',             icon:'🧩', col:'#2563EB', detail:'1 quality set · 2nd only if 1st fully analysed · 20-25 min per set'},
   {time:'12:15–13:15', block:'VARC Session',             icon:'📖', col:'#7C3AED', detail:'2 RC passages · Main Idea + Inference + Tone · Elimination focus'},
-  {time:'13:15–17:00', block:'Library Deep Work',        icon:'🏛️', col:'#3B82F6', detail:'Pending QA/DILR/VARC · Wrong Qs · Repair work · No random resources'},
+  {time:'13:15–15:00', block:'Library Deep Work',        icon:'🏛️', col:'#3B82F6', detail:'Pending QA/DILR/VARC · Wrong Qs · Repair work · No random resources'},
   {time:'17:30–19:00', block:'Coaching',                 icon:'🎓', col:'#8B5CF6', detail:'Attend coaching · Notes · Mark doubts immediately'},
   {time:'19:20–20:20', block:'Gym / Movement',           icon:'💪', col:'#22C55E', detail:'Non-negotiable physical movement · Brain needs blood flow'},
   {time:'20:30–21:00', block:'Dinner',                   icon:'🍽️', col:'#94A3B8', detail:'Eat well · No screens'},
@@ -170,19 +172,21 @@ export const SCHEDULE_ITEMS = [
 ]
 
 export const WEEK_PLAN_TEMPLATE = [
-  {dayName:'MON', focus:'BASICS',   fCol:'#22C55E', qa:'Percentage basics + 15 Q',        dilr:'Tables set',             varc:'2 RC — Main Idea',      eve:'Error review 20 min'},
-  {dayName:'TUE', focus:'SOLVING',  fCol:'#F5A623', qa:'Ratio & Proportion + 15–20 Q',    dilr:'Bar/Line Graph',         varc:'Main Idea + Inference', eve:'Repair previous errors'},
-  {dayName:'WED', focus:'ACCURACY', fCol:'#3B82F6', qa:'Averages + 15–20 Q',              dilr:'Arrangement set',        varc:'Tone / Purpose',        eve:'Timed mini test 30 min'},
-  {dayName:'THU', focus:'ANALYSIS', fCol:'#EF4444', qa:'P&L + 15–20 Q',                   dilr:'Distribution/Selection', varc:'Elimination',           eve:'Repair + Retest 30 min'},
-  {dayName:'FRI', focus:'TIMING',   fCol:'#F59E0B', qa:'Mixed Arithmetic + 15–20 Q',      dilr:'Mixed set',              varc:'Difficult RC',          eve:'Timed Practice 40 min'},
-  {dayName:'SAT', focus:'IMPROVE',  fCol:'#8B5CF6', qa:'Weak-topic repair + 10–15 Q',     dilr:'Best 2 set types',       varc:'Mixed RC + VA',         eve:'Repair Sprint 45 min'},
-  {dayName:'SUN', focus:'TEST DAY', fCol:'#A78BFA', qa:'Weekly Mock',                      dilr:'Full Sectional',         varc:'Full Analysis',         eve:'Weekly Review + C1–C5', isTest:true},
+  {dayName:'MON', focus:'MOCK ANALYSIS', fCol:'#EF4444', qa:'Analyse weakest section', dilr:'Review set selection + errors', varc:'Review RC/VA errors', eve:'Write 3 repair topics from the mock'},
+  {dayName:'TUE', focus:'VARC SECTIONAL', fCol:'#7C3AED', qa:'Continue weekly QA focus', dilr:'Continue weekly DILR focus', varc:'24 questions · 40 minutes', eve:'Record attempts, correct, wrong and score', isTest:true},
+  {dayName:'WED', focus:'VARC ANALYSIS', fCol:'#DC2626', qa:'Repair repeated errors', dilr:'Repair repeated errors', varc:'Analyse, repair and retest', eve:'Update C1–C5 error log'},
+  {dayName:'THU', focus:'DILR SECTIONAL', fCol:'#2563EB', qa:'Continue weekly QA focus', dilr:'22 questions · 40 minutes', varc:'Continue RC / VA focus', eve:'Practise the 2-minute set decision', isTest:true},
+  {dayName:'FRI', focus:'DILR ANALYSIS', fCol:'#DC2626', qa:'Repair repeated errors', dilr:'Analyse, repair and retest', varc:'Repair repeated errors', eve:'Update C1–C5 error log'},
+  {dayName:'SAT', focus:'QA SECTIONAL', fCol:'#16A34A', qa:'22 questions · 40 minutes', dilr:'Repair weak set types', varc:'Repair RC / VA errors', eve:'Same-evening QA analysis', isTest:true},
+  {dayName:'SUN', focus:'FULL MOCK', fCol:'#A78BFA', qa:'Full mock section 3', dilr:'Full mock section 2', varc:'Full mock section 1', eve:'No stopping: 120 minutes total, then log section data', isTest:true},
 ]
 
 export const WEEK_EXIT_GATE = [
-  'Concept clear for each topic covered this week',
-  '2 DILR quality sets/day attempted + fully analysed',
-  '70%+ accuracy on RC Main Idea + Inference questions',
-  'Error log with C1–C5 for every wrong question every day',
-  'Sunday sectional/mock completed + fully analysed',
+  'Mock fully analysed; analysis takes at least as long as the mock',
+  'Mock tracker records attempts, correct, wrong and score for each section',
+  'Weakest section identified from a meaningful sample (about 8+ attempts)',
+  'Errors classified C1–C5 and three repair topics written down',
+  'Next three Library blocks prioritise the weakest section and repair topics',
+  'Coverage freeze after Saturday 7 Nov, except repeated Tier-1 C1 gaps',
+  'Final taper protects sleep, gym, recovery and exam logistics',
 ]
