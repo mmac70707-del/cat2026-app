@@ -39,9 +39,34 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
   const finalPlan = getFinal50DayPlan(dateKey)
   const firstPassDayNum = getFirstPassDayNum(dateKey)
   const dayNum = finalPlan ? finalPlan.dayNum : firstPassDayNum
-  const qaTargetLabel = finalPlan ? finalPlan.qaFocus : pt.quantTopic + ' (' + pt.quantTargetQs + ' Qs)'
-  const dilrTargetLabel = finalPlan ? finalPlan.dilrFocus : pt.dilrTopic + ' (' + pt.dilrTargetSets + ' sets)'
-  const varcTargetLabel = finalPlan ? finalPlan.varcFocus : pt.varcTopic + ' (' + pt.varcTargetPsg + ' passages)'
+  const isFullMockDay = Boolean(finalPlan?.testTitle.includes('FULL MOCK'))
+  const isMockAnalysisDay = Boolean(finalPlan?.testTitle.includes('MOCK ANALYSIS'))
+  const qaTargetLabel = isFullMockDay
+    ? 'Full mock • QA section 3/3 · 40 min · no separate quota'
+    : isMockAnalysisDay
+      ? 'Analyse attempts / correct / wrong / score; classify C1–C5'
+      : finalPlan ? finalPlan.qaFocus : pt.quantTopic + ' (' + pt.quantTargetQs + ' Qs)'
+  const dilrTargetLabel = isFullMockDay
+    ? 'Full mock • DILR section 2/3 · 40 min'
+    : isMockAnalysisDay
+      ? 'Check set-selection, accuracy and C1–C5 errors'
+      : finalPlan ? finalPlan.dilrFocus : pt.dilrTopic + ' (' + pt.dilrTargetSets + ' sets)'
+  const varcTargetLabel = isFullMockDay
+    ? 'Full mock • VARC section 1/3 · 40 min'
+    : isMockAnalysisDay
+      ? 'Check RC / VA accuracy and C1–C5 errors'
+      : finalPlan ? finalPlan.varcFocus : pt.varcTopic + ' (' + pt.varcTargetPsg + ' passages)'
+  const coreTargetCards = isFullMockDay
+    ? [
+        { label: 'VARC', icon: '📖', value: varcTargetLabel, background: 'rgba(124,58,237,0.15)', border: '#7C3AED', color: 'var(--ql-sub)' },
+        { label: 'DILR', icon: '🧩', value: dilrTargetLabel, background: 'rgba(37,99,235,0.15)', border: '#2563EB', color: 'var(--ql-sub)' },
+        { label: 'QA', icon: '📐', value: qaTargetLabel, background: 'rgba(22,163,74,0.15)', border: '#16A34A', color: 'var(--ql-accent-strong)' },
+      ]
+    : [
+        { label: 'QA', icon: '📐', value: qaTargetLabel, background: 'rgba(22,163,74,0.15)', border: '#16A34A', color: 'var(--ql-accent-strong)' },
+        { label: 'DILR', icon: '🧩', value: dilrTargetLabel, background: 'rgba(37,99,235,0.15)', border: '#2563EB', color: 'var(--ql-sub)' },
+        { label: 'VARC', icon: '📖', value: varcTargetLabel, background: 'rgba(124,58,237,0.15)', border: '#7C3AED', color: 'var(--ql-sub)' },
+      ]
 
   const activeTask = tasks.find(t => t.status === 'IN_PROGRESS')
   const nextTask = tasks.find(t => t.status === 'TODO')
@@ -140,15 +165,11 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
             {finalPlan?.isExamDay ? '🎯 CAT EXAM DAY — FOLLOW ADMIT-CARD INSTRUCTIONS' : finalPlan && !finalPlan.isDayZero ? '🎯 FINAL 50-DAY PDF PLAN · DAY ' + dayNum + '/49 · WEEK ' + finalPlan.weekNum + '/7' : finalPlan?.isDayZero ? '🎯 FINAL 50-DAY PLAN · DAY 0' : '🎯 TODAY’S 3 CORE TARGETS · FIRST-PASS DAY ' + firstPassDayNum + '/44'}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 12, fontWeight: 700 }}>
-            <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-accent-strong)' }}>
-              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{qaTargetLabel}</span>
-            </div>
-            <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
-              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{dilrTargetLabel}</span>
-            </div>
-            <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
-              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{varcTargetLabel}</span>
-            </div>
+            {coreTargetCards.map(card => (
+              <div key={card.label} style={{ background: card.background, border: '1px solid ' + card.border, padding: '8px 10px', borderRadius: 6, color: card.color }}>
+                {card.icon} {card.label} &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{card.value}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

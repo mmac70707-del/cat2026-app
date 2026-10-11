@@ -156,6 +156,17 @@ export async function runStage1VerificationTests() {
   const testRest = tasksTaperSaturday.find(t => t.blockId === 'TEST')
   assert('X', 'Generated daily tasks show Mock 1 on 11 Oct', testMock1?.title.includes('FULL MOCK 1') === true, 'TEST title: ' + (testMock1?.title ?? 'missing'))
   assert('Y', 'Generated daily tasks show no test on 28 Nov', testRest?.title.includes('NO TEST') === true, 'TEST title: ' + (testRest?.title ?? 'missing'))
+  const breakfastIndex = SCHEDULE_ITEMS.findIndex(item => item.block === 'Breakfast')
+  const qaClockIndex = SCHEDULE_ITEMS.findIndex(item => item.block === 'QA Session')
+  const breakfastClock = SCHEDULE_ITEMS[breakfastIndex]
+  const qaClock = SCHEDULE_ITEMS[qaClockIndex]
+  assert('AD', 'Breakfast finishes before the PDF-locked 09:00 QA start', breakfastClock?.time === '08:00–08:30' && qaClock?.time === '09:00–10:30' && breakfastIndex >= 0 && breakfastIndex < qaClockIndex, 'Breakfast: ' + (breakfastClock?.time ?? 'missing') + '; QA: ' + (qaClock?.time ?? 'missing'))
+  const mockDayTasks = generateDailyTargets({ dateIso: '2026-10-11' })
+  const mockQA = mockDayTasks.find(t => t.blockId === 'QA')
+  const mockDILR = mockDayTasks.find(t => t.blockId === 'DILR')
+  const mockVARC = mockDayTasks.find(t => t.blockId === 'VARC')
+  assert('AE', 'Mock-day QA card does not impose a separate topic quota', mockQA?.title.includes('FULL MOCK ONLY — QA SECTION 3/3') === true && mockQA?.notes.includes('uninterrupted 120-minute mock') === true, mockQA?.title ?? 'missing')
+  assert('AF', 'Mock-day DILR and VARC cards follow fixed exam order', mockDILR?.title.includes('SECTION 2/3') === true && mockVARC?.title.includes('SECTION 1/3') === true, (mockVARC?.title ?? 'missing') + ' | ' + (mockDILR?.title ?? 'missing'))
 
   // Z–AB. Mock facts drive the next three Library blocks only when the tracker has enough evidence.
   const mockFixture: MockRecord = {

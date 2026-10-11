@@ -35,9 +35,9 @@ export function BlockCard({ task, onStart, onDone, onUndo, onSkip, onNotes }: Pr
     displayDuration = 'Exam day · no mock'
     displayTarget = 'ID · admit card · route · calm start'
   } else if (isFullMock) {
-    displayTime = 'Same fixed weekly mock slot'
-    displayDuration = '120 minutes · no pause'
-    displayTarget = 'Match official CAT slot when released'
+    displayTime = '15:00–17:00 default weekly mock slot'
+    displayDuration = '120 minutes · uninterrupted'
+    displayTarget = 'PDF does not specify a clock time; if official admit-card slot is known, use that slot instead'
   } else if (finalPlan?.isDayZero) {
     displayTime = 'Library 13:15–15:00'
     displayDuration = '40 min QA sectional + remaining deep work'
