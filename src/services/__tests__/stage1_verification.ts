@@ -60,10 +60,12 @@ export async function runStage1VerificationTests() {
   const day44Num = getFirstPassDayNum('2026-10-31')
   assert('H', 'First-pass Day 44 calculation', day44Num === 44, `Calculated Day Num: ${day44Num}`)
 
-  // I. Dates outside first-pass range
+  // I. First-pass tracker bounds: before the window is 0; after Day 44 it stays capped.
   const dayBefore = getFirstPassDayNum('2026-09-01')
   const dayAfter  = getFirstPassDayNum('2026-11-01')
-  assert('I', 'Dates outside first-pass range return 0', dayBefore === 0 && dayAfter === 0, `Before: ${dayBefore}, After: ${dayAfter}`)
+  assert('I', 'First-pass tracker stays capped after Day 44', dayBefore === 0 && dayAfter === 44, `Before: ${dayBefore}, After: ${dayAfter}`)
+  const invalidDay = getFirstPassDayNum('not-a-date')
+  assert('I2', 'Invalid first-pass date returns 0', invalidDay === 0, `Invalid date result: ${invalidDay}`)
 
   // J. Missed-day recovery & historical state
   const historicalTask: Task = {
