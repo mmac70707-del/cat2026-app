@@ -76,33 +76,49 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
     let notes = ''
 
     if (b.id === 'QA') {
-      title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
-
-      if (lastAcc < 60 || pendingC1Count >= 2) {
-        notes = `${pt.quantDetail} • [ADAPTIVE: <60% Acc or C1 Gaps] Concept Repair Focus: Basic → Medium Qs.`
-      } else if (lastAcc >= 60 && lastAcc < 75) {
-        notes = `${pt.quantDetail} • [ADAPTIVE: 60–75% Acc] Medium Practice + Error Correction.`
-      } else if (lastAcc >= 75 && lastAcc < 85) {
-        notes = `${pt.quantDetail} • [ADAPTIVE: 75–85% Acc] Timed Practice + CAT/PYQs.`
+      if (finalPlan && !finalPlan.isDayZero) {
+        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW QA PRACTICE' : finalPlan.qaFocus
+        notes = finalPlan.isExamDay
+          ? 'No new topic expansion. Follow official exam-day instructions.'
+          : finalPlan.weeklyPriority + ' • Let the latest mock’s weakest section and three repair topics outrank the fixed topic list.'
       } else {
-        notes = `${pt.quantDetail} • [ADAPTIVE: >85% Acc] Advanced Timed / Mixed PYQs.`
+        title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
+        if (lastAcc < 60 || pendingC1Count >= 2) {
+          notes = `${pt.quantDetail} • [ADAPTIVE: <60% Acc or C1 Gaps] Concept Repair Focus: Basic → Medium Qs.`
+        } else if (lastAcc >= 60 && lastAcc < 75) {
+          notes = `${pt.quantDetail} • [ADAPTIVE: 60–75% Acc] Medium Practice + Error Correction.`
+        } else if (lastAcc >= 75 && lastAcc < 85) {
+          notes = `${pt.quantDetail} • [ADAPTIVE: 75–85% Acc] Timed Practice + CAT/PYQs.`
+        } else {
+          notes = `${pt.quantDetail} • [ADAPTIVE: >85% Acc] Advanced Timed / Mixed PYQs.`
+        }
+        if (trendMsg) notes += trendMsg
       }
-      if (trendMsg) notes += trendMsg
 
     } else if (b.id === 'DILR') {
-      title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
-      notes = `${pt.dilrDetail}`
-      if (dominantError === 'C4') {
-        notes += ' • [ADAPTIVE C4] Selection & Approach Drill Focus.'
-      } else if (dominantError === 'C5') {
-        notes += ' • [ADAPTIVE C5] Timed Micro-Sets & Skip Discipline Focus.'
+      if (finalPlan && !finalPlan.isDayZero) {
+        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW DILR PRACTICE' : finalPlan.dilrFocus
+        notes = finalPlan.isExamDay ? 'No new sets. Follow official exam-day instructions.' : finalPlan.weeklyPriority
+      } else {
+        title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
+        notes = `${pt.dilrDetail}`
+        if (dominantError === 'C4') {
+          notes += ' • [ADAPTIVE C4] Selection & Approach Drill Focus.'
+        } else if (dominantError === 'C5') {
+          notes += ' • [ADAPTIVE C5] Timed Micro-Sets & Skip Discipline Focus.'
+        }
       }
 
     } else if (b.id === 'VARC') {
-      title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
-      notes = `${pt.varcDetail}`
-      if (dominantError === 'C3') {
-        notes += ' • [ADAPTIVE C3] Keyword & Option Elimination Discipline.'
+      if (finalPlan && !finalPlan.isDayZero) {
+        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW VARC PRACTICE' : finalPlan.varcFocus
+        notes = finalPlan.isExamDay ? 'No new passages. Follow official exam-day instructions.' : finalPlan.weeklyPriority
+      } else {
+        title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
+        notes = `${pt.varcDetail}`
+        if (dominantError === 'C3') {
+          notes += ' • [ADAPTIVE C3] Keyword & Option Elimination Discipline.'
+        }
       }
 
     } else if (b.id === 'TEST') {
