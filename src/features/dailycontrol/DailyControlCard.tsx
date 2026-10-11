@@ -3,7 +3,7 @@ import { useTodayTasks } from '@/hooks/useTasks'
 import { usePhase } from '@/hooks/usePhase'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum, getPhaseForDateKey } from '@/services/calendarEngine'
 import { ROADMAP_44 } from '@/data/roadmap44'
-import { CAT_EXAM_DATE_STR, PHASES as CONFIG_PHASES } from '@/data/config'
+import { CAT_EXAM_DATE_STR, PHASES as CONFIG_PHASES, SCHEDULE_ITEMS } from '@/data/config'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 
 const DAYS = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
@@ -19,21 +19,16 @@ const OMIA: Record<string,string> = {
   SUNDAY:'Full Mock',
 }
 
-const schedule = [
-  ['05:00–05:15','Morning Reset'],
-  ['05:15–05:55','Daily Dose (LRDI test + VA test)'],
-  ['09:00','Breakfast'],
-  ['09:00–10:30','QA'],
-  ['10:45–12:00','DILR'],
-  ['12:15–01:15','VARC'],
-  ['01:15–03:00','Library Deep Work'],
-  ['05:30–07:00','Coaching'],
-  ['07:20–08:20','Gym'],
-  ['08:30–09:00','Dinner'],
-  ['09:00–09:45','Test Analysis + Error Log'],
-  ['09:45–10:00','Revision'],
-  ['10:00','Sleep'],
-]
+// Use the shared schedule as the source of truth so this dashboard cannot drift
+// from the full Daily Schedule page. Keep the founder's locked breakfast reminder.
+const schedule = SCHEDULE_ITEMS.flatMap(({ time, block }) =>
+  block === 'QA Session'
+    ? [
+        { time: '09:00', label: 'Breakfast' },
+        { time, label: block },
+      ]
+    : [{ time, label: block }],
+)
 
 function todayIndia() {
   const now = new Date()
@@ -842,9 +837,9 @@ export function DailyControlCard() {
             display: 'grid',
             gap: 'clamp(4px, 1.5vw, 5px)',
           }}>
-            {schedule.map(([time, label]) => (
+            {schedule.map(({ time, label }) => (
               <div
-                key={time}
+                key={`${time}-${label}`}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'clamp(70px, 20vw, 90px) 1fr',
