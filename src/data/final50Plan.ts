@@ -20,6 +20,7 @@ export interface Final50DayPlan extends Final50WeekPlan {
   testNotes: string;
   isDayZero: boolean;
   isExamDay: boolean;
+  final10Days: boolean;
   coverageFreeze: boolean;
 }
 
@@ -237,6 +238,7 @@ export function getFinal50DayPlan(dateIso: string): Final50DayPlan | null {
       testNotes: 'Complete same-evening analysis in the 21:00–21:45 slot. No new topic today. Early sleep; Mock 1 is tomorrow.',
       isDayZero: true,
       isExamDay: false,
+      final10Days: false,
       coverageFreeze: false
     };
   }
@@ -253,16 +255,32 @@ export function getFinal50DayPlan(dateIso: string): Final50DayPlan | null {
       ? 'CONSOLIDATION'
       : 'TAPER';
 
+  // PDF page 8 explicitly overrides normal Week 6/7 study-focus wording from 19–28 Nov.
+  const final10Days = dateIso >= '2026-11-19' && dateIso <= '2026-11-28';
+  const final10Qa = 'Tier-1 formula recall only: Percentages · Averages · Ratio & Proportion · Mixtures & Alligation · Profit & Loss · Time & Work · Time-Speed-Distance · SI & CI · add only two real QA weak topics from your error log';
+  const final10Dilr = 'Pattern recognition only: Seating / linear / circular arrangements · Bar / Column / Line graphs · Pie charts · Tables · Caselets · add only two real DILR weak topics from your error log';
+  const final10Varc = 'Strategy recall only: RC main idea / inference / tone · elimination of close options · Para Summary · Para Jumble · add only two real VARC weak topics from your error log';
+  const final10Priority = 'FINAL 10 DAYS — REVISION ONLY. No new material. Each item should take under 5 minutes to recall cold; if it does not, reopen its worked example, not a new topic. Keep the locked exam strategy unchanged.';
+  const final10Gate = dateIso === '2026-11-28'
+    ? 'NO TEST. Admit card, required ID, centre route and sleep aligned to the actual exam slot. No new material.'
+    : 'No new material from 19–28 Nov. Use only the PDF Tier-1 recall lists and weak topics supported by your real error log. Do not invent weak topics or scores.';
+
   return {
     ...week,
     dateIso,
     weekNum: week.number,
     dayNum: offset + 1,
-    phaseNote: phaseLabel + ' · ' + week.phaseNote,
+    qaFocus: final10Days ? final10Qa : week.qaFocus,
+    dilrFocus: final10Days ? final10Dilr : week.dilrFocus,
+    varcFocus: final10Days ? final10Varc : week.varcFocus,
+    weeklyPriority: final10Days ? final10Priority : week.weeklyPriority,
+    gate: final10Days ? final10Gate : week.gate,
+    phaseNote: phaseLabel + ' · ' + week.phaseNote + (final10Days ? ' · FINAL 10 DAYS: REVISION ONLY' : ''),
     testTitle: test.title,
     testNotes: test.notes,
     isDayZero: false,
     isExamDay: false,
+    final10Days,
     coverageFreeze: dateIso >= '2026-11-08'
   };
 }
