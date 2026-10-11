@@ -145,7 +145,7 @@ export async function runStage1VerificationTests() {
   assert('R', 'Coverage freeze starts after Saturday 7 Nov', finalWeek4End?.coverageFreeze === false && freezeStart?.coverageFreeze === true && finalWeek4End.testTitle.includes('QA SECTIONAL'), '7 Nov: ' + (finalWeek4End?.testTitle ?? 'missing') + '; 8 Nov freeze=' + String(freezeStart?.coverageFreeze))
   assert('S', 'Consolidation begins Monday 9 Nov', finalConsolidation?.phaseNote.includes('CONSOLIDATION') === true && finalConsolidation.weeklyPriority.length > 0, 'Phase: ' + (finalConsolidation?.phaseNote ?? 'missing'))
   assert('T', 'Saturday 28 Nov is rest/logistics, not a test', finalDay49?.dayNum === 49 && finalDay49.testTitle.includes('NO TEST'), 'Day 49: ' + (finalDay49?.testTitle ?? 'missing'))
-  assert('U', 'Sunday 29 Nov is exam day, not another mock', examDay?.isExamDay === true && !examDay.testTitle.includes('FULL MOCK'), 'Exam day: ' + (examDay?.testTitle ?? 'missing'))
+  assert('U', 'Sunday 29 Nov is exam day, not another mock', examDay?.isExamDay === true && examDay.final10Days === false && !examDay.testTitle.includes('FULL MOCK'), 'Exam day: ' + (examDay?.testTitle ?? 'missing'))
   assert('V', 'Library block ends at 15:00 per PDF', SCHEDULE_ITEMS.some(x => x.block === 'Library Deep Work' && x.time === '13:15–15:00'), JSON.stringify(SCHEDULE_ITEMS.find(x => x.block === 'Library Deep Work')))
   assert('W', 'Mock-Dominated and Consolidation phase dates match PDF', PHASES.some(x => x.id === 'P3' && x.end === '2026-11-08') && PHASES.some(x => x.id === 'P4' && x.start === '2026-11-09' && x.end === '2026-11-20'), PHASES.map(x => x.id + ':' + x.start + '→' + x.end).join(' | '))
 
@@ -203,6 +203,14 @@ export async function runStage1VerificationTests() {
   const final10DILR = final10Tasks.find(t => t.blockId === 'DILR')
   const final10VARC = final10Tasks.find(t => t.blockId === 'VARC')
   assert('AM', 'Generated daily subject tasks inherit revision-only focus', final10QA?.title.includes('Tier-1 formula recall only') === true && final10DILR?.title.includes('Pattern recognition only') === true && final10VARC?.title.includes('Strategy recall only') === true, [final10QA?.title, final10DILR?.title, final10VARC?.title].join(' | '))
+
+  const final10Analysis23 = getFinal50DayPlan('2026-11-23')
+  const final10LightVARC24 = getFinal50DayPlan('2026-11-24')
+  const final10LightAnalysis25 = getFinal50DayPlan('2026-11-25')
+  const final10OneDILR26 = getFinal50DayPlan('2026-11-26')
+  const final10NoTest27 = getFinal50DayPlan('2026-11-27')
+  assert('AN', 'Final 10-day exceptions match PDF for 23–27 Nov', final10Analysis23?.testTitle.includes('MOCK ANALYSIS') === true && final10LightVARC24?.testTitle.includes('LIGHT VARC') === true && final10LightAnalysis25?.testTitle.includes('LIGHT ANALYSIS') === true && final10OneDILR26?.testTitle.includes('ONE DILR SET') === true && final10NoTest27?.testTitle.includes('NO TEST') === true, [final10Analysis23?.testTitle, final10LightVARC24?.testTitle, final10LightAnalysis25?.testTitle, final10OneDILR26?.testTitle, final10NoTest27?.testTitle].join(' | '))
+  assert('AO', 'Exam day is not misclassified as part of the final-ten-day revision window', examDay?.isExamDay === true && examDay.final10Days === false, 'Exam day: ' + (examDay?.testTitle ?? 'missing'))
 
   const calculated = analyseMock({
     qa: '45', dilr: '10', varc: '45', qaat: '15', dlat: '10', vcat: '20',
