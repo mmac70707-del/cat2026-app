@@ -136,16 +136,6 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
             </div>
           ))}
         </div>
-        <div style={{ fontSize: 10, color: 'var(--muted)', margin: '0 0 6px' }}>Each section: correct + wrong must equal attempted questions.</div>
-        <div className="grid3" style={{ gap: 6, marginBottom: 6 }}>
-          {[[ 'QA Correct', qaCorrect, setQaCorrect ], [ 'DILR Correct', dilrCorrect, setDilrCorrect ], [ 'VARC Correct', varcCorrect, setVarcCorrect ]].map(([label, val, setter]) => (
-            <div key={label as string}>
-              <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
-              <input type="number" className="form-input" placeholder="0" min={0} value={val as string}
-                onChange={e => (setter as (v: string) => void)(e.target.value)} />
-            </div>
-          ))}
-        </div>
         <div className="grid3" style={{ gap: 6, marginBottom: 10 }}>
           {[[ 'QA Wrong', qaWrong, setQaWrong ], [ 'DILR Wrong', dilrWrong, setDilrWrong ], [ 'VARC Wrong', varcWrong, setVarcWrong ]].map(([label, val, setter]) => (
             <div key={label as string}>
@@ -156,11 +146,21 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
           ))}
         </div>
         <div className="grid3" style={{ gap: 6, marginBottom: 10 }}>
-          {[['QA Attempts', qaat, setQaat], ['DILR Attempts', dlat, setDlat], ['VARC Attempts', vcat, setVcat]].map(([label, val, setter]) => (
+          {[['QA Attempts', qaat, setQaat], ['DILR Q Attempts', dlat, setDlat], ['VARC Attempts', vcat, setVcat]].map(([label, val, setter]) => (
             <div key={label as string}>
               <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
               <input type="number" className="form-input" placeholder="0" min={0}
                 value={val as string} onChange={e => (setter as (v: string) => void)(e.target.value)} />
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 10, color: 'var(--muted)', margin: '0 0 6px' }}>Each section: correct + wrong must equal attempted questions.</div>
+        <div className="grid3" style={{ gap: 6, marginBottom: 6 }}>
+          {[[ 'QA Correct', qaCorrect, setQaCorrect ], [ 'DILR Correct', dilrCorrect, setDilrCorrect ], [ 'VARC Correct', varcCorrect, setVarcCorrect ]].map(([label, val, setter]) => (
+            <div key={label as string}>
+              <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
+              <input type="number" className="form-input" placeholder="0" min={0} value={val as string}
+                onChange={e => (setter as (v: string) => void)(e.target.value)} />
             </div>
           ))}
         </div>
