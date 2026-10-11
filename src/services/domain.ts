@@ -1,6 +1,7 @@
 import { CAT_DATE, PHASES, WEEK_PLAN_TEMPLATE } from '@/data/config'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { MASTER_SPINE_44 } from '@/data/roadmap44'
+import { FINAL_50_WEEK_PLANS, getFinal50DayPlan } from '@/data/final50Plan'
 import type { Phase, WeekDay, MockAnalysis, MasteryLevel, Task } from '@/types'
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -39,6 +40,8 @@ export function getCountdownParts(): { days: number; hours: number; minutes: num
 
 // ── Week number (from Phase 1 start) ─────────────────
 export function getWeekNumber(): number {
+  const todayPlan = getFinal50DayPlan(getKolkataDateKey())
+  if (todayPlan && todayPlan.weekNum > 0 && !todayPlan.isExamDay) return todayPlan.weekNum
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const p1Start = new Date(Date.UTC(2026, 8, 1))
@@ -46,33 +49,40 @@ export function getWeekNumber(): number {
   return Math.floor(diff / (7 * 86_400_000)) + 1
 }
 
-// ── Dynamic week plan (real dates & 44-Day First Pass topics) ─
+// ── Dynamic week plan: PDF-locked Sunday–Saturday cycle during the Final 50 Days ─
 export function buildWeekPlan(): WeekDay[] {
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const todayKey = getKolkataDateKey()
   const day = parts.dayOfWeek
-  const mon = new Date(todayKolkata)
-  mon.setUTCDate(todayKolkata.getUTCDate() - (day === 0 ? 6 : day - 1))
+  const todayFinalPlan = getFinal50DayPlan(todayKey)
+  const finalCycleActive = Boolean(todayFinalPlan && !todayFinalPlan.isDayZero && !todayFinalPlan.isExamDay)
+  const weekStart = new Date(todayKolkata)
+  weekStart.setUTCDate(todayKolkata.getUTCDate() - (finalCycleActive ? day : (day === 0 ? 6 : day - 1)))
 
   return WEEK_PLAN_TEMPLATE.map((t, i) => {
-    const d = new Date(mon)
-    d.setUTCDate(mon.getUTCDate() + i)
+    const d = new Date(weekStart)
+    d.setUTCDate(weekStart.getUTCDate() + i)
     const dKey = d.toISOString().slice(0, 10)
-    const dNum = getFirstPassDayNum(dKey)
-    const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === dNum)
-
+    const firstPassNum = getFirstPassDayNum(dKey)
+    const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === firstPassNum)
+    const finalPlan = getFinal50DayPlan(dKey)
+    const usingFinalPlan = Boolean(finalPlan && !finalPlan.isDayZero && !finalPlan.isExamDay)
     const isToday = dKey === todayKey
     const isPast = dKey < todayKey
+    const testTitle = finalPlan?.testTitle || ''
+    const isTestDay = testTitle.includes('MOCK') || testTitle.includes('SECTIONAL') || testTitle.includes('NO TEST')
 
     return {
       ...t,
       date: d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()],
-      qa: roadmapItem ? roadmapItem.chapter : t.qa,
-      dilr: roadmapItem ? roadmapItem.dilrFamily : t.dilr,
-      varc: roadmapItem ? roadmapItem.varcSkill : t.varc,
-      focus: isToday ? 'TODAY' : t.focus,
-      fCol: isToday ? '#F5A623' : t.fCol,
+      qa: usingFinalPlan ? finalPlan!.qaFocus : roadmapItem ? roadmapItem.chapter : t.qa,
+      dilr: usingFinalPlan ? finalPlan!.dilrFocus : roadmapItem ? roadmapItem.dilrFamily : t.dilr,
+      varc: usingFinalPlan ? finalPlan!.varcFocus : roadmapItem ? roadmapItem.varcSkill : t.varc,
+      focus: finalPlan ? testTitle : isToday ? 'TODAY' : t.focus,
+      eve: finalPlan ? finalPlan.testNotes : t.eve,
+      fCol: isToday ? '#F5A623' : isTestDay ? '#A78BFA' : t.fCol,
+      isTest: finalPlan ? isTestDay : t.isTest,
       isToday,
       isPast,
     }
@@ -81,6 +91,11 @@ export function buildWeekPlan(): WeekDay[] {
 
 // ── Week label (Mon X – Sun Y) ───────────────────────
 export function getWeekLabel(): string {
+  const todayPlan = getFinal50DayPlan(getKolkataDateKey())
+  if (todayPlan && todayPlan.weekNum > 0 && !todayPlan.isExamDay) {
+    const activeWeek = FINAL_50_WEEK_PLANS.find(w => w.number === todayPlan.weekNum)
+    if (activeWeek) return activeWeek.dates + ' 2026 (Sun–Sat)'
+  }
   const parts = getKolkataDateParts()
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const day = parts.dayOfWeek
