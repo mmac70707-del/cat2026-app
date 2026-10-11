@@ -1,7 +1,3 @@
-function getFinal50DayPlanDateKey(parts: { year: number; month: number; date: number }): string {
-  return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.date).padStart(2, '0')}`
-}
-
 import { dbGet, dbGetAll, dbPut, dbGetByIndex } from '@/db'
 import { BLOCKS } from '@/data/config'
 import { todayKey, localDateKey } from '@/services/domain'
@@ -9,7 +5,11 @@ import { getKolkataDateParts } from '@/services/calendarEngine'
 import { getFinal50DayPlan } from '@/data/final50Plan'
 import { generateDailyTargets } from '@/services/dailyTargetEngine'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
-import { DailyScoreRepository } from '@/repositories/index'
+import { DailyScoreRepository, MockRepository } from '@/repositories/index'
+
+function getFinal50DayPlanDateKey(parts: { year: number; month: number; date: number }): string {
+  return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.date).padStart(2, '0')}`
+}
 import type { Task, TaskStatus, BlockId } from '@/types'
 
 export const TaskRepository = {
@@ -23,10 +23,11 @@ export const TaskRepository = {
 
   async getTasksForDate(date: string): Promise<Task[]> {
     let existingTasks = await dbGetByIndex<Task>('tasks', 'byDate', date)
-    const [pendingErrors, allErrors, dailyScores] = await Promise.all([
+    const [pendingErrors, allErrors, dailyScores, recentMocks] = await Promise.all([
       ErrorRepository.getPending(),
       ErrorRepository.getAll(),
       DailyScoreRepository.getAll(),
+      MockRepository.getAll(),
     ])
 
     const freshTargets = generateDailyTargets({
@@ -34,6 +35,7 @@ export const TaskRepository = {
       pendingErrors,
       allErrors,
       dailyScores,
+      recentMocks,
     })
 
     if (existingTasks.length === 0) {
