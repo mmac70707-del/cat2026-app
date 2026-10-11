@@ -17,11 +17,12 @@ const NAV_ITEMS: { id: PageId; icon: AppIconName; label: string; seq: string }[]
 
 export function BottomNav({ current, onChange }: Props) {
   return (
-    <nav className="bottom-nav">
+    <nav className="bottom-nav" aria-label="Primary navigation">
       {NAV_ITEMS.map(item => (
         <button
           key={item.id}
           className={`nav-btn ${current === item.id ? 'active' : ''}`}
+          aria-current={current === item.id ? 'page' : undefined}
           onClick={() => onChange(item.id)}
         >
           <div className="nav-icon">
