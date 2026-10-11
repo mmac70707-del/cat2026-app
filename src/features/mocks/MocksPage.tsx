@@ -40,9 +40,14 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
   useEffect(() => { load() }, [])
 
   async function handleLog() {
-    const requiredValues = [qa, dilr, varc, qaat, dlat, vcat, qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong]
-    if (requiredValues.some(value => value.trim() === '' || !Number.isInteger(Number(value)) || Number(value) < 0)) {
-      setFeedback('Enter non-negative whole numbers for each section’s score, attempts, correct and wrong counts.')
+    const scoreValues = [qa, dilr, varc]
+    const countValues = [qaat, dlat, vcat, qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong]
+    if (scoreValues.some(value => value.trim() === '' || !Number.isInteger(Number(value)))) {
+      setFeedback('Enter a whole-number section score. A negative score is allowed by the MCQ marking scheme.')
+      return
+    }
+    if (countValues.some(value => value.trim() === '' || !Number.isInteger(Number(value)) || Number(value) < 0)) {
+      setFeedback('Enter non-negative whole numbers for attempts, correct and wrong counts.')
       return
     }
     const sectionCounts = [
