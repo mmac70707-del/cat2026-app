@@ -39,13 +39,13 @@ export function BlockCard({ task, onStart, onDone, onUndo, onSkip, onNotes }: Pr
     displayDuration = '120 minutes · no pause'
     displayTarget = 'Match official CAT slot when released'
   } else if (finalPlan?.isDayZero) {
-    displayTime = 'QA sectional slot'
-    displayDuration = '40 minutes'
-    displayTarget = 'Analysis 21:00–21:45 · no new topic'
+    displayTime = 'Library 13:15–15:00'
+    displayDuration = '40 min QA sectional + remaining deep work'
+    displayTarget = 'Same-evening analysis 21:00–21:45 · no new topic'
   } else if (isSectional) {
-    displayTime = 'Locked sectional day'
-    displayDuration = '40 minutes · no peeking'
-    displayTarget = 'Use the full section time limit'
+    displayTime = 'Library 13:15–15:00'
+    displayDuration = '40 min sectional + remaining deep work'
+    displayTarget = 'No peeking · use remaining time for the weakest-section repair'
   } else if (isNoTestDay) {
     displayTime = 'No test today'
     displayDuration = 'Rest / logistics'
