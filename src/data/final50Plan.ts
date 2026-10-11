@@ -261,9 +261,12 @@ export function getFinal50DayPlan(dateIso: string): Final50DayPlan | null {
   const final10Dilr = 'Pattern recognition only: Seating / linear / circular arrangements · Bar / Column / Line graphs · Pie charts · Tables · Caselets · add only two real DILR weak topics from your error log';
   const final10Varc = 'Strategy recall only: RC main idea / inference / tone · elimination of close options · Para Summary · Para Jumble · add only two real VARC weak topics from your error log';
   const final10Priority = 'FINAL 10 DAYS — REVISION ONLY. No new material. Each item should take under 5 minutes to recall cold; if it does not, reopen its worked example, not a new topic. Keep the locked exam strategy unchanged.';
+  const strategyGate = dateIso <= '2026-11-21'
+    ? ' Complete the one-page exam strategy by Sat 21 Nov: per-section timing, attempt rule, TITA rule, and leave rule for questions/sets. Do not change it after Sat 21 Nov.'
+    : ' Keep the one-page exam strategy unchanged.';
   const final10Gate = dateIso === '2026-11-28'
-    ? 'NO TEST. Admit card, required ID, centre route and sleep aligned to the actual exam slot. No new material.'
-    : 'No new material from 19–28 Nov. Use only the PDF Tier-1 recall lists and weak topics supported by your real error log. Do not invent weak topics or scores.';
+    ? 'NO TEST. Admit card, required ID, centre route and sleep aligned to the actual exam slot. No new material.' + strategyGate
+    : 'No new material from 19–28 Nov. Use only the PDF Tier-1 recall lists and weak topics supported by your real error log. Do not invent weak topics or scores.' + strategyGate;
 
   return {
     ...week,
