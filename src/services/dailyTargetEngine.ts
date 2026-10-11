@@ -173,8 +173,36 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'ANALYSIS') {
-      title = `Error Analysis — Classify C1–C5 (${totalPending} Logged)`
-      notes = 'Classify mistake → Why it happened → Correct method → Prevention rule.'
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — CALM CHECKLIST ONLY'
+        notes = 'No analysis or new work. Follow the admit card and centre instructions.'
+      } else if (finalPlan?.isDayZero) {
+        title = 'DAY 0 — QA SECTIONAL SAME-EVENING ANALYSIS'
+        notes = 'Use 21:00–21:45 to review the 40-minute QA sectional, mark mistakes, and write a short error note. No new topic today.'
+      } else if (finalPlan?.testTitle.includes('FULL MOCK')) {
+        title = 'SAME-NIGHT MOCK TRACKER — ATTEMPTS / CORRECT / WRONG / SCORE'
+        notes = 'Fill the Mock Tracker tonight for VARC, DILR and QA. Full mock analysis is Monday and must take at least as long as the 120-minute mock.'
+      } else if (finalPlan?.testTitle.includes('QA SECTIONAL')) {
+        title = 'QA SECTIONAL — SAME-EVENING ANALYSIS'
+        notes = 'Use the 21:00–21:45 slot tonight. Record attempts, correct, wrong and score; classify C1–C5 and identify what needs repair.'
+      } else if (finalPlan?.testTitle.includes('VARC SECTIONAL')) {
+        title = 'VARC SECTIONAL — SCORE LOG TONIGHT'
+        notes = 'Record attempts, correct, wrong and score tonight. The full analysis, repair and retest are Wednesday.'
+      } else if (finalPlan?.testTitle.includes('DILR SECTIONAL')) {
+        title = 'DILR SECTIONAL — SCORE LOG TONIGHT'
+        notes = 'Record attempts, correct, wrong and score tonight. The full analysis, repair and retest are Friday.'
+      } else if (finalPlan?.testTitle.includes('LIGHT ANALYSIS')) {
+        title = 'LIGHT ANALYSIS + REPAIR — TAPER'
+        notes = 'Keep this short and calm. Review only known high-value errors, then stop while fresh. No new material.'
+      } else if (finalPlan?.testTitle.includes('ANALYSIS')) {
+        title = 'PDF ANALYSIS GATE — ' + finalPlan.testTitle
+        notes = finalPlan.testTitle.includes('MOCK ANALYSIS')
+          ? 'Analysis takes at least as long as the mock. Complete section-wise attempts/correct/wrong/score; select the weakest section only with about 8+ attempts; classify C1–C5; write three repair topics for Monday–Wednesday and the next three Library blocks.'
+          : finalPlan.testNotes
+      } else {
+        title = `Error Analysis — Classify C1–C5 (${totalPending} Logged)`
+        notes = 'Classify mistake → Why it happened → Correct method → Prevention rule.'
+      }
 
     } else if (b.id === 'REVISION') {
       if (finalPlan?.isExamDay) {
