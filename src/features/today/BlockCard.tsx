@@ -25,7 +25,7 @@ export function BlockCard({ task, onStart, onDone, onUndo, onSkip, onNotes }: Pr
   const isSectional = plannedTestTitle.includes('SECTIONAL')
   const isNoTestDay = plannedTestTitle.includes('NO TEST')
   const isAnalysisBlock = plannedTestTitle.includes('ANALYSIS')
-  let displayName = finalPlan ? finalPlan.testTitle : b.name
+  let displayName = finalPlan ? task.title : b.name
   let displayTime = b.time
   let displayDuration = b.dur
   let displayTarget = b.target
