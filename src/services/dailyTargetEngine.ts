@@ -95,13 +95,21 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
     let notes = ''
 
     if (b.id === 'QA') {
-      if (finalPlan) {
-        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW QA PRACTICE' : finalPlan.qaFocus
-        notes = finalPlan.isExamDay
-          ? 'No new topic expansion. Follow official exam-day instructions.'
-          : finalPlan.isDayZero
-            ? finalPlan.testNotes
-            : finalPlan.weeklyPriority + ' • Let the latest mock’s weakest section and three repair topics outrank the fixed topic list.'
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — NO NEW QA PRACTICE'
+        notes = 'No topic expansion or separate QA quota. Follow official exam-day instructions.'
+      } else if (finalPlan?.isDayZero) {
+        title = finalPlan.qaFocus
+        notes = finalPlan.testNotes
+      } else if (finalPlan?.testTitle.includes('FULL MOCK')) {
+        title = 'FULL MOCK ONLY — QA SECTION 3/3'
+        notes = 'QA is the third 40-minute section of one uninterrupted 120-minute mock. Fixed order: VARC → DILR → QA. Do not add a separate QA topic quota today; log the section score and attempts/correct/wrong in the mock tracker.'
+      } else if (finalPlan?.testTitle.includes('MOCK ANALYSIS')) {
+        title = 'MOCK ANALYSIS — QA'
+        notes = 'Review QA attempts, correct, wrong and score. Classify errors C1–C5; choose repair topics from evidence, not the weekly topic list.'
+      } else if (finalPlan) {
+        title = finalPlan.qaFocus
+        notes = finalPlan.weeklyPriority + ' • Let the latest mock’s weakest section and three repair topics outrank the fixed topic list.'
       } else {
         title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
         if (lastAcc < 60 || pendingC1Count >= 2) {
@@ -117,9 +125,21 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'DILR') {
-      if (finalPlan) {
-        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW DILR PRACTICE' : finalPlan.dilrFocus
-        notes = finalPlan.isExamDay ? 'No new sets. Follow official exam-day instructions.' : finalPlan.isDayZero ? finalPlan.testNotes : finalPlan.weeklyPriority
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — NO NEW DILR PRACTICE'
+        notes = 'No new sets or separate DILR quota. Follow official exam-day instructions.'
+      } else if (finalPlan?.isDayZero) {
+        title = finalPlan.dilrFocus
+        notes = finalPlan.testNotes
+      } else if (finalPlan?.testTitle.includes('FULL MOCK')) {
+        title = 'FULL MOCK ONLY — DILR SECTION 2/3'
+        notes = 'DILR is the second 40-minute section of one uninterrupted 120-minute mock. Fixed order: VARC → DILR → QA. No separate DILR set quota today; log attempts, correct, wrong and score.'
+      } else if (finalPlan?.testTitle.includes('MOCK ANALYSIS')) {
+        title = 'MOCK ANALYSIS — DILR'
+        notes = 'Review question attempts and set choices, correct, wrong and score. Classify C1–C5; identify selection errors without guessing beyond the evidence.'
+      } else if (finalPlan) {
+        title = finalPlan.dilrFocus
+        notes = finalPlan.weeklyPriority
       } else {
         title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
         notes = `${pt.dilrDetail}`
@@ -131,9 +151,21 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'VARC') {
-      if (finalPlan) {
-        title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW VARC PRACTICE' : finalPlan.varcFocus
-        notes = finalPlan.isExamDay ? 'No new passages. Follow official exam-day instructions.' : finalPlan.isDayZero ? finalPlan.testNotes : finalPlan.weeklyPriority
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — NO NEW VARC PRACTICE'
+        notes = 'No new passages or separate VARC quota. Follow official exam-day instructions.'
+      } else if (finalPlan?.isDayZero) {
+        title = finalPlan.varcFocus
+        notes = finalPlan.testNotes
+      } else if (finalPlan?.testTitle.includes('FULL MOCK')) {
+        title = 'FULL MOCK ONLY — VARC SECTION 1/3'
+        notes = 'VARC is the first 40-minute section of one uninterrupted 120-minute mock. Fixed order: VARC → DILR → QA. No separate RC/VA practice quota today; log attempts, correct, wrong and score.'
+      } else if (finalPlan?.testTitle.includes('MOCK ANALYSIS')) {
+        title = 'MOCK ANALYSIS — VARC'
+        notes = 'Review RC/VA attempts, correct, wrong and score. Classify C1–C5 and write evidence-based repair topics; do not treat the weekly focus list as new practice quota.'
+      } else if (finalPlan) {
+        title = finalPlan.varcFocus
+        notes = finalPlan.weeklyPriority
       } else {
         title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
         notes = `${pt.varcDetail}`
