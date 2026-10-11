@@ -177,11 +177,12 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       {finalPlan && (
         <div style={{ padding: '12px 16px 0' }}>
           <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: 14 }}>
+            {finalPlan.final10Days && <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--gold)', letterSpacing: 1, marginBottom: 5 }}>FINAL 10 DAYS · REVISION ONLY · NO NEW MATERIAL</div>}
             <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--gold)', letterSpacing: 1 }}>TODAY’S LOCKED TEST / GATE</div>
             <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--ql-text)', marginTop: 5 }}>{finalPlan.testTitle}</div>
             <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 5, lineHeight: 1.5 }}>{finalPlan.testNotes}</div>
             <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 7 }}>Week {finalPlan.weekNum || '—'} priority: {finalPlan.weeklyPriority}</div>
-            {finalPlan.coverageFreeze && <div style={{ fontSize: 10, color: '#F59E0B', fontWeight: 800, marginTop: 6 }}>COVERAGE FREEZE: no new topics except repeated Tier-1 C1 gaps.</div>}
+            {finalPlan.final10Days ? <div style={{ fontSize: 10, color: '#F59E0B', fontWeight: 800, marginTop: 6 }}>Every recall item under 5 min. If stuck, reopen its worked example — no new topic or new resource.</div> : finalPlan.coverageFreeze && <div style={{ fontSize: 10, color: '#F59E0B', fontWeight: 800, marginTop: 6 }}>COVERAGE FREEZE: no new topics except repeated Tier-1 C1 gaps.</div>}
           </div>
         </div>
       )}
