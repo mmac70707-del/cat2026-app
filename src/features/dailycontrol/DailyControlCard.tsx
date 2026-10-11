@@ -839,7 +839,7 @@ export function DailyControlCard() {
           }}>
             {schedule.map(({ time, label }) => (
               <div
-                key={time}
+                key={`${time}-${label}`}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'clamp(70px, 20vw, 90px) 1fr',
