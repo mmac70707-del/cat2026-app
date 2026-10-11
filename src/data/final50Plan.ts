@@ -148,6 +148,7 @@ function examDayPlan(dateIso: string): Final50DayPlan {
     testNotes: 'Follow the admit-card slot and official centre instructions. No mock, new topic, or last-minute resource hunt.',
     isDayZero: false,
     isExamDay: true,
+    final10Days: false,
     coverageFreeze: true
   };
 }
