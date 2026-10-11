@@ -156,8 +156,16 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       notes = 'Classify mistake → Why it happened → Correct method → Prevention rule.'
 
     } else if (b.id === 'REVISION') {
-      title = `Formula & Concept Recap — ${roadmapItem.chapter}`
-      notes = '30-sec recap → 2-min formula review → Today\'s biggest trap.'
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM CHECKLIST — ADMIT CARD, ID, ROUTE, SLEEP'
+        notes = 'No new material. Align sleep to the exam slot and follow the admit card.'
+      } else if (finalPlan && !finalPlan.isDayZero) {
+        title = 'PDF-LOCKED REVISION — ' + finalPlan.title
+        notes = '30-sec recap → 2-min revision → connect to a previous concept → preview tomorrow. Use only your error log, Tier-1 formulas and familiar strategies.'
+      } else {
+        title = `Formula & Concept Recap — ${roadmapItem.chapter}`
+        notes = '30-sec recap → 2-min formula review → Today\'s biggest trap.'
+      }
 
     } else if (b.id === 'REPAIR') {
       if (pendingC1Count > 0) {
