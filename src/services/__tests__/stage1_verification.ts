@@ -12,7 +12,8 @@ import {
 } from '../calendarEngine.js'
 import { generateDailyTargets } from '../dailyTargetEngine.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
-import { CAT_DATE } from '../../data/config.js'
+import { CAT_DATE, SCHEDULE_ITEMS, PHASES } from '../../data/config.js'
+import { getFinal50DayPlan } from '../../data/final50Plan.js'
 import { getPercentylDailyTarget } from '../../data/percentylPlan2.js'
 import type { ErrorRecord, Task } from '../../types'
 
@@ -131,6 +132,29 @@ export async function runStage1VerificationTests() {
     targetDay44.dayNum === 44 && targetDay44.dateIso === '2026-10-31'
   assert('P', 'Date-driven daily targets align to Day 1, Day 24 and Day 44', targetDatesAligned,
     `Day 1: ${targetDay1.dayNum}/${targetDay1.dateIso}; Day 24: ${targetDay24.dayNum}/${targetDay24.dateIso}; Day 44: ${targetDay44.dayNum}/${targetDay44.dateIso}`)
+
+  // Q–W. Uploaded Final 50 Days PDF remains the active plan through exam day.
+  const finalDay1 = getFinal50DayPlan('2026-10-11')
+  const finalWeek4End = getFinal50DayPlan('2026-11-07')
+  const freezeStart = getFinal50DayPlan('2026-11-08')
+  const finalConsolidation = getFinal50DayPlan('2026-11-09')
+  const finalDay49 = getFinal50DayPlan('2026-11-28')
+  const examDay = getFinal50DayPlan('2026-11-29')
+  assert('Q', 'Final plan starts with Mock 1 on Sunday 11 Oct', finalDay1?.dayNum === 1 && finalDay1.weekNum === 1 && finalDay1.testTitle.includes('FULL MOCK 1'), 'Day 1: ' + (finalDay1?.testTitle ?? 'missing'))
+  assert('R', 'Coverage freeze starts after Saturday 7 Nov', finalWeek4End?.coverageFreeze === false && freezeStart?.coverageFreeze === true && finalWeek4End.testTitle.includes('QA SECTIONAL'), '7 Nov: ' + (finalWeek4End?.testTitle ?? 'missing') + '; 8 Nov freeze=' + String(freezeStart?.coverageFreeze))
+  assert('S', 'Consolidation begins Monday 9 Nov', finalConsolidation?.phaseNote.includes('CONSOLIDATION') === true && finalConsolidation.weeklyPriority.length > 0, 'Phase: ' + (finalConsolidation?.phaseNote ?? 'missing'))
+  assert('T', 'Saturday 28 Nov is rest/logistics, not a test', finalDay49?.dayNum === 49 && finalDay49.testTitle.includes('NO TEST'), 'Day 49: ' + (finalDay49?.testTitle ?? 'missing'))
+  assert('U', 'Sunday 29 Nov is exam day, not another mock', examDay?.isExamDay === true && !examDay.testTitle.includes('FULL MOCK'), 'Exam day: ' + (examDay?.testTitle ?? 'missing'))
+  assert('V', 'Library block ends at 15:00 per PDF', SCHEDULE_ITEMS.some(x => x.block === 'Library Deep Work' && x.time === '13:15–15:00'), JSON.stringify(SCHEDULE_ITEMS.find(x => x.block === 'Library Deep Work')))
+  assert('W', 'Mock-Dominated and Consolidation phase dates match PDF', PHASES.some(x => x.id === 'P3' && x.end === '2026-11-08') && PHASES.some(x => x.id === 'P4' && x.start === '2026-11-09' && x.end === '2026-11-20'), PHASES.map(x => x.id + ':' + x.start + '→' + x.end).join(' | '))
+
+  // PDF's active dates replace the generic weekly test labels in generated tasks.
+  const tasksMock1 = generateDailyTargets({ dateIso: '2026-10-11' })
+  const tasksTaperSaturday = generateDailyTargets({ dateIso: '2026-11-28' })
+  const testMock1 = tasksMock1.find(t => t.blockId === 'TEST')
+  const testRest = tasksTaperSaturday.find(t => t.blockId === 'TEST')
+  assert('X', 'Generated daily tasks show Mock 1 on 11 Oct', testMock1?.title.includes('FULL MOCK 1') === true, 'TEST title: ' + (testMock1?.title ?? 'missing'))
+  assert('Y', 'Generated daily tasks show no test on 28 Nov', testRest?.title.includes('NO TEST') === true, 'TEST title: ' + (testRest?.title ?? 'missing'))
 
   return results
 }
