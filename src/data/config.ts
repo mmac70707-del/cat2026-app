@@ -6,8 +6,8 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.1.4'
-export const LAST_UPDATED = '11 OCT 2026 • FINAL 50-DAY PDF PLAN'
+export const APP_VERSION = '1.1.5'
+export const LAST_UPDATED = '11 OCT 2026 • PDF FINAL QA + MOCK SLOT'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
@@ -159,6 +159,7 @@ export const MASTER_TOPICS: Record<'QA'|'DILR'|'VARC', Omit<MasteryTopic,'subjec
 export const SCHEDULE_ITEMS = [
   {time:'05:00–05:15', block:'Morning Reset',            icon:'🌅', col:'#F5A623', detail:'Water · Stretch · No phone · Read mission'},
   {time:'05:15–05:55', block:'Daily Dose',               icon:'⚡', col:'#F59E0B', detail:'QA test (10 Q) + RC test (1 passage) · Mark mistakes immediately'},
+  {time:'08:00–08:30', block:'Breakfast',                 icon:'🥣', col:'#F59E0B', detail:'Breakfast before the fixed 09:00 QA start · no schedule overlap'},
   {time:'09:00–10:30', block:'QA Session',               icon:'📐', col:'#16A34A', detail:'Concept 10 min → 15–20 quality Qs · Easy → Moderate · Accuracy first'},
   {time:'10:45–12:00', block:'DILR Session',             icon:'🧩', col:'#2563EB', detail:'1 quality set · 2nd only if 1st fully analysed · 20-25 min per set'},
   {time:'12:15–13:15', block:'VARC Session',             icon:'📖', col:'#7C3AED', detail:'2 RC passages · Main Idea + Inference + Tone · Elimination focus'},
