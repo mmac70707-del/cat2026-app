@@ -12,7 +12,8 @@ export function getCurrentActiveScheduleSlot(): { block: string; detail: string;
   if (timeNum >= 900 && timeNum < 1030) return { block: 'QA Session', detail: 'Concept 10 min → 15–20 quality Qs · Easy → Moderate · Accuracy first', timeStr: '09:00–10:30' }
   if (timeNum >= 1045 && timeNum < 1200) return { block: 'DILR Session', detail: '1 quality set · 2nd only if 1st fully analysed · 20-25 min per set', timeStr: '10:45–12:00' }
   if (timeNum >= 1215 && timeNum < 1315) return { block: 'VARC Session', detail: '2 RC passages · Main Idea + Inference + Tone · Elimination focus', timeStr: '12:15–13:15' }
-  if (timeNum >= 1315 && timeNum < 1700) return { block: 'Library Deep Work', detail: 'Pending QA/DILR/VARC · Wrong Qs · Repair work · No random resources', timeStr: '13:15–17:00' }
+  if (timeNum >= 1315 && timeNum < 1500) return { block: 'Library Deep Work', detail: 'Pending QA/DILR/VARC · Wrong Qs · Repair work · No random resources', timeStr: '13:15–15:00' }
+  if (timeNum >= 1500 && timeNum < 1730) return { block: 'Buffer / Reset', detail: 'Unscheduled buffer · Protect the next locked block', timeStr: '15:00–17:30' }
   if (timeNum >= 1730 && timeNum < 1900) return { block: 'Coaching', detail: 'Attend coaching · Notes · Mark doubts immediately', timeStr: '17:30–19:00' }
   if (timeNum >= 1920 && timeNum < 2020) return { block: 'Gym / Movement', detail: 'Non-negotiable physical movement · Brain needs blood flow', timeStr: '19:20–20:20' }
   if (timeNum >= 2030 && timeNum < 2100) return { block: 'Dinner', detail: 'Eat well · No screens', timeStr: '20:30–21:00' }
