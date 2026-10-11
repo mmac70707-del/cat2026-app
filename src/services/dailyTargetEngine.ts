@@ -168,7 +168,10 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'REPAIR') {
-      if (pendingC1Count > 0) {
+      if (finalPlan?.isExamDay) {
+        title = 'EXAM DAY — NO NEW REPAIR WORK'
+        notes = 'Trust the preparation. Follow official exam-day instructions.'
+      } else if (pendingC1Count > 0) {
         title = `HIGH PRIORITY REPAIR: ${pendingC1Count} C1 Concept Gaps`
         notes = 'Re-solve failed questions without looking at solutions.'
       } else if (pendingC2Count > 0) {
