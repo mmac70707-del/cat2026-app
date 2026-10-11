@@ -192,8 +192,8 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'RETEST') {
-      title = `Mastery Retest — ${input.retestCount || totalPending} Retests Pending`
-      notes = '3–5 fresh questions on weak topics • 3+/5 correct = verified pass.'
+      title = finalPlan?.isExamDay ? 'EXAM DAY — NO RETEST' : `Mastery Retest — ${input.retestCount || totalPending} Retests Pending`
+      notes = finalPlan?.isExamDay ? 'No practice test today.' : '3–5 fresh questions on weak topics • 3+/5 correct = verified pass.'
     }
 
     return {
