@@ -60,7 +60,8 @@ export function buildWeekPlan(): WeekDay[] {
   const weekStart = new Date(todayKolkata)
   weekStart.setUTCDate(todayKolkata.getUTCDate() - (finalCycleActive ? day : (day === 0 ? 6 : day - 1)))
 
-  return WEEK_PLAN_TEMPLATE.map((t, i) => {
+  return Array.from({ length: 7 }, (_, i) => {
+    const t = WEEK_PLAN_TEMPLATE[finalCycleActive ? (i + 6) % 7 : i]
     const d = new Date(weekStart)
     d.setUTCDate(weekStart.getUTCDate() + i)
     const dKey = d.toISOString().slice(0, 10)
