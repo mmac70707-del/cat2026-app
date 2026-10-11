@@ -13,6 +13,7 @@ export interface Final50WeekPlan {
 }
 
 export interface Final50DayPlan extends Final50WeekPlan {
+  weekNum: number;
   dateIso: string;
   dayNum: number;
   testTitle: string;
@@ -140,6 +141,7 @@ function examDayPlan(dateIso: string): Final50DayPlan {
     weeklyPriority: 'Stay calm. Follow the slot and instructions on the admit card.',
     gate: 'Admit card and ID ready; route planned; sleep aligned to the exam slot.',
     dateIso,
+    weekNum: 0,
     dayNum: 50,
     testTitle: 'CAT 2026 EXAM DAY — NO MOCK',
     testNotes: 'Follow the admit-card slot and official centre instructions. No mock, new topic, or last-minute resource hunt.',
@@ -229,6 +231,7 @@ export function getFinal50DayPlan(dateIso: string): Final50DayPlan | null {
       weeklyPriority: 'Early sleep. Tomorrow is Mock 1.',
       gate: 'Same-evening sectional analysis in the 21:00–21:45 slot.',
       dateIso,
+      weekNum: 0,
       dayNum: 0,
       testTitle: 'DAY 0 — QA SECTIONAL',
       testNotes: 'Complete same-evening analysis in the 21:00–21:45 slot. No new topic today. Early sleep; Mock 1 is tomorrow.',
@@ -253,12 +256,13 @@ export function getFinal50DayPlan(dateIso: string): Final50DayPlan | null {
   return {
     ...week,
     dateIso,
+    weekNum: week.number,
     dayNum: offset + 1,
     phaseNote: phaseLabel + ' · ' + week.phaseNote,
     testTitle: test.title,
     testNotes: test.notes,
     isDayZero: false,
     isExamDay: false,
-    coverageFreeze: dateIso >= '2026-11-07'
+    coverageFreeze: dateIso >= '2026-11-08'
   };
 }
