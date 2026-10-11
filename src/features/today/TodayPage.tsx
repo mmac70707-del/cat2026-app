@@ -108,7 +108,7 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
           </div>
         </div>
         <div className="today-command-mission">Mission: {phase.mission}</div>
-        <div className="today-command-meta">{formatDate(now)} · Week {getWeekNumber()} · {phase.id} {phase.name}</div>
+        <div className="today-command-meta">{formatDate(now)} · {finalPlan && finalPlan.weekNum > 0 ? 'Final Plan Week ' + finalPlan.weekNum + '/7' : 'Week ' + getWeekNumber()} · {phase.id} {phase.name}</div>
       </div>
 
       <ExecutionIntelligenceCard tasks={tasks} onNavigate={onNavigate} />
@@ -137,17 +137,17 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
       <div className="today-core-targets" style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--ql-surface)', border: '1px solid var(--ql-accent)', borderRadius: 10, padding: 14 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--ql-accent-strong)', letterSpacing: 1, marginBottom: 8, textTransform: 'uppercase' }}>
-            🎯 TODAY'S 3 CORE TARGETS (DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44)
+            {finalPlan?.isExamDay ? '🎯 CAT EXAM DAY — FOLLOW ADMIT-CARD INSTRUCTIONS' : finalPlan && !finalPlan.isDayZero ? '🎯 FINAL 50-DAY PDF PLAN · DAY ' + dayNum + '/49 · WEEK ' + finalPlan.weekNum + '/7' : finalPlan?.isDayZero ? '🎯 FINAL 50-DAY PLAN · DAY 0' : '🎯 TODAY’S 3 CORE TARGETS · FIRST-PASS DAY ' + firstPassDayNum + '/44'}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 12, fontWeight: 700 }}>
             <div style={{ background: 'rgba(22,163,74,0.15)', border: '1px solid #16A34A', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-accent-strong)' }}>
-              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.quantTopic.toUpperCase()} ({pt.quantTargetQs} Qs)</span>
+              📐 QA &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{qaTargetLabel}</span>
             </div>
             <div style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid #2563EB', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
-              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.dilrTopic.toUpperCase()} ({pt.dilrTargetSets} Sets)</span>
+              🧩 DILR &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{dilrTargetLabel}</span>
             </div>
             <div style={{ background: 'rgba(124,58,237,0.15)', border: '1px solid #7C3AED', padding: '8px 10px', borderRadius: 6, color: 'var(--ql-sub)' }}>
-              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{pt.varcTopic.toUpperCase()} ({pt.varcTargetPsg} Psg)</span>
+              📖 VARC &nbsp;→&nbsp; <span style={{ color: '#FFF' }}>{varcTargetLabel}</span>
             </div>
           </div>
         </div>
