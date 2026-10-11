@@ -1,7 +1,12 @@
+function getFinal50DayPlanDateKey(parts: { year: number; month: number; date: number }): string {
+  return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.date).padStart(2, '0')}`
+}
+
 import { dbGet, dbGetAll, dbPut, dbGetByIndex } from '@/db'
 import { BLOCKS } from '@/data/config'
 import { todayKey, localDateKey } from '@/services/domain'
 import { getKolkataDateParts } from '@/services/calendarEngine'
+import { getFinal50DayPlan } from '@/data/final50Plan'
 import { generateDailyTargets } from '@/services/dailyTargetEngine'
 import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { DailyScoreRepository } from '@/repositories/index'
@@ -68,12 +73,14 @@ export const TaskRepository = {
     const parts = getKolkataDateParts()
     const nowKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
     const day = parts.dayOfWeek
-    const mon = new Date(nowKolkata)
-    mon.setUTCDate(nowKolkata.getUTCDate() - (day === 0 ? 6 : day - 1))
+    const activeFinalPlan = getFinal50DayPlan(getFinal50DayPlanDateKey(parts))
+    const finalCycleActive = Boolean(activeFinalPlan && !activeFinalPlan.isDayZero && !activeFinalPlan.isExamDay)
+    const weekStart = new Date(nowKolkata)
+    weekStart.setUTCDate(nowKolkata.getUTCDate() - (finalCycleActive ? day : (day === 0 ? 6 : day - 1)))
 
     const dates = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(mon)
-      d.setUTCDate(mon.getUTCDate() + i)
+      const d = new Date(weekStart)
+      d.setUTCDate(weekStart.getUTCDate() + i)
       return d.toISOString().slice(0, 10)
     })
 
