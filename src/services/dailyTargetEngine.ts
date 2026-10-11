@@ -1,8 +1,9 @@
 import { ROADMAP_44 } from '@/data/roadmap44'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { BLOCKS } from '@/data/config'
-import { getCurrentPhase, localDateKey } from '@/services/domain'
-import { getFirstPassDayNum } from '@/services/calendarEngine'
+import { localDateKey } from '@/services/domain'
+import { getFirstPassDayNum, getKolkataDateKey } from '@/services/calendarEngine'
+import { getFinal50DayPlan } from '@/data/final50Plan'
 import type { Task, ErrorRecord, DailyScore, TaskStatus } from '@/types'
 
 export interface DailyTargetInput {
@@ -15,11 +16,11 @@ export interface DailyTargetInput {
 }
 
 export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
-  const d = input.dateIso ? new Date(input.dateIso) : new Date()
-  const dateKey = localDateKey(d)
-  const phase = getCurrentPhase()
+  const d = input.dateIso ? new Date(input.dateIso + 'T12:00:00Z') : new Date()
+  const dateKey = input.dateIso && /^\d{4}-\d{2}-\d{2}$/.test(input.dateIso) ? input.dateIso : getKolkataDateKey(d)
+  const finalPlan = getFinal50DayPlan(dateKey)
 
-  // Find exact 44-Day First-Pass day & roadmap item
+  // Preserve 44-day first-pass history; the uploaded PDF wins for active dates.
   const dayNum = getFirstPassDayNum(dateKey)
   const roadmapItem = ROADMAP_44.find(r => r.dateIso === dateKey) || ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
   const pt = getPercentylDailyTarget(dateKey)
