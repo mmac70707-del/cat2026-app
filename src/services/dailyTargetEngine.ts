@@ -228,7 +228,7 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
     }
 
     return {
-      id: ${dateKey}_${b.id},
+      id: `${dateKey}_${b.id}`,
       date: dateKey,
       blockId: b.id,
       subject: b.label,
