@@ -80,8 +80,8 @@ export function FocusModeLauncher({
       </div>
 
       <div className="focus-execution-strip" aria-label="CAT execution sequence">
-        {['SOLVE', 'TEST', 'ANALYSE', 'REPAIR', 'RETEST'].map((step, index) => (
-          <div key={step} className={'focus-execution-step ' + (index === 0 ? 'active' : '')}>
+        {['QA', 'DILR', 'VARC', 'TEST', 'ANALYSIS', 'REVISION', 'REPAIR', 'RETEST'].map((step, index) => (
+          <div key={step} className={'focus-execution-step ' + (index === 0 ? 'active' : '')} aria-current={index === 0 ? 'step' : undefined}>
             <span>{String(index + 1).padStart(2, '0')}</span>
             <b>{step}</b>
           </div>

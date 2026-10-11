@@ -13,6 +13,7 @@ import {
 import { generateDailyTargets } from '../dailyTargetEngine.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
 import { CAT_DATE } from '../../data/config.js'
+import { getPercentylDailyTarget } from '../../data/percentylPlan2.js'
 import type { ErrorRecord, Task } from '../../types'
 
 export async function runStage1VerificationTests() {
@@ -60,10 +61,10 @@ export async function runStage1VerificationTests() {
   const day44Num = getFirstPassDayNum('2026-10-31')
   assert('H', 'First-pass Day 44 calculation', day44Num === 44, `Calculated Day Num: ${day44Num}`)
 
-  // I. Dates outside first-pass range
+  // I. First-pass dates clamp according to the canonical calendar rule
   const dayBefore = getFirstPassDayNum('2026-09-01')
   const dayAfter  = getFirstPassDayNum('2026-11-01')
-  assert('I', 'Dates outside first-pass range return 0', dayBefore === 0 && dayAfter === 0, `Before: ${dayBefore}, After: ${dayAfter}`)
+  assert('I', 'Dates before first pass return 0 and dates after it clamp to Day 44', dayBefore === 0 && dayAfter === 44, `Before: ${dayBefore}, After: ${dayAfter}`)
 
   // J. Missed-day recovery & historical state
   const historicalTask: Task = {
@@ -119,6 +120,17 @@ export async function runStage1VerificationTests() {
     repoError = true
     assert('O', 'TaskRepository integration', false, 'TaskRepository lookup error')
   }
+
+  // P. Date-driven daily targets remain aligned with the canonical 44-day calendar.
+  const targetDay1 = getPercentylDailyTarget('2026-09-18')
+  const targetDay24 = getPercentylDailyTarget('2026-10-11')
+  const targetDay44 = getPercentylDailyTarget('2026-10-31')
+  const targetDatesAligned =
+    targetDay1.dayNum === 1 && targetDay1.dateIso === '2026-09-18' &&
+    targetDay24.dayNum === 24 && targetDay24.dateIso === '2026-10-11' &&
+    targetDay44.dayNum === 44 && targetDay44.dateIso === '2026-10-31'
+  assert('P', 'Date-driven daily targets align to Day 1, Day 24 and Day 44', targetDatesAligned,
+    `Day 1: ${targetDay1.dayNum}/${targetDay1.dateIso}; Day 24: ${targetDay24.dayNum}/${targetDay24.dateIso}; Day 44: ${targetDay44.dayNum}/${targetDay44.dateIso}`)
 
   return results
 }
