@@ -487,7 +487,7 @@ export function DailyControlCard() {
             fontSize: 'clamp(8px, 2vw, 9px)',
             fontWeight: 900,
             whiteSpace: 'nowrap',
-          }}>{final50Plan?.isExamDay ? 'CAT EXAM DAY' : final50Plan?.isDayZero ? 'FINAL PLAN DAY 0' : final50Plan ? 'FINAL DAY ' + dayNum + '/49 · WEEK ' + final50Plan.weekNum + '/7' : 'CALENDAR DAY ' + firstPassDayNum + '/44'}</span>
+          }}>{final50Plan?.isExamDay ? 'CAT EXAM DAY' : final50Plan?.isDayZero ? 'FINAL PLAN DAY 0' : final50Plan?.final10Days ? 'FINAL 10 DAYS · REVISION ONLY' : final50Plan ? 'FINAL DAY ' + dayNum + '/49 · WEEK ' + final50Plan.weekNum + '/7' : 'CALENDAR DAY ' + firstPassDayNum + '/44'}</span>
           <span style={{
             padding: 'clamp(4px, 1.5vw, 5px) clamp(6px, 2vw, 8px)',
             borderRadius: 8,
@@ -671,7 +671,7 @@ export function DailyControlCard() {
               marginTop: 'clamp(2px, 1vw, 3px)',
               color: '#94A3B8',
               fontSize: 'clamp(9px, 2vw, 11px)',
-            }}>{final50Plan ? 'FINAL 50-DAY PLAN · ' + (final50Plan.isExamDay ? 'EXAM DAY' : final50Plan.isDayZero ? 'DAY 0' : 'DAY ' + final50Plan.dayNum + '/49 · WEEK ' + final50Plan.weekNum + '/7') + ' • ' + final50Plan.testTitle : '44-day tracker Day ' + firstPassDayNum + '/44 • Date-scheduled unit: ' + roadmap.chapter}</div>}
+            }}>{final50Plan ? 'FINAL 50-DAY PLAN · ' + (final50Plan.isExamDay ? 'EXAM DAY' : final50Plan.isDayZero ? 'DAY 0' : final50Plan.final10Days ? 'FINAL 10 DAYS · REVISION ONLY' : 'DAY ' + final50Plan.dayNum + '/49 · WEEK ' + final50Plan.weekNum + '/7') + ' • ' + final50Plan.testTitle : '44-day tracker Day ' + firstPassDayNum + '/44 • Date-scheduled unit: ' + roadmap.chapter}</div>}
           </div>
         </div>
 
