@@ -38,19 +38,19 @@ export function BlockCard({ task, onStart, onDone, onUndo, onSkip, onNotes }: Pr
     displayTime = 'Same fixed weekly mock slot'
     displayDuration = '120 minutes · no pause'
     displayTarget = 'Match official CAT slot when released'
-  } else if (isSectional) {
-    displayTime = 'Locked sectional day'
-    displayDuration = '40 minutes · no peeking'
-    displayTarget = 'Use the full section time limit'
   } else if (finalPlan?.isDayZero) {
     displayTime = 'QA sectional slot'
     displayDuration = '40 minutes'
     displayTarget = 'Analysis 21:00–21:45 · no new topic'
+  } else if (isSectional) {
+    displayTime = 'Locked sectional day'
+    displayDuration = '40 minutes · no peeking'
+    displayTarget = 'Use the full section time limit'
   } else if (isNoTestDay) {
     displayTime = 'No test today'
     displayDuration = 'Rest / logistics'
     displayTarget = 'Protect recovery'
-  } else if (finalPlan && isAnalysisBlock) {
+  } else if (finalPlan && isAnalysisBlock && !plannedTestTitle.includes('LIGHT ANALYSIS')) {
     displayTime = 'Library 13:15–15:00 + evening block'
     displayDuration = plannedTestTitle.includes('MOCK') ? 'Analysis ≥ mock duration' : 'Analyse · repair · retest'
     displayTarget = 'Update C1–C5 log and repair topics'
