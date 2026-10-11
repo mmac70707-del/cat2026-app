@@ -20,16 +20,8 @@ const OMIA: Record<string,string> = {
   SUNDAY:'Full Mock',
 }
 
-// Use the shared schedule as the source of truth so this dashboard cannot drift
-// from the full Daily Schedule page. Keep the founder's locked breakfast reminder.
-const schedule = SCHEDULE_ITEMS.flatMap(({ time, block }) =>
-  block === 'QA Session'
-    ? [
-        { time: '09:00', label: 'Breakfast' },
-        { time, label: block },
-      ]
-    : [{ time, label: block }],
-)
+// One canonical clock: breakfast is before the PDF-locked 09:00 QA start.
+const schedule = SCHEDULE_ITEMS.map(({ time, block }) => ({ time, label: block }))
 
 function todayIndia() {
   const now = new Date()
