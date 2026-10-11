@@ -5,6 +5,7 @@ import { usePhase } from '@/hooks/usePhase'
 import { formatDate, todayKey, getWeekNumber } from '@/services/domain'
 import { getKolkataDateKey, getFirstPassDayNum } from '@/services/calendarEngine'
 import { getPercentylDailyTarget } from '@/data/percentylPlan2'
+import { getFinal50DayPlan } from '@/data/final50Plan'
 import { playSuccessSound } from '@/services/audioService'
 import { BlockCard } from './BlockCard'
 import { ExecutionIntelligenceCard } from './ExecutionIntelligenceCard'
@@ -35,7 +36,12 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
   const now = new Date()
   const dateKey = getKolkataDateKey(now)
   const pt = getPercentylDailyTarget(dateKey)
-  const dayNum = pt.dayNum || getFirstPassDayNum(dateKey)
+  const finalPlan = getFinal50DayPlan(dateKey)
+  const firstPassDayNum = getFirstPassDayNum(dateKey)
+  const dayNum = finalPlan ? finalPlan.dayNum : firstPassDayNum
+  const qaTargetLabel = finalPlan ? finalPlan.qaFocus : pt.quantTopic + ' (' + pt.quantTargetQs + ' Qs)'
+  const dilrTargetLabel = finalPlan ? finalPlan.dilrFocus : pt.dilrTopic + ' (' + pt.dilrTargetSets + ' sets)'
+  const varcTargetLabel = finalPlan ? finalPlan.varcFocus : pt.varcTopic + ' (' + pt.varcTargetPsg + ' passages)'
 
   const activeTask = tasks.find(t => t.status === 'IN_PROGRESS')
   const nextTask = tasks.find(t => t.status === 'TODO')
