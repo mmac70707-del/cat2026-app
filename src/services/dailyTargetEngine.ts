@@ -76,11 +76,13 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
     let notes = ''
 
     if (b.id === 'QA') {
-      if (finalPlan && !finalPlan.isDayZero) {
+      if (finalPlan) {
         title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW QA PRACTICE' : finalPlan.qaFocus
         notes = finalPlan.isExamDay
           ? 'No new topic expansion. Follow official exam-day instructions.'
-          : finalPlan.weeklyPriority + ' • Let the latest mock’s weakest section and three repair topics outrank the fixed topic list.'
+          : finalPlan.isDayZero
+            ? finalPlan.testNotes
+            : finalPlan.weeklyPriority + ' • Let the latest mock’s weakest section and three repair topics outrank the fixed topic list.'
       } else {
         title = `${pt.quantTopic} (${pt.quantTargetQs} Qs)`
         if (lastAcc < 60 || pendingC1Count >= 2) {
@@ -96,9 +98,9 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'DILR') {
-      if (finalPlan && !finalPlan.isDayZero) {
+      if (finalPlan) {
         title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW DILR PRACTICE' : finalPlan.dilrFocus
-        notes = finalPlan.isExamDay ? 'No new sets. Follow official exam-day instructions.' : finalPlan.weeklyPriority
+        notes = finalPlan.isExamDay ? 'No new sets. Follow official exam-day instructions.' : finalPlan.isDayZero ? finalPlan.testNotes : finalPlan.weeklyPriority
       } else {
         title = `${pt.dilrTopic} (${pt.dilrTargetSets} Sets)`
         notes = `${pt.dilrDetail}`
@@ -110,9 +112,9 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'VARC') {
-      if (finalPlan && !finalPlan.isDayZero) {
+      if (finalPlan) {
         title = finalPlan.isExamDay ? 'EXAM DAY — NO NEW VARC PRACTICE' : finalPlan.varcFocus
-        notes = finalPlan.isExamDay ? 'No new passages. Follow official exam-day instructions.' : finalPlan.weeklyPriority
+        notes = finalPlan.isExamDay ? 'No new passages. Follow official exam-day instructions.' : finalPlan.isDayZero ? finalPlan.testNotes : finalPlan.weeklyPriority
       } else {
         title = `${pt.varcTopic} (${pt.varcTargetPsg} Passages/Qs)`
         notes = `${pt.varcDetail}`
@@ -159,9 +161,9 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       if (finalPlan?.isExamDay) {
         title = 'EXAM CHECKLIST — ADMIT CARD, ID, ROUTE, SLEEP'
         notes = 'No new material. Align sleep to the exam slot and follow the admit card.'
-      } else if (finalPlan && !finalPlan.isDayZero) {
-        title = 'PDF-LOCKED REVISION — ' + finalPlan.title
-        notes = '30-sec recap → 2-min revision → connect to a previous concept → preview tomorrow. Use only your error log, Tier-1 formulas and familiar strategies.'
+      } else if (finalPlan) {
+        title = finalPlan.isDayZero ? 'DAY 0 — NO NEW TOPICS' : 'PDF-LOCKED REVISION — ' + finalPlan.title
+        notes = finalPlan.isDayZero ? finalPlan.testNotes : '30-sec recap → 2-min revision → connect to a previous concept → preview tomorrow. Use only your error log, Tier-1 formulas and familiar strategies.'
       } else {
         title = `Formula & Concept Recap — ${roadmapItem.chapter}`
         notes = '30-sec recap → 2-min formula review → Today\'s biggest trap.'
