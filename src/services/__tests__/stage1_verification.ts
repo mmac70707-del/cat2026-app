@@ -11,11 +11,12 @@ import {
   buildCalendarYear
 } from '../calendarEngine.js'
 import { generateDailyTargets } from '../dailyTargetEngine.js'
+import { analyseMock } from '../domain.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
 import { CAT_DATE, SCHEDULE_ITEMS, PHASES } from '../../data/config.js'
 import { getFinal50DayPlan } from '../../data/final50Plan.js'
 import { getPercentylDailyTarget } from '../../data/percentylPlan2.js'
-import type { ErrorRecord, Task } from '../../types'
+import type { ErrorRecord, Task, MockRecord } from '../../types'
 
 export async function runStage1VerificationTests() {
   const results: { id: string; test: string; status: 'PASS' | 'FAIL'; detail: string }[] = []
@@ -155,6 +156,30 @@ export async function runStage1VerificationTests() {
   const testRest = tasksTaperSaturday.find(t => t.blockId === 'TEST')
   assert('X', 'Generated daily tasks show Mock 1 on 11 Oct', testMock1?.title.includes('FULL MOCK 1') === true, 'TEST title: ' + (testMock1?.title ?? 'missing'))
   assert('Y', 'Generated daily tasks show no test on 28 Nov', testRest?.title.includes('NO TEST') === true, 'TEST title: ' + (testRest?.title ?? 'missing'))
+
+  // Z–AB. Mock facts drive the next three Library blocks only when the tracker has enough evidence.
+  const mockFixture: MockRecord = {
+    id: 'mock_fixture_1', name: 'Mock 1', date: '2026-10-11', createdAt: '2026-10-11T06:00:00.000Z',
+    total: 100, att: 45, overall: 69, qaAcc: 80, dlAcc: 40, vcAcc: 75, weak: [],
+    qa: 45, dilr: 10, varc: 45, qaat: 15, dlat: 10, vcat: 20,
+    qaCorrect: 12, qaWrong: 3, dilrCorrect: 4, dilrWrong: 6, varcCorrect: 15, varcWrong: 5,
+  }
+  const mondayTargets = generateDailyTargets({ dateIso: '2026-10-12', recentMocks: [mockFixture] })
+  const tuesdayTargets = generateDailyTargets({ dateIso: '2026-10-13', recentMocks: [mockFixture] })
+  const wednesdayTargets = generateDailyTargets({ dateIso: '2026-10-14', recentMocks: [mockFixture] })
+  const thursdayTargets = generateDailyTargets({ dateIso: '2026-10-15', recentMocks: [mockFixture] })
+  const mondayLibrary = mondayTargets.find(t => t.blockId === 'TEST')
+  const tuesdayLibrary = tuesdayTargets.find(t => t.blockId === 'TEST')
+  const wednesdayLibrary = wednesdayTargets.find(t => t.blockId === 'TEST')
+  const thursdayLibrary = thursdayTargets.find(t => t.blockId === 'TEST')
+  assert('Z', 'Lowest accuracy with 8+ attempts drives first library block', mondayLibrary?.title.includes('LIBRARY PRIORITY 1/3: DILR') === true && mondayLibrary?.notes.includes('40%') === true, mondayLibrary?.title ?? 'missing')
+  assert('AA', 'Weak-section priority continues through library blocks 2 and 3', tuesdayLibrary?.title.includes('LIBRARY PRIORITY 2/3: DILR') === true && wednesdayLibrary?.title.includes('LIBRARY PRIORITY 3/3: DILR') === true, (tuesdayLibrary?.title ?? 'missing') + ' | ' + (wednesdayLibrary?.title ?? 'missing'))
+  assert('AB', 'Library priority stops after the next three blocks', thursdayLibrary?.title.includes('LIBRARY PRIORITY') === false, thursdayLibrary?.title ?? 'missing')
+  const calculated = analyseMock({
+    qa: '45', dilr: '10', varc: '45', qaat: '15', dlat: '10', vcat: '20',
+    qaCorrect: '12', qaWrong: '3', dilrCorrect: '4', dilrWrong: '6', varcCorrect: '15', varcWrong: '5',
+  })
+  assert('AC', 'Mock accuracy uses correct/attempted rather than score/net score', calculated.qaAcc === 80 && calculated.dlAcc === 40 && calculated.vcAcc === 75, 'QA ' + calculated.qaAcc + '% · DILR ' + calculated.dlAcc + '% · VARC ' + calculated.vcAcc + '%')
 
   return results
 }
