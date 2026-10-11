@@ -118,6 +118,9 @@ export function calcTaskProgress(tasks: Task[]): { total: number; done: number; 
 export function analyseMock(raw: {
   qa: string; dilr: string; varc: string
   qaat: string; dlat: string; vcat: string
+  qaCorrect?: string; qaWrong?: string
+  dilrCorrect?: string; dilrWrong?: string
+  varcCorrect?: string; varcWrong?: string
 }): MockAnalysis {
   const qa   = parseInt(raw.qa)   || 0
   const dilr = parseInt(raw.dilr) || 0
@@ -125,23 +128,41 @@ export function analyseMock(raw: {
   const qaat = parseInt(raw.qaat) || 0
   const dlat = parseInt(raw.dlat) || 0
   const vcat = parseInt(raw.vcat) || 0
+  const parseOptionalCount = (value?: string): number | undefined =>
+    value !== undefined && value.trim() !== '' ? Number.parseInt(value, 10) : undefined
+  const qaCorrect = parseOptionalCount(raw.qaCorrect)
+  const qaWrong = parseOptionalCount(raw.qaWrong)
+  const dilrCorrect = parseOptionalCount(raw.dilrCorrect)
+  const dilrWrong = parseOptionalCount(raw.dilrWrong)
+  const varcCorrect = parseOptionalCount(raw.varcCorrect)
+  const varcWrong = parseOptionalCount(raw.varcWrong)
+  const hasAllOutcomeCounts = [qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong].every(v => v !== undefined)
 
-  const total   = qa + dilr + varc
-  const att     = qaat + dlat + vcat
-  const qaAcc   = qaat > 0 ? Math.round(qa   / (qaat * 3) * 100) : 0
-  const dlAcc   = dlat > 0 ? Math.round(dilr / (dlat * 3) * 100) : 0
-  const vcAcc   = vcat > 0 ? Math.round(varc / (vcat * 3) * 100) : 0
-  const overall = att  > 0 ? Math.round(total / (att  * 3) * 100) : 0
+  const total = qa + dilr + varc
+  const att = qaat + dlat + vcat
+  const qaAcc = qaat > 0 ? (qaCorrect !== undefined ? Math.round(qaCorrect / qaat * 100) : Math.round(qa / (qaat * 3) * 100)) : 0
+  const dlAcc = dlat > 0 ? (dilrCorrect !== undefined ? Math.round(dilrCorrect / dlat * 100) : Math.round(dilr / (dlat * 3) * 100)) : 0
+  const vcAcc = vcat > 0 ? (varcCorrect !== undefined ? Math.round(varcCorrect / vcat * 100) : Math.round(varc / (vcat * 3) * 100)) : 0
+  const correctTotal = (qaCorrect ?? 0) + (dilrCorrect ?? 0) + (varcCorrect ?? 0)
+  const overall = att > 0
+    ? hasAllOutcomeCounts ? Math.round(correctTotal / att * 100) : Math.round(total / (att * 3) * 100)
+    : 0
 
   const weak: string[] = []
-  if (qaAcc < 70) weak.push(`QA accuracy ${qaAcc}% — repair concept gaps (C1)`)
-  if (dlAcc < 70) weak.push(`DILR accuracy ${dlAcc}% — work on set selection`)
-  if (vcAcc < 70) weak.push(`VARC accuracy ${vcAcc}% — improve elimination`)
-  if (qaat  < 14) weak.push(`QA attempts ${qaat} — build speed on Tier 1 topics`)
-  if (dlat  < 3)  weak.push(`DILR attempts ${dlat} sets — practice set selection faster`)
-  if (vcat  < 18) weak.push(`VARC attempts ${vcat} — increase RC reading speed`)
+  if (qaat >= 8 && qaAcc < 70) weak.push(`QA accuracy ${qaAcc}% — repair concept gaps (C1)`)
+  else if (qaat < 8) weak.push(`QA has ${qaat} attempts; wait for about 8 attempts before judging section accuracy`)
+  if (dlat >= 8 && dlAcc < 70) weak.push(`DILR accuracy ${dlAcc}% — work on set selection`)
+  else if (dlat < 8) weak.push(`DILR has ${dlat} question attempts; wait for about 8 before judging section accuracy`)
+  if (vcat >= 8 && vcAcc < 70) weak.push(`VARC accuracy ${vcAcc}% — improve elimination`)
+  else if (vcat < 8) weak.push(`VARC has ${vcat} attempts; wait for about 8 before judging section accuracy`)
+  if (qaat < 14) weak.push(`QA attempts ${qaat} — build speed on Tier 1 topics`)
+  if (dlat < 14) weak.push(`DILR question attempts ${dlat} — practise set selection and commitment`)
+  if (vcat < 18) weak.push(`VARC attempts ${vcat} — increase RC reading speed`)
 
-  return { total, att, overall, qaAcc, dlAcc, vcAcc, weak, qa, dilr, varc, qaat, dlat, vcat }
+  return {
+    total, att, overall, qaAcc, dlAcc, vcAcc, weak, qa, dilr, varc, qaat, dlat, vcat,
+    qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong
+  }
 }
 
 // ── Mastery helpers ───────────────────────────────────

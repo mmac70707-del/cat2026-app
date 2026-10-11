@@ -8,13 +8,13 @@ import type { MockRecord } from '@/types'
 interface Props { onBack: () => void }
 
 function estimateCatPercentile(totalScore: number): { percentile: string; tier: string } {
-  if (totalScore >= 105) return { percentile: '99.9+ %ile', tier: 'Top IIM A/B/C Calls Confirmed 🎯' }
-  if (totalScore >= 85)  return { percentile: '99.5+ %ile', tier: 'IIM BLACKI & FMS Calls Likely 🚀' }
-  if (totalScore >= 75)  return { percentile: '99.0+ %ile', tier: 'All New/Baby IIMs & Top Non-IIMs 🏆' }
-  if (totalScore >= 60)  return { percentile: '95.0+ %ile', tier: 'MDI / SPJIMR / IMT / New IIMs 📈' }
-  if (totalScore >= 48)  return { percentile: '90.0+ %ile', tier: 'Baby IIMs & Tier-1 Private B-Schools ⚡' }
-  if (totalScore >= 36)  return { percentile: '80.0+ %ile', tier: 'Tier-2 B-Schools • Focus on QA/DILR Accuracy 🔧' }
-  return { percentile: '< 80.0 %ile', tier: 'Rebuild Concepts • Focus on First Pass Coverage 📚' }
+  if (totalScore >= 105) return { percentile: '99.9+ %ile', tier: 'Very high score band; percentile varies with scaling 🎯' }
+  if (totalScore >= 85)  return { percentile: '99.5+ %ile', tier: 'High score band; treat the estimate cautiously 🚀' }
+  if (totalScore >= 75)  return { percentile: '99.0+ %ile', tier: 'Strong raw-score band; not an admission prediction 🏆' }
+  if (totalScore >= 60)  return { percentile: '95.0+ %ile', tier: 'Score band only; calls depend on many other factors 📈' }
+  if (totalScore >= 48)  return { percentile: '90.0+ %ile', tier: 'Score band only; use for rough trend tracking ⚡' }
+  if (totalScore >= 36)  return { percentile: '80.0+ %ile', tier: 'Focus on section accuracy and repair priorities 🔧' }
+  return { percentile: '< 80.0 %ile', tier: 'Rebuild concepts; review errors before adding volume 📚' }
 }
 
 export function MocksPage({ onBack }: { onBack: () => void }) {
@@ -26,6 +26,12 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
   const [qaat,     setQaat]     = useState('')
   const [dlat,     setDlat]     = useState('')
   const [vcat,     setVcat]     = useState('')
+  const [qaCorrect, setQaCorrect] = useState('')
+  const [qaWrong, setQaWrong] = useState('')
+  const [dilrCorrect, setDilrCorrect] = useState('')
+  const [dilrWrong, setDilrWrong] = useState('')
+  const [varcCorrect, setVarcCorrect] = useState('')
+  const [varcWrong, setVarcWrong] = useState('')
   const [feedback, setFeedback] = useState('')
   const [testScoreInput, setTestScoreInput] = useState('75')
   const { show: toast } = useToast()
@@ -34,7 +40,25 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
   useEffect(() => { load() }, [])
 
   async function handleLog() {
-    const analysis = analyseMock({ qa, dilr, varc, qaat, dlat, vcat })
+    const requiredValues = [qa, dilr, varc, qaat, dlat, vcat, qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong]
+    if (requiredValues.some(value => value.trim() === '' || !Number.isInteger(Number(value)) || Number(value) < 0)) {
+      setFeedback('Enter non-negative whole numbers for each section’s score, attempts, correct and wrong counts.')
+      return
+    }
+    const sectionCounts = [
+      { name: 'QA', attempts: Number(qaat), correct: Number(qaCorrect), wrong: Number(qaWrong) },
+      { name: 'DILR', attempts: Number(dlat), correct: Number(dilrCorrect), wrong: Number(dilrWrong) },
+      { name: 'VARC', attempts: Number(vcat), correct: Number(varcCorrect), wrong: Number(varcWrong) },
+    ]
+    const inconsistent = sectionCounts.find(section =>
+      section.correct + section.wrong !== section.attempts ||
+      section.correct > section.attempts || section.wrong > section.attempts
+    )
+    if (inconsistent) {
+      setFeedback(`${inconsistent.name}: correct + wrong must equal attempts. Check this section before saving.`)
+      return
+    }
+    const analysis = analyseMock({ qa, dilr, varc, qaat, dlat, vcat, qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong })
     const mockName = name.trim() || `Mock ${mocks.length + 1}`
     await MockRepository.log({ name: mockName, date: localDateKey(), ...analysis })
 
@@ -45,7 +69,7 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
       analysis.weak.length ? '\n⚠️ Repair Priorities:\n• ' + analysis.weak.join('\n• ') : '\n✓ Strong performance!',
     ]
     setFeedback(lines.join('\n'))
-    setName(''); setQa(''); setDilr(''); setVarc(''); setQaat(''); setDlat(''); setVcat('')
+    setName(''); setQa(''); setDilr(''); setVarc(''); setQaat(''); setDlat(''); setVcat(''); setQaCorrect(''); setQaWrong(''); setDilrCorrect(''); setDilrWrong(''); setVarcCorrect(''); setVarcWrong('')
     toast(`Mock logged! Estimated Percentile: ${est.percentile} ✓`)
     await load()
   }
@@ -62,7 +86,7 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
       <div className="card" style={{ background: 'rgba(217,119,6,.08)', borderColor: 'rgba(217,119,6,.3)' }}>
         <div style={{ fontSize: 11, color: 'var(--muted)' }}>
           NO mock is DONE until ANALYSED.{' '}
-          <strong style={{ color: 'var(--text)' }}>Minimum 2 hours analysis per mock.</strong>
+          <strong style={{ color: 'var(--text)' }}>Analysis takes at least as long as the mock. Log attempts, correct, wrong and score for each section.</strong>
         </div>
       </div>
 
@@ -72,7 +96,7 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
           📊 CAT 2026 SCORE VS PERCENTILE ESTIMATOR
         </div>
         <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 12 }}>
-          Enter target or actual mock score (out of 198) to estimate overall percentile:
+          Enter target or actual mock score (max 204 from 68 × 3; percentile is only a rough estimate):
         </div>
 
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
@@ -109,6 +133,25 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
               <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
               <input type="number" className="form-input" placeholder="0" min={0}
                 value={val as string} onChange={e => (setter as (v: string) => void)(e.target.value)} />
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 10, color: 'var(--muted)', margin: '0 0 6px' }}>Each section: correct + wrong must equal attempted questions.</div>
+        <div className="grid3" style={{ gap: 6, marginBottom: 6 }}>
+          {[[ 'QA Correct', qaCorrect, setQaCorrect ], [ 'DILR Correct', dilrCorrect, setDilrCorrect ], [ 'VARC Correct', varcCorrect, setVarcCorrect ]].map(([label, val, setter]) => (
+            <div key={label as string}>
+              <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
+              <input type="number" className="form-input" placeholder="0" min={0} value={val as string}
+                onChange={e => (setter as (v: string) => void)(e.target.value)} />
+            </div>
+          ))}
+        </div>
+        <div className="grid3" style={{ gap: 6, marginBottom: 10 }}>
+          {[[ 'QA Wrong', qaWrong, setQaWrong ], [ 'DILR Wrong', dilrWrong, setDilrWrong ], [ 'VARC Wrong', varcWrong, setVarcWrong ]].map(([label, val, setter]) => (
+            <div key={label as string}>
+              <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
+              <input type="number" className="form-input" placeholder="0" min={0} value={val as string}
+                onChange={e => (setter as (v: string) => void)(e.target.value)} />
             </div>
           ))}
         </div>
@@ -151,6 +194,11 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
                       <div style={{ color: 'var(--muted)' }}>{label as string}</div>
                     </div>
                   ))}
+                </div>
+                <div style={{ marginTop: 8, fontSize: 10, color: 'var(--muted)', lineHeight: 1.6 }}>
+                  <div>VARC: {m.vcat} attempted · {m.varcCorrect ?? '—'} correct · {m.varcWrong ?? '—'} wrong · {m.varc} score</div>
+                  <div>DILR: {m.dlat} attempted · {m.dilrCorrect ?? '—'} correct · {m.dilrWrong ?? '—'} wrong · {m.dilr} score</div>
+                  <div>QA: {m.qaat} attempted · {m.qaCorrect ?? '—'} correct · {m.qaWrong ?? '—'} wrong · {m.qa} score</div>
                 </div>
                 {m.weak && m.weak.length > 0 && (
                   <div style={{ marginTop: 6, fontSize: 10, color: '#EF4444' }}>⚠️ {m.weak[0]}</div>
