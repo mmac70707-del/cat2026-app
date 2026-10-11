@@ -3,13 +3,14 @@ import { getPercentylDailyTarget } from '@/data/percentylPlan2'
 import { BLOCKS } from '@/data/config'
 import { getFirstPassDayNum, getKolkataDateKey } from '@/services/calendarEngine'
 import { getFinal50DayPlan } from '@/data/final50Plan'
-import type { Task, ErrorRecord, DailyScore, TaskStatus } from '@/types'
+import type { Task, ErrorRecord, DailyScore, TaskStatus, MockRecord } from '@/types'
 
 export interface DailyTargetInput {
   dateIso?: string;
   pendingErrors?: ErrorRecord[];
   allErrors?: ErrorRecord[];
   dailyScores?: DailyScore[];
+  recentMocks?: MockRecord[];
   repairCount?: number;
   retestCount?: number;
 }
@@ -23,6 +24,25 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
   const dayNum = getFirstPassDayNum(dateKey)
   const roadmapItem = ROADMAP_44.find(r => r.dateIso === dateKey) || ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
   const pt = getPercentylDailyTarget(dateKey)
+  const latestMock = (input.recentMocks || [])
+    .filter(mock => mock.date <= dateKey)
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))[0] || null
+  const daysAfterLatestMock = latestMock
+    ? Math.floor((Date.parse(dateKey + 'T00:00:00Z') - Date.parse(latestMock.date + 'T00:00:00Z')) / 86400000)
+    : 0
+  const hasLatestMockCounts = Boolean(latestMock && [
+    latestMock.qaCorrect, latestMock.qaWrong, latestMock.dilrCorrect,
+    latestMock.dilrWrong, latestMock.varcCorrect, latestMock.varcWrong,
+  ].every(value => typeof value === 'number'))
+  const sectionAccuracy = latestMock && hasLatestMockCounts ? [
+    { label: 'QA', accuracy: latestMock.qaAcc, attempts: latestMock.qaat },
+    { label: 'DILR', accuracy: latestMock.dlAcc, attempts: latestMock.dlat },
+    { label: 'VARC', accuracy: latestMock.vcAcc, attempts: latestMock.vcat },
+  ].filter(section => section.attempts >= 8) : []
+  const weakestMockSection = sectionAccuracy.length > 0
+    ? sectionAccuracy.slice().sort((a, b) => a.accuracy - b.accuracy)[0]
+    : null
+  const postMockLibraryBlock = Boolean(latestMock && daysAfterLatestMock >= 1 && daysAfterLatestMock <= 3)
 
   const pendingList = input.pendingErrors || []
   const allList     = input.allErrors || pendingList
@@ -197,8 +217,18 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       notes = finalPlan?.isExamDay ? 'No practice test today.' : '3–5 fresh questions on weak topics • 3+/5 correct = verified pass.'
     }
 
+    if (b.id === 'TEST' && postMockLibraryBlock && latestMock) {
+      if (weakestMockSection) {
+        title += ` · LIBRARY PRIORITY ${daysAfterLatestMock}/3: ${weakestMockSection.label}`
+        notes += `\n\nPDF LIBRARY RULE: In block ${daysAfterLatestMock}/3 after ${latestMock.name} (${latestMock.date}), prioritise ${weakestMockSection.label} in the 13:15–15:00 Library Deep Work slot. Its accuracy was ${weakestMockSection.accuracy}% from ${weakestMockSection.attempts} attempts. Record three repair topics and let them outrank the weekly topic list.`
+      } else {
+        title += ` · LIBRARY PRIORITY ${daysAfterLatestMock}/3: REVIEW MOCK DATA`
+        notes += `\n\nPDF LIBRARY RULE: This is one of the next three Library blocks after ${latestMock.name}. The stored mock does not have complete correct/wrong counts or at least 8 attempts in a section, so do not guess the weakest section. Complete the tracker and choose three evidence-based repair topics.`
+      }
+    }
+
     return {
-      id: `${dateKey}_${b.id}`,
+      id: ${dateKey}_${b.id},
       date: dateKey,
       blockId: b.id,
       subject: b.label,
