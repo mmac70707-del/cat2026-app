@@ -42,6 +42,9 @@ export function Final50PlanBoard() {
             <strong>After every mock</strong><br />Fill attempts, correct, wrong and score by section; identify the weakest section; classify C1–C5; write three repair topics.
           </div>
           <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
+            <strong>Sunday mock clock</strong><br />The PDF requires the same uninterrupted 120-minute slot each Sunday but does not specify the clock time. The app uses 15:00–17:00 as a practical default because it fits before the 17:30 coaching anchor. If an official admit-card slot is known, use it instead and keep the weekly slot consistent.
+          </div>
+          <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
             <strong>Attempt / leave rule</strong><br />MCQ expected value is positive when your honest chance of being correct is above 25%. TITA has no negative marking: the PDF says never leave one blank.
           </div>
           <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', fontSize: 11, lineHeight: 1.5 }}>
