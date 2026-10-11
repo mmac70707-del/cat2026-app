@@ -6,14 +6,16 @@ import type { Phase, Block, MasteryTopic } from '@/types'
 // ═══════════════════════════════════════════════════
 
 export const APP_TIMEZONE = 'Asia/Kolkata'
-export const APP_VERSION = '1.1.5'
-export const LAST_UPDATED = '11 OCT 2026 • PDF FINAL QA + MOCK SLOT'
+export const APP_VERSION = '1.1.6'
+export const LAST_UPDATED = '11 OCT 2026 • FINAL 10-DAY REVISION WINDOW'
 
 export const APP_UPDATE_INFO = {
   version: APP_VERSION,
   lastUpdated: LAST_UPDATED,
   changes: [
     'Locked CAT weekly test cycle and clock anchors synchronized',
+    'Final 10 days (19–28 Nov) switch to PDF Tier-1 recall-only focus',
+    'Roadmap, Today and Daily Control expose the final-ten-day revision gate with scheduled tests preserved',
     '44-day calendar tracker anchored to 18 Sep 2026 and capped at Day 44 on 31 Oct',
     'BRM core Day 1–48 sequence, completion migration and Sunday revision aligned',
     'Always-Visible Top Status Bar & Automatic Daily Sync Indicator',

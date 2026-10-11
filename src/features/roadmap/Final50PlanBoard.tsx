@@ -62,6 +62,33 @@ export function Final50PlanBoard() {
         </div>
       </section>
 
+      {todayPlan?.final10Days && (
+        <section style={{ ...cardStyle, borderColor: 'var(--gold)' }}>
+          <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--gold)' }}>FINAL 10 DAYS · REVISION ONLY · 19–28 NOV</div>
+          <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 5, lineHeight: 1.5 }}>
+            No new material. Each item should take under 5 minutes to recall cold. If it does not, reopen its worked example; do not start a new topic. Add weak topics only from the real error log.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 8, marginTop: 10 }}>
+            <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#16A34A' }}>QA · FORMULA RECALL</div>
+              <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5, marginTop: 4 }}>Percentages · Averages · Ratio & Proportion · Mixtures & Alligation · Profit & Loss · Time & Work · Time-Speed-Distance · SI & CI</div>
+              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 5 }}>Plus two weak topics from your own error log.</div>
+            </div>
+            <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#3B82F6' }}>DILR · PATTERN RECOGNITION</div>
+              <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5, marginTop: 4 }}>Seating / linear / circular arrangements · Bar / Column / Line graphs · Pie charts · Tables · Caselets</div>
+              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 5 }}>Plus two weak topics from your own error log.</div>
+            </div>
+            <div style={{ padding: 10, borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#8B5CF6' }}>VARC · STRATEGY RECALL</div>
+              <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5, marginTop: 4 }}>RC main idea / inference / tone · elimination of close options · Para Summary · Para Jumble</div>
+              <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 5 }}>Plus two weak topics from your own error log.</div>
+            </div>
+          </div>
+          <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 9 }}>Scheduled tests remain exactly as the PDF says: DILR sectional 19 Nov · QA sectional 21 Nov · Mock 7 on 22 Nov · light VARC 24 Nov · light analysis 25 Nov · one untimed DILR set 26 Nov · no test 27–28 Nov.</div>
+        </section>
+      )}
+
       {FINAL_50_WEEK_PLANS.map(week => {
         const current = todayPlan?.number === week.number && !todayPlan?.isDayZero && !todayPlan?.isExamDay
         return (
