@@ -122,31 +122,33 @@ export function generateDailyTargets(input: DailyTargetInput = {}): Task[] {
       }
 
     } else if (b.id === 'TEST') {
-      const dayOfWeek = d.getDay() // 0=Sun, 1=Mon, ..., 6=Sat
-      if (dayOfWeek === 0) {
-        title = 'SUNDAY FULL MOCK EXAM'
-        notes = 'Full 120-min exam condition • 100% analysis required.'
-      } else if (dayOfWeek === 1) {
-        title = 'MONDAY MOCK ANALYSIS + REPAIR'
-        notes = 'Classify C1–C5 errors from Sunday Mock • Re-solve wrong Qs.'
-      } else if (dayOfWeek === 2) {
-        title = 'TUESDAY VARC SECTIONAL'
-        notes = '40-min VARC Sectional Test under strict timed conditions.'
-      } else if (dayOfWeek === 3) {
-        title = 'WEDNESDAY VARC ANALYSIS + REPAIR/RETEST'
-        notes = 'Deconstruct Tuesday VARC errors • Re-solve & Retest.'
-      } else if (dayOfWeek === 4) {
-        title = 'THURSDAY DILR SECTIONAL'
-        notes = '40-min DILR Sectional Test • Practice set selection.'
-      } else if (dayOfWeek === 5) {
-        title = 'FRIDAY DILR ANALYSIS + REPAIR/RETEST'
-        notes = 'Deconstruct Thursday DILR errors • Re-solve & Retest.'
-      } else if (dayOfWeek === 6) {
-        title = 'SATURDAY QA SECTIONAL'
-        notes = '40-min QA Sectional Test • Speed + Accuracy benchmark.'
+      if (finalPlan) {
+        title = finalPlan.testTitle
+        notes = finalPlan.testNotes
       } else {
-        title = 'TIMED PRACTICE & ERROR REPAIR'
-        notes = 'Timed condition • 100% analysis required.'
+        const dayOfWeek = new Date(dateKey + 'T12:00:00Z').getUTCDay()
+        if (dayOfWeek === 0) {
+          title = 'SUNDAY FULL MOCK EXAM'
+          notes = 'Full 120-min exam condition • 100% analysis required.'
+        } else if (dayOfWeek === 1) {
+          title = 'MONDAY MOCK ANALYSIS + REPAIR'
+          notes = 'Classify C1–C5 errors from Sunday Mock • Re-solve wrong Qs.'
+        } else if (dayOfWeek === 2) {
+          title = 'TUESDAY VARC SECTIONAL'
+          notes = '40-min VARC Sectional Test under strict timed conditions.'
+        } else if (dayOfWeek === 3) {
+          title = 'WEDNESDAY VARC ANALYSIS + REPAIR/RETEST'
+          notes = 'Deconstruct Tuesday VARC errors • Re-solve & Retest.'
+        } else if (dayOfWeek === 4) {
+          title = 'THURSDAY DILR SECTIONAL'
+          notes = '40-min DILR Sectional Test • Practice set selection.'
+        } else if (dayOfWeek === 5) {
+          title = 'FRIDAY DILR ANALYSIS + REPAIR/RETEST'
+          notes = 'Deconstruct Thursday DILR errors • Re-solve & Retest.'
+        } else {
+          title = 'SATURDAY QA SECTIONAL'
+          notes = '40-min QA Sectional Test • Speed + Accuracy benchmark.'
+        }
       }
 
     } else if (b.id === 'ANALYSIS') {
