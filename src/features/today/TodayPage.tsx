@@ -153,16 +153,28 @@ export function TodayPage({ onNavigate }: { onNavigate?: (page: string) => void 
         </div>
       </div>
 
-      {/* 44-Day First-Pass Day & Progress Bar */}
+      {finalPlan && (
+        <div style={{ padding: '12px 16px 0' }}>
+          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: 14 }}>
+            <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--gold)', letterSpacing: 1 }}>TODAY’S LOCKED TEST / GATE</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--ql-text)', marginTop: 5 }}>{finalPlan.testTitle}</div>
+            <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 5, lineHeight: 1.5 }}>{finalPlan.testNotes}</div>
+            <div style={{ fontSize: 10, color: 'var(--muted)', marginTop: 7 }}>Week {finalPlan.weekNum || '—'} priority: {finalPlan.weeklyPriority}</div>
+            {finalPlan.coverageFreeze && <div style={{ fontSize: 10, color: '#F59E0B', fontWeight: 800, marginTop: 6 }}>COVERAGE FREEZE: no new topics except repeated Tier-1 C1 gaps.</div>}
+          </div>
+        </div>
+      )}
+
+      {/* Daily execution progress. Historical first-pass syllabus progress remains in Roadmap. */}
       <div className="today-first-pass" style={{ padding: '12px 16px 0' }}>
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 14px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <div>
               <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
-                🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
+                🚀 TODAY’S 8-BLOCK EXECUTION
               </div>
               <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ql-text)', marginTop: 2 }}>
-                Target Topic: {pt.quantTopic} ({pt.quantTargetQs} Qs)
+                {finalPlan ? finalPlan.testTitle : 'Syllabus focus: ' + pt.quantTopic}
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
