@@ -147,6 +147,8 @@ export async function runStage1VerificationTests() {
   assert('T', 'Saturday 28 Nov is rest/logistics, not a test', finalDay49?.dayNum === 49 && finalDay49.testTitle.includes('NO TEST'), 'Day 49: ' + (finalDay49?.testTitle ?? 'missing'))
   assert('U', 'Sunday 29 Nov is exam day, not another mock', examDay?.isExamDay === true && examDay.final10Days === false && !examDay.testTitle.includes('FULL MOCK'), 'Exam day: ' + (examDay?.testTitle ?? 'missing'))
   assert('V', 'Library block ends at 15:00 per PDF', SCHEDULE_ITEMS.some(x => x.block === 'Library Deep Work' && x.time === '13:15–15:00'), JSON.stringify(SCHEDULE_ITEMS.find(x => x.block === 'Library Deep Work')))
+  const flexBlock = SCHEDULE_ITEMS.find(x => x.block === 'Open / Flexible Block')
+  assert('AP', '15:00–17:00 stays a flexible buffer; Sunday mock time is an explicitly labelled default', flexBlock?.time === '15:00–17:00' && /no fixed weekday study quota/i.test(flexBlock.detail) && /Sundays: practical Full Mock default 15:00–17:00 only/i.test(flexBlock.detail), JSON.stringify(flexBlock))
   assert('W', 'Mock-Dominated and Consolidation phase dates match PDF', PHASES.some(x => x.id === 'P3' && x.end === '2026-11-08') && PHASES.some(x => x.id === 'P4' && x.start === '2026-11-09' && x.end === '2026-11-20'), PHASES.map(x => x.id + ':' + x.start + '→' + x.end).join(' | '))
 
   // PDF's active dates replace the generic weekly test labels in generated tasks.

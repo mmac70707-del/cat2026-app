@@ -166,6 +166,7 @@ export const SCHEDULE_ITEMS = [
   {time:'10:45–12:00', block:'DILR Session',             icon:'🧩', col:'#2563EB', detail:'1 quality set · 2nd only if 1st fully analysed · 20-25 min per set'},
   {time:'12:15–13:15', block:'VARC Session',             icon:'📖', col:'#7C3AED', detail:'2 RC passages · Main Idea + Inference + Tone · Elimination focus'},
   {time:'13:15–15:00', block:'Library Deep Work',        icon:'🏛️', col:'#3B82F6', detail:'Pending QA/DILR/VARC · Wrong Qs · Repair work · No random resources'},
+  {time:'15:00–17:00', block:'Open / Flexible Block',   icon:'🧭', col:'#64748B', detail:'No fixed weekday study quota · Rest / personal buffer. Sundays: practical Full Mock default 15:00–17:00 only; use the admit-card slot if known.'},
   {time:'17:30–19:00', block:'Coaching',                 icon:'🎓', col:'#8B5CF6', detail:'Attend coaching · Notes · Mark doubts immediately'},
   {time:'19:20–20:20', block:'Gym / Movement',           icon:'💪', col:'#22C55E', detail:'Non-negotiable physical movement · Brain needs blood flow'},
   {time:'20:30–21:00', block:'Dinner',                   icon:'🍽️', col:'#94A3B8', detail:'Eat well · No screens'},
