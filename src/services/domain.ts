@@ -1,4 +1,4 @@
-import { CAT_DATE, PHASES, WEEK_PLAN_TEMPLATE } from '@/data/config'
+import { CAT_DATE, OFFICIAL_EXAM_INFO, PHASES, WEEK_PLAN_TEMPLATE } from '@/data/config'
 import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
 import { MASTER_SPINE_44 } from '@/data/roadmap44'
 import { FINAL_50_WEEK_PLANS, getFinal50DayPlan } from '@/data/final50Plan'
@@ -113,6 +113,19 @@ export function calcTaskProgress(tasks: Task[]): { total: number; done: number; 
   const total = tasks.length
   const done  = tasks.filter(t => t.status === 'DONE').length
   return { total, done, pct: total > 0 ? Math.round((done / total) * 100) : 0 }
+}
+
+// Validate a section's raw score against its logged outcomes and CAT marking.
+// Scaled scores belong to the mock provider's report and must not be mixed with raw counts.
+export function isPlausibleRawSectionScore(score: string, correct: string, wrong: string): boolean {
+  const values = [score.trim(), correct.trim(), wrong.trim()]
+  if (values.some(value => !/^-?\d+$/.test(value))) return false
+
+  const [scoreValue, correctValue, wrongValue] = values.map(Number)
+  if (![scoreValue, correctValue, wrongValue].every(Number.isSafeInteger)) return false
+  if (correctValue < 0 || wrongValue < 0) return false
+
+  return scoreValue >= -wrongValue && scoreValue <= correctValue * OFFICIAL_EXAM_INFO.marking.mcqCorrect
 }
 
 // ── Mock analysis ─────────────────────────────────────
