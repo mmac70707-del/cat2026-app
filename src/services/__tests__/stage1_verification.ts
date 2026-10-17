@@ -11,7 +11,7 @@ import {
   buildCalendarYear
 } from '../calendarEngine.js'
 import { generateDailyTargets } from '../dailyTargetEngine.js'
-import { analyseMock } from '../domain.js'
+import { analyseMock, isPlausibleRawSectionScore } from '../domain.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
 import { CAT_DATE, SCHEDULE_ITEMS, PHASES } from '../../data/config.js'
 import { getFinal50DayPlan } from '../../data/final50Plan.js'
@@ -173,8 +173,8 @@ export async function runStage1VerificationTests() {
   // Z–AB. Mock facts drive the next three Library blocks only when the tracker has enough evidence.
   const mockFixture: MockRecord = {
     id: 'mock_fixture_1', name: 'Mock 1', date: '2026-10-11', createdAt: '2026-10-11T06:00:00.000Z',
-    total: 100, att: 45, overall: 69, qaAcc: 80, dlAcc: 40, vcAcc: 75, weak: [],
-    qa: 45, dilr: 10, varc: 45, qaat: 15, dlat: 10, vcat: 20,
+    total: 88, att: 45, overall: 69, qaAcc: 80, dlAcc: 40, vcAcc: 75, weak: [],
+    qa: 33, dilr: 10, varc: 45, qaat: 15, dlat: 10, vcat: 20,
     qaCorrect: 12, qaWrong: 3, dilrCorrect: 4, dilrWrong: 6, varcCorrect: 15, varcWrong: 5,
   }
   const mondayTargets = generateDailyTargets({ dateIso: '2026-10-12', recentMocks: [mockFixture] })
@@ -219,6 +219,8 @@ export async function runStage1VerificationTests() {
     qaCorrect: '12', qaWrong: '3', dilrCorrect: '4', dilrWrong: '6', varcCorrect: '15', varcWrong: '5',
   })
   assert('AC', 'Mock accuracy uses correct/attempted rather than score/net score', calculated.qaAcc === 80 && calculated.dlAcc === 40 && calculated.vcAcc === 75, 'QA ' + calculated.qaAcc + '% · DILR ' + calculated.dlAcc + '% · VARC ' + calculated.vcAcc + '%')
+  assert('AQ', 'Raw section scores accept values consistent with CAT marking', isPlausibleRawSectionScore('-3', '0', '3') && isPlausibleRawSectionScore('36', '12', '3') && isPlausibleRawSectionScore('0', '0', '0'), 'Valid CAT raw-score examples')
+  assert('AR', 'Raw section scores reject impossible or malformed values', !isPlausibleRawSectionScore('-4', '0', '3') && !isPlausibleRawSectionScore('37', '12', '3') && !isPlausibleRawSectionScore('12.5', '5', '0') && !isPlausibleRawSectionScore('', '5', '0'), 'Impossible bounds and malformed values rejected')
 
   return results
 }
