@@ -167,20 +167,20 @@ export function SystemHealthPage({ onBack }: Props) {
       </section>
 
       <section style={{ border: '1px solid var(--border, #334155)', borderRadius: 18, padding: 18, marginBottom: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><AppIcon name="shield" size={20} /><h2 style={{ margin: 0, fontSize: 18 }}>Protect your progress</h2></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><AppIcon name="security" size={20} /><h2 style={{ margin: 0, fontSize: 18 }}>Protect your progress</h2></div>
         <p style={{ color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>Export tasks, mock results, settings, error logs, mastery and other supported local database stores into a JSON backup. Keep a copy outside this device. This does not create cloud sync.</p>
         <div style={{ fontSize: 12, marginBottom: 12 }}>Last backup: <strong>{lastBackup}</strong></div>
         <button type="button" className="btn-primary" onClick={() => void exportBackup()} disabled={busy}>{busy ? 'Preparing backup…' : '↓ Export all app data'}</button>
       </section>
 
       <section style={{ border: '1px solid var(--border, #334155)', borderRadius: 18, padding: 18, marginBottom: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><AppIcon name="bell" size={20} /><h2 style={{ margin: 0, fontSize: 18 }}>Reminder diagnostics</h2></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><AppIcon name="clock" size={20} /><h2 style={{ margin: 0, fontSize: 18 }}>Reminder diagnostics</h2></div>
         <p style={{ color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>Run a real display-permission test. Browser notifications often need permission and may behave differently when the browser/app is closed. This test does not claim a future reminder is scheduled.</p>
         <button type="button" className="btn-primary" onClick={() => void testNotification()}>Test notification permission</button>
       </section>
 
       <section style={{ border: '1px solid var(--border, #334155)', borderRadius: 18, padding: 18, marginBottom: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><AppIcon name="calendar" size={20} /><h2 style={{ margin: 0, fontSize: 18 }}>Calendar fallback</h2></div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}><AppIcon name="today" size={20} /><h2 style={{ margin: 0, fontSize: 18 }}>Calendar fallback</h2></div>
         <p style={{ color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>Download a small editable calendar template. It is deliberately labelled as a sample—not the full official schedule. Review the times and dates before importing it into Outlook or Google Calendar.</p>
         <button type="button" className="btn-secondary" onClick={downloadCalendar}>↓ Download sample .ics</button>
       </section>
