@@ -175,7 +175,7 @@ private fun ChronoApp(store: LocalStore, onReminder: () -> Unit, onBiometric: ()
         item { Card(shape = RoundedCornerShape(28.dp), colors = CardDefaults.cardColors(containerColor = Ink), modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("MAKE TODAY COUNT", color = Color(0xFF93C5FD), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                Text("One clear move.\\nThen the next.", color = Color.White, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+                Text("One clear move.\nThen the next.", color = Color.White, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
                 Text("Build momentum without needing a perfect day.", color = Color(0xFFD1D5DB))
                 Button(onClick = onTasks) { Text("Choose next action"); Icon(Icons.Default.ArrowForward, null, Modifier.padding(start = 8.dp)) }
             }
