@@ -1,0 +1,1 @@
+# Keep default Android and Kotlin metadata rules; no reflection-based serialization is used.
