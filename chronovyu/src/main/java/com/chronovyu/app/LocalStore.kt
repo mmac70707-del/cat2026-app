@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.json.JSONArray
 import org.json.JSONObject
@@ -81,20 +82,17 @@ class LocalStore(private val context: Context) {
     }
 
     suspend fun exportJson(): String {
-        var tasksNow = JSONArray()
-        var notesNow = JSONArray()
-        var sessionsNow = 0
-        context.dataStore.data.map { it }.collect { p ->
-            tasksNow = JSONArray(p[TASKS_KEY] ?: "[]")
-            notesNow = JSONArray(p[NOTES_KEY] ?: "[]")
-            sessionsNow = p[SESSIONS_KEY]?.toIntOrNull() ?: 0
-            throw ExportComplete
-        }
-        return JSONObject().put("product", "CHRONOVYU").put("schemaVersion", 1).put("exportedAt", System.currentTimeMillis())
-            .put("tasks", tasksNow).put("notes", notesNow).put("completedFocusSessions", sessionsNow).toString(2)
+        val p = context.dataStore.data.first()
+        return JSONObject()
+            .put("product", "CHRONOVYU")
+            .put("schemaVersion", 1)
+            .put("exportedAt", System.currentTimeMillis())
+            .put("tasks", JSONArray(p[TASKS_KEY] ?: "[]"))
+            .put("notes", JSONArray(p[NOTES_KEY] ?: "[]"))
+            .put("completedFocusSessions", p[SESSIONS_KEY]?.toIntOrNull() ?: 0)
+            .toString(2)
     }
 
-    private object ExportComplete : RuntimeException()
 }
 
 private fun parseArray(raw: String?): List<JSONObject> {
