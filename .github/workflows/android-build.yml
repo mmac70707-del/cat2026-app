@@ -94,3 +94,10 @@ jobs:
         run: chmod +x ./gradlew
       - name: Assemble debug APK
         run: ./gradlew :app:assembleDebug :chronovyu:testDebugUnitTest :chronovyu:assembleDebug --no-daemon
+
+      - name: Upload CHRONOVYU Native APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHRONOVYU-Native-Android
+          path: chronovyu/build/outputs/apk/debug/chronovyu-debug.apk
+          if-no-files-found: error
