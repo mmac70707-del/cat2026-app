@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'chronovyu/**'
       - 'src/**'
       - 'public/**'
       - 'index.html'
@@ -91,4 +92,4 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
       - name: Assemble debug APK
-        run: ./gradlew :app:assembleDebug --no-daemon
+        run: ./gradlew :app:assembleDebug :chronovyu:testDebugUnitTest :chronovyu:assembleDebug --no-daemon
