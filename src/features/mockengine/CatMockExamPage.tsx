@@ -92,15 +92,15 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
       setActiveSection('DILR')
       setCurrentQIndex(0)
       setTimeLeftSec(2400)
-      toast('VARC Time Up! Switched to DILR section', '#F59E0B')
+      toast('Demo section time ended. Moving to DILR.', '#F59E0B')
     } else if (activeSection === 'DILR') {
       setActiveSection('QA')
       setCurrentQIndex(0)
       setTimeLeftSec(2400)
-      toast('DILR Time Up! Switched to QA section', '#F59E0B')
+      toast('Demo section time ended. Moving to QA.', '#F59E0B')
     } else {
       setIsExamSubmitted(true)
-      toast('Exam Completed & Submitted!', '#22C55E')
+      toast('Practice demo completed.', '#22C55E')
     }
   }
 
@@ -140,7 +140,7 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
         errorType,
         subject: q.section,
         topic: `${q.section} Mock Exam Q${q.id}`,
-        wrongReason: `Incorrect answer in CAT/MAT Full Mock Exam.`,
+        wrongReason: `Incorrect answer in the six-question CAT practice demo.`,
         correctMethod: q.explanation,
         preventionRule: `Review ${q.type} accuracy rules and time selection.`,
       })
@@ -173,9 +173,7 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
     const totalQ = MOCK_QUESTIONS.length
     const maxScore = totalQ * 3
     const accuracy = (correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0
-    const estPercentile = Math.min(99.9, Math.max(50, Math.round(50 + (score / maxScore) * 49.9)))
-
-    return { score, correct, wrong, unattempted, maxScore, accuracy, estPercentile }
+    return { score, correct, wrong, unattempted, maxScore, accuracy }
   }
 
   if (isExamSubmitted) {
@@ -185,10 +183,10 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
         <div style={{ background: '#0D1B2A', padding: 20, borderRadius: 12, border: '1px solid #22C55E', marginBottom: 16, textAlign: 'center' }}>
           <div style={{ fontSize: 32, marginBottom: 8 }}>🏆</div>
           <h2 style={{ fontSize: 22, fontWeight: 900, color: '#22C55E', margin: 0 }}>
-            CAT / MAT Mock Test Complete
+            Practice Demo Complete
           </h2>
           <p style={{ fontSize: 13, color: '#94A3B8', margin: '4px 0 16px' }}>
-            Instant Scorecard & Detailed Performance Analysis
+            Six sample questions · not a full-length CAT mock
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 10 }}>
@@ -197,8 +195,8 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
               <div style={{ fontSize: 22, fontWeight: 900, color: '#F5A623' }}>{res.score} / {res.maxScore}</div>
             </div>
             <div style={{ background: '#1E293B', padding: 12, borderRadius: 8 }}>
-              <div style={{ fontSize: 11, color: '#94A3B8' }}>Est. Percentile</div>
-              <div style={{ fontSize: 22, fontWeight: 900, color: '#38BDF8' }}>{res.estPercentile}%ile</div>
+              <div style={{ fontSize: 11, color: '#94A3B8' }}>Unattempted</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: '#38BDF8' }}>{res.unattempted}</div>
             </div>
             <div style={{ background: '#1E293B', padding: 12, borderRadius: 8 }}>
               <div style={{ fontSize: 11, color: '#94A3B8' }}>Accuracy</div>
@@ -270,7 +268,7 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
             background: '#1A56DB', color: '#FFF', fontWeight: 800, border: 'none', cursor: 'pointer'
           }}
         >
-          🔄 Retake CAT/MAT Mock Test
+          🔄 Retake Practice Demo
         </button>
       </div>
     )
@@ -282,10 +280,13 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
       <div style={{ background: '#0D1B2A', padding: 14, borderRadius: 12, border: '1px solid #1E293B', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>
-            CAT / MAT Full Pattern Exam Engine
+            6-Question Practice Demo
           </div>
           <div style={{ fontSize: 12, color: '#94A3B8' }}>
-            Sectional Timers • MCQ + TITA Format • Real Exam Interface
+            2 sample questions per section • demo only • not a full CAT mock
+          </div>
+          <div style={{ fontSize: 11, color: '#FDE68A', lineHeight: 1.55, marginTop: 7, maxWidth: 650 }}>
+            Your scheduled full mock is one uninterrupted 120-minute VARC → DILR → QA session. This sample is not that mock. Use your full-length mock provider, then enter section-wise attempts, correct, wrong and raw score in Mock Analysis.
           </div>
         </div>
 
@@ -304,7 +305,7 @@ export function CatMockExamPage({ onBack }: { onBack?: () => void }) {
               borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12
             }}
           >
-            Submit Exam
+            Finish Demo
           </button>
         </div>
       </div>
