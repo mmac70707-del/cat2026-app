@@ -22,7 +22,7 @@ const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<
   { id: 'brm', icon: 'book', label: 'BRM — Business School', category: 'LEARN', featured: true, hint: 'Read today’s business lesson' },
   { id: 'syllabus', icon: 'book', label: 'Full Syllabus', category: 'LEARN', hint: 'Coverage map' },
   { id: 'flashcards', icon: 'layers', label: 'Formula Deck', category: 'LEARN', hint: 'Fast recall' },
-  { id: 'catmock', icon: 'trophy', label: 'CAT Exam Simulator', category: 'REVIEW', featured: true, hint: 'Full-length test' },
+  { id: 'catmock', icon: 'trophy', label: '6-Question Practice Demo', category: 'REVIEW', featured: true, hint: 'Sample only — not a full mock' },
   { id: 'mockana', icon: 'flask', label: 'Mock Analytics', category: 'REVIEW', hint: 'Score + time patterns' },
   { id: 'errors', icon: 'alert', label: 'Error Log C1–C5', category: 'REVIEW', hint: 'Capture root causes' },
   { id: 'repair', icon: 'wrench', label: 'Repair Queue', category: 'REVIEW', hint: 'Fix before moving on' },

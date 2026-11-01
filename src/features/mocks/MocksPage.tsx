@@ -1,21 +1,11 @@
 import { useState, useEffect } from 'react'
 import { MockRepository } from '@/repositories/index'
-import { analyseMock, localDateKey } from '@/services/domain'
+import { analyseMock, localDateKey, validateMockSectionScore } from '@/services/domain'
 import { EmptyState } from '@/components/EmptyState'
 import { useToast } from '@/components/Toast'
 import type { MockRecord } from '@/types'
 
 interface Props { onBack: () => void }
-
-function estimateCatPercentile(totalScore: number): { percentile: string; tier: string } {
-  if (totalScore >= 105) return { percentile: '99.9+ %ile', tier: 'Very high score band; percentile varies with scaling 🎯' }
-  if (totalScore >= 85)  return { percentile: '99.5+ %ile', tier: 'High score band; treat the estimate cautiously 🚀' }
-  if (totalScore >= 75)  return { percentile: '99.0+ %ile', tier: 'Strong raw-score band; not an admission prediction 🏆' }
-  if (totalScore >= 60)  return { percentile: '95.0+ %ile', tier: 'Score band only; calls depend on many other factors 📈' }
-  if (totalScore >= 48)  return { percentile: '90.0+ %ile', tier: 'Score band only; use for rough trend tracking ⚡' }
-  if (totalScore >= 36)  return { percentile: '80.0+ %ile', tier: 'Focus on section accuracy and repair priorities 🔧' }
-  return { percentile: '< 80.0 %ile', tier: 'Rebuild concepts; review errors before adding volume 📚' }
-}
 
 export function MocksPage({ onBack }: { onBack: () => void }) {
   const [mocks,    setMocks]    = useState<MockRecord[]>([])
@@ -33,7 +23,6 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
   const [varcCorrect, setVarcCorrect] = useState('')
   const [varcWrong, setVarcWrong] = useState('')
   const [feedback, setFeedback] = useState('')
-  const [testScoreInput, setTestScoreInput] = useState('75')
   const { show: toast } = useToast()
 
   const load = async () => setMocks((await MockRepository.getAll()).sort((a, b) => b.createdAt.localeCompare(a.createdAt)))
@@ -64,29 +53,35 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
       setFeedback(`${inconsistent.name}: correct + wrong must equal attempts, and attempts cannot exceed ${inconsistent.maxQuestions} questions.`)
       return
     }
+    const scoreError = [
+      validateMockSectionScore('QA', Number(qa), Number(qaCorrect), Number(qaWrong)),
+      validateMockSectionScore('DILR', Number(dilr), Number(dilrCorrect), Number(dilrWrong)),
+      validateMockSectionScore('VARC', Number(varc), Number(varcCorrect), Number(varcWrong)),
+    ].find(Boolean)
+    if (scoreError) {
+      setFeedback(scoreError)
+      return
+    }
     const analysis = analyseMock({ qa, dilr, varc, qaat, dlat, vcat, qaCorrect, qaWrong, dilrCorrect, dilrWrong, varcCorrect, varcWrong })
     const mockName = name.trim() || `Mock ${mocks.length + 1}`
     await MockRepository.log({ name: mockName, date: localDateKey(), ...analysis })
 
-    const est = estimateCatPercentile(analysis.total)
     const lines = [
-      `Total: ${analysis.total} | Accuracy: ${analysis.overall}% | Estimated: ${est.percentile}`,
+      `Total raw score: ${analysis.total} | Accuracy: ${analysis.overall}%`,
       `QA: ${analysis.qaAcc}% · DILR: ${analysis.dlAcc}% · VARC: ${analysis.vcAcc}%`,
       analysis.weak.length ? '\n⚠️ Repair Priorities:\n• ' + analysis.weak.join('\n• ') : '\n✓ Strong performance!',
     ]
     setFeedback(lines.join('\n'))
     setName(''); setQa(''); setDilr(''); setVarc(''); setQaat(''); setDlat(''); setVcat(''); setQaCorrect(''); setQaWrong(''); setDilrCorrect(''); setDilrWrong(''); setVarcCorrect(''); setVarcWrong('')
-    toast(`Mock logged! Estimated Percentile: ${est.percentile} ✓`)
+    toast(`Mock logged! Raw score: ${analysis.total} ✓`)
     await load()
   }
-
-  const userEst = estimateCatPercentile(parseInt(testScoreInput) || 0)
 
   return (
     <div className="section-pad">
       <div className="page-header">
         <button className="back-btn" onClick={onBack}>← Back</button>
-        <div className="page-header-title">Mock Analysis &amp; Percentile Predictor</div>
+        <div className="page-header-title">Mock Analysis &amp; Raw Score Tracker</div>
       </div>
 
       <div className="card" style={{ background: 'rgba(217,119,6,.08)', borderColor: 'rgba(217,119,6,.3)' }}>
@@ -96,32 +91,14 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* CAT PERCENTILE PREDICTOR TOOL */}
-      <div className="card" style={{ background: '#161D2E', border: '1px solid #F5A623' }}>
-        <div style={{ fontSize: 13, fontWeight: 900, color: '#F5A623', marginBottom: 8 }}>
-          📊 CAT 2026 SCORE VS PERCENTILE ESTIMATOR
+      {/* RAW SCORE INTEGRITY — no unsupported percentile prediction */}
+      <div className="card" style={{ background: 'rgba(37,99,235,.07)', border: '1px solid rgba(59,130,246,.25)' }}>
+        <div style={{ fontSize: 12, fontWeight: 900, color: 'var(--text)', marginBottom: 7 }}>
+          RAW SCORE ONLY — NO UNSUPPORTED PERCENTILE GUESS
         </div>
-        <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 12 }}>
-          Enter target or actual mock score (max 204 from 68 × 3; percentile is only a rough estimate):
-        </div>
-
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
-          <input
-            type="number"
-            className="form-input"
-            value={testScoreInput}
-            onChange={e => setTestScoreInput(e.target.value)}
-            style={{ width: 100, fontSize: 18, fontWeight: 900, textAlign: 'center', color: '#F5A623', fontFamily: 'monospace' }}
-          />
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 900, color: '#22C55E' }}>
-              {userEst.percentile}
-            </div>
-            <div style={{ fontSize: 11, color: '#CBD5E1', marginTop: 2 }}>
-              {userEst.tier}
-            </div>
-          </div>
-        </div>
+        <p style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.6, margin: 0 }}>
+          Record the actual section marks and question outcomes. CAT percentile depends on the exam slot and official scaling; this tracker will not invent a percentile from a fixed score band.
+        </p>
       </div>
 
       {/* MOCK LOG FORM */}
@@ -137,7 +114,7 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
           {[['QA Score', qa, setQa], ['DILR Score', dilr, setDilr], ['VARC Score', varc, setVarc]].map(([label, val, setter]) => (
             <div key={label as string}>
               <div style={{ fontSize: 9, color: 'var(--muted)', marginBottom: 3 }}>{label as string}</div>
-              <input type="number" className="form-input" placeholder="0" min={0}
+              <input type="number" step={1} className="form-input" placeholder="0"
                 value={val as string} onChange={e => (setter as (v: string) => void)(e.target.value)} />
             </div>
           ))}
@@ -181,7 +158,6 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
           <EmptyState icon="📝" title="NO MOCKS YET" sub="Log your first mock using the form above." />
         ) : (
           mocks.map((m, i) => {
-            const est = estimateCatPercentile(m.total)
             return (
               <div key={m.id} style={{ background: 'var(--navy3)', borderRadius: 10, padding: 12, marginBottom: 8 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -191,7 +167,7 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
                 <div className="mock-score-grid">
                   <div className="mock-score-box"><div className="mock-score-val" style={{ color: '#F5A623' }}>{m.total}</div><div className="mock-score-lbl">Score</div></div>
                   <div className="mock-score-box"><div className="mock-score-val" style={{ color: '#22C55E' }}>{m.overall}%</div><div className="mock-score-lbl">Accuracy</div></div>
-                  <div className="mock-score-box"><div className="mock-score-val" style={{ color: '#3B82F6' }}>{est.percentile}</div><div className="mock-score-lbl">Est. %ile</div></div>
+                  <div className="mock-score-box"><div className="mock-score-val" style={{ color: '#3B82F6' }}>{m.att}</div><div className="mock-score-lbl">Attempts</div></div>
                 </div>
                 <div className="grid3" style={{ gap: 4, marginTop: 6 }}>
                   {[['QA', m.qaAcc, '#16A34A'], ['DILR', m.dlAcc, '#2563EB'], ['VARC', m.vcAcc, '#7C3AED']].map(([label, acc, col]) => (

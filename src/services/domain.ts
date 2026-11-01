@@ -115,6 +115,29 @@ export function calcTaskProgress(tasks: Task[]): { total: number; done: number; 
   return { total, done, pct: total > 0 ? Math.round((done / total) * 100) : 0 }
 }
 
+// ── Mock score validation ────────────────────────────────
+// The tracker stores raw CAT marks but does not store the MCQ/TITA split.
+// Use conservative bounds supported by the entered outcomes: at most +3
+// per correct answer and no worse than -1 per wrong answer. The UI validates
+// section question limits and correct + wrong = attempts before calling this.
+export function validateMockSectionScore(
+  section: string,
+  score: number,
+  correct: number,
+  wrong: number
+): string | null {
+  if (!Number.isSafeInteger(score)) return `${section}: enter a whole-number raw score.`
+  if (!Number.isSafeInteger(correct) || correct < 0 || !Number.isSafeInteger(wrong) || wrong < 0) {
+    return `${section}: enter valid non-negative correct and wrong counts before validating the score.`
+  }
+  const minScore = -wrong
+  const maxScore = correct * 3
+  if (score < minScore || score > maxScore) {
+    return `${section}: raw score must be between ${minScore} and ${maxScore} for ${correct} correct and ${wrong} wrong answers.`
+  }
+  return null
+}
+
 // ── Mock analysis ─────────────────────────────────────
 export function analyseMock(raw: {
   qa: string; dilr: string; varc: string
