@@ -1,4 +1,4 @@
-import { FINAL_50_WEEK_PLANS, getFinal50DayPlan } from '@/data/final50Plan'
+import { FINAL_50_WEEK_PLANS, getFinal50DayPlan, getFinal50RoadmapWeekPlan } from '@/data/final50Plan'
 import { getKolkataDateKey } from '@/services/calendarEngine'
 
 const cardStyle = {
@@ -90,7 +90,9 @@ export function Final50PlanBoard() {
       )}
 
       {FINAL_50_WEEK_PLANS.map(week => {
+        const displayWeek = getFinal50RoadmapWeekPlan(week.number, todayKey) ?? week
         const current = todayPlan?.number === week.number && !todayPlan?.isDayZero && !todayPlan?.isExamDay
+        const final10Override = Boolean(todayPlan?.final10Days && week.number >= todayPlan.weekNum)
         return (
           <section key={week.number} style={{ ...cardStyle, borderColor: current ? 'var(--gold)' : 'var(--border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: 10 }}>
@@ -98,27 +100,28 @@ export function Final50PlanBoard() {
                 <div style={{ fontSize: 14, fontWeight: 900, color: current ? 'var(--gold)' : 'var(--text)' }}>WEEK {week.number} · {week.title}</div>
                 <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3 }}>{week.dates} 2026 · {week.phaseNote}</div>
               </div>
+              {final10Override && <span style={{ fontSize: 9, fontWeight: 900, padding: '4px 8px', border: '1px solid var(--gold)', borderRadius: 20, color: 'var(--gold)' }}>FINAL 10-DAY OVERRIDE</span>}
               {current && <span style={{ fontSize: 9, fontWeight: 900, padding: '4px 8px', border: '1px solid var(--gold)', borderRadius: 20, color: 'var(--gold)' }}>CURRENT WEEK</span>}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 8 }}>
               <div style={{ padding: 10, borderRadius: 8, background: 'rgba(22,163,74,.08)', border: '1px solid rgba(22,163,74,.22)' }}>
                 <div style={{ fontSize: 10, fontWeight: 900, color: '#16A34A', marginBottom: 5 }}>QA</div>
-                <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5 }}>{week.qaFocus}</div>
+                <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5 }}>{displayWeek.qaFocus}</div>
               </div>
               <div style={{ padding: 10, borderRadius: 8, background: 'rgba(37,99,235,.08)', border: '1px solid rgba(37,99,235,.22)' }}>
                 <div style={{ fontSize: 10, fontWeight: 900, color: '#3B82F6', marginBottom: 5 }}>DILR</div>
-                <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5 }}>{week.dilrFocus}</div>
+                <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5 }}>{displayWeek.dilrFocus}</div>
               </div>
               <div style={{ padding: 10, borderRadius: 8, background: 'rgba(124,58,237,.08)', border: '1px solid rgba(124,58,237,.22)' }}>
                 <div style={{ fontSize: 10, fontWeight: 900, color: '#8B5CF6', marginBottom: 5 }}>VARC</div>
-                <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5 }}>{week.varcFocus}</div>
+                <div style={{ fontSize: 11, color: 'var(--text)', lineHeight: 1.5 }}>{displayWeek.varcFocus}</div>
               </div>
             </div>
             <div style={{ marginTop: 9, padding: 10, borderRadius: 8, background: 'var(--surface)' }}>
               <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--gold)' }}>WEEKLY PRIORITY</div>
-              <div style={{ fontSize: 11, color: 'var(--text)', marginTop: 4, lineHeight: 1.5 }}>{week.weeklyPriority}</div>
+              <div style={{ fontSize: 11, color: 'var(--text)', marginTop: 4, lineHeight: 1.5 }}>{displayWeek.weeklyPriority}</div>
               <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--text)', marginTop: 8 }}>GATE</div>
-              <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3, lineHeight: 1.5 }}>{week.gate}</div>
+              <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 3, lineHeight: 1.5 }}>{displayWeek.gate}</div>
             </div>
           </section>
         )
