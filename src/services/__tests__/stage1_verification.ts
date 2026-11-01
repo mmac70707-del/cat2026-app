@@ -14,7 +14,7 @@ import { generateDailyTargets } from '../dailyTargetEngine.js'
 import { analyseMock, validateMockSectionScore, buildWeekPlan, getWeekNumber, getWeekLabel, getDashboardDaySummary } from '../domain.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
 import { CAT_DATE, SCHEDULE_ITEMS, PHASES } from '../../data/config.js'
-import { getFinal50DayPlan } from '../../data/final50Plan.js'
+import { FINAL_50_WEEK_PLANS, getFinal50DayPlan, getFinal50RoadmapWeekPlan } from '../../data/final50Plan.js'
 import { getPercentylDailyTarget } from '../../data/percentylPlan2.js'
 import type { ErrorRecord, Task, MockRecord } from '../../types'
 
@@ -200,6 +200,29 @@ export async function runStage1VerificationTests() {
   assert('AJ', 'Final-10-day override keeps scheduled DILR sectional on 19 Nov', final10Start?.testTitle.includes('DILR SECTIONAL') === true, final10Start?.testTitle ?? 'missing')
   assert('AK', 'Final-10-day override keeps QA sectional on 21 Nov and Mock 7 on 22 Nov', final10QASectional?.final10Days === true && final10QASectional.testTitle.includes('QA SECTIONAL') && final10Mock7?.testTitle.includes('FULL MOCK 7') === true, (final10QASectional?.testTitle ?? 'missing') + ' | ' + (final10Mock7?.testTitle ?? 'missing'))
   assert('AL', '28 Nov is still the final revision-only rest/logistics day', final10LastDay?.final10Days === true && final10LastDay.testTitle.includes('NO TEST') && final10LastDay.gate.includes('centre route'), (final10LastDay?.testTitle ?? 'missing') + ' | ' + (final10LastDay?.gate ?? 'missing'))
+
+  // The Roadmap week cards must not keep showing ordinary Week 6/7 focus once page 8 takes over.
+  const roadmap18Week6 = getFinal50RoadmapWeekPlan(6, '2026-11-18')
+  const roadmap19Week6 = getFinal50RoadmapWeekPlan(6, '2026-11-19')
+  const roadmap19Week7 = getFinal50RoadmapWeekPlan(7, '2026-11-19')
+  const roadmap28Week7 = getFinal50RoadmapWeekPlan(7, '2026-11-28')
+  const roadmap29Week7 = getFinal50RoadmapWeekPlan(7, '2026-11-29')
+  assert('ROADMAP_FINAL10_OFF', 'Roadmap keeps normal Week 6 focus through 18 Nov',
+    roadmap18Week6?.qaFocus.includes('PYQs + mixed timed sets') === true && !roadmap18Week6.qaFocus.includes('Tier-1 formula recall only'),
+    roadmap18Week6?.qaFocus ?? 'missing')
+  assert('ROADMAP_FINAL10_WEEK6', 'Roadmap Week 6 switches to recall-only focus from 19 Nov',
+    roadmap19Week6?.qaFocus.includes('Tier-1 formula recall only') === true && roadmap19Week6?.dilrFocus.includes('Pattern recognition only') === true && roadmap19Week6?.varcFocus.includes('Strategy recall only') === true,
+    [roadmap19Week6?.qaFocus, roadmap19Week6?.dilrFocus, roadmap19Week6?.varcFocus].join(' | '))
+  assert('ROADMAP_FINAL10_WEEK7', 'Roadmap future Week 7 also inherits the active final-ten-day focus',
+    roadmap19Week7?.qaFocus.includes('Tier-1 formula recall only') === true && roadmap19Week7?.dilrFocus.includes('Pattern recognition only') === true && roadmap19Week7?.varcFocus.includes('Strategy recall only') === true,
+    [roadmap19Week7?.qaFocus, roadmap19Week7?.dilrFocus, roadmap19Week7?.varcFocus].join(' | '))
+  assert('ROADMAP_FINAL10_END', 'Roadmap Week 7 remains recall-only through 28 Nov',
+    roadmap28Week7?.qaFocus.includes('Tier-1 formula recall only') === true && roadmap28Week7?.weeklyPriority.includes('FINAL 10 DAYS') === true,
+    roadmap28Week7?.weeklyPriority ?? 'missing')
+  assert('ROADMAP_EXAM_DAY', 'Exam day does not keep the final-ten-day Roadmap override active',
+    roadmap29Week7?.dilrFocus === FINAL_50_WEEK_PLANS[6].dilrFocus && roadmap29Week7?.varcFocus === FINAL_50_WEEK_PLANS[6].varcFocus && !roadmap29Week7?.weeklyPriority.includes('FINAL 10 DAYS'),
+    [roadmap29Week7?.dilrFocus, roadmap29Week7?.varcFocus, roadmap29Week7?.weeklyPriority].join(' | '))
+
   const final10Tasks = generateDailyTargets({ dateIso: '2026-11-19' })
   const final10QA = final10Tasks.find(t => t.blockId === 'QA')
   const final10DILR = final10Tasks.find(t => t.blockId === 'DILR')
