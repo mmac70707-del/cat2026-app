@@ -158,7 +158,7 @@ export function MocksPage({ onBack }: { onBack: () => void }) {
           <EmptyState icon="📝" title="NO MOCKS YET" sub="Log your first mock using the form above." />
         ) : (
           mocks.map((m, i) => {
-                  return (
+            return (
               <div key={m.id} style={{ background: 'var(--navy3)', borderRadius: 10, padding: 12, marginBottom: 8 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <div style={{ fontSize: 13, fontWeight: 700 }}>{m.name || `Mock ${mocks.length - i}`}</div>
