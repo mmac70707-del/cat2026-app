@@ -288,3 +288,22 @@ export function getFinal50DayPlan(dateIso: string): Final50DayPlan | null {
     coverageFreeze: dateIso >= '2026-11-08'
   };
 }
+
+// Keep the Roadmap's future/current week cards aligned with the active PDF final-ten-day override.
+// Past weeks remain historical; the current and remaining weeks switch to recall-only focus on 19–28 Nov.
+export function getFinal50RoadmapWeekPlan(weekNumber: number, dateIso: string): Final50WeekPlan | null {
+  const week = FINAL_50_WEEK_PLANS.find(item => item.number === weekNumber);
+  if (!week) return null;
+
+  const activePlan = getFinal50DayPlan(dateIso);
+  if (!activePlan?.final10Days || week.number < activePlan.weekNum) return week;
+
+  return {
+    ...week,
+    qaFocus: activePlan.qaFocus,
+    dilrFocus: activePlan.dilrFocus,
+    varcFocus: activePlan.varcFocus,
+    weeklyPriority: activePlan.weeklyPriority,
+    gate: activePlan.gate
+  };
+}
