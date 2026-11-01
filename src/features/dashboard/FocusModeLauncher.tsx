@@ -13,7 +13,7 @@ type Props = {
   realDateStr: string
   phaseId: string
   phaseName: string
-  dayNum: number
+  dayLabel: string
   actionTitle: string
   actionStatus: string
   actionDetail: string
@@ -32,7 +32,7 @@ export function FocusModeLauncher({
   realDateStr,
   phaseId,
   phaseName,
-  dayNum,
+  dayLabel,
   actionTitle,
   actionStatus,
   actionDetail,
@@ -54,7 +54,7 @@ export function FocusModeLauncher({
           </div>
           <div className="focus-launcher-title">ONE TAP. ONE PART. NO CLUTTER.</div>
           <div className="focus-launcher-sub">
-            {realDayName}, {realDateStr} • {phaseId} — {phaseName} • CAT Day {String(dayNum).padStart(2, '0')}/44
+            {realDayName}, {realDateStr} • {phaseId} — {phaseName} • {dayLabel}
           </div>
         </div>
         <button type="button" className="focus-mode-exit" onClick={onFullDashboard}>
