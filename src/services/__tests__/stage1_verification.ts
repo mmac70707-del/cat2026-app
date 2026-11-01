@@ -11,7 +11,7 @@ import {
   buildCalendarYear
 } from '../calendarEngine.js'
 import { generateDailyTargets } from '../dailyTargetEngine.js'
-import { analyseMock } from '../domain.js'
+import { analyseMock, validateMockSectionScore } from '../domain.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
 import { CAT_DATE, SCHEDULE_ITEMS, PHASES } from '../../data/config.js'
 import { getFinal50DayPlan } from '../../data/final50Plan.js'
@@ -219,6 +219,23 @@ export async function runStage1VerificationTests() {
     qaCorrect: '12', qaWrong: '3', dilrCorrect: '4', dilrWrong: '6', varcCorrect: '15', varcWrong: '5',
   })
   assert('AC', 'Mock accuracy uses correct/attempted rather than score/net score', calculated.qaAcc === 80 && calculated.dlAcc === 40 && calculated.vcAcc === 75, 'QA ' + calculated.qaAcc + '% · DILR ' + calculated.dlAcc + '% · VARC ' + calculated.vcAcc + '%')
+
+  // Mock Tracker raw-score integrity: allow legitimate negative marks, reject
+  // values that cannot be supported by the entered correct/wrong outcomes.
+  assert('MOCK_SCORE_MAX', 'Mock score accepts the maximum supported by correct answers',
+    validateMockSectionScore('QA', 36, 12, 3) === null, '12 correct permits up to 36 raw marks')
+  assert('MOCK_SCORE_MIN', 'Mock score accepts a legitimate negative raw result',
+    validateMockSectionScore('QA', -3, 12, 3) === null, '3 wrong permits a conservative lower bound of -3')
+  assert('MOCK_SCORE_EMPTY', 'Mock score accepts zero when no questions were attempted',
+    validateMockSectionScore('DILR', 0, 0, 0) === null, '0 correct, 0 wrong permits score 0')
+  assert('MOCK_SCORE_TOO_HIGH', 'Mock score rejects marks above three per correct answer',
+    validateMockSectionScore('VARC', 37, 12, 3) !== null, '37 exceeds the maximum 36 supported by 12 correct')
+  assert('MOCK_SCORE_TOO_LOW', 'Mock score rejects marks below one negative per wrong answer',
+    validateMockSectionScore('DILR', -4, 12, 3) !== null, '-4 is below the conservative lower bound -3')
+  assert('MOCK_SCORE_FRACTION', 'Mock score rejects fractional raw marks',
+    validateMockSectionScore('QA', 12.5, 4, 2) !== null, 'Raw marks must be whole numbers')
+  assert('MOCK_SCORE_COUNTS', 'Mock score rejects invalid outcome counts',
+    validateMockSectionScore('QA', 0, -1, 1) !== null, 'Correct and wrong counts must be non-negative integers')
 
   return results
 }
