@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'chronovyu/**'
       - 'src/**'
       - 'public/**'
       - 'index.html'
@@ -23,6 +24,7 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'chronovyu/**'
       - 'src/**'
       - 'public/**'
       - 'index.html'
@@ -91,4 +93,11 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
       - name: Assemble debug APK
-        run: ./gradlew :app:assembleDebug --no-daemon
+        run: ./gradlew :app:assembleDebug :chronovyu:testDebugUnitTest :chronovyu:assembleDebug --no-daemon
+
+      - name: Upload CHRONOVYU Native APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CHRONOVYU-Native-Android
+          path: chronovyu/build/outputs/apk/debug/chronovyu-debug.apk
+          if-no-files-found: error
