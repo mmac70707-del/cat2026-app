@@ -246,7 +246,7 @@ export async function runStage1VerificationTests() {
     dashboardDay0.label === 'FINAL PLAN DAY 0' && dashboardDay0.topic.includes('QA sectional'),
     dashboardDay0.label + ' · ' + dashboardDay0.topic)
   assert('PDF_DASH_TODAY', 'Dashboard uses Final Plan Day 22/49 on 1 Nov, not Day 44/44',
-    dashboardToday.label === 'FINAL PLAN DAY 22/49 · WEEK 4/7' && dashboardToday.topic.includes('Geometry'),
+    dashboardToday.label === 'FINAL PLAN DAY 22/49 · WEEK 4/7' && dashboardToday.topic.includes('FULL MOCK 4'),
     dashboardToday.label + ' · ' + dashboardToday.topic)
   assert('PDF_DASH_EXAM', 'Dashboard shows exam-day readiness on 29 Nov',
     dashboardExam.label === 'CAT EXAM DAY' && dashboardExam.topic.includes('Exam-day readiness'),
