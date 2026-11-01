@@ -38,11 +38,17 @@ export function getCountdownParts(): { days: number; hours: number; minutes: num
   }
 }
 
-// ── Week number (from Phase 1 start) ─────────────────
-export function getWeekNumber(): number {
-  const todayPlan = getFinal50DayPlan(getKolkataDateKey())
-  if (todayPlan && todayPlan.weekNum > 0 && !todayPlan.isExamDay) return todayPlan.weekNum
-  const parts = getKolkataDateParts()
+// ── Week number (PDF Final 50 plan first; legacy only before Day 0) ─
+export function getWeekNumber(dateIso?: string): number {
+  const referenceDate = dateIso ? new Date(dateIso + 'T12:00:00Z') : new Date()
+  const todayKey = dateIso ?? getKolkataDateKey(referenceDate)
+  const todayPlan = getFinal50DayPlan(todayKey)
+  if (todayPlan?.isDayZero) return 0
+  if (todayPlan?.isExamDay) return 7
+  if (todayPlan && todayPlan.weekNum > 0) return todayPlan.weekNum
+  if (todayKey > '2026-11-29') return 0
+
+  const parts = getKolkataDateParts(referenceDate)
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const p1Start = new Date(Date.UTC(2026, 8, 1))
   const diff = Math.max(0, todayKolkata.getTime() - p1Start.getTime())
@@ -50,11 +56,37 @@ export function getWeekNumber(): number {
 }
 
 // ── Dynamic week plan: PDF-locked Sunday–Saturday cycle during the Final 50 Days ─
-export function buildWeekPlan(): WeekDay[] {
-  const parts = getKolkataDateParts()
+export function buildWeekPlan(dateIso?: string): WeekDay[] {
+  const referenceDate = dateIso ? new Date(dateIso + 'T12:00:00Z') : new Date()
+  const parts = getKolkataDateParts(referenceDate)
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
-  const todayKey = getKolkataDateKey()
+  const todayKey = dateIso ?? getKolkataDateKey(referenceDate)
   const day = parts.dayOfWeek
+
+  // Once exam day has passed, do not resurrect the historical 44-day roadmap as an active plan.
+  if (todayKey > '2026-11-29') {
+    const weekStart = new Date(todayKolkata)
+    weekStart.setUTCDate(todayKolkata.getUTCDate() - (day === 0 ? 6 : day - 1))
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(weekStart)
+      d.setUTCDate(weekStart.getUTCDate() + i)
+      const dKey = d.toISOString().slice(0, 10)
+      return {
+        ...WEEK_PLAN_TEMPLATE[i],
+        date: d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()],
+        qa: 'No active CAT plan after 29 Nov 2026.',
+        dilr: 'No active CAT plan after 29 Nov 2026.',
+        varc: 'No active CAT plan after 29 Nov 2026.',
+        focus: 'CAT 2026 COMPLETE',
+        eve: 'The PDF plan ended on exam day. Historical first-pass topics remain archived, not active.',
+        fCol: '#64748B',
+        isTest: false,
+        isToday: dKey === todayKey,
+        isPast: dKey < todayKey,
+      }
+    })
+  }
+
   const todayFinalPlan = getFinal50DayPlan(todayKey)
   const finalCycleActive = Boolean(todayFinalPlan && !todayFinalPlan.isDayZero && !todayFinalPlan.isExamDay)
   const weekStart = new Date(todayKolkata)
@@ -68,11 +100,13 @@ export function buildWeekPlan(): WeekDay[] {
     const firstPassNum = getFirstPassDayNum(dKey)
     const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === firstPassNum)
     const finalPlan = getFinal50DayPlan(dKey)
-    const usingFinalPlan = Boolean(finalPlan && !finalPlan.isDayZero && !finalPlan.isExamDay)
+    // Day 0 and exam day are valid PDF plan entries too; never fall back to Day 44/44 for them.
+    const usingFinalPlan = Boolean(finalPlan)
     const isToday = dKey === todayKey
     const isPast = dKey < todayKey
     const testTitle = finalPlan?.testTitle || ''
-    const isTestDay = testTitle.includes('MOCK') || testTitle.includes('SECTIONAL') || testTitle.includes('NO TEST')
+    const isTestDay = Boolean(finalPlan && !finalPlan.isExamDay &&
+      (testTitle.includes('FULL MOCK') || testTitle.includes('SECTIONAL')))
 
     return {
       ...t,
@@ -80,7 +114,7 @@ export function buildWeekPlan(): WeekDay[] {
       qa: usingFinalPlan ? finalPlan!.qaFocus : roadmapItem ? roadmapItem.chapter : t.qa,
       dilr: usingFinalPlan ? finalPlan!.dilrFocus : roadmapItem ? roadmapItem.dilrFamily : t.dilr,
       varc: usingFinalPlan ? finalPlan!.varcFocus : roadmapItem ? roadmapItem.varcSkill : t.varc,
-      focus: finalPlan ? testTitle : isToday ? 'TODAY' : t.focus,
+      focus: finalPlan ? finalPlan.testTitle : isToday ? 'TODAY' : t.focus,
       eve: finalPlan ? finalPlan.testNotes : t.eve,
       fCol: isToday ? '#F5A623' : isTestDay ? '#A78BFA' : t.fCol,
       isTest: finalPlan ? isTestDay : t.isTest,
@@ -90,14 +124,20 @@ export function buildWeekPlan(): WeekDay[] {
   })
 }
 
-// ── Week label (Mon X – Sun Y) ───────────────────────
-export function getWeekLabel(): string {
-  const todayPlan = getFinal50DayPlan(getKolkataDateKey())
-  if (todayPlan && todayPlan.weekNum > 0 && !todayPlan.isExamDay) {
+// ── Week label (PDF plan boundaries stay separate from the exam day) ──────────
+export function getWeekLabel(dateIso?: string): string {
+  const referenceDate = dateIso ? new Date(dateIso + 'T12:00:00Z') : new Date()
+  const todayKey = dateIso ?? getKolkataDateKey(referenceDate)
+  const todayPlan = getFinal50DayPlan(todayKey)
+  if (todayPlan?.isDayZero) return 'DAY 0 · 10 Oct 2026'
+  if (todayPlan?.isExamDay) return 'EXAM DAY · 29 Nov 2026'
+  if (todayPlan && todayPlan.weekNum > 0) {
     const activeWeek = FINAL_50_WEEK_PLANS.find(w => w.number === todayPlan.weekNum)
     if (activeWeek) return activeWeek.dates + ' 2026 (Sun–Sat)'
   }
-  const parts = getKolkataDateParts()
+  if (todayKey > '2026-11-29') return 'CAT 2026 plan complete · exam 29 Nov 2026'
+
+  const parts = getKolkataDateParts(referenceDate)
   const todayKolkata = new Date(Date.UTC(parts.year, parts.month - 1, parts.date))
   const day = parts.dayOfWeek
   const mon = new Date(todayKolkata)
@@ -106,6 +146,34 @@ export function getWeekLabel(): string {
   sun.setUTCDate(mon.getUTCDate() + 6)
   return mon.getUTCDate() + ' ' + MONTHS[mon.getUTCMonth()] + ' – ' +
     sun.getUTCDate() + ' ' + MONTHS[sun.getUTCMonth()] + ' ' + sun.getUTCFullYear()
+}
+
+// ── Dashboard day summary: active PDF plan always wins over the historical first pass ─
+export function getDashboardDaySummary(dateIso: string): { label: string; topic: string; isFinalPlan: boolean } {
+  if (dateIso > '2026-11-29') {
+    return { label: 'CAT 2026 PLAN COMPLETE', topic: 'The active PDF plan ended on exam day.', isFinalPlan: false }
+  }
+  const finalPlan = getFinal50DayPlan(dateIso)
+  if (finalPlan?.isExamDay) {
+    return { label: 'CAT EXAM DAY', topic: finalPlan.qaFocus, isFinalPlan: true }
+  }
+  if (finalPlan?.isDayZero) {
+    return { label: 'FINAL PLAN DAY 0', topic: finalPlan.qaFocus, isFinalPlan: true }
+  }
+  if (finalPlan) {
+    return {
+      label: 'FINAL PLAN DAY ' + String(finalPlan.dayNum).padStart(2, '0') + '/49 · WEEK ' + finalPlan.weekNum + '/7',
+      topic: finalPlan.testTitle || finalPlan.qaFocus,
+      isFinalPlan: true,
+    }
+  }
+  const firstPassDayNum = getFirstPassDayNum(dateIso)
+  const roadmapItem = MASTER_SPINE_44.find(r => r.dayNum === firstPassDayNum) ?? MASTER_SPINE_44[0]
+  return {
+    label: 'HISTORICAL FIRST PASS DAY ' + String(firstPassDayNum).padStart(2, '0') + '/44',
+    topic: roadmapItem.chapter,
+    isFinalPlan: false,
+  }
 }
 
 // ── Task progress ─────────────────────────────────────
