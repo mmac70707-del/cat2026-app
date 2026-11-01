@@ -11,7 +11,7 @@ import {
   buildCalendarYear
 } from '../calendarEngine.js'
 import { generateDailyTargets } from '../dailyTargetEngine.js'
-import { analyseMock, validateMockSectionScore } from '../domain.js'
+import { analyseMock, validateMockSectionScore, buildWeekPlan, getWeekNumber, getWeekLabel, getDashboardDaySummary } from '../domain.js'
 import { TaskRepository } from '../../repositories/TaskRepository.js'
 import { CAT_DATE, SCHEDULE_ITEMS, PHASES } from '../../data/config.js'
 import { getFinal50DayPlan } from '../../data/final50Plan.js'
@@ -236,6 +236,72 @@ export async function runStage1VerificationTests() {
     validateMockSectionScore('QA', 12.5, 4, 2) !== null, 'Raw marks must be whole numbers')
   assert('MOCK_SCORE_COUNTS', 'Mock score rejects invalid outcome counts',
     validateMockSectionScore('QA', 0, -1, 1) !== null, 'Correct and wrong counts must be non-negative integers')
+
+  // PDF source-of-truth boundaries must remain active in Dashboard and Week views.
+  const dashboardDay0 = getDashboardDaySummary('2026-10-10')
+  const dashboardToday = getDashboardDaySummary('2026-11-01')
+  const dashboardExam = getDashboardDaySummary('2026-11-29')
+  const dashboardAfterExam = getDashboardDaySummary('2026-11-30')
+  assert('PDF_DASH_DAY0', 'Dashboard labels 10 Oct as PDF Day 0, not first-pass Day 23/44',
+    dashboardDay0.label === 'FINAL PLAN DAY 0' && dashboardDay0.topic.includes('QA sectional'),
+    dashboardDay0.label + ' · ' + dashboardDay0.topic)
+  assert('PDF_DASH_TODAY', 'Dashboard uses Final Plan Day 22/49 on 1 Nov, not Day 44/44',
+    dashboardToday.label === 'FINAL PLAN DAY 22/49 · WEEK 4/7' && dashboardToday.topic.includes('Geometry'),
+    dashboardToday.label + ' · ' + dashboardToday.topic)
+  assert('PDF_DASH_EXAM', 'Dashboard shows exam-day readiness on 29 Nov',
+    dashboardExam.label === 'CAT EXAM DAY' && dashboardExam.topic.includes('Exam-day readiness'),
+    dashboardExam.label + ' · ' + dashboardExam.topic)
+  assert('PDF_DASH_AFTER_EXAM', 'Dashboard does not reactivate the historical first pass after exam day',
+    dashboardAfterExam.label === 'CAT 2026 PLAN COMPLETE',
+    dashboardAfterExam.label)
+
+  const day0Week = buildWeekPlan('2026-10-10')
+  const day0Row = day0Week.find(day => day.date === '10 Oct')
+  const examWeek = buildWeekPlan('2026-11-29')
+  const examRow = examWeek.find(day => day.date === '29 Nov')
+  const noTest28 = buildWeekPlan('2026-11-28').find(day => day.date === '28 Nov')
+  const afterExamWeek = buildWeekPlan('2026-11-30')
+  assert('PDF_WEEK_DAY0', 'Week view uses the Day 0 QA sectional instead of the 44-day fallback',
+    day0Row?.qa.includes('QA sectional') === true && day0Row.isTest === true,
+    day0Row?.qa + ' · isTest=' + String(day0Row?.isTest))
+  assert('PDF_WEEK_EXAM', 'Week view uses exam-day readiness and does not mark 29 Nov as a mock',
+    examRow?.qa.includes('Exam-day readiness') === true && examRow.isTest === false,
+    examRow?.qa + ' · isTest=' + String(examRow?.isTest))
+  assert('PDF_WEEK_REST', '28 Nov remains a no-test taper day in Week view',
+    noTest28?.focus.includes('NO TEST') === true && noTest28.isTest === false,
+    noTest28?.focus + ' · isTest=' + String(noTest28?.isTest))
+  assert('PDF_WEEK_AFTER_EXAM', 'Week view never reactivates the historical 44-day roadmap after exam day',
+    afterExamWeek.length === 7 && afterExamWeek.every(day => day.qa.includes('No active CAT plan') && !day.isTest),
+    afterExamWeek.map(day => day.qa).join(' | '))
+
+  assert('PDF_WEEK_LABEL_DAY0', 'Week label separates Day 0 from the seven study weeks',
+    getWeekNumber('2026-10-10') === 0 && getWeekLabel('2026-10-10').includes('DAY 0'),
+    getWeekNumber('2026-10-10') + ' · ' + getWeekLabel('2026-10-10'))
+  assert('PDF_WEEK_LABEL_EXAM', 'Week label keeps exam day separate from Week 7',
+    getWeekNumber('2026-11-29') === 7 && getWeekLabel('2026-11-29').includes('EXAM DAY'),
+    getWeekNumber('2026-11-29') + ' · ' + getWeekLabel('2026-11-29'))
+  assert('PDF_WEEK_LABEL_AFTER', 'Week label does not fall back to the old Phase 1 week after CAT',
+    getWeekNumber('2026-11-30') === 0 && getWeekLabel('2026-11-30').includes('plan complete'),
+    getWeekNumber('2026-11-30') + ' · ' + getWeekLabel('2026-11-30'))
+
+  const mockDates = ['2026-10-11','2026-10-18','2026-10-25','2026-11-01','2026-11-08','2026-11-15','2026-11-22']
+  const allSevenMocks = mockDates.every((date, index) => getFinal50DayPlan(date)?.testTitle.includes('FULL MOCK ' + (index + 1)))
+  assert('PDF_ALL_SEVEN_MOCKS', 'All seven Sunday mock dates map to the correct mock number',
+    allSevenMocks, mockDates.map(date => date + ': ' + getFinal50DayPlan(date)?.testTitle).join(' | '))
+
+  const tuesdayVARC = getFinal50DayPlan('2026-11-03')
+  const thursdayDILR = getFinal50DayPlan('2026-11-05')
+  const saturdayQA = getFinal50DayPlan('2026-11-07')
+  const mondayAnalysis = getFinal50DayPlan('2026-11-02')
+  assert('PDF_SECTIONAL_CADENCE', 'Tuesday VARC, Thursday DILR and Saturday QA sectionals retain their exact timing',
+    tuesdayVARC?.testTitle.includes('24 QUESTIONS / 40 MINUTES') === true &&
+    thursdayDILR?.testTitle.includes('22 QUESTIONS / 40 MINUTES') === true &&
+    saturdayQA?.testTitle.includes('22 QUESTIONS / 40 MINUTES') === true &&
+    saturdayQA?.testNotes.includes('same-evening analysis') === true,
+    [tuesdayVARC?.testTitle,thursdayDILR?.testTitle,saturdayQA?.testTitle,saturdayQA?.testNotes].join(' | '))
+  assert('PDF_MONDAY_ANALYSIS', 'Monday mock analysis is explicitly at least as long as the mock',
+    mondayAnalysis?.testNotes.includes('Analysis takes at least as long as the mock') === true,
+    mondayAnalysis?.testNotes ?? 'missing')
 
   return results
 }
