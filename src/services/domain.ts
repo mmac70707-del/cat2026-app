@@ -163,7 +163,7 @@ export function getDashboardDaySummary(dateIso: string): { label: string; topic:
   if (finalPlan) {
     return {
       label: 'FINAL PLAN DAY ' + String(finalPlan.dayNum).padStart(2, '0') + '/49 · WEEK ' + finalPlan.weekNum + '/7',
-      topic: finalPlan.qaFocus,
+      topic: finalPlan.testTitle || finalPlan.qaFocus,
       isFinalPlan: true,
     }
   }
