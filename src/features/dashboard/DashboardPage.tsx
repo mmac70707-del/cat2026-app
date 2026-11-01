@@ -5,9 +5,8 @@ import { ErrorRepository } from '@/repositories/ErrorRepository'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
 import type { MasteryTopic } from '@/types'
 import { usePhase } from '@/hooks/usePhase'
-import { getWeekNumber, getDaysLeft, getCountdownParts } from '@/services/domain'
-import { getKolkataDateKey, getKolkataDateParts, getFirstPassDayNum } from '@/services/calendarEngine'
-import { ROADMAP_44 } from '@/data/roadmap44'
+import { getWeekNumber, getDaysLeft, getCountdownParts, getDashboardDaySummary } from '@/services/domain'
+import { getKolkataDateKey, getKolkataDateParts } from '@/services/calendarEngine'
 import { BLOCKS, PHASES, SCHEDULE_ITEMS, WEEK_PLAN_TEMPLATE } from '@/data/config'
 import { SEVEN_YEAR_ROADMAP } from '@/data/visionConfig'
 import { useToast } from '@/components/Toast'
@@ -535,8 +534,7 @@ export function DashboardPage() {
 
   const now = liveNow
   const dateKey = getKolkataDateKey(now)
-  const dayNum = getFirstPassDayNum(dateKey)
-  const roadmapItem = ROADMAP_44.find(r => r.dayNum === (dayNum || 1)) || ROADMAP_44[0]
+  const daySummary = getDashboardDaySummary(dateKey)
 
   const kolkataParts = getKolkataDateParts(now)
   const realDayName = DAYS_ARR[kolkataParts.dayOfWeek]
@@ -833,7 +831,7 @@ export function DashboardPage() {
         realDateStr={realDateStr}
         phaseId={phase.id}
         phaseName={phase.name}
-        dayNum={dayNum}
+        dayLabel={daySummary.label}
         actionTitle={actionTitle}
         actionStatus={actionStatus}
         actionDetail={actionDetail}
@@ -1022,7 +1020,7 @@ export function DashboardPage() {
             <div className="best-me-kicker">◉ BEST ME // 7-DIMENSION DAILY CONTROL</div>
             <div className="best-me-title">Build the Best Me — one win at a time.</div>
             <div className="best-me-sub">
-              {realDayName}, {realDateStr} <span>•</span> CAT Day {dayNum < 10 ? '0' + dayNum : dayNum}/44 <span>•</span> {roadmapItem.chapter}
+              {realDayName}, {realDateStr} <span>•</span> {daySummary.label} <span>•</span> {daySummary.topic}
             </div>
           </div>
           <div className={'best-me-final ' + (finalWin ? 'is-won' : '')}>
@@ -1440,8 +1438,8 @@ export function DashboardPage() {
           {/* TODAY'S EXACT PLAN */}
           <div>
             <div className="today-header">
-              <div className="today-title"><AppIcon name="today" size={14} /> {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44</div>
-              <div className="today-sub">Today's Topic: <strong style={{ color: 'var(--gold)' }}>{roadmapItem.chapter}</strong> &nbsp;|&nbsp; Week {getWeekNumber()}</div>
+              <div className="today-title"><AppIcon name="today" size={14} /> {realDayName.toUpperCase()} — {realDateStr.toUpperCase()} • {daySummary.label}</div>
+              <div className="today-sub">Today's Focus: <strong style={{ color: 'var(--gold)' }}>{daySummary.topic}</strong> &nbsp;|&nbsp; Week {getWeekNumber()}</div>
             </div>
 
             <div className="block-list">
@@ -1476,10 +1474,10 @@ export function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--gold)', letterSpacing: 0.5 }}>
-                    🚀 44-DAY FIRST PASS: DAY {dayNum < 10 ? '0' + dayNum : dayNum} / 44
+                    🚀 {daySummary.label}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 800, color: '#FFF', marginTop: 2 }}>
-                    Chapter: {roadmapItem.chapter} ({roadmapItem.category})
+                    Focus: {daySummary.topic}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
