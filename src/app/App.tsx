@@ -39,6 +39,7 @@ import { SecuritySentinelPage } from '@/features/security/SecuritySentinelPage'
 import { MissionOSPage }        from '@/features/missionos/MissionOSPage'
 import { Body360Page }           from '@/features/body360/Body360Page'
 import { BRMPage }               from '@/features/brm/BRMPage'
+import { SystemHealthPage }       from '@/features/systemhealth/SystemHealthPage'
 
 import { openDB } from '@/db'
 import { MasteryRepository } from '@/repositories/MasteryRepository'
@@ -54,7 +55,7 @@ import { applyStitchTheme } from '@/services/uiPreferences'
 import { installGlobalErrorAudit, recordAudit } from '@/services/auditLog'
 
 type MainPage   = 'today' | 'week' | 'mastery' | 'phases' | 'more'
-export type SubPage    = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'brm' | 'settings'
+export type SubPage    = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'brm' | 'settings' | 'systemhealth'
 type ActivePage = MainPage | SubPage | string
 
 const MAIN_PAGES: MainPage[] = ['today', 'week', 'mastery', 'phases', 'more']
@@ -263,6 +264,7 @@ export function App() {
               {activePage === 'body360'       && <Body360Page          onBack={() => setActivePage('more')} />}
               {activePage === 'brm'           && <BRMPage              onBack={() => setActivePage('more')} />}
               {activePage === 'settings'      && <SettingsPage           onBack={() => setActivePage('more')} />}
+              {activePage === 'systemhealth' && <SystemHealthPage      onBack={() => setActivePage('more')} />}
             </div>
 
             <VoiceJarvisModal

@@ -3,7 +3,7 @@ import { useQuickStats } from '@/hooks/index'
 import { canInstallPwa, promptPwaInstall } from '@/services/pwaInstall'
 import { AppIcon, type AppIconName } from '@/components/AppIcon'
 
-export type SubPage = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'brm' | 'settings'
+export type SubPage = 'dashboard' | 'jarvis' | 'jarvisconsole' | 'mission' | 'vision' | 'mindset' | 'apexpro' | 'openjarvis' | 'roadmap' | 'catmock' | 'dailycapsule' | 'adaptive' | 'flashcards' | 'achievements' | 'qbank' | 'livesessions' | 'drills' | 'research' | 'errors' | 'repair' | 'retest' | 'mockana' | 'schedule' | 'syllabus' | 'security' | 'missionos' | 'body360' | 'brm' | 'settings' | 'systemhealth'
 
 interface Props { onNavigate: (page: SubPage) => void }
 type Category = 'ALL' | 'EXECUTE' | 'LEARN' | 'REVIEW' | 'PERSONAL' | 'SYSTEM'
@@ -38,6 +38,7 @@ const TILES: { id: SubPage; icon: AppIconName; label: string; category: Exclude<
   { id: 'research', icon: 'microscope', label: 'Deep Research', category: 'SYSTEM', hint: 'Research tools' },
   { id: 'security', icon: 'security', label: 'Security Sentinel', category: 'SYSTEM', hint: 'Integrity + audit' },
   { id: 'settings', icon: 'settings', label: 'Settings & Data', category: 'SYSTEM', hint: 'Preferences + export' },
+  { id: 'systemhealth', icon: 'security', label: 'App Health & Backup', category: 'SYSTEM', featured: true, hint: 'Device checks + progress backup' },
 ]
 
 const CATEGORIES: { id: Category; label: string }[] = [
