@@ -55,7 +55,7 @@ dependencies {
     // isn't part of this archive (only the app/ module was exported), so this
     // avoids depending on a file that couldn't be inspected or edited here.
     // Safe to migrate into the catalog later for consistency if you prefer.
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
