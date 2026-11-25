@@ -51,8 +51,9 @@ export default defineConfig({
     base: './',
     target: 'es2020',
     outDir: 'dist',
-    sourcemap: true,
-
+    // Never publish browser-readable source maps in production artifacts.
+    // Keep local debugging available through Vite's development server.
+    sourcemap: false,
   },
   server: { port: 5173, host: true },
 })
